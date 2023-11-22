@@ -1,12 +1,12 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-// import Landing from './src/Client/Landing/Landing';
+import Landing from './src/Client/Landing/Landing';
 // import AboutUs from './src/Client/Landing/About';
 // import SignUp from './src/Client/SignUp/Signup';
 // import TellUsAboutYourself from './src/Client/SignUp/TellUsAboutYourself';
 // import AlternativeContact from './src/Client/SignUp/AlternativeContact';
-import SignIn from "./src/Client/SignIn/Signin";
+// import SignIn from "./src/Client/SignIn/Signin";
 // import BusinessRegistration from './src/Client/BusinessRegistration/BusinessRegistration';
 // import AddProductsAndServices from './src/Client/BusinessRegistration/AddProduct';
 // import PaymentInfo from './src/Client/BusinessRegistration/PaymentInfo';
@@ -28,13 +28,15 @@ const Stack = createStackNavigator();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Landing">
-        {/* <Stack.Screen name="Landing" component={Landing} />
-        <Stack.Screen name="AboutUs" component={AboutUs} />
+      <Stack.Navigator initialRouteName="Landing"
+      screenOptions={{ headerShown: false }}
+      >
+        <Stack.Screen name="Landing" component={Landing} />
+        {/* <Stack.Screen name="AboutUs" component={AboutUs} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="TellUsAboutYourself" component={TellUsAboutYourself} />
-        <Stack.Screen name="AlternativeContact" component={AlternativeContact} /> */}
-        <Stack.Screen name="SignIn" component={SignIn} />
+        <Stack.Screen name="AlternativeContact" component={AlternativeContact} /> 
+        <Stack.Screen name="SignIn" component={SignIn} /> */}
         {/* <Stack.Screen name="BusinessRegistration" component={BusinessRegistration} />
         <Stack.Screen name="AddProductsAndServices" component={AddProductsAndServices} />
         <Stack.Screen name="PaymentInfo" component={PaymentInfo} />

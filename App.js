@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-// import Landing from './src/Client/Landing/Landing';
+import Landing from './src/Client/Landing/Landing';
 // import AboutUs from './src/Client/Landing/About';
 // import SignUp from './src/Client/SignUp/Signup';
 // import TellUsAboutYourself from './src/Client/SignUp/TellUsAboutYourself';
@@ -12,7 +12,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 // import PaymentInfo from './src/Client/BusinessRegistration/PaymentInfo';
 // import ProductDetails from './src/Client/ProductDetails/ProductDetails';
 // import BusinessProducts from './src/Client/ProductDetails/BusinessProducts';
-import UserProfile from './src/Client/AccountAndBusiness/UserProfile';
+// import UserProfile from './src/Client/AccountAndBusiness/UserProfile';
 // import AccountAndBusiness from './src/Client/AccountAndBusiness/AccountBusiness';
 // import OrderHistory from './src/Client/CartAndOrderHistory/OrderHistory';
 // import PayFast from './src/Client/CartAndOrderHistory/PayFast';
@@ -31,7 +31,7 @@ function App() {
       <Stack.Navigator initialRouteName="Landing"
       screenOptions={{ headerShown: false }}
       >
-        {/* <Stack.Screen name="Landing" component={Landing} /> */}
+        <Stack.Screen name="Landing" component={Landing} />
         {/* <Stack.Screen name="AboutUs" component={AboutUs} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="TellUsAboutYourself" component={TellUsAboutYourself} />
@@ -42,7 +42,7 @@ function App() {
         <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="BusinessProducts" component={BusinessProducts} /> */}
-        <Stack.Screen name="UserProfile" component={UserProfile} />
+        {/* <Stack.Screen name="UserProfile" component={UserProfile} /> */}
         {/* <Stack.Screen name="AccountAndBusiness" component={AccountAndBusiness} />
         <Stack.Screen name="OrderHistory" component={OrderHistory} />
         <Stack.Screen name="PayFast" component={PayFast} />

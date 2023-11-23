@@ -1,7 +1,7 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-// import Landing from './src/Client/Landing/Landing';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import Landing from "./src/Client/Landing/Landing";
 // import AboutUs from './src/Client/Landing/About';
 // import SignUp from './src/Client/SignUp/Signup';
 // import TellUsAboutYourself from './src/Client/SignUp/TellUsAboutYourself';
@@ -11,7 +11,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 // import AddProductsAndServices from './src/Client/BusinessRegistration/AddProduct';
 // import PaymentInfo from './src/Client/BusinessRegistration/PaymentInfo';
 // import ProductDetails from './src/Client/ProductDetails/ProductDetails';
-import BusinessProducts from './src/Client/ProductDetails/BusinessProducts';
+// import BusinessProducts from './src/Client/ProductDetails/BusinessProducts';
 // import UserProfile from './src/Client/AccountAndBusiness/UserProfile';
 // import AccountAndBusiness from './src/Client/AccountAndBusiness/AccountBusiness';
 // import OrderHistory from './src/Client/CartAndOrderHistory/OrderHistory';
@@ -28,10 +28,10 @@ const Stack = createStackNavigator();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Landing"
-      screenOptions={{ headerShown: false }}
-      >
-        {/* <Stack.Screen name="Landing" component={Landing} /> */}
+      <Stack.Navigator
+        initialRouteName="Landing"
+        screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Landing" component={Landing} />
         {/* <Stack.Screen name="AboutUs" component={AboutUs} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="TellUsAboutYourself" component={TellUsAboutYourself} />
@@ -41,7 +41,7 @@ function App() {
         <Stack.Screen name="AddProductsAndServices" component={AddProductsAndServices} />
         <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
         <Stack.Screen name="ProductDetails" component={ProductDetails} /> */}
-        <Stack.Screen name="BusinessProducts" component={BusinessProducts} />
+        {/* <Stack.Screen name="BusinessProducts" component={BusinessProducts} /> */}
         {/* <Stack.Screen name="UserProfile" component={UserProfile} /> */}
         {/* <Stack.Screen name="AccountAndBusiness" component={AccountAndBusiness} />
         <Stack.Screen name="OrderHistory" component={OrderHistory} />

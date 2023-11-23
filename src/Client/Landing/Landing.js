@@ -4,6 +4,7 @@ import React from "react";
 import Navbar from "../../Global/Navbar";
 import SearchBar from "../../Global/SearchBar";
 import ProductCard from "../../Global/Card";
+import FollowUs from "../../Global/Header";
 const Landing = () => {
   return (
     <View>

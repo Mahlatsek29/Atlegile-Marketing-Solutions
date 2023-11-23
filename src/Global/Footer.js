@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   section2Image: {
     width: "100%",
-    opacity: 0.3,
+    // opacity: 0.3,
     height: 210,
     position: "relative",
     top: -50,

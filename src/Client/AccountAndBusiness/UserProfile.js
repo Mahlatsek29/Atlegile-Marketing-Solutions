@@ -10,7 +10,15 @@ const UserProfile = () => {
     <View>
       <FollowUs />
       <Navbar />
-      <View style={{ height: "890px", padding: "10px" }}>
+      <View
+        style={{
+          height: "800px",
+          padding: "10px",
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
         <View>
           <View
             style={{
@@ -87,20 +95,17 @@ const UserProfile = () => {
             <View
               style={{
                 border: "none",
-                display: "flex",
-                flexDirection: "row",
-                paddingTop: 10,
                 paddingBottom: 10,
-                alignItems: "center",
+                flexDirection: "row",
               }}
             >
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
-                  fontWeight: "bold",
                   fontSize: 12,
-                  textDecoration: "none",
                   color: "gray",
+                  fontWeight: "bold",
+                  textDecoration: "none",
                 }}
               >
                 ORDER HISTORY
@@ -110,19 +115,19 @@ const UserProfile = () => {
               style={{
                 border: "none",
                 display: "flex",
-                flexDirection: "row",
                 paddingTop: 10,
                 paddingBottom: 10,
                 alignItems: "center",
+                flexDirection: "row",
               }}
             >
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
-                  fontWeight: "bold",
                   fontSize: 12,
-                  textDecoration: "none",
                   color: "gray",
+                  fontWeight: "bold",
+                  textDecoration: "none",
                 }}
               >
                 FAVOURITES
@@ -132,19 +137,19 @@ const UserProfile = () => {
               style={{
                 border: "none",
                 display: "flex",
-                flexDirection: "row",
                 paddingTop: 10,
                 paddingBottom: 10,
                 alignItems: "center",
+                flexDirection: "row",
               }}
             >
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
-                  fontWeight: "bold",
                   fontSize: 12,
-                  textDecoration: "none",
                   color: "gray",
+                  fontWeight: "bold",
+                  textDecoration: "none",
                 }}
               >
                 TERMS & CONDITIONS
@@ -152,22 +157,22 @@ const UserProfile = () => {
             </View>
             <View
               style={{
-                marginBottom: "5px",
                 border: "none",
                 display: "flex",
-                flexDirection: "row",
                 paddingTop: 10,
                 paddingBottom: 10,
+                marginBottom: "5px",
                 alignItems: "center",
+                flexDirection: "row",
               }}
             >
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
-                  fontWeight: "bold",
                   fontSize: 12,
-                  textDecoration: "none",
                   color: "gray",
+                  fontWeight: "bold",
+                  textDecoration: "none",
                 }}
               >
                 PRIVACY POLICY
@@ -176,14 +181,32 @@ const UserProfile = () => {
           </View>
           <View
             style={{
+              marginTop: 10,
               display: "flex",
-              justifyContent: "center",
               flexDirection: "row",
-              
+              justifyContent: "center",
             }}
           >
-          <Button style={{borderRadius: "20px", marginRight: "5px", color: "#072840"}} variant="outlined">REGISTER BUSINESS</Button>
-          <Button style={{borderRadius: "20px", color: "#072840", outlineColor: "#072840"}} variant="outlined">REGISTER AS A FREELANCER</Button>
+            <Button
+              style={{
+                color: "#072840",
+                marginRight: "5px",
+                borderRadius: "20px",
+              }}
+              variant="outlined"
+            >
+              REGISTER BUSINESS
+            </Button>
+            <Button
+              style={{
+                color: "#072840",
+                borderRadius: "20px",
+                outlineColor: "#072840",
+              }}
+              variant="outlined"
+            >
+              REGISTER AS A FREELANCER
+            </Button>
           </View>
         </View>
       </View>

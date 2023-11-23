@@ -4,6 +4,7 @@ import Icon from "react-native-vector-icons/Fontisto";
 import React from "react";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
+import { Footer } from "../../Global/Footer";
 
 const UserProfile = () => {
   return (
@@ -210,6 +211,7 @@ const UserProfile = () => {
           </View>
         </View>
       </View>
+      <Footer />
     </View>
   );
 };

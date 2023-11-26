@@ -1,5 +1,5 @@
-import { View, Text, ScrollView } from "react-native";
-import { Container, Box, Typography } from "@mui/material";
+import { View, ScrollView } from "react-native";
+import { Container,Typography } from "@mui/material";
 import React from "react";
 import Navbar from "../../Global/Navbar";
 import SearchBar from "../../Global/SearchBar";

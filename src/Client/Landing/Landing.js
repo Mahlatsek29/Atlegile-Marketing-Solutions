@@ -126,17 +126,114 @@ const Landing = () => {
               <ProductCard />
             </ScrollView>
             <View style={{ color: "white", marginTop: 20 }}>
-              <Typography
-                variant="h4"
-                style={{
-                  height: 140,
-                  display: "flex",
-                  fontWeight: "600",
-                  alignItems: "center",
-                  backgroundColor: "#072840",
-                }}>
-                PRODUCTS
-              </Typography>
+              <Grid container style={{ backgroundColor: "#072840" }}>
+                <Grid
+                  lg={1}
+                  style={{
+                    backgroundColor: "#072840",
+                    color: "#fff",
+                    textAlign: "left",
+                    fontSize: "30px",
+                    paddingTop: "5%",
+                    paddingLeft: "10px",
+                    // height:'10vh',
+                    // position: "relative",
+                    // top: "-50%",
+                    // left: "50%",
+                    justifySelf: "center",
+                    justifyContent: "center",
+                  }}>
+                  {`<`}
+                </Grid>
+                <Grid lg={8}>
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                      // backgroundColor: "blue",
+                    }}>
+                    <View
+                      style={{
+                        color: "white",
+                        marginTop: 20,
+                        width: "100%",
+                        alignItems: "left",
+                        justifyContent: "center",
+                        // backgroundColor: "green",
+                      }}>
+                      <Typography
+                        variant="h5"
+                        style={{
+                          height: 50,
+                          display: "flex",
+                          fontWeight: "600",
+                          alignItems: "center",
+                          backgroundColor: "#072840",
+                          // paddingTop: "14%",
+                        }}>
+                        EXCLUSIVE OFFER: SAVE BIG TODAY!
+                      </Typography>
+                      <View>
+                        <Typography
+                          variant="h4"
+                          style={{
+                            height: 50,
+                            display: "flex",
+                            fontWeight: "600",
+                            alignItems: "center",
+                            backgroundColor: "#072840",
+                          }}>
+                          ULTRA HD SMART TV
+                        </Typography>
+                        {/* <Typography> < </Typography> */}
+                      </View>
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          backgroundColor: "#072840",
+                        }}>
+                        <Typography
+                          variant="h6"
+                          style={{
+                            height: 50,
+                            // display: "flex",
+                            // fontWeight: "600",
+                            alignItems: "center",
+                            backgroundColor: "#072840",
+                            color: "gold",
+                          }}>
+                          R1699.99
+                        </Typography>
+                        <Typography
+                          variant="h6"
+                          style={{ fontSize: "16px", paddingLeft: "10px" }}>
+                          R1899.99
+                        </Typography>
+                      </View>
+                    </View>
+                  </View>
+                </Grid>
+
+                <Grid
+                  lg={3}
+                  style={{
+                    backgroundColor: "#072840",
+                    color: "#fff",
+                    textAlign: "right",
+                    fontSize: "30px",
+                    paddingTop: "5%",
+                    paddingRight: "10px",
+                    // position: "relative",
+                    // top: "-50%",
+                    // left: "50%",
+                    justifySelf: "center",
+                    justifyContent: "center",
+                  }}>
+                  {`>`}
+                </Grid>
+              </Grid>
             </View>
             <ScrollView
               horizontal={true}
@@ -161,8 +258,26 @@ const Landing = () => {
             </ScrollView>
           </View>
 
-          <Grid container>
-            <Grid lg={2}>{`<`}</Grid>
+          <Grid container style={{ backgroundColor: "#072840" }}>
+            <Grid
+              lg={1}
+              style={{
+                backgroundColor: "#072840",
+                color: "#fff",
+                textAlign: "left",
+                fontSize: "30px",
+                paddingTop: "5%",
+                paddingLeft: "10px",
+                // width: "4vw",
+                // height:'10vh',
+                // position: "relative",
+                // top: "-50%",
+                // left: "50%",
+                justifySelf: "center",
+                justifyContent: "center",
+              }}>
+              {`<`}
+            </Grid>
             <Grid lg={8}>
               <View
                 style={{
@@ -188,6 +303,7 @@ const Landing = () => {
                       fontWeight: "600",
                       alignItems: "center",
                       backgroundColor: "#072840",
+                      // paddingTop: "14%",
                     }}>
                     EXCLUSIVE OFFER: SAVE BIG TODAY!
                   </Typography>
@@ -219,6 +335,7 @@ const Landing = () => {
                         // fontWeight: "600",
                         alignItems: "center",
                         backgroundColor: "#072840",
+                        color: "gold",
                       }}>
                       R1699.99
                     </Typography>
@@ -233,14 +350,22 @@ const Landing = () => {
             </Grid>
 
             <Grid
-              lg={2}
+              lg={3}
               style={{
                 backgroundColor: "#072840",
                 color: "#fff",
                 textAlign: "right",
                 fontSize: "30px",
+                paddingTop: "5%",
+                paddingRight: "10px",
+                // position: "relative",
+                // top: "-50%",
+                // left: "50%",
                 justifySelf: "center",
-              }}>{`>`}</Grid>
+                justifyContent: "center",
+              }}>
+              {`>`}
+            </Grid>
           </Grid>
           <Typography
             variant="h5"

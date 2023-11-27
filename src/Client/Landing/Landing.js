@@ -129,6 +129,8 @@ const Landing = () => {
               <Grid container style={{ backgroundColor: "#072840" }}>
                 <Grid
                   lg={1}
+                  sm={1}
+                  xs={1}
                   style={{
                     backgroundColor: "#072840",
                     color: "#fff",
@@ -145,7 +147,7 @@ const Landing = () => {
                   }}>
                   {`<`}
                 </Grid>
-                <Grid lg={8}>
+                <Grid lg={8} sm={8}>
                   <View
                     style={{
                       justifyContent: "center",
@@ -218,6 +220,7 @@ const Landing = () => {
 
                 <Grid
                   lg={3}
+                  sm={4}
                   style={{
                     backgroundColor: "#072840",
                     color: "#fff",
@@ -261,6 +264,7 @@ const Landing = () => {
           <Grid container style={{ backgroundColor: "#072840" }}>
             <Grid
               lg={1}
+              xs={1}
               style={{
                 backgroundColor: "#072840",
                 color: "#fff",
@@ -278,7 +282,7 @@ const Landing = () => {
               }}>
               {`<`}
             </Grid>
-            <Grid lg={8}>
+            <Grid lg={8} xs={8}>
               <View
                 style={{
                   justifyContent: "center",
@@ -351,6 +355,7 @@ const Landing = () => {
 
             <Grid
               lg={3}
+              xs={3}
               style={{
                 backgroundColor: "#072840",
                 color: "#fff",
@@ -382,7 +387,7 @@ const Landing = () => {
         </Container>
       </View>
       <Grid container style={{ width: "100%", height: "40vh" }}>
-        <Grid lg={2}>
+        <Grid xl={2} lg={2} sm={2} xs={2}>
           <Image
             source={shop}
             style={{
@@ -396,7 +401,11 @@ const Landing = () => {
           />
         </Grid>
         <Grid
+          xl={8}
           lg={8}
+          md={8}
+          sm={8}
+          xs={8}
           style={{
             // backgroundColor: "green",
             justifyContent: "center",
@@ -502,7 +511,7 @@ const Landing = () => {
             </View>
           </View>
         </Grid>
-        <Grid lg={2}>
+        <Grid xl={2} lg={2} sm={2} xs={2}>
           <Image
             source={shop2}
             style={{

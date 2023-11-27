@@ -75,7 +75,7 @@ const ProductCard = ({ item }) => {
           />
           <Box
             style={{
-              backgroundColor: "red",
+              backgroundColor: "#E74040",
               position: "absolute",
               bottom: 200,
               padding: 2,

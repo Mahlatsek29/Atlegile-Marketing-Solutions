@@ -1,6 +1,6 @@
+import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, Image } from "react-native";
 import { Container, Typography, Grid } from "@mui/material";
-import React from "react";
 import Navbar from "../../Global/Navbar";
 import SearchBar from "../../Global/SearchBar";
 import ProductCard from "../../Global/Card";
@@ -8,9 +8,29 @@ import FollowUs from "../../Global/Header";
 import { Footer } from "../../Global/Footer";
 import shop from "../../Global/images/svg_landing.svg";
 import shop2 from "../../Global/images/svg_landing.svg";
+import { firebase } from "../../config";
+
 const Landing = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const productsRef = firebase.firestore().collection("Products");
+
+      try {
+        const snapshot = await productsRef.get();
+        const productsData = snapshot.docs.map((doc) => doc.data());
+        setProducts(productsData);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   return (
-    <View>
+    <>
       <Navbar />
       <FollowUs />
       <SearchBar />
@@ -19,7 +39,6 @@ const Landing = () => {
           <Grid
             container
             style={{
-              // backgroundColor: "red",
               alignItems: "center",
               justifyContent: "center",
               display: "flex",
@@ -30,11 +49,9 @@ const Landing = () => {
               style={{
                 alignItems: "right",
                 justifyContent: "right",
-                // backgroundColor: "green",
               }}>
               <Text
                 style={{
-                  // fontFamily: "poppins",
                   fontWeight: "bold",
                   textAlign: "center",
                   margin: "30px 50px",
@@ -52,17 +69,10 @@ const Landing = () => {
                   textAlign: "center",
                   border: "3px solid gold",
                   margin: "5px",
-                  // borderImage: " linear-gradient(to right, #F1B53F, #6A46OF) ",
-                  // backgroundOrigin: "border-box",
                   backgroundColor: "black",
                   color: "#fff",
                 }}>
-                <Text
-                  style={{
-                    color: "#FFF", // Text color
-                  }}>
-                  Buy
-                </Text>
+                <Text style={{ color: "#FFF" }}>Buy</Text>
               </button>
               <button
                 style={{
@@ -72,17 +82,10 @@ const Landing = () => {
                   textAlign: "center",
                   border: "3px solid gold",
                   margin: "5px",
-                  // borderImage: " linear-gradient(to right, #F1B53F, #6A46OF) ",
-                  // backgroundOrigin: "border-box",
                   backgroundColor: "black",
                   color: "#fff",
                 }}>
-                <Text
-                  style={{
-                    color: "#FFF", // Text color
-                  }}>
-                  Sell
-                </Text>
+                <Text style={{ color: "#FFF" }}>Sell</Text>
               </button>
               <button
                 style={{
@@ -92,24 +95,13 @@ const Landing = () => {
                   textAlign: "center",
                   border: "3px solid gold",
                   margin: "5px",
-                  // borderImage: " linear-gradient(to right, #F1B53F, #6A46OF) ",
-                  // backgroundOrigin: "border-box",
                   backgroundColor: "black",
                   color: "#fff",
                 }}>
-                <Text
-                  style={{
-                    color: "#FFF", // Text color
-                  }}>
-                  Support
-                </Text>
+                <Text style={{ color: "#FFF" }}>Support</Text>
               </button>
             </Grid>
           </Grid>
-
-          {/* <View style={{ marginTop: 20 }}>
-            <Typography>Home / VAAS /</Typography>
-          </View> */}
 
           <View style={{ padding: 30 }}>
             <Typography
@@ -120,10 +112,11 @@ const Landing = () => {
             <ScrollView
               horizontal={true}
               style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
+              <>
+                {products.map((product, index) => (
+                  <ProductCard key={index} product={product} />
+                ))}
+              </>
             </ScrollView>
             <View style={{ color: "white", marginTop: 20 }}>
               <Grid container style={{ backgroundColor: "#072840" }}>
@@ -138,22 +131,17 @@ const Landing = () => {
                     fontSize: "30px",
                     paddingTop: "5%",
                     paddingLeft: "10px",
-                    // height:'10vh',
-                    // position: "relative",
-                    // top: "-50%",
-                    // left: "50%",
-                    justifySelf: "center",
-                    justifyContent: "center",
                   }}>
                   {`<`}
                 </Grid>
                 <Grid lg={8} sm={8}>
                   <View
                     style={{
-                      justifyContent: "center",
-                      alignItems: "center",
+                      color: "white",
+                      marginTop: 20,
                       width: "100%",
-                      // backgroundColor: "blue",
+                      alignItems: "left",
+                      justifyContent: "center",
                     }}>
                     <View
                       style={{
@@ -162,7 +150,6 @@ const Landing = () => {
                         width: "100%",
                         alignItems: "left",
                         justifyContent: "center",
-                        // backgroundColor: "green",
                       }}>
                       <Typography
                         variant="h5"
@@ -172,7 +159,6 @@ const Landing = () => {
                           fontWeight: "600",
                           alignItems: "center",
                           backgroundColor: "#072840",
-                          // paddingTop: "14%",
                         }}>
                         EXCLUSIVE OFFER: SAVE BIG TODAY!
                       </Typography>
@@ -188,7 +174,6 @@ const Landing = () => {
                           }}>
                           ULTRA HD SMART TV
                         </Typography>
-                        {/* <Typography> < </Typography> */}
                       </View>
                       <View
                         style={{
@@ -200,8 +185,6 @@ const Landing = () => {
                           variant="h6"
                           style={{
                             height: 50,
-                            // display: "flex",
-                            // fontWeight: "600",
                             alignItems: "center",
                             backgroundColor: "#072840",
                             color: "gold",
@@ -228,11 +211,6 @@ const Landing = () => {
                     fontSize: "30px",
                     paddingTop: "5%",
                     paddingRight: "10px",
-                    // position: "relative",
-                    // top: "-50%",
-                    // left: "50%",
-                    justifySelf: "center",
-                    justifyContent: "center",
                   }}>
                   {`>`}
                 </Grid>
@@ -241,9 +219,11 @@ const Landing = () => {
             <ScrollView
               horizontal={true}
               style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
+              <>
+                <ProductCard />
+                <ProductCard />
+                <ProductCard />
+              </>
             </ScrollView>
           </View>
           <View style={{ padding: 30 }}>
@@ -255,9 +235,11 @@ const Landing = () => {
             <ScrollView
               horizontal={true}
               style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
+              <>
+                <ProductCard />
+                <ProductCard />
+                <ProductCard />
+              </>
             </ScrollView>
           </View>
 
@@ -272,11 +254,6 @@ const Landing = () => {
                 fontSize: "30px",
                 paddingTop: "5%",
                 paddingLeft: "10px",
-                // width: "4vw",
-                // height:'10vh',
-                // position: "relative",
-                // top: "-50%",
-                // left: "50%",
                 justifySelf: "center",
                 justifyContent: "center",
               }}>
@@ -288,7 +265,6 @@ const Landing = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   width: "100%",
-                  // backgroundColor: "blue",
                 }}>
                 <View
                   style={{
@@ -297,7 +273,6 @@ const Landing = () => {
                     width: "100%",
                     alignItems: "left",
                     justifyContent: "center",
-                    // backgroundColor: "green",
                   }}>
                   <Typography
                     variant="h5"
@@ -307,7 +282,6 @@ const Landing = () => {
                       fontWeight: "600",
                       alignItems: "center",
                       backgroundColor: "#072840",
-                      // paddingTop: "14%",
                     }}>
                     EXCLUSIVE OFFER: SAVE BIG TODAY!
                   </Typography>
@@ -323,7 +297,6 @@ const Landing = () => {
                       }}>
                       ULTRA HD SMART TV
                     </Typography>
-                    {/* <Typography> < </Typography> */}
                   </View>
                   <View
                     style={{
@@ -335,8 +308,6 @@ const Landing = () => {
                       variant="h6"
                       style={{
                         height: 50,
-                        // display: "flex",
-                        // fontWeight: "600",
                         alignItems: "center",
                         backgroundColor: "#072840",
                         color: "gold",
@@ -363,9 +334,6 @@ const Landing = () => {
                 fontSize: "30px",
                 paddingTop: "5%",
                 paddingRight: "10px",
-                // position: "relative",
-                // top: "-50%",
-                // left: "50%",
                 justifySelf: "center",
                 justifyContent: "center",
               }}>
@@ -380,9 +348,11 @@ const Landing = () => {
           <ScrollView
             horizontal={true}
             style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
+            <>
+              <ProductCard />
+              <ProductCard />
+              <ProductCard />
+            </>
           </ScrollView>
         </Container>
       </View>
@@ -407,7 +377,6 @@ const Landing = () => {
           sm={8}
           xs={8}
           style={{
-            // backgroundColor: "green",
             justifyContent: "center",
             alignItems: "center",
           }}>
@@ -436,7 +405,6 @@ const Landing = () => {
                 style={{
                   display: "flex",
                   flexDirection: "row",
-                  // backgroundColor: "purple",
                   marginVertical: "15px",
                 }}>
                 <button
@@ -462,7 +430,6 @@ const Landing = () => {
                   flexDirection: "row",
                   justifyContent: "center",
                   alignSelf: "center",
-                  // backgroundColor: "red",
                   marginHorizontal: "50px",
                 }}>
                 <View
@@ -474,7 +441,7 @@ const Landing = () => {
                   <Typography
                     variant="h6"
                     style={{ fontSize: "12px", fontSize: "10px" }}>
-                    soWhereTo > <br /> Township Business
+                    soWhereTo  <br /> Township Business
                     <br />
                   </Typography>
                   <Typography style={{ color: "orange" }}>
@@ -490,7 +457,7 @@ const Landing = () => {
                   <Typography
                     variant="h6"
                     style={{ fontSize: "12px", fontSize: "10px" }}>
-                    soWhereTo > <br /> Youth Training
+                    soWhereTo  <br /> Youth Training
                     <br />
                   </Typography>
                   <Typography style={{ color: "orange" }}>
@@ -501,7 +468,7 @@ const Landing = () => {
                   <Typography
                     variant="h6"
                     style={{ fontSize: "12px", fontSize: "10px" }}>
-                    soWhereTo > <br /> @HUB Support <br />
+                    soWhereTo <br /> @HUB Support <br />
                   </Typography>
                   <Typography style={{ color: "orange" }}>
                     VIEW PROJECT
@@ -526,7 +493,8 @@ const Landing = () => {
         </Grid>
       </Grid>
       <Footer />
-    </View>
+    </>
   );
 };
+
 export default Landing;

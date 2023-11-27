@@ -1,9 +1,10 @@
-
 import React, { useState } from 'react';
 import { Box, Typography, Button, IconButton, Paper, Breadcrumbs, Link, Container, Grid } from '@mui/material';
 import logo from '../../Global/images/logo.png';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import {firebase} from '../../config';
 
+const firestore = firebase.firestore();
 const Header = () => {
 
   const [count, setCount] = useState(1);
@@ -19,7 +20,23 @@ const Header = () => {
   };
 
   const handleAddToCart = () => {
-    alert('Item added to cart!');
+   
+    const productData = {
+      name: 'DMC', 
+      price: 1500, 
+      quantity: count,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    };
+
+     
+      firestore.collection('Products').add(productData)
+      .then((docRef) => {
+        console.log('Product added with ID: ', docRef.id);
+        alert('Item added to cart!');
+      })
+      .catch((error) => {
+        console.error('Error adding product: ', error);
+      });
   };
 
   return (

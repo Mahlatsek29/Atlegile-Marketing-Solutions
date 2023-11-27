@@ -441,7 +441,7 @@ const Landing = () => {
                   <Typography
                     variant="h6"
                     style={{ fontSize: "12px", fontSize: "10px" }}>
-                    soWhereTo > <br /> Township Business
+                    soWhereTo  <br /> Township Business
                     <br />
                   </Typography>
                   <Typography style={{ color: "orange" }}>
@@ -457,7 +457,7 @@ const Landing = () => {
                   <Typography
                     variant="h6"
                     style={{ fontSize: "12px", fontSize: "10px" }}>
-                    soWhereTo > <br /> Youth Training
+                    soWhereTo  <br /> Youth Training
                     <br />
                   </Typography>
                   <Typography style={{ color: "orange" }}>
@@ -468,7 +468,7 @@ const Landing = () => {
                   <Typography
                     variant="h6"
                     style={{ fontSize: "12px", fontSize: "10px" }}>
-                    soWhereTo > <br /> @HUB Support <br />
+                    soWhereTo <br /> @HUB Support <br />
                   </Typography>
                   <Typography style={{ color: "orange" }}>
                     VIEW PROJECT

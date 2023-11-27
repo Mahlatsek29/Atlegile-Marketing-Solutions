@@ -6,8 +6,8 @@ import SearchBar from "../../Global/SearchBar";
 import ProductCard from "../../Global/Card";
 import FollowUs from "../../Global/Header";
 import { Footer } from "../../Global/Footer";
-import shop from "../../Global/images/Group.png";
-import shop2 from "../../Global/images/clipArtBusinesses.png";
+import shop from "../../Global/images/svg_landing.svg";
+import shop2 from "../../Global/images/svg_landing.svg";
 const Landing = () => {
   return (
     <View>
@@ -126,17 +126,117 @@ const Landing = () => {
               <ProductCard />
             </ScrollView>
             <View style={{ color: "white", marginTop: 20 }}>
-              <Typography
-                variant="h4"
-                style={{
-                  height: 140,
-                  display: "flex",
-                  fontWeight: "600",
-                  alignItems: "center",
-                  backgroundColor: "#072840",
-                }}>
-                PRODUCTS
-              </Typography>
+              <Grid container style={{ backgroundColor: "#072840" }}>
+                <Grid
+                  lg={1}
+                  sm={1}
+                  xs={1}
+                  style={{
+                    backgroundColor: "#072840",
+                    color: "#fff",
+                    textAlign: "left",
+                    fontSize: "30px",
+                    paddingTop: "5%",
+                    paddingLeft: "10px",
+                    // height:'10vh',
+                    // position: "relative",
+                    // top: "-50%",
+                    // left: "50%",
+                    justifySelf: "center",
+                    justifyContent: "center",
+                  }}>
+                  {`<`}
+                </Grid>
+                <Grid lg={8} sm={8}>
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                      // backgroundColor: "blue",
+                    }}>
+                    <View
+                      style={{
+                        color: "white",
+                        marginTop: 20,
+                        width: "100%",
+                        alignItems: "left",
+                        justifyContent: "center",
+                        // backgroundColor: "green",
+                      }}>
+                      <Typography
+                        variant="h5"
+                        style={{
+                          height: 50,
+                          display: "flex",
+                          fontWeight: "600",
+                          alignItems: "center",
+                          backgroundColor: "#072840",
+                          // paddingTop: "14%",
+                        }}>
+                        EXCLUSIVE OFFER: SAVE BIG TODAY!
+                      </Typography>
+                      <View>
+                        <Typography
+                          variant="h4"
+                          style={{
+                            height: 50,
+                            display: "flex",
+                            fontWeight: "600",
+                            alignItems: "center",
+                            backgroundColor: "#072840",
+                          }}>
+                          ULTRA HD SMART TV
+                        </Typography>
+                        {/* <Typography> < </Typography> */}
+                      </View>
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          backgroundColor: "#072840",
+                        }}>
+                        <Typography
+                          variant="h6"
+                          style={{
+                            height: 50,
+                            // display: "flex",
+                            // fontWeight: "600",
+                            alignItems: "center",
+                            backgroundColor: "#072840",
+                            color: "gold",
+                          }}>
+                          R1699.99
+                        </Typography>
+                        <Typography
+                          variant="h6"
+                          style={{ fontSize: "16px", paddingLeft: "10px" }}>
+                          R1899.99
+                        </Typography>
+                      </View>
+                    </View>
+                  </View>
+                </Grid>
+
+                <Grid
+                  lg={3}
+                  sm={4}
+                  style={{
+                    backgroundColor: "#072840",
+                    color: "#fff",
+                    textAlign: "right",
+                    fontSize: "30px",
+                    paddingTop: "5%",
+                    paddingRight: "10px",
+                    // position: "relative",
+                    // top: "-50%",
+                    // left: "50%",
+                    justifySelf: "center",
+                    justifyContent: "center",
+                  }}>
+                  {`>`}
+                </Grid>
+              </Grid>
             </View>
             <ScrollView
               horizontal={true}
@@ -160,57 +260,118 @@ const Landing = () => {
               <ProductCard />
             </ScrollView>
           </View>
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              // backgroundColor: "blue",
-            }}>
-            <View
+
+          <Grid container style={{ backgroundColor: "#072840" }}>
+            <Grid
+              lg={1}
+              xs={1}
               style={{
-                color: "white",
-                marginTop: 20,
-                width: "100%",
-                alignItems: "left",
+                backgroundColor: "#072840",
+                color: "#fff",
+                textAlign: "left",
+                fontSize: "30px",
+                paddingTop: "5%",
+                paddingLeft: "10px",
+                // width: "4vw",
+                // height:'10vh',
+                // position: "relative",
+                // top: "-50%",
+                // left: "50%",
+                justifySelf: "center",
                 justifyContent: "center",
-                backgroundColor: "green",
               }}>
-              <Typography
-                variant="h5"
+              {`<`}
+            </Grid>
+            <Grid lg={8} xs={8}>
+              <View
                 style={{
-                  height: 50,
-                  display: "flex",
-                  fontWeight: "600",
+                  justifyContent: "center",
                   alignItems: "center",
-                  backgroundColor: "#072840",
+                  width: "100%",
+                  // backgroundColor: "blue",
                 }}>
-                EXCLUSIVE OFFER: SAVE BIG TODAY!
-              </Typography>
-              <Typography
-                variant="h4"
-                style={{
-                  height: 50,
-                  display: "flex",
-                  fontWeight: "600",
-                  alignItems: "center",
-                  backgroundColor: "#072840",
-                }}>
-                ULTRA HD SMART TV
-              </Typography>
-              <Typography
-                variant="h6"
-                style={{
-                  height: 50,
-                  display: "flex",
-                  // fontWeight: "600",
-                  alignItems: "center",
-                  backgroundColor: "#072840",
-                }}>
-                R1699.99
-              </Typography>
-            </View>
-          </View>
+                <View
+                  style={{
+                    color: "white",
+                    marginTop: 20,
+                    width: "100%",
+                    alignItems: "left",
+                    justifyContent: "center",
+                    // backgroundColor: "green",
+                  }}>
+                  <Typography
+                    variant="h5"
+                    style={{
+                      height: 50,
+                      display: "flex",
+                      fontWeight: "600",
+                      alignItems: "center",
+                      backgroundColor: "#072840",
+                      // paddingTop: "14%",
+                    }}>
+                    EXCLUSIVE OFFER: SAVE BIG TODAY!
+                  </Typography>
+                  <View>
+                    <Typography
+                      variant="h4"
+                      style={{
+                        height: 50,
+                        display: "flex",
+                        fontWeight: "600",
+                        alignItems: "center",
+                        backgroundColor: "#072840",
+                      }}>
+                      ULTRA HD SMART TV
+                    </Typography>
+                    {/* <Typography> < </Typography> */}
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      backgroundColor: "#072840",
+                    }}>
+                    <Typography
+                      variant="h6"
+                      style={{
+                        height: 50,
+                        // display: "flex",
+                        // fontWeight: "600",
+                        alignItems: "center",
+                        backgroundColor: "#072840",
+                        color: "gold",
+                      }}>
+                      R1699.99
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      style={{ fontSize: "16px", paddingLeft: "10px" }}>
+                      R1899.99
+                    </Typography>
+                  </View>
+                </View>
+              </View>
+            </Grid>
+
+            <Grid
+              lg={3}
+              xs={3}
+              style={{
+                backgroundColor: "#072840",
+                color: "#fff",
+                textAlign: "right",
+                fontSize: "30px",
+                paddingTop: "5%",
+                paddingRight: "10px",
+                // position: "relative",
+                // top: "-50%",
+                // left: "50%",
+                justifySelf: "center",
+                justifyContent: "center",
+              }}>
+              {`>`}
+            </Grid>
+          </Grid>
           <Typography
             variant="h5"
             style={{ fontWeight: "600", marginBottom: 10, marginTop: 10 }}>
@@ -225,18 +386,59 @@ const Landing = () => {
           </ScrollView>
         </Container>
       </View>
-      <Grid container>
-        <Grid lg={2}>
-          <Image source={shop} style={{ width: "60%", height: "25vh" }} />
+      <Grid container style={{ width: "100%", height: "40vh" }}>
+        <Grid xl={2} lg={2} sm={2} xs={2}>
+          <Image
+            source={shop}
+            style={{
+              width: "5%",
+              height: "34vh",
+              paddingLeft: "50vw",
+              position: "relative",
+              top: "120px",
+              right: "28vw",
+            }}
+          />
         </Grid>
-        <Grid lg={8}>
-          <View style={{ display: "flex", flexDirection: "row" }}>
+        <Grid
+          xl={8}
+          lg={8}
+          md={8}
+          sm={8}
+          xs={8}
+          style={{
+            // backgroundColor: "green",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}>
             <View>
-              <Typography variant="h4" style={{ fontWeight: "bolder" }}>
+              <Typography
+                variant="h4"
+                style={{
+                  fontWeight: "bolder",
+                  justifySelf: "center",
+                  paddingTop: "4vh",
+                }}>
                 AFRICA'S BUSINESS <br /> SUPPORT
               </Typography>
-              <Typography variant="h6">AFRICA'S BUSINESS SUPPORT</Typography>
-              <View style={{ display: "flex", flexDirection: "row" }}>
+              <Typography
+                variant="h6"
+                style={{ fontSize: "15px", fontWeight: "bold" }}>
+                High Impact Enterprises + Skills Development Solutions
+              </Typography>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  // backgroundColor: "purple",
+                  marginVertical: "15px",
+                }}>
                 <button
                   style={{
                     width: "20%",
@@ -254,19 +456,28 @@ const Landing = () => {
               </View>
             </View>
             <View>
-              <View style={{ display: "flex", flexDirection: "row" }}>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  // backgroundColor: "red",
+                  marginHorizontal: "50px",
+                }}>
                 <View
                   style={{
                     border: "1px solid orange",
-                    padding: "20px",
-                    marginLeft: "10vw",
+                    padding: "10px",
                     marginRight: "10px",
                   }}>
-                  <Typography variant="h6" style={{ fontSize: "10px" }}>
-                    soWhereTo > <br /> Township Businesses
+                  <Typography
+                    variant="h6"
+                    style={{ fontSize: "12px", fontSize: "10px" }}>
+                    soWhereTo > <br /> Township Business
+                    <br />
                   </Typography>
-                  <br />
-                  <Typography style={{ color: "orange", fontSize: "10px" }}>
+                  <Typography style={{ color: "orange" }}>
                     VIEW PROJECT
                   </Typography>
                 </View>
@@ -279,7 +490,8 @@ const Landing = () => {
                   <Typography
                     variant="h6"
                     style={{ fontSize: "12px", fontSize: "10px" }}>
-                    soWhereTo > <br /> Township Businesses <br />
+                    soWhereTo > <br /> Youth Training
+                    <br />
                   </Typography>
                   <Typography style={{ color: "orange" }}>
                     VIEW PROJECT
@@ -289,7 +501,7 @@ const Landing = () => {
                   <Typography
                     variant="h6"
                     style={{ fontSize: "12px", fontSize: "10px" }}>
-                    soWhereTo > <br /> Township Businesses <br />
+                    soWhereTo > <br /> @HUB Support <br />
                   </Typography>
                   <Typography style={{ color: "orange" }}>
                     VIEW PROJECT
@@ -299,8 +511,18 @@ const Landing = () => {
             </View>
           </View>
         </Grid>
-        <Grid lg={2}>
-          <Image source={shop2} style={{ width: "60%", height: "25vh" }} />
+        <Grid xl={2} lg={2} sm={2} xs={2}>
+          <Image
+            source={shop2}
+            style={{
+              width: "2vw",
+              height: "45vh",
+              bottom: "-150px",
+              position: "relative",
+              left: "-9vw",
+              paddingRight: "25vw",
+            }}
+          />
         </Grid>
       </Grid>
       <Footer />

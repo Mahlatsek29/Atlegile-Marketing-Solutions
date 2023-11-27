@@ -40,8 +40,7 @@ const ProductCard = ({ item }) => {
         border: "none",
         boxShadow: "none",
         // backgroundColor: "red",
-      }}
-    >
+      }}>
       <Box>
         <Box
           style={{
@@ -60,8 +59,7 @@ const ProductCard = ({ item }) => {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-          }}
-        >
+          }}>
           <CardMedia
             component="img"
             height="140"
@@ -77,16 +75,31 @@ const ProductCard = ({ item }) => {
           />
           <Box
             style={{
+              backgroundColor: "#E74040",
+              position: "absolute",
+              bottom: 200,
+              padding: 2,
+              width: "22%",
+              borderRadius: "8%",
+            }}>
+            <Typography
+              variant="h5"
+              style={{ color: "#fff", textAlign: "center" }}>
+              {" "}
+              sale
+            </Typography>
+          </Box>
+          <Box
+            style={{
               paddingHorizontal: 10,
               position: "absolute",
               bottom: 30,
               width: "6vw",
               display: "flex",
               flexDirection: "row",
-              //   backgroundColor: "red",
+              // backgroundColor: "red",
               justifyContent: "space-between",
-            }}
-          >
+            }}>
             <TouchableOpacity>
               <Icon
                 name={isRed ? "heart" : "heart-o"}
@@ -120,17 +133,23 @@ const ProductCard = ({ item }) => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-            }}
-          >
+            }}>
             <Typography
               variant="h6"
               component="h6"
-              style={{ fontSize: "16px", color: "#0074cc" }}
-            >
+              style={{ fontSize: "16px", color: "#0074cc" }}>
               {item?.selectedCategory}
               English Department
             </Typography>
-            <Typography>⭐ 0.0</Typography>
+            <Typography
+              style={{
+                backgroundColor: "#072840",
+                color: "#fff",
+                borderRadius: "15px",
+                padding: "4px",
+              }}>
+              ⭐ 4.9
+            </Typography>
           </Box>
           <Typography variant="h5" component="h5">
             {item?.productName}
@@ -139,8 +158,7 @@ const ProductCard = ({ item }) => {
           <Typography
             variant="subtitle2"
             component="p"
-            style={{ color: "gray" }}
-          >
+            style={{ color: "gray" }}>
             {item?.description.slice(0, 110)}
             {item?.description.length < 110 ? "" : "..."}
             We focus on ergonomics and meeting you where you work. It's only a
@@ -150,22 +168,34 @@ const ProductCard = ({ item }) => {
             display="flex"
             flexDirection="column"
             alignItems="flex-start"
-            justifyContent="space-between"
-          >
+            justifyContent="space-between">
             <Typography variant="body2" component="p" style={{ color: "gray" }}>
-              <Icon2 name="download" size={20} /> 0 Sales
+              <Icon2 name="download" size={20} /> 15 Sales
             </Typography>
-            <Typography
-              variant="subtitle2"
-              component="p"
-              style={{
-                color: "rgb(97, 151, 97)",
-                fontSize: "18px",
-                fontWeight: "700",
-              }}
-            >
-              R{item?.price}500
-            </Typography>
+            <Box display="flex" flexDirection="row">
+              <Typography
+                variant="subtitle2"
+                component="p"
+                style={{
+                  color: "#BDBDBD",
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  marginRight: "10px",
+                }}>
+                R{item?.price}700
+              </Typography>
+
+              <Typography
+                variant="subtitle2"
+                component="p"
+                style={{
+                  color: "rgb(97, 151, 97)",
+                  fontSize: "18px",
+                  fontWeight: "700",
+                }}>
+                R{item?.price}500
+              </Typography>
+            </Box>
           </Box>
         </CardContent>
       </Box>
@@ -198,18 +228,18 @@ const ProductCard = ({ item }) => {
             width: "7vw",
             backgroundColor: "white",
 
-            padding: "10px 20px",
+            padding: "5px 20px",
             borderRadius: "25px",
             cursor: "pointer",
             fontSize: "18px",
+            // marginBottom:'30px',
 
             display: "flex",
             /* justify-content: center, */
 
             alignItems: "center",
           }}
-          onClick={() => console.log("View Button Clicked!!!")}
-        >
+          onClick={() => console.log("View Button Clicked!!!")}>
           VIEW
           {/* <img
             src={RightIcon}

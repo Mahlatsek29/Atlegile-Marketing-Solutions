@@ -8,15 +8,15 @@ import {
   Button,
   Box,
 } from "@mui/material";
-// import { ShoppingCart as ShoppingCartIcon } from "@mui/icons-material";
-// import { useFetchProfileData } from "../../hooks/useFetchUsers";
+import { ShoppingCart as ShoppingCartIcon } from "@mui/icons-material";
+import { useFetchProfileData } from "../../hooks/useFetchUsers";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { View, Image, Text } from "react-native";
 
 const Navbar = () => {
   const imageLogo = require("../../assets/logo.png");
   const uid = localStorage.getItem("user");
-  //   const { userData } = useFetchProfileData(uid);
+  const { userData } = useFetchProfileData(uid);
   const userData = null;
   return (
     <Toolbar

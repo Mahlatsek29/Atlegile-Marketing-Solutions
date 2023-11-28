@@ -22,7 +22,7 @@ const Header = () => {
   const handleAddToCart = () => {
    
     const productData = {
-      name: 'DMC', 
+      productName: 'DMC', 
       price: 1500, 
       quantity: count,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),

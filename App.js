@@ -3,9 +3,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Landing from "./src/Client/Landing/Landing";
 import AboutUs from "./src/Client/Landing/About";
-// import SignUp from "./src/Client/SignUp/Signup";
-// import TellUsAboutYourself from "./src/Client/SignUp/TellUsAboutYourself";
-// import AlternativeContact from "./src/Client/SignUp/AlternativeContact";
+import SignUp from "./src/Client/SignUp/Signup";
+import TellUsAboutYourself from "./src/Client/SignUp/TellUsAboutYourself";
+import AlternativeContact from "./src/Client/SignUp/AlternativeContact";
 import SignIn from "./src/Client/SignIn/Signin";
 import BusinessRegistration from "./src/Client/BusinessRegistration/BusinessRegistration";
 import AddProductsAndServices from "./src/Client/BusinessRegistration/AddProduct";
@@ -31,22 +31,22 @@ function App() {
       <Stack.Navigator
         // initialRouteName="Landing"
         screenOptions={{ headerShown: false }}>
-        {/* <Stack.Screen name="Landing" component={Landing} />
+        <Stack.Screen name="Landing" component={Landing} />
         <Stack.Screen name="AboutUs" component={AboutUs} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="TellUsAboutYourself" component={TellUsAboutYourself} />
         <Stack.Screen name="AlternativeContact" component={AlternativeContact} /> 
-        <Stack.Screen name="SignIn" component={SignIn} />  */}
-        {/* <Stack.Screen
+        <Stack.Screen name="SignIn" component={SignIn} /> 
+        <Stack.Screen
           name="BusinessRegistration"
           component={BusinessRegistration}
-        /> */}
+        />
         <Stack.Screen
           name="AddProductsAndServices"
           component={AddProductsAndServices}
         />
-        {/* <Stack.Screen name="PaymentInfo" component={PaymentInfo} /> */}
-        {/* <Stack.Screen name="ProductDetails" component={ProductDetails} />
+        <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
+        <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="BusinessProducts" component={BusinessProducts} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
         <Stack.Screen name="AccountAndBusiness" component={AccountAndBusiness} />
@@ -57,7 +57,7 @@ function App() {
         <Stack.Screen name="DeliveryOngoing" component={DeliveryOngoing} />
         <Stack.Screen name="DeliveryAndChatSystem" component={DeliveryAndChatSystem} />
         <Stack.Screen name="DateSelectionAndCheckout" component={DateSelectionAndCheckout} />
-        <Stack.Screen name="Favourites" component={Favourites} /> */}
+        <Stack.Screen name="Favourites" component={Favourites} />
       </Stack.Navigator>
     </NavigationContainer>
   );

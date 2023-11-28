@@ -8,10 +8,10 @@ import { TextField } from '@mui/material';
 const AlternativeContact = () => {
     
     return (
-        <ImageBackground source={require('../Global/images/Reed.jpg')} style={styles.background}>
+        <ImageBackground src={require('../../Global/images/Reed.jpg')} style={styles.background}>
             <View style={styles.container}>
                 <View>
-                    <Image source={require('../Global/images/logo.png')} style={styles.logo} />
+                    <Image src={require('../../Global/images/logo.png')} style={styles.logo} />
 
                     <View>
                         <Text style={styles.subtitle}>ALTERNATIVE CONTACT</Text>

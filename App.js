@@ -33,14 +33,14 @@ function App() {
         screenOptions={{ headerShown: false }}>
         {/* <Stack.Screen name="Landing" component={Landing} />
         <Stack.Screen name="AboutUs" component={AboutUs} />
-        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="SignUp" component={SignUp} /> */}
         <Stack.Screen name="TellUsAboutYourself" component={TellUsAboutYourself} />
-        <Stack.Screen name="AlternativeContact" component={AlternativeContact} /> 
+        {/* <Stack.Screen name="AlternativeContact" component={AlternativeContact} /> 
         <Stack.Screen name="SignIn" component={SignIn} /> 
         <Stack.Screen name="BusinessRegistration" component={BusinessRegistration} /> 
-        <Stack.Screen name="AddProductsAndServices" component={AddProductsAndServices} />  */}
+        <Stack.Screen name="AddProductsAndServices" component={AddProductsAndServices} /> 
         <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
-        {/* <Stack.Screen name="ProductDetails" component={ProductDetails} />
+        <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="BusinessProducts" component={BusinessProducts} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
         <Stack.Screen name="AccountAndBusiness" component={AccountAndBusiness} />

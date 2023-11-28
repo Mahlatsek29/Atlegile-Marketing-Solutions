@@ -39,7 +39,7 @@ const PaymentInfo = () => {
                 paddingTop: "30%",
                 marginLeft: 10,
                 marginRight: 2,
-                top:480
+                top: 480,
               }}
             />
           </View>
@@ -67,7 +67,7 @@ const PaymentInfo = () => {
                 marginLeft: 80,
                 marginBottom: 30,
               }}>
-              <Text style={{ color: "#000", textAlign: "left", fontSize: 20 }}>
+              <Text style={{ color: "#000", textAlign: "left", fontSize: 30, fontWeight:'bold' }}>
                 PAYMENT INFO
               </Text>
               <TextField
@@ -85,16 +85,32 @@ const PaymentInfo = () => {
               <View style={{ display: "flex", flexDirection: "row" }}>
                 <TextField
                   id="standard-basic"
-                  label="CVV"
+                  label="Expiary"
                   variant="standard"
                   style={{ width: "45%", marginRight: "15px" }}
                 />
                 <TextField
                   id="standard-basic"
-                  label="Expiry"
+                  label="CVV"
                   variant="standard"
-                  style={{ width: "45%" }}
+                  style={{ width: "45%", marginRight: "15px" }}
                 />
+                
+               {/* <TextField
+                id="outlined-select-currency"
+                select
+                label="Expiry"
+                variant="standard"
+                // helperText="Please select your currency"
+                value={selectedExpiry}
+                onChange={handleExpiryChange}
+                style={{ width: "48%" }}>
+                {expiryOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField> */}
               </View>
               <Button
                 mode="contained"
@@ -104,7 +120,7 @@ const PaymentInfo = () => {
                   height: "15%",
                   margin: 20,
                   borderRadius: 30,
-                  backgroundColor:'#072840'
+                  backgroundColor: "#072840",
                 }}>
                 Continue
               </Button>

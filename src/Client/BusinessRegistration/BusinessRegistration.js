@@ -25,7 +25,7 @@ const BusinessRegistration = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [bio, setBio] = useState("");
 
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
 
   const handlechange = () => {
     // Assuming you have set up state for each field
@@ -35,8 +35,8 @@ const BusinessRegistration = () => {
       !!regNumber &&
       !!location &&
       !!selectedBusinessType &&
-      !!selectedIndustry &&
-      !!phoneNumber;
+      !!bio;
+    // !!selectedIndustry;
 
     if (isFormValid) {
       navigation.navigate("AddProductsAndServices");
@@ -122,8 +122,8 @@ const BusinessRegistration = () => {
 
   return (
     <>
-      <div>
-        <div
+      <View>
+        <View
           className="container"
           style={{
             width: "100vw",
@@ -188,7 +188,7 @@ const BusinessRegistration = () => {
               <Grid>
                 <img
                   src={logo}
-                  style={{ height: "9vh", width: "90%", paddingTop: "10vh" }}
+                  style={{ height: "9vh", width: "90%", paddingTop: "8vh" }}
                 />
               </Grid>
               <Box
@@ -198,7 +198,7 @@ const BusinessRegistration = () => {
                 }}
                 noValidate
                 autoComplete="off">
-                <div
+                <View
                   className="form-container"
                   style={{
                     justifyContent: "center",
@@ -292,45 +292,53 @@ const BusinessRegistration = () => {
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                   />
-                  <TextField
-                    id="outlined-select-currency"
-                    select
-                    label="Type of business"
-                    variant="standard"
-                    value={selectedBusinessType}
-                    onChange={(e) => setSelectedBusinessType(e.target.value)}
+
+                  <View
                     style={{
-                      width: "48%",
-                      marginTop: "5px",
-                      marginRight: "10px",
-                      textAlign: "left",
-                    }}
-                    required>
-                    {businessTypeOptions.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                  <TextField
-                    id="outlined-select-currency"
-                    select
-                    label="Industry"
-                    variant="standard"
-                    value={selectedIndustry}
-                    onChange={(e) => setSelectedIndustry(e.target.value)}
-                    style={{
-                      width: "48%",
-                      marginTop: "5px",
-                      textAlign: "left",
-                    }}
-                    required>
-                    {industryOptions.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "100%",
+                    }}>
+                    <TextField
+                      id="outlined-select-currency"
+                      select
+                      label="Type of business"
+                      variant="standard"
+                      value={selectedBusinessType}
+                      onChange={(e) => setSelectedBusinessType(e.target.value)}
+                      style={{
+                        width: "48%",
+                        marginTop: "5px",
+                        marginRight: "10px",
+                        textAlign: "left",
+                      }}
+                      required>
+                      {businessTypeOptions.map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                    <TextField
+                      id="outlined-select-currency"
+                      select
+                      label="Industry"
+                      variant="standard"
+                      value={selectedIndustry}
+                      onChange={(e) => setSelectedIndustry(e.target.value)}
+                      style={{
+                        width: "48%",
+                        marginTop: "5px",
+                        textAlign: "left",
+                      }}
+                      required>
+                      {industryOptions.map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </View>
                   <TextField
                     id="outlined-number"
                     label="Phone Number"
@@ -362,19 +370,19 @@ const BusinessRegistration = () => {
                     style={{
                       width: "80%",
                       height: "10%",
-                      margin: "20px 0px",
+                      marginTop: "5%",
                       background: "#072840",
                       borderRadius: "30px",
                     }}
                     onClick={handlechange}>
                     Continue
                   </Button>
-                </div>
+                </View>
               </Box>
             </Grid>
           </Grid>
-        </div>
-      </div>
+        </View>
+      </View>
     </>
   );
 };

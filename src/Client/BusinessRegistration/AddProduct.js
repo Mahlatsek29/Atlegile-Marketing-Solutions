@@ -6,6 +6,7 @@ import Banner from "../../Global/images/media bg-cover.png";
 import placeholder from "../../Global/images/login.jpg";
 import { useNavigation } from "@react-navigation/native";
 import { Linking } from "react-native";
+import { firestore } from "../../config";
 
 const AddProductsAndServices = () => {
   const emptyOption = [""];
@@ -55,21 +56,53 @@ const AddProductsAndServices = () => {
     }
   };
 
-  const handleContinue = () => {
-    // Add your form validation logic here
+  const handleContinue = async () => {
     const isFormValid =
       !!name && !!businessName && !!price && !!quantity && !!brand;
 
-    if (isFormValid) {
-      // Navigate to the next screen or perform other actions
-      const paymentUrl =
-        "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
+    if (isFormValid && images.length > 0) {
+      try {
+        // Store the data in Firestore
+        const productRef = await firestore.collection("Products").add({
+          name,
+          businessName,
+          price,
+          quantity,
+          description,
+          selectedProductCategory,
+          brand,
+          // ... (other fields)
+        });
 
-      // Open the payment URL in the device's default browser
-      Linking.openURL(paymentUrl);
+        // Upload images to Firebase Storage
+        const uploadTasks = images.map((image, index) => {
+          const imageRef = storage.ref(
+            `product_images/${productRef.id}/image${index}`
+          );
+          return imageRef.put(image.file);
+        });
+
+        const uploadSnapshots = await Promise.all(uploadTasks);
+
+        // Get download URLs of the images
+        const downloadURLs = await Promise.all(
+          uploadSnapshots.map((snapshot) => snapshot.ref.getDownloadURL())
+        );
+
+        // Update the product document with image URLs
+        await productRef.update({ images: downloadURLs });
+
+        // Navigate to the next screen or perform other actions
+        const paymentUrl =
+          "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
+
+        // Open the payment URL in the device's default browser
+        Linking.openURL(paymentUrl);
+      } catch (error) {
+        console.error("Error storing data in Firestore:", error);
+      }
     } else {
-      alert("Please fill in all required fields");
-      // or any other way to notify the user about the missing fields
+      alert("Please fill in all required fields and select at least one image");
     }
   };
 

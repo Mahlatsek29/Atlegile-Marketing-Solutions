@@ -13,25 +13,17 @@ const OrderHistory = () => {
 
   const data = [
     { date: "27 JUL, 2023", name: "SIBUSISO", status: "ONGOING" },
-    {
-      date: "27 JUL, 2023",
-      name: "SIBUSISO",
-      status: "DELIVERED",
-    },
-    {
-      date: "27 JUL, 2023",
-      name: "SIBUSISO",
-      status: "DELIVERED",
-    },
-    {
-      date: "27 JUL, 2023",
-      name: "SIBUSISO",
-      status: "DELIVERED",
-    },
+    { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
+    { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
+    { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
   ];
 
-  const navigateToDeliveryAndChatSystem = () => {
-    navigation.navigate("DeliveryAndChatSystem");
+  const navigateToDeliveryAndChatSystem = (status) => {
+    if (status === "DELIVERED") {
+      navigation.navigate("DeliveryAndChatSystem");
+    } else if (status === "ONGOING") {
+      navigation.navigate("DeliveryOngoing");
+    }
   };
 
   return (
@@ -122,7 +114,7 @@ const OrderHistory = () => {
         <View>
           {data.map((item, index) => (
             <TouchableOpacity
-              onPress={navigateToDeliveryAndChatSystem}
+              onPress={() => navigateToDeliveryAndChatSystem(item.status)}
               key={index}
             >
               <View

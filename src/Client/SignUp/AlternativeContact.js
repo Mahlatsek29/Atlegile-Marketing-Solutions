@@ -1,62 +1,37 @@
 import React from "react";
 import { View, Text, ImageBackground, TextInput, TouchableOpacity, StyleSheet, Image, Link } from 'react-native';
 import { TextField } from '@mui/material';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import NativeSelect from '@mui/material/NativeSelect';
-import { useNavigation } from '@react-navigation/native';
 
 
 
 
-
-const AccountHolder = () => {
-    const navigation = useNavigation();
-
-    const handleAccountHolder = () => {
-        navigation.navigate('AlternativeContact');
-    };
-
+const AlternativeContact = () => {
+    
     return (
         <ImageBackground source={require('../Global/images/Reed.jpg')} style={styles.background}>
             <View style={styles.container}>
                 <View>
                     <Image source={require('../Global/images/logo.png')} style={styles.logo} />
-                    <View style={{ width: '120%', flexDirection: 'row', justifyContent: 'space-around' }}>
-                        <Text style={styles.title}>MAIN ACCOUNT HOLDER </Text>
-                    </View>
 
                     <View>
-                        <Text style={styles.subtitle}>TELL US ABOUT YOURSELF</Text>
+                        <Text style={styles.subtitle}>ALTERNATIVE CONTACT</Text>
                     </View>
 
                     <View>
                         <TextField id="standard-basic" label="Name" variant="standard" />
-                        <TextField id="standard-basic" label="Surname" variant="standard" />
+                        <TextField id="standard-basic" label="Phone" variant="standard" />
                     </View>
 
-                    <View>
-                        <Box sx={{ minWidth: 120 }}>
-                            <FormControl fullWidth>
-                                <InputLabel variant="standard" htmlFor="uncontrolled-native"> </InputLabel>
-
-                                <NativeSelect defaultValue={30} inputProps={{ name: 'Gender', id: 'uncontrolled-native', }} >
-                                    <option value={10}>Male</option>
-                                    <option value={20}>Female</option>
-                                    <option value={30}>Prefer not to say</option>
-                                </NativeSelect>
-                            </FormControl>
-                        </Box>
-                    </View>
 
                     <View>
-                        <TextField id="standard-basic" label="Email" variant="standard" />
-                        <TextField id="standard-basic" label="Location" variant="standard" />
-                    </View>
-                    <View>
-                        <TouchableOpacity onPress={handleAccountHolder} style={styles.button}>
+                        <TouchableOpacity style={styles.button}>
                             <Text style={styles.buttonText}>CONTINUE</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View>
+                        <TouchableOpacity style={styles.buttonn}>
+                            <Text style={styles.buttonTextt}>NOT NOW</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -109,9 +84,26 @@ const styles = StyleSheet.create({
         marginLeft: '15%'
     },
     buttonText: {
-        color: 'white',
+        color: '#FFFFFF',
         fontWeight: 'bold',
     },
+    buttonn: {
+        marginTop: '20%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'white',
+        borderRadius: 40,
+        width: 200,
+        height: 40,
+        marginLeft: '15%',
+        borderWidth: 1,
+        borderColor: '#072840'
+    },
+    buttonTextt: {
+        color: '#072840',
+        fontWeight: 'bold',
+    }
+
 })
 
-export default AccountHolder
+export default AlternativeContact

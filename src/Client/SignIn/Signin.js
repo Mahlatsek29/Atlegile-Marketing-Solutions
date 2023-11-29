@@ -114,6 +114,7 @@ const Signin = () => {
               position: "relative",
               left: "5vw",
               marginVertical: "1vh",
+              cursor: "pointer",
             }}>
             {" "}
             FORGOT PASSWORD?

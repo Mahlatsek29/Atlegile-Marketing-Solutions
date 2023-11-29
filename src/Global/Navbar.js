@@ -25,8 +25,7 @@ const Navbar = () => {
         // background: "red",
         display: "flex",
         flexDirection: "row",
-      }}
-    >
+      }}>
       <View>
         <Image
           source={require("../../assets/logo.png")}
@@ -38,16 +37,14 @@ const Navbar = () => {
       {/* <Text>Logo</Text> */}
 
       <View
-        style={{ marginLeft: "auto", display: "flex", flexDirection: "row" }}
-      >
+        style={{ marginLeft: "auto", display: "flex", flexDirection: "row" }}>
         {!uid ? (
           <View
             style={{
               marginLeft: "auto",
               display: "flex",
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Button
               sx={{
                 borderRadius: "25px",
@@ -122,8 +119,7 @@ const Navbar = () => {
               display: "flex",
               alignItems: "center",
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Button
               sx={{
                 borderRadius: "25px",
@@ -163,8 +159,7 @@ const Navbar = () => {
                 "&:hover": {
                   cursor: "pointer",
                 },
-              }}
-            >
+              }}>
               <Icon
                 name="shopping-cart"
                 size={20}
@@ -179,8 +174,7 @@ const Navbar = () => {
                 cursor: "pointer",
                 marginLeft: "10px",
               }}
-              onClick={() => alert("Go to Profile")}
-            >
+              onClick={() => alert("Go to Profile")}>
               <View
                 style={{
                   width: "40px",
@@ -191,15 +185,13 @@ const Navbar = () => {
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "center",
-                }}
-              >
+                }}>
                 <Typography
                   style={{
                     fontSize: "1.4rem",
                     color: "white",
                     padding: "10px",
-                  }}
-                >
+                  }}>
                   {
                     // userData?.name && userData?.name.charAt(0).toUpperCase()
                   }
@@ -213,9 +205,8 @@ const Navbar = () => {
                 <Typography
                   style={{
                     fontSize: "0.8rem",
-                  }}
-                >
-                  Jane
+                  }}>
+                  Sara
                 </Typography>
               </View>
             </View>

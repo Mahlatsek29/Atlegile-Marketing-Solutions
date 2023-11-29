@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,9 +12,11 @@ import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
 import mapImage from "../../Global/images/mapImage.png";
+import hdtv from "../../Global/images/hdtv.jpg";
 
 const DeliveryAndChatSystem = () => {
   const navigation = useNavigation();
+  const [orderTotal, setOrderTotal] = useState(0);
   const [chatmodelVisble, setChatmodelVisible] = useState(false);
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([
@@ -44,7 +46,7 @@ const DeliveryAndChatSystem = () => {
     }
   };
 
-  const handleMessageButtonClick = () => {  
+  const handleMessageButtonClick = () => {
     setChatmodelVisible(!chatmodelVisble);
   };
 
@@ -55,6 +57,25 @@ const DeliveryAndChatSystem = () => {
   const navigateToOrderHistory = () => {
     navigation.navigate("OrderHistory");
   };
+
+  useEffect(() => {
+    // Calculate the total amount from the data
+    const totalAmount = data.reduce((acc, item) => acc + item.amount, 0);
+
+    // Calculate the agent referral amount (10%)
+    const agentReferral = totalAmount * 0.1;
+
+    // Calculate the tax amount (15%)
+    const tax = totalAmount * 0.15;
+
+    // Add the delivery amount (R150.0)
+    const deliveryAmount = 150.0;
+
+    // Calculate the final order total
+    const finalTotal = totalAmount + agentReferral + tax + deliveryAmount;
+
+    setOrderTotal(finalTotal);
+  }, [data]);
 
   return (
     <>
@@ -227,7 +248,7 @@ const DeliveryAndChatSystem = () => {
       <FollowUs />
       <Navbar />
       <View>
-        <Container fixed sx={{ height: "85vh" }}>
+        <Container fixed sx={{ height: "88vh" }}>
           <View style={{ display: "flex", flexDirection: "row" }}>
             <View
               style={{
@@ -273,7 +294,7 @@ const DeliveryAndChatSystem = () => {
                   <View
                     style={{
                       width: "100%",
-                      height: 60,
+                      height: "40%",
                       borderBottomWidth: 2,
                       borderBottomColor: "#1D1D1D",
                       flexDirection: "row",
@@ -284,9 +305,10 @@ const DeliveryAndChatSystem = () => {
                   >
                     <View
                       style={{
-                        width: "8%",
+                        width: "25%",
                         height: "100%",
                         backgroundColor: "#000026",
+                        backgroundImage: `url(${hdtv})`,
                       }}
                     />
                     <View style={{ width: "30%", paddingLeft: 10 }}>
@@ -341,7 +363,7 @@ const DeliveryAndChatSystem = () => {
               </View>
               <View
                 style={{
-                  marginTop: "140px",
+                  marginTop: "200px",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -350,7 +372,9 @@ const DeliveryAndChatSystem = () => {
                 <Typography style={{ fontWeight: "bold" }}>
                   Order Summary
                 </Typography>
-                <Typography style={{ fontWeight: "bold" }}>R3000.00</Typography>
+                <Typography style={{ fontWeight: "bold" }}>
+                  R18 000.00
+                </Typography>
               </View>
               <View
                 style={{
@@ -372,9 +396,21 @@ const DeliveryAndChatSystem = () => {
                 }}
               >
                 <Typography style={{ fontWeight: "bold" }}>
+                  {" "}
                   Agent Referal
                 </Typography>
                 <Typography style={{ fontWeight: "bold" }}>10%</Typography>
+              </View>
+              <View
+                style={{
+                  display: "flex",
+                  marginTop: "8px",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography style={{ fontWeight: "bold" }}> Tax </Typography>
+                <Typography style={{ fontWeight: "bold" }}>15%</Typography>
               </View>
               <View
                 style={{
@@ -388,14 +424,15 @@ const DeliveryAndChatSystem = () => {
                   Total
                 </Typography>
                 <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                  R3170.00
+                  {orderTotal.toFixed(2)}
                 </Typography>
               </View>
             </View>
+
             <View
               style={{
                 backgroundColor: "#062338",
-                height: "700px",
+                height: "750px",
                 width: "35%",
                 marginTop: "20px",
               }}

@@ -7,6 +7,7 @@ import Icon1 from "react-native-vector-icons/FontAwesome";
 import Navbar from "../../Global/Navbar";
 import FollowUs from "../../Global/Header";
 import { Footer } from "../../Global/Footer";
+import hdtv from "../../Global/images/hdtv.jpg";
 
 const OrderHistory = () => {
   const navigation = useNavigation();
@@ -120,7 +121,7 @@ const OrderHistory = () => {
               <View
                 style={{
                   width: "100%",
-                  height: 60,
+                  height: 80,
                   borderBottomWidth: 2,
                   borderBottomColor: "#1D1D1D",
                   flexDirection: "row",
@@ -130,9 +131,10 @@ const OrderHistory = () => {
               >
                 <View
                   style={{
-                    width: "8%",
+                    width: "20%",
                     height: "100%",
                     backgroundColor: "#000026",
+                    backgroundImage: `url(${hdtv})`,
                   }}
                 />
                 <View style={{ width: "30%", paddingLeft: 10 }}>

@@ -56,8 +56,9 @@ function App() {
         <Stack.Screen name="Reciept" component={Reciept} />
         <Stack.Screen name="DeliveryOngoing" component={DeliveryOngoing} />
         <Stack.Screen name="DeliveryAndChatSystem" component={DeliveryAndChatSystem} />
-        <Stack.Screen name="DateSelectionAndCheckout" component={DateSelectionAndCheckout} />
-        <Stack.Screen name="Favourites" component={Favourites} />
+        <Stack.Screen name="DateSelectionAndCheckout" component={DateSelectionAndCheckout} /> */}
+        <Stack.Screen name="Favourites" component={Favourites} /> 
+      
       </Stack.Navigator>
     </NavigationContainer>
   );

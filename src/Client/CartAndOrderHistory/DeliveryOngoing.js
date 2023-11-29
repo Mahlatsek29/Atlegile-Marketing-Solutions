@@ -6,7 +6,7 @@ import {
   ScrollView,
   TextInput,
 } from "react-native";
-import { Container, Typography } from "@mui/material";
+import { Container, Typography, Button } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
@@ -227,11 +227,11 @@ const DeliveryOngoing = () => {
       <FollowUs />
       <Navbar />
       <View>
-        <Container fixed sx={{ height: "100vh" }}>
+        <Container fixed sx={{ height: "93vh" }}>
           <View style={{ display: "flex", flexDirection: "row" }}>
             <View
               style={{
-                height: "900px",
+                height: "800px",
                 width: "65%",
                 marginTop: "20px",
                 marginRight: "10px",
@@ -341,7 +341,7 @@ const DeliveryOngoing = () => {
               </View>
               <View
                 style={{
-                  marginTop: "340px",
+                  marginTop: "240px",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -395,7 +395,7 @@ const DeliveryOngoing = () => {
             <View
               style={{
                 backgroundColor: "#062338",
-                height: "900px",
+                height: "800px",
                 width: "35%",
                 marginTop: "20px",
               }}
@@ -449,34 +449,67 @@ const DeliveryOngoing = () => {
                   }}
                 ></View>
                 <View
-                  style={{ display: 'flex', flexDirection: 'row', display: 'flex', alignItems: 'center', }}
-                > 
-                <View
-                  style={{ backgroundColor: 'grey', height: 14, width: 14, borderRadius: '50px',  marginRight: '8px' }}
-                ></View>
-                <Typography style={{ color: "lightgrey", marginTop: "6px" }}>
-                  Processing...
-                </Typography>
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: "grey",
+                      height: 14,
+                      width: 14,
+                      borderRadius: "50px",
+                      marginRight: "8px",
+                    }}
+                  ></View>
+                  <Typography style={{ color: "lightgrey", marginTop: "6px" }}>
+                    Processing...
+                  </Typography>
                 </View>
                 <View
-                  style={{ display: 'flex', flexDirection: 'row', display: 'flex', alignItems: 'center', }}
-                > 
-                <View
-                  style={{ backgroundColor: 'grey', height: 14, width: 14, borderRadius: '50px',  marginRight: '8px' }}
-                ></View>
-                <Typography style={{ color: "lightgrey", marginTop: "6px" }}>
-                  On the way...
-                </Typography>
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: "grey",
+                      height: 14,
+                      width: 14,
+                      borderRadius: "50px",
+                      marginRight: "8px",
+                    }}
+                  ></View>
+                  <Typography style={{ color: "lightgrey", marginTop: "6px" }}>
+                    On the way...
+                  </Typography>
                 </View>
                 <View
-                  style={{ display: 'flex', flexDirection: 'row', display: 'flex', alignItems: 'center', }}
-                > 
-                <View
-                  style={{ backgroundColor: 'grey', height: 14, width: 14, borderRadius: '50px',  marginRight: '8px' }}
-                ></View>
-                <Typography style={{ color: "lightgrey", marginTop: "6px" }}>
-                  Delivered.
-                </Typography>
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: "grey",
+                      height: 14,
+                      width: 14,
+                      borderRadius: "50px",
+                      marginRight: "8px",
+                    }}
+                  ></View>
+                  <Typography style={{ color: "lightgrey", marginTop: "6px" }}>
+                    Delivered.
+                  </Typography>
                 </View>
                 <TouchableOpacity
                   style={{
@@ -513,23 +546,31 @@ const DeliveryOngoing = () => {
                     }}
                   />
                 </TouchableOpacity>
-                <View 
-                  style={{ display: 'flex', alignItems: 'center', marginTop: '8px' }}
+                <View
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginTop: "8px",
+                  }}
                 >
-                  <Typography style={{ color: "lightgrey", marginTop: "6px" }}>
+                  <Typography style={{ color: "lightgrey" }}>
                     AUTH PIN
                   </Typography>
-                  <Typography variant="h5" style={{ color: "white", marginTop: "6px", fontWeight: 'bold' }}>
+                  <Typography
+                    variant="h5"
+                    style={{ color: "white", fontWeight: "bold" }}
+                  >
                     1254
                   </Typography>
                 </View>
-                <TouchableOpacity
+                <Button
+                  variant="outlined"
                   style={{
-                    marginTop: 150,
-                    width: 350,
-                    height: 30,
+                    marginTop: 60,
+                    // width: 350,
+                    // height: 30,
                     borderWidth: 1,
-                    borderColor: "white",
+                    borderColor: "lightgrey",
                     borderRadius: 15,
                     display: "flex",
                     flexDirection: "row",
@@ -537,18 +578,17 @@ const DeliveryOngoing = () => {
                     alignItems: "center",
                   }}
                 >
-                  <Text
+                  <Typography
                     style={{
                       fontSize: 16,
-                      color: "white",
-                      margin: 0,
-                      marginLeft: 5,
+                      color: "lightgrey",
+                      // margin: 0,
+                      // marginLeft: 5,
                     }}
                   >
                     ONGOING
-                  </Text>
-                 
-                </TouchableOpacity>
+                  </Typography>
+                </Button>
               </View>
             </View>
           </View>

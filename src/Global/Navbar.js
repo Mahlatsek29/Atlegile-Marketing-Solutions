@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -55,8 +55,8 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-              // component={Link}
-              // to="/shop"
+            // component={Link}
+            // to="/shop"
             >
               Shop
             </Button>
@@ -70,8 +70,8 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-              // component={Link}
-              // to="/about-us"
+            // component={Link}
+            // to="/about-us"
             >
               About Us
             </Button>
@@ -88,8 +88,8 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-              // component={Link}
-              // to="/sign-in"
+            // component={Link}
+            // to="/sign-in"
             >
               Sign In
             </Button>
@@ -107,8 +107,8 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-              // component={Link}
-              // to="/sign-up"
+            // component={Link}
+            // to="/sign-up"
             >
               Sign Up
             </Button>
@@ -130,8 +130,8 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-              // component={Link}
-              // to="/shop"
+            // component={Link}
+            // to="/shop"
             >
               Shop
             </Button>
@@ -145,8 +145,8 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-              // component={Link}
-              // to="/about-us"
+            // component={Link}
+            // to="/about-us"
             >
               About Us
             </Button>

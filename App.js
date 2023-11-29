@@ -50,7 +50,7 @@ function App() {
         <Stack.Screen name="BusinessProducts" component={BusinessProducts} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
         <Stack.Screen name="AccountAndBusiness" component={AccountAndBusiness} />
-        <Stack.Screen name="OrderHistory" component={OrderHistory} />
+         <Stack.Screen name="OrderHistory" component={OrderHistory} />
         <Stack.Screen name="PayFast" component={PayFast} />
         <Stack.Screen name="CourierGuy" component={CourierGuy} />
         <Stack.Screen name="Reciept" component={Reciept} />

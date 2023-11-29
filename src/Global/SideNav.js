@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -7,9 +6,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@mui/material';
 import Swal from 'sweetalert2';
 import SweetAlert from 'sweetalert2-react-content';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import sara from  '../Global/images/Sara.png';
 
 const SideNav = () => {
-
     const handlePress = () => {
         Swal.fire({
             icon: 'info',
@@ -36,32 +36,40 @@ const SideNav = () => {
 
     const handleorders = () => {
         navigate('/orderhistrory')
-
     };
 
     const handlefavorites = () => {
-
         navigate('/termsandconditions')
-    }
+    };
 
     const handleterms = () => {
         navigate('/termsandconditions')
-    }
+    };
 
     const handlepolicy = () => {
         navigate('/privacypolicy')
-    }
-
+    };
 
     return (
-        <Box display="flex" justifyContent="flex-start" alignItems="center" height="100vh"  >
+        <Box display="flex" justifyContent="flex-start" alignItems="center" height="100vh" >
+            <Paper
+                elevation={3} style={{ padding: 20, height: '650px', width: '300px', marginTop: '-20px', }}
+            >
+                <Box textAlign="center">
+                    <img
+                        src={sara}
+                        alt="User Image"
+                        style={{
+                            width: '100px',
+                            height: '100px',
+                            borderRadius: '50%',
+                            marginBottom: '10px',
+                        }}
+                    />
 
-            <Paper elevation={3} style={{ padding: 20, height: '650px', width: '300px', marginTop: '-10px', }} >
-                <Box>
-
-                    <Typography sx={{ fontWeight: 'bolder', textAlign: 'center', }}>SARAH</Typography>
-                    <Typography sx={{ fontWeight: 'bolder', fontSize: 'smaller', textAlign: 'center' }}>0123456789</Typography>
-                    <Typography sx={{ fontWeight: 'bolder', fontSize: 'small', textAlign: 'center' }}>example@gmail.com</Typography>
+                    <Typography variant="h6">SARAH</Typography>
+                    <Typography variant="subtitle1">0123456789</Typography>
+                    <Typography variant="subtitle2">example@gmail.com</Typography>
                 </Box>
 
                 <Box>
@@ -82,25 +90,28 @@ const SideNav = () => {
                     <Button style={{ marginLeft: 5, color: 'gray' }} onClick={{ handlefavorites }}>Favorites</Button>
                 </Box>
 
+
                 <Box>
                     <Ionicons name="ios-timer-outline" size={15} color="gray" />
                     <Button style={{ marginLeft: 5, color: 'gray' }} onClick={{ handleterms }} > Terms and conditions</Button>
                 </Box>
+
 
                 <Box>
                     <Ionicons name="ios-timer-outline" size={15} color="gray" />
                     <Button style={{ marginLeft: 5, color: 'gray' }} onClick={{ handlepolicy }}> Privacy Policy</Button>
                 </Box>
 
+
                 <Box sx={{ marginTop: '40px', backgroundColor: 'rgba(266, 255, 255, 0.9)', textAlign: 'center' }} >
                     <Button sx={{ fontWeight: "bolder", color: 'black' }} onClick={handlePress}>Julian James</Button>
                     <Button sx={{ color: 'gray' }}>Alternative Contact</Button>
                 </Box>
 
-                <Box>
-                    <Button sx={{ marginTop: '30px', color: 'red' }} onClick={handleSignOut} >SIGNOUT</Button>
-                </Box>
 
+                <Box textAlign="center" marginTop="20px">
+                    <Button onClick={handleSignOut} style={{ color: 'red' }}>SIGN OUT</Button>
+                </Box>
             </Paper>
         </Box>
     );

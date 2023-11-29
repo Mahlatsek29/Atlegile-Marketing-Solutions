@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Linking } from "react-native";
 import { Container, Typography, Button } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import FollowUs from "../../Global/Header";
@@ -45,6 +45,17 @@ const DateSelectionAndCheckout = () => {
 
     setOrderTotal(finalTotal);
   }, [data]);
+
+  const handlePayment = () => {
+    // Construct the payment URL with the necessary parameters
+    const paymentUrl =
+      "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=" +
+      orderTotal.toFixed(2) + // Use the calculated orderTotal here
+      "&item_name=TestProduct";
+
+    // Open the payment URL in the device's default browser
+    Linking.openURL(paymentUrl);
+  };
 
   return (
     <>
@@ -369,8 +380,6 @@ const DateSelectionAndCheckout = () => {
                   variant="outlined"
                   style={{
                     marginTop: 90,
-                    // width: 350,
-                    // height: 30,
                     borderWidth: 1,
                     borderColor: "lightgrey",
                     borderRadius: 15,
@@ -379,13 +388,12 @@ const DateSelectionAndCheckout = () => {
                     justifyContent: "space-evenly",
                     alignItems: "center",
                   }}
+                  onClick={handlePayment}
                 >
                   <Typography
                     style={{
                       fontSize: 16,
                       color: "#FFFFFF",
-                      // margin: 0,
-                      // marginLeft: 5,
                     }}
                   >
                     CHECKOUT

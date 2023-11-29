@@ -52,7 +52,7 @@ const Signup = () => {
     }
   };
 
-const handleShop = () => {
+  const handleShop = () => {
     navigate("/Landing");
   };
 
@@ -62,14 +62,13 @@ const handleShop = () => {
 
   return (
     <ImageBackground
-      src={require("../../Global/images/Reed.jpg")}
-      style={styles.background}
-    >
+      source={require("../../Global/images/Reed.jpg")}
+      style={styles.background}>
       <View style={styles.container}>
         {/* Logo image container */}
         <View style={{}}>
           <Image
-           source={require("../../Global/images/logo.png")}
+            source={require("../../Global/images/logo.png")}
             style={styles.logo}
           />
         </View>
@@ -79,8 +78,7 @@ const handleShop = () => {
             width: "120%",
             flexDirection: "row",
             justifyContent: "space-around",
-          }}
-        >
+          }}>
           <Text style={styles.title}>SIGN UP </Text>
           {/*Insert arrow logo */}
           <Text style={{ fontSize: "70%", marginBottom: "-20%" }}>
@@ -129,8 +127,7 @@ const handleShop = () => {
 
         <TouchableOpacity
           style={styles.businessButton}
-          onPress={handleBusinessSignup}
-        >
+          onPress={handleBusinessSignup}>
           <Text style={styles.buttonText1}>
             SIGN UP AS A BUSINESS{" "}
             <FontAwesome

@@ -5,8 +5,38 @@ import React from "react";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
+import { useNavigation } from "@react-navigation/native";
+
+// import { useFirestore, useFirestoreDocData } from "reactfire";
 
 const UserProfile = () => {
+  // const [userData, setUserData] = useState(null);
+
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     const userId = "replace-with-the-actual-user-id"; // Replace with the user ID you want to fetch
+  //     const userRef = firebase.firestore().collection("users").doc(userId);
+
+  //     try {
+  //       const userDoc = await userRef.get();
+  //       if (userDoc.exists) {
+  //         setUserData(userDoc.data());
+  //       } else {
+  //         console.log("User not found");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user data", error);
+  //     }
+  //   };
+
+  //   fetchUserData();
+  // }, []);
+  const navigation = useNavigation();
+
+  const handleBusiness = () => {
+    navigation.navigate("BusinessRegistration");
+  };
+
   return (
     <View>
       <FollowUs />
@@ -18,8 +48,7 @@ const UserProfile = () => {
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
-        }}
-      >
+        }}>
         <View>
           <View
             style={{
@@ -28,8 +57,7 @@ const UserProfile = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-            }}
-          >
+            }}>
             <Typography
               style={{
                 width: "180px",
@@ -39,8 +67,7 @@ const UserProfile = () => {
                 borderRadius: "50%",
                 justifyContent: "center",
                 backgroundColor: "lightgray",
-              }}
-            >
+              }}>
               S
             </Typography>
           </View>
@@ -50,8 +77,7 @@ const UserProfile = () => {
               display: "flex",
               alignItems: "center",
               flexDirection: "column",
-            }}
-          >
+            }}>
             <Typography style={{ fontWeight: 700 }} variant="h4">
               SARAH
             </Typography>
@@ -66,8 +92,7 @@ const UserProfile = () => {
             style={{
               marginTop: 30,
               textAlign: "center",
-            }}
-          >
+            }}>
             <Typography variant="h6">
               1235 Vilakazi Street, Orlando West, Soweto, 1804, South Africa
             </Typography>
@@ -80,12 +105,10 @@ const UserProfile = () => {
               marginBottom: "5px",
               alignItems: "center",
               flexDirection: "column",
-            }}
-          >
+            }}>
             <Typography
               style={{ color: "#072840", fontWeight: 600 }}
-              variant="h6"
-            >
+              variant="h6">
               Julian Jameson
             </Typography>
             <Typography style={{ color: "gray", fontWeight: 600 }} variant="h7">
@@ -98,8 +121,7 @@ const UserProfile = () => {
                 border: "none",
                 paddingBottom: 10,
                 flexDirection: "row",
-              }}
-            >
+              }}>
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
@@ -107,8 +129,7 @@ const UserProfile = () => {
                   color: "gray",
                   fontWeight: "bold",
                   textDecoration: "none",
-                }}
-              >
+                }}>
                 ORDER HISTORY
               </TouchableOpacity>
             </View>
@@ -120,8 +141,7 @@ const UserProfile = () => {
                 paddingBottom: 10,
                 alignItems: "center",
                 flexDirection: "row",
-              }}
-            >
+              }}>
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
@@ -129,8 +149,7 @@ const UserProfile = () => {
                   color: "gray",
                   fontWeight: "bold",
                   textDecoration: "none",
-                }}
-              >
+                }}>
                 FAVOURITES
               </TouchableOpacity>
             </View>
@@ -142,8 +161,7 @@ const UserProfile = () => {
                 paddingBottom: 10,
                 alignItems: "center",
                 flexDirection: "row",
-              }}
-            >
+              }}>
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
@@ -151,8 +169,7 @@ const UserProfile = () => {
                   color: "gray",
                   fontWeight: "bold",
                   textDecoration: "none",
-                }}
-              >
+                }}>
                 TERMS & CONDITIONS
               </TouchableOpacity>
             </View>
@@ -165,8 +182,7 @@ const UserProfile = () => {
                 marginBottom: "5px",
                 alignItems: "center",
                 flexDirection: "row",
-              }}
-            >
+              }}>
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
@@ -174,8 +190,7 @@ const UserProfile = () => {
                   color: "gray",
                   fontWeight: "bold",
                   textDecoration: "none",
-                }}
-              >
+                }}>
                 PRIVACY POLICY
               </TouchableOpacity>
             </View>
@@ -186,8 +201,7 @@ const UserProfile = () => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "center",
-            }}
-          >
+            }}>
             <Button
               style={{
                 color: "#072840",
@@ -195,7 +209,7 @@ const UserProfile = () => {
                 borderRadius: "20px",
               }}
               variant="outlined"
-            >
+              onClick={handleBusiness}>
               REGISTER BUSINESS
             </Button>
             <Button
@@ -204,8 +218,7 @@ const UserProfile = () => {
                 borderRadius: "20px",
                 outlineColor: "#072840",
               }}
-              variant="outlined"
-            >
+              variant="outlined">
               REGISTER AS A FREELANCER
             </Button>
           </View>

@@ -1,61 +1,36 @@
 import React, { useState } from "react";
-import { WebView } from "react-native-webview";
-import { View, Text, TextInput, Picker, Image } from "react-native";
-import { Button, Card, TextInput as PaperTextInput } from "react-native-paper";
+import { View, Text, Image, Linking } from "react-native";
+import { Button, TextInput as PaperTextInput } from "react-native-paper";
 
 import background from "../../Global/images/Reed.jpg";
 import logo from "../../Global/images/logo.svg";
 import Banner from "../../Global/images/media bg-cover.png";
+import { TextField } from "@mui/material";
 
 const PaymentInfo = () => {
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 11 }, (_, index) => currentYear + index);
-  const months = Array.from({ length: 12 }, (_, index) =>
-    (index + 1).toString().padStart(2, "0")
-  );
-  const expiryOptions = years
-    .map((year) => {
-      return months.map((month) => `${month}/${year}`);
-    })
-    .flat();
-  const [selectedExpiry, setSelectedExpiry] = useState("");
+  const [showWebView, setShowWebView] = useState(false);
 
-  const handleExpiryChange = (value) => {
-    setSelectedExpiry(value);
+  const handlePaymentButtonPress = () => {
+    const paymentUrl =
+      "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
+
+    // Open the payment URL in the device's default browser
+    Linking.openURL(paymentUrl);
   };
 
   return (
     <View style={{ flex: 1 }}>
-      <WebView
-        source={{ uri: "https://your-website.com/payment-info" }}
-        style={{ flex: 1 }}
-      />
       <View
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }}>
+        style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}>
         <Image
           source={{ uri: background }}
-          style={{
-            flex: 1,
-            resizeMode: "cover",
-          }}
+          style={{ flex: 1, resizeMode: "cover" }}
         />
       </View>
 
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          marginBottom: -100,
-        }}>
+      <View style={{ flex: 1, flexDirection: "row" }}>
         <View style={{ flex: 2, justifyContent: "space-between" }}>
           <View style={{ flex: 1 }}>
-            {/* Your image component */}
             <Image
               source={{ uri: Banner }}
               style={{
@@ -64,6 +39,7 @@ const PaymentInfo = () => {
                 paddingTop: "30%",
                 marginLeft: 10,
                 marginRight: 2,
+                top: 480,
               }}
             />
           </View>
@@ -74,7 +50,12 @@ const PaymentInfo = () => {
             <View>
               <Image
                 source={{ uri: logo }}
-                style={{ height: "9%", width: "80%", paddingTop: "30%" }}
+                style={{
+                  height: "9%",
+                  width: "80%",
+                  paddingTop: "30%",
+                  scale: "0.5",
+                }}
               />
             </View>
 
@@ -86,35 +67,60 @@ const PaymentInfo = () => {
                 marginLeft: 80,
                 marginBottom: 30,
               }}>
-              <Text style={{ color: "#000", textAlign: "left", fontSize: 32 }}>
+              <Text style={{ color: "#000", textAlign: "left", fontSize: 30, fontWeight:'bold' }}>
                 PAYMENT INFO
               </Text>
-              <PaperTextInput label="Card Holder" style={{ width: "100%" }} />
-              <PaperTextInput
-                label="Card Number"
-                keyboardType="numeric"
-                style={{ width: "100%", marginBottom: 10, marginTop: 10 }}
+              <TextField
+                id="standard-basic"
+                label="Card Holder"
+                variant="standard"
+                style={{ width: "100%" }}
               />
-              <Picker
-                selectedValue={selectedExpiry}
-                onValueChange={(value) => handleExpiryChange(value)}
+              <TextField
+                id="standard-basic"
+                label="Card Number"
+                variant="standard"
+                style={{ width: "100%" }}
+              />
+              <View style={{ display: "flex", flexDirection: "row" }}>
+                <TextField
+                  id="standard-basic"
+                  label="Expiary"
+                  variant="standard"
+                  style={{ width: "45%", marginRight: "15px" }}
+                />
+                <TextField
+                  id="standard-basic"
+                  label="CVV"
+                  variant="standard"
+                  style={{ width: "45%", marginRight: "15px" }}
+                />
+                
+               {/* <TextField
+                id="outlined-select-currency"
+                select
+                label="Expiry"
+                variant="standard"
+                // helperText="Please select your currency"
+                value={selectedExpiry}
+                onChange={handleExpiryChange}
                 style={{ width: "48%" }}>
                 {expiryOptions.map((option) => (
-                  <Picker.Item key={option} label={option} value={option} />
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
                 ))}
-              </Picker>
-              <PaperTextInput
-                label="Cvv"
-                style={{ width: "50%", marginLeft: 5 }}
-              />
+              </TextField> */}
+              </View>
               <Button
                 mode="contained"
-                onPress={() => console.log("Continue button pressed")}
+                onPress={handlePaymentButtonPress}
                 style={{
                   width: "80%",
-                  height: "10%",
+                  height: "15%",
                   margin: 20,
                   borderRadius: 30,
+                  backgroundColor: "#072840",
                 }}>
                 Continue
               </Button>

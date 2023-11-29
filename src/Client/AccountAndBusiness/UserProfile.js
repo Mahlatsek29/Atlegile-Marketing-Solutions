@@ -6,6 +6,7 @@ import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
 import { useNavigation } from "@react-navigation/native";
+import { SideNav } from "../../Global/SideNav";
 
 // import { useFirestore, useFirestoreDocData } from "reactfire";
 
@@ -41,6 +42,7 @@ const UserProfile = () => {
     <View>
       <FollowUs />
       <Navbar />
+      {/* <SideNav /> */}
       <View
         style={{
           height: "800px",

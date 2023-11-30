@@ -2,19 +2,11 @@ import { View, Text } from 'react-native'
 import React from 'react';
 import SideNav from "../../Global/SideNav"
 import { Footer } from '../../Global/Footer';
-<<<<<<< HEAD
-import Navbar from "../Global/Navbar"
-import { Container, Paper, Typography, Button, Box } from '@mui/material';
-import Header from '../../Global/Header';
-import SearchBar from '../Global/SearchBar';
-import fixed from '../../Global/images/fixed-height-yellow.png';
-=======
 import Navbar from "../../Global/Navbar"
 import { Container, Paper, Typography, Button, Box } from '@mui/material';
 import FollowUs from '../../Global/Header';
 // import SearchBar from '../Global/SearchBar';
 import fixed from "../../Global/images/headphones.png"
->>>>>>> 69eb06543382cf686ccbdae4b7104186fce2d442
 import Icon2 from "react-native-vector-icons/Feather";
 import Icon from "react-native-vector-icons/FontAwesome";
 const Favourites = ({ item }) => {

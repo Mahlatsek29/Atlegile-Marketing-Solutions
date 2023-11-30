@@ -31,14 +31,14 @@ function App() {
       <Stack.Navigator
         // initialRouteName="Landing"
         screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Landing" component={Landing} />
+        {/* <Stack.Screen name="Landing" component={Landing} />
         <Stack.Screen name="AboutUs" component={AboutUs} />
-        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="SignUp" component={SignUp} /> */}
         <Stack.Screen
           name="TellUsAboutYourself"
           component={TellUsAboutYourself}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="AlternativeContact"
           component={AlternativeContact}
         />
@@ -72,7 +72,7 @@ function App() {
           name="DeliveryAndChatSystem"
           component={DeliveryAndChatSystem}
         />
-        <Stack.Screen name="Favourites" component={Favourites} />
+        <Stack.Screen name="Favourites" component={Favourites} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -239,6 +239,7 @@ const Landing = () => {
                 <ProductCard />
                 <ProductCard />
                 <ProductCard />
+    
               </>
             </ScrollView>
           </View>

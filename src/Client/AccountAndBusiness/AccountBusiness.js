@@ -16,8 +16,10 @@ import {
   Text,
   TextInput,
   ScrollView,
+  Portal,
+  Modal,
 } from "react-native";
-import { Modal, Title } from "react-native-paper";
+// import { Modal, Title } from "react-native-paper";
 import { Footer } from "../../Global/Footer";
 import ProductCard from "../../Global/Card";
 const logo = require("../../Global/images/cropped-AMS-Shadow-Queen-Logo_BNY-1320x772 1.png");
@@ -166,7 +168,6 @@ export default function BusinessAccount() {
   };
 
   const handlePopUp = () => {
-    console.log('this is happening')
     setLanding(false);
   };
   useEffect(() => {
@@ -453,18 +454,17 @@ export default function BusinessAccount() {
               justifyContent: "center",
             }}
           >
-          
             <TouchableOpacity
-              style={{                
+              style={{
                 borderRadius: 50,
                 paddingHorizontal: "10%",
-                paddingVertical: "5%",            
+                paddingVertical: "5%",
                 width: "100%",
                 height: "2px",
               }}
-              onPress={ handlePopUp}
+              onPress={handlePopUp}
             >
-               <AntDesign
+              <AntDesign
                 name="close"
                 size={24}
                 color="black"
@@ -476,7 +476,6 @@ export default function BusinessAccount() {
                   height: 20,
                 }}
               />
-             
             </TouchableOpacity>
 
             <View
@@ -1549,70 +1548,100 @@ export default function BusinessAccount() {
             null}
 
             {paymentModal ? (
-              <Portal>
-                <Modal
-                  visible={visible}
-                  onDismiss={() => setPaymentModal(false)}
-                  contentContainerStyle={{
-                    position: "absolute",
-                    width: "80%",
+
+              <Modal
+                visible={true}
+                onDismiss={() => setPaymentModal(false)}
+                 contentContainerStyle={{
+                  position: "absolute",
+                  width: "80%",
+                  height: "100%",
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  justifyContent: "center",
+                  alignItems: "center",
+                    zIndex: 1000,
+                }}
+              >
+                <View
+                  style={{ height: "100%", width: "33%" }}
+                  onPress={() => setPaymentModal(false)}
+                ></View>
+                <View
+                  style={{ height: "100%", width: "33%" }}
+                  onPress={() => setPaymentModal(false)}
+                ></View>
+                <Card
+                  style={{
                     height: "100%",
-                    backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    width: "34%",
+                    backgroundColor: "white",
                   }}
                 >
                   <View
-                    style={{ height: "100%", width: "33%" }}
-                    onClick={() => setPaymentModal(false)}
-                  ></View>
-                  <View
-                    style={{ height: "100%", width: "33%" }}
-                    onClick={() => setPaymentModal(false)}
-                  ></View>
-                  <Card
                     style={{
-                      height: "100%",
-                      width: "34%",
-                      backgroundColor: "white",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "60%",
                     }}
                   >
-                    <View
+                    <Image
+                      source={logo}
+                      alt="cropped AMS Shadow Queen Logo BNY-1320x772"
+                    />
+                  </View>
+                  <View
+                    style={{
+                      height: "40%",
+                      paddingRight: 40,
+                      paddingLeft: 40,
+                    }}
+                  >
+                    <Text
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "60%",
+                        fontWeight: 600,
+                        fontSize: 30,
+                        marginBottom: 5,
                       }}
                     >
-                      <Image
-                        source={logo}
-                        alt="cropped AMS Shadow Queen Logo BNY-1320x772"
-                      />
-                    </View>
-                    <View
-                      style={{
-                        height: "40%",
-                        paddingRight: 40,
-                        paddingLeft: 40,
-                      }}
-                    >
-                      <Text
+                      PAYMENT INFO
+                    </Text>
+                    <View>
+                      <View style={{ marginTop: 30 }}>
+                        <TextInput
+                          placeholder="Card Holder"
+                          style={{
+                            width: "100%",
+                            border: "none",
+                            borderBottomWidth: 1,
+                            borderBottomColor: "gray",
+                            paddingBottom: 5,
+                          }}
+                        />
+                      </View>
+                      <View style={{ marginTop: 30 }}>
+                        <TextInput
+                          placeholder="Card Number"
+                          style={{
+                            width: "100%",
+                            border: "none",
+                            borderBottomWidth: 1,
+                            borderBottomColor: "gray",
+                            paddingBottom: 5,
+                          }}
+                        />
+                      </View>
+                      <View
                         style={{
-                          fontWeight: 600,
-                          fontSize: 30,
-                          marginBottom: 5,
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          marginTop: 40,
                         }}
                       >
-                        PAYMENT INFO
-                      </Text>
-                      <View>
-                        <View style={{ marginTop: 30 }}>
+                        <View style={{ flex: 1 }}>
                           <TextInput
-                            placeholder="Card Holder"
+                            placeholder="Expiry Date"
                             style={{
-                              width: "100%",
                               border: "none",
                               borderBottomWidth: 1,
                               borderBottomColor: "gray",
@@ -1620,11 +1649,10 @@ export default function BusinessAccount() {
                             }}
                           />
                         </View>
-                        <View style={{ marginTop: 30 }}>
+                        <View style={{ flex: 1, marginLeft: 20 }}>
                           <TextInput
-                            placeholder="Card Number"
+                            placeholder="CVV"
                             style={{
-                              width: "100%",
                               border: "none",
                               borderBottomWidth: 1,
                               borderBottomColor: "gray",
@@ -1632,58 +1660,28 @@ export default function BusinessAccount() {
                             }}
                           />
                         </View>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            marginTop: 40,
-                          }}
-                        >
-                          <View style={{ flex: 1 }}>
-                            <TextInput
-                              placeholder="Expiry Date"
-                              style={{
-                                border: "none",
-                                borderBottomWidth: 1,
-                                borderBottomColor: "gray",
-                                paddingBottom: 5,
-                              }}
-                            />
-                          </View>
-                          <View style={{ flex: 1, marginLeft: 20 }}>
-                            <TextInput
-                              placeholder="CVV"
-                              style={{
-                                border: "none",
-                                borderBottomWidth: 1,
-                                borderBottomColor: "gray",
-                                paddingBottom: 5,
-                              }}
-                            />
-                          </View>
-                        </View>
-                        <TouchableOpacity
-                          onPress={handleSavePaymentInfo}
-                          style={{
-                            color: "white",
-                            fontWeight: 600,
-                            fontSize: 14,
-                            backgroundColor: "#072840",
-                            borderRadius: 20,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            textAlign: "center",
-                            padding: 10,
-                            marginTop: 20,
-                          }}
-                        >
-                          <Text style={{ color: "white" }}>SAVE</Text>
-                        </TouchableOpacity>
                       </View>
+                      <TouchableOpacity
+                        onPress={handleSavePaymentInfo}
+                        style={{
+                          color: "white",
+                          fontWeight: 600,
+                          fontSize: 14,
+                          backgroundColor: "#072840",
+                          borderRadius: 20,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          textAlign: "center",
+                          padding: 10,
+                          marginTop: 20,
+                        }}
+                      >
+                        <Text style={{ color: "white" }}>SAVE</Text>
+                      </TouchableOpacity>
                     </View>
-                  </Card>
-                </Modal>
-              </Portal>
+                  </View>
+                </Card>
+              </Modal>
             ) : null}
 
             <Card
@@ -1698,9 +1696,9 @@ export default function BusinessAccount() {
               }}
             >
               <View>
-                <Title style={{ fontWeight: "700", fontSize: 30 }}>
+                <Text style={{ fontWeight: "700", fontSize: 30 }}>
                   PRODUCTS & SERVICES
-                </Title>
+                </Text>
                 <Text
                   style={{
                     display: businessAuthorization ? "none" : "",
@@ -1887,17 +1885,17 @@ export default function BusinessAccount() {
                       height: 500,
                       //   zIndex:500,
                     }}
-                  > 
-                  {/* <TouchableOpacity
+                  >
+                    {/* <TouchableOpacity
                  // onPress={setBusinessAuthorization(true)}
                   > */}
-                  <Image
+                    <Image
                       source={require("../../Global/images/BusinessPlus+.jpg")}
                       alt="business plus logo"
                       style={{ width: "85%", height: "20%", marginBottom: 5 }}
                     />
-                  {/* </TouchableOpacity> */}
-                  
+                    {/* </TouchableOpacity> */}
+
                     <Text
                       style={{
                         color: "#252b42",
@@ -1906,10 +1904,9 @@ export default function BusinessAccount() {
                         textAlign: "center",
                       }}
                     >
-                      <TouchableOpacity onPress={() => setBusinessAuthorization(true)}>
-  BUSINESS PLUS SUBSCRIPTION
-</TouchableOpacity>
-
+                      <TouchableOpacity onPress={() => setPaymentModal(true)}>
+                        <Text>BUSINESS PLUS SUBSCRIPTION</Text>
+                      </TouchableOpacity>
                     </Text>
                     <Text
                       style={{

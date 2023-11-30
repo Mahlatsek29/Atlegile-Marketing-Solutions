@@ -8,25 +8,15 @@ import FollowUs from "../../Global/Header";
 import { Footer } from "../../Global/Footer";
 import shop from "../../Global/images/svg_landing.svg";
 import shop2 from "../../Global/images/svg_landing.svg";
-import { firebase } from "../../config";
+import { firebase,auth } from "../../config";
 
-const Landing = ({ navigation }) => {
+const Landing = ({navigation}) => {
   const [products, setProducts] = useState([]);
   const productIds = [
     "HWCHEa90akqO478j4soK",
     "V19CXL5ZOBbosMYGYBEX",
     "DAC7rmML4d0z7uTnLY04",
   ];
-
-  const handleLogout = async () => {
-    try {
-      await auth.signOut();
-      // Redirect or perform any action after successful logout
-      navigation.navigate("Login");
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
-  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -43,6 +33,7 @@ const Landing = ({ navigation }) => {
 
     fetchProducts();
   }, []);
+
 
   return (
     <>

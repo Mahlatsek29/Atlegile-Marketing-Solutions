@@ -234,7 +234,7 @@ const BusinessRegistration = () => {
                       color: "#000",
                       textAlign: "left",
                       fontSize: "20px",
-                      marginBottom:'30px'
+                      marginTop:'20px',
                     }}>
                     BUSINESS REGISTRATION
                   </h2>
@@ -248,7 +248,7 @@ const BusinessRegistration = () => {
                       shrink: true,
                     }}
                     style={{ width: "100%" }}
-                    required
+                   
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
                   />
@@ -265,7 +265,7 @@ const BusinessRegistration = () => {
                       textAlign: "left",
                       marginTop: "10px",
                     }}
-                    required>
+                    >
                     {roleOptions.map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
@@ -286,7 +286,7 @@ const BusinessRegistration = () => {
                       width: "100%",
                       marginTop: "10px",
                     }}
-                    required
+                    
                     value={regNumber}
                     onChange={(e) => setRegNumber(e.target.value)}
                   />
@@ -311,7 +311,7 @@ const BusinessRegistration = () => {
                       shrink: true,
                     }}
                     style={{ width: "100%", marginTop: "10px" }}
-                    required
+                    
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                   />
@@ -335,7 +335,7 @@ const BusinessRegistration = () => {
                         marginRight: "10px",
                         textAlign: "left",
                       }}
-                      required>
+                      >
                       {businessTypeOptions.map((option) => (
                         <MenuItem key={option} value={option}>
                           {option}
@@ -354,7 +354,7 @@ const BusinessRegistration = () => {
                         marginTop: "5px",
                         textAlign: "left",
                       }}
-                      required>
+                      >
                       {industryOptions.map((option) => (
                         <MenuItem key={option} value={option}>
                           {option}
@@ -371,7 +371,6 @@ const BusinessRegistration = () => {
                       shrink: true,
                     }}
                     style={{ width: "100%", marginTop: "10px" }}
-                    required
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                   />

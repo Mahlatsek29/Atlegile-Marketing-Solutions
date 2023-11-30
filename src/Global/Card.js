@@ -1,47 +1,54 @@
-import React from "react";
+// ProductCard.js
+
+import React, { useState, useEffect } from "react";
 import {
   Card,
-  CardActionArea,
   CardMedia,
   CardContent,
   Typography,
-  IconButton,
-  Button,
   Box,
+  Button,
+  IconButton,
 } from "@mui/material";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import {
-//   faHeart as faHeartRed,
-//   faHeart,
-// } from "@fortawesome/free-solid-svg-icons";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
-// import downloadIcon from "../../icons/download.svg";
-// import RightIcon from "../../icons/icon-right.svg";
-
 import { TouchableOpacity } from "react-native";
-// import faCart from "../../icons/shopping-cart.png";
+import { firestore } from "../config";
 
-const ProductCard = ({ item }) => {
-  const [isRed, setIsRed] = React.useState(true);
+const ProductCard = ({ productId }) => {
+  const [isRed, setIsRed] = useState(true);
+  const [product, setProduct] = useState(null);
 
   const toggleHeart = () => {
-    console.log("toggleHeart Clicked");
     setIsRed((prevState) => !prevState);
   };
 
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        const productDoc = await firestore
+          .collection("Products")
+          .doc(productId)
+          .get();
+        const productData = productDoc.data();
+        console.log("Fetched product data:", productData);
+
+        setProduct(productData);
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+      }
+    };
+
+    fetchProductData();
+  }, [productId]);
+
+  if (!product) {
+    // Render a loading state or return null if data is still being fetched
+    return null;
+  }
+
   return (
-    <Card
-      className="card-container"
-      sx={{
-        margin: "10px",
-        height: "35rem",
-        width: "20rem",
-        paddingTop: "1.2rem",
-        border: "none",
-        boxShadow: "none",
-        // backgroundColor: "red",
-      }}>
+    <Card className="card-container" style={{ marginLeft: "1%", width:"100%" }}>
       <Box>
         <Box
           style={{
@@ -49,17 +56,11 @@ const ProductCard = ({ item }) => {
             objectFit: "cover",
             position: "relative",
             backgroundColor: "gold",
-            // height: "5rem",
             width: "270px",
             height: "270px",
-            // width: "5rem",
             borderRadius: "50%",
-            alignself:'center',
-            justifyContent:'center',
-            // borderRadius: "14rem",
-            //  backgroundColor:'blue',
-             marginLeft:'1.5rem',
-            //  alignself:'center',
+            alignself: "center",
+            justifyContent: "center",
             display: "flex",
             flexDirection: "column",
             alignSelf: "center",
@@ -68,16 +69,18 @@ const ProductCard = ({ item }) => {
           <CardMedia
             component="img"
             height="140"
-            //   image={item?.imageUrls[0]}
-            image={require("../../assets/image/headsets.png")}
-            alt="shop 2"
+            image={
+              product.images && product.images.length > 0
+                ? product.images[0]
+                : "../../assets/image/headsets.png"
+            }
+            alt={product.name}
             style={{
               borderRadius: "100px",
               objectFit: "cover",
               width: 220,
               height: 220,
               alignSelf: "center",
-              // border:'1px solid red'
             }}
           />
           <Box
@@ -93,7 +96,6 @@ const ProductCard = ({ item }) => {
             <Typography
               variant="h5"
               style={{ color: "#fff", textAlign: "center" }}>
-              {" "}
               sale
             </Typography>
           </Box>
@@ -105,7 +107,6 @@ const ProductCard = ({ item }) => {
               width: "6vw",
               display: "flex",
               flexDirection: "row",
-              // backgroundColor: "red",
               justifyContent: "space-between",
               alignSelf: "center",
             }}>
@@ -147,8 +148,8 @@ const ProductCard = ({ item }) => {
               variant="h6"
               component="h6"
               style={{ fontSize: "16px", color: "#0074cc" }}>
-              {item?.selectedCategory}
-              English Department
+              {product.selectedIndustry}
+              {/* Assuming selectedCategory is a field in your product */}
             </Typography>
             <Typography
               style={{
@@ -161,17 +162,16 @@ const ProductCard = ({ item }) => {
             </Typography>
           </Box>
           <Typography variant="h5" component="h5">
-            {item?.productName}
-            Graphic Design
+            {product.name}
           </Typography>
           <Typography
             variant="subtitle2"
             component="p"
             style={{ color: "gray" }}>
-            {item?.description.slice(0, 110)}
-            {item?.description.length < 110 ? "" : "..."}
-            We focus on ergonomics and meeting you where you work. It's only a
-            keystroke away.
+            {product.description && product.description.slice(0, 110)}
+            {product.description && product.description.length < 110
+              ? ""
+              : "..."}
           </Typography>
           <Box
             display="flex"
@@ -191,9 +191,8 @@ const ProductCard = ({ item }) => {
                   fontWeight: "700",
                   marginRight: "10px",
                 }}>
-                R{item?.price}700
+                R{product.price}
               </Typography>
-
               <Typography
                 variant="subtitle2"
                 component="p"
@@ -202,31 +201,13 @@ const ProductCard = ({ item }) => {
                   fontSize: "18px",
                   fontWeight: "700",
                 }}>
-                R{item?.price}500
+                R{product.price}
               </Typography>
             </Box>
           </Box>
         </CardContent>
       </Box>
       <CardContent>
-        {/* <IconButton
-          aria-label="add to favorites"
-          onClick={toggleHeart}
-          style={{ marginRight: "10px" }}
-        >
-          <FontAwesomeIcon
-            icon={isRed ? faHeartRed : faHeart}
-            style={{ color: isRed ? "red" : "black" }}
-          />
-        </IconButton> */}
-        {/* <TouchableOpacity>
-          <Icon
-            name="shopping-cart"
-            size={20}
-            color="black"
-            style={{ paddingHorizontal: 10, position: "absolute", top: 0 }}
-          />
-        </TouchableOpacity> */}
         <Button
           variant="outlined"
           color="primary"
@@ -236,26 +217,15 @@ const ProductCard = ({ item }) => {
             textDecoration: "none",
             width: "7vw",
             backgroundColor: "white",
-
             padding: "5px 20px",
             borderRadius: "25px",
             cursor: "pointer",
             fontSize: "18px",
-            // marginBottom:'30px',
-
             display: "flex",
-            /* justify-content: center, */
-
             alignItems: "center",
           }}
           onClick={() => console.log("View Button Clicked!!!")}>
           VIEW
-          {/* <img
-            src={RightIcon}
-            className="right-icon"
-            alt="right icon"
-            style={{ marginLeft: "10px" }}
-          /> */}
           <Icon name="arrow-right" size={20} />
         </Button>
       </CardContent>

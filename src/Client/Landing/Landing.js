@@ -8,7 +8,7 @@ import FollowUs from "../../Global/Header";
 import { Footer } from "../../Global/Footer";
 import shop from "../../Global/images/svg_landing.svg";
 import shop2 from "../../Global/images/svg_landing.svg";
-import { firebase, auth } from "../../config";
+import { firebase } from "../../config";
 
 const Landing = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -17,6 +17,16 @@ const Landing = ({ navigation }) => {
     "V19CXL5ZOBbosMYGYBEX",
     "DAC7rmML4d0z7uTnLY04",
   ];
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      // Redirect or perform any action after successful logout
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {

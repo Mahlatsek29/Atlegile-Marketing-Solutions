@@ -16,9 +16,9 @@ const Favourites = ({ item }) => {
         <SideNav />
 
         <ScrollView>
-          <Typography
-            variant="h4"
-            style={{
+          <Typography variant="h4"  style={{
+            
+           
               fontWeight: "bold",
               marginTop: "20px",
               marginBottom: "40px",

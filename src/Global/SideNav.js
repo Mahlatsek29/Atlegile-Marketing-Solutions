@@ -59,9 +59,9 @@ const SideNav = () => {
         elevation={3}
         style={{
           padding: "20px",
-          height: "100%",
+          height: "138%",
           width: "300px",
-          margin: "auto", // Center the paper on large screens
+          margin: "auto",
         }}
       >
         <Box textAlign="center">
@@ -139,15 +139,16 @@ const SideNav = () => {
           }}
         >
           <Button
-            sx={{ fontWeight: "bolder", color: "black" }}
+            sx={{ fontWeight: "bolder", color: "black", marginTop: '20%' }}
             onClick={handlePress}
           >
             Julian James
           </Button>
-          <Button sx={{ color: "gray", mt: 1 }}>Alternative Contact</Button>
+
+          <Button sx={{ color: "gray", mt: 1, marginTop: '50%' }}>Alternative Contact</Button>
         </Box>
 
-        <Box textAlign="center" marginTop="20px">
+        <Box textAlign="center" marginTop="10%">
           <Button onClick={handleSignOut} style={{ color: "red" }}>
             SIGN OUT
           </Button>

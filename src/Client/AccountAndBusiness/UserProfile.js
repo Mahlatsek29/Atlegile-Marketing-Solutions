@@ -1,16 +1,77 @@
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Image, Text, Modal } from "react-native";
 import { Typography, Button } from "@mui/material";
 import Icon from "react-native-vector-icons/Fontisto";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
+import { useNavigation } from "@react-navigation/native";
+import sara from "../../Global/images/Sara.png";
+import { firebase } from "../../config";
 
 const UserProfile = () => {
+  const navigation = useNavigation();
+  const [userData, setUserData] = useState(null);
+  const [orderHistory, setOrderHistory] = useState([]);
+  const [showOrderHistory, setShowOrderHistory] = useState(true);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Assuming you have the user's UID (replace 'userId' with the actual UID)
+        const userId = "dGHFGyde9e37r084rdP7";
+        const userRef = firebase.firestore().collection("Users").doc(userId);
+        const doc = await userRef.get();
+
+        if (doc.exists) {
+          setUserData(doc.data());
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    const fetchOrderHistory = async () => {
+      try {
+        // Assuming you have the user's UID (replace 'userId' with the actual UID)
+        const userId2 = "YI6BJyHCjgObep37vdDr";
+        const orderHistoryRef = firebase
+          .firestore()
+          .collection("OrderHistory")
+          .where("userId", "==", userId2);
+        const querySnapshot = await orderHistoryRef.get();
+
+        const orders = [];
+        querySnapshot.forEach((doc) => {
+          orders.push(doc.data());
+        });
+
+        setOrderHistory(orders);
+      } catch (error) {
+        console.error("Error fetching order history:", error);
+      }
+    };
+
+    fetchUserData();
+    fetchOrderHistory();
+  }, []);
+
+  const handleOrderHistory = () => {
+    setShowOrderHistory(!showOrderHistory);
+  };
+
+  const handleBusiness = () => {
+    navigation.navigate("BusinessRegistration");
+    // alert('button clicked!')
+  };
+
   return (
     <View>
       <FollowUs />
       <Navbar />
+
       <View
         style={{
           height: "800px",
@@ -18,8 +79,7 @@ const UserProfile = () => {
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
-        }}
-      >
+        }}>
         <View>
           <View
             style={{
@@ -28,9 +88,9 @@ const UserProfile = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-            }}
-          >
-            <Typography
+            }}>
+            <Image
+              source={sara}
               style={{
                 width: "180px",
                 height: "180px",
@@ -38,11 +98,9 @@ const UserProfile = () => {
                 alignItems: "center",
                 borderRadius: "50%",
                 justifyContent: "center",
-                backgroundColor: "lightgray",
+                // backgroundColor: "red",
               }}
-            >
-              S
-            </Typography>
+            />
           </View>
 
           <View
@@ -50,27 +108,31 @@ const UserProfile = () => {
               display: "flex",
               alignItems: "center",
               flexDirection: "column",
-            }}
-          >
+            }}>
             <Typography style={{ fontWeight: 700 }} variant="h4">
-              SARAH
+              {userData && userData.name}
             </Typography>
             <Typography style={{ fontWeight: 700 }} variant="h7">
-              0123456879
+              {userData && userData.phone}
             </Typography>
             <Typography style={{ fontWeight: 700 }} variant="h7">
-              example@mail.com
+              {userData && userData.email}
             </Typography>
           </View>
           <View
             style={{
               marginTop: 30,
               textAlign: "center",
-            }}
-          >
-            <Typography variant="h6">
-              1235 Vilakazi Street, Orlando West, Soweto, 1804, South Africa
-            </Typography>
+            }}>
+            {userData && (
+              <View
+                style={{
+                  marginTop: 30,
+                  textAlign: "center",
+                }}>
+                <Typography variant="h6">{userData.location}</Typography>
+              </View>
+            )}
           </View>
           <View
             style={{
@@ -80,26 +142,23 @@ const UserProfile = () => {
               marginBottom: "5px",
               alignItems: "center",
               flexDirection: "column",
-            }}
-          >
+            }}>
             <Typography
               style={{ color: "#072840", fontWeight: 600 }}
-              variant="h6"
-            >
+              variant="h6">
               Julian Jameson
             </Typography>
             <Typography style={{ color: "gray", fontWeight: 600 }} variant="h7">
               Alternative Contact
             </Typography>
           </View>
-          <View style={{ marginTop: 20 }}>
+          <View>
             <View
               style={{
                 border: "none",
                 paddingBottom: 10,
                 flexDirection: "row",
-              }}
-            >
+              }}>
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
@@ -108,8 +167,42 @@ const UserProfile = () => {
                   fontWeight: "bold",
                   textDecoration: "none",
                 }}
-              >
-                ORDER HISTORY
+                onPress={handleOrderHistory}>
+                <Text>ORDER HISTORY</Text>
+              </TouchableOpacity>
+            </View>
+            {showOrderHistory && (
+              <View>
+                {/* Map out order history here */}
+                {orderHistory.map((order, index) => (
+                  <View key={index}>
+                    <Text style={{color:'black'}}>
+                      Product Name: {order.productName}, Purchase Date:{" "}
+                      {order.createdAt}, Total: {order.price}
+                      {console.log(order.price)}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            )}
+            <View
+              style={{
+                border: "none",
+                display: "flex",
+                paddingTop: 10,
+                paddingBottom: 10,
+                alignItems: "center",
+                flexDirection: "row",
+              }}>
+              <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
+              <TouchableOpacity
+                style={{
+                  fontSize: 12,
+                  color: "gray",
+                  fontWeight: "bold",
+                  textDecoration: "none",
+                }}>
+                <Text>FAVOURITES </Text>
               </TouchableOpacity>
             </View>
             <View
@@ -120,8 +213,7 @@ const UserProfile = () => {
                 paddingBottom: 10,
                 alignItems: "center",
                 flexDirection: "row",
-              }}
-            >
+              }}>
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
@@ -129,31 +221,8 @@ const UserProfile = () => {
                   color: "gray",
                   fontWeight: "bold",
                   textDecoration: "none",
-                }}
-              >
-                FAVOURITES
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                border: "none",
-                display: "flex",
-                paddingTop: 10,
-                paddingBottom: 10,
-                alignItems: "center",
-                flexDirection: "row",
-              }}
-            >
-              <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
-              <TouchableOpacity
-                style={{
-                  fontSize: 12,
-                  color: "gray",
-                  fontWeight: "bold",
-                  textDecoration: "none",
-                }}
-              >
-                TERMS & CONDITIONS
+                }}>
+                <Text>TERMS & CONDITIONS </Text>
               </TouchableOpacity>
             </View>
             <View
@@ -165,8 +234,7 @@ const UserProfile = () => {
                 marginBottom: "5px",
                 alignItems: "center",
                 flexDirection: "row",
-              }}
-            >
+              }}>
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
@@ -174,9 +242,8 @@ const UserProfile = () => {
                   color: "gray",
                   fontWeight: "bold",
                   textDecoration: "none",
-                }}
-              >
-                PRIVACY POLICY
+                }}>
+                <Text>PRIVACY POLICY </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -186,8 +253,7 @@ const UserProfile = () => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "center",
-            }}
-          >
+            }}>
             <Button
               style={{
                 color: "#072840",
@@ -195,7 +261,7 @@ const UserProfile = () => {
                 borderRadius: "20px",
               }}
               variant="outlined"
-            >
+              onClick={handleBusiness}>
               REGISTER BUSINESS
             </Button>
             <Button
@@ -204,8 +270,7 @@ const UserProfile = () => {
                 borderRadius: "20px",
                 outlineColor: "#072840",
               }}
-              variant="outlined"
-            >
+              variant="outlined">
               REGISTER AS A FREELANCER
             </Button>
           </View>

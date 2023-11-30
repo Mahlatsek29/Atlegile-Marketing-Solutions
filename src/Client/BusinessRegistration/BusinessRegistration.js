@@ -13,6 +13,7 @@ import Box from "@mui/material/Box";
 import background from "../../Global/images/Reed.jpg";
 import logo from "../../Global/images/logo.svg";
 import Banner from "../../Global/images/media bg-cover.png";
+import { auth, firestore } from "../../config";
 
 const BusinessRegistration = () => {
   const [businessName, setBusinessName] = useState("");
@@ -24,25 +25,41 @@ const BusinessRegistration = () => {
   const [selectedIndustry, setSelectedIndustry] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [bio, setBio] = useState("");
+  const [cardHolder, setCardHolder] = useState(null);
+  const [cardNumber, setCardNumber] = useState(null);
+  const [cvv, setCvv] = useState(null);
 
   const navigation = useNavigation();
 
-  const handlechange = () => {
-    // Assuming you have set up state for each field
+  const handlechange = async () => {
     const isFormValid =
-      !!businessName &&
-      !!selectedRole &&
-      !!regNumber &&
-      !!location &&
-      !!selectedBusinessType &&
-      !!bio;
-    // !!selectedIndustry;
+      !!businessName && !!selectedRole && !!regNumber && !!selectedBusinessType;
 
     if (isFormValid) {
-      navigation.navigate("AddProductsAndServices");
+      try {
+        // Store the data in Firestore
+        await firestore.collection("Business").add({
+          businessName,
+          selectedRole,
+          regNumber,
+          website,
+          location,
+          selectedBusinessType,
+          selectedIndustry,
+          phoneNumber,
+          bio,
+          cardHolder,
+          cardNumber,
+          cvv,
+        });
+
+        // Navigate to the next screen
+        navigation.navigate("AddProductsAndServices");
+      } catch (error) {
+        console.error("Error storing data in Firestore:", error);
+      }
     } else {
       alert("Please fill in all required fields");
-      // or any other way to notify the user about the missing fields
     }
   };
 

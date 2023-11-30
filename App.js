@@ -21,7 +21,7 @@ import Reciept from "./src/Client/CartAndOrderHistory/Reciept";
 import DeliveryOngoing from "./src/Client/CartAndOrderHistory/DeliveryOngoing";
 import DeliveryAndChatSystem from "./src/Client/CartAndOrderHistory/DeliveryAndChatSystem";
 import DateSelectionAndCheckout from "./src/Client/CartAndOrderHistory/DateSelectionAndCheckout";
-import Favourites from "./src/Client/Favourites/Favourites";
+import  Favourites from "./src/Client/Favourites/Favourites"
 
 const Stack = createStackNavigator();
 

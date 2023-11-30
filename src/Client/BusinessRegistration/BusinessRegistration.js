@@ -195,17 +195,21 @@ const BusinessRegistration = () => {
               style={{
                 backgroundColor: "#fff",
                 marginLeft: "-10px",
+                marginRight: "-15px",
+                // paddingRight: "-25vw",
+                // margin:'-15px',
                 width: "100%",
                 height: "98vh",
                 alignSelf: "center",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
+                alignItems: "center",
               }}>
-              <Grid>
+              <Grid style={{ alignSelf: "center", justifySelf: "center" }}>
                 <img
                   src={logo}
-                  style={{ height: "9vh", width: "90%", paddingTop: "8vh" }}
+                  style={{ height: "9vh", width: "90%", marginTop: "8vh" }}
                 />
               </Grid>
               <Box
@@ -220,19 +224,21 @@ const BusinessRegistration = () => {
                   style={{
                     justifyContent: "center",
                     textAlign: "center",
-                    alignItems: "center",
-                    width: "75%",
-                    marginLeft: "80px",
+                    alignSelf: "center",
+                    width: "100%",
+                    // marginLeft: "80px",
                     marginBottom: "30px",
                   }}>
                   <h2
                     style={{
                       color: "#000",
                       textAlign: "left",
-                      fontSize: "25px",
+                      fontSize: "20px",
+                      marginBottom:'30px'
                     }}>
                     BUSINESS REGISTRATION
                   </h2>
+
                   <TextField
                     id="outlined-number"
                     label="Business Name"

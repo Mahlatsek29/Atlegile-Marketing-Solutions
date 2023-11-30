@@ -48,7 +48,9 @@ const ProductCard = ({ productId }) => {
   }
 
   return (
-    <Card className="card-container" style={{ marginLeft: "1%", width:"100%" }}>
+    <Card
+      className="card-container"
+      style={{ marginLeft: "1%", width: "100%",paddingRight: "1%" }}>
       <Box>
         <Box
           style={{
@@ -148,7 +150,7 @@ const ProductCard = ({ productId }) => {
               variant="h6"
               component="h6"
               style={{ fontSize: "16px", color: "#0074cc" }}>
-              {product.selectedIndustry}
+              {product.selectedProductCategory}
               {/* Assuming selectedCategory is a field in your product */}
             </Typography>
             <Typography

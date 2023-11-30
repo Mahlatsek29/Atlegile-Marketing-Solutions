@@ -43,6 +43,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { height } from "@mui/system";
 import SideNav from "../../Global/SideNav";
 import { Dimensions } from "react-native";
+import Card2 from "../../Global/Card2";
 export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
@@ -1921,7 +1922,7 @@ export default function BusinessAccount() {
                   >
                     {list.map((item, index) => (
                       
-                      <ProductCard
+                      <Card2
                         key={index}
                         open={() => setEditModal(true)}
                       />

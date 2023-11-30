@@ -121,17 +121,28 @@ export default function ProductDetails({ item }) {
           }}
         >
           {/*Breadcrumbs and Box container */}
-          <Box sx={{ pl:2,pb: 2, backgroundColor: "white" }}>
+          <Box sx={{ pl: 2, pb: 2, backgroundColor: "white" }}>
             <Breadcrumbs>
-              <Link color="inherit" href="/" sx={{fontSize:15,textDecoration:"none"}}>
+              <Link
+                color="inherit"
+                href="/"
+                sx={{ fontSize: 15, textDecoration: "none" }}
+              >
                 Home
               </Link>
 
-              <Link color="inherit" href="/vaas" sx={{fontSize:15,textDecoration:"none"}}>
+              <Link
+                color="inherit"
+                href="/vaas"
+                sx={{ fontSize: 15, textDecoration: "none" }}
+              >
                 VAAS
               </Link>
 
-              <Typography color="textPrimary" sx={{fontSize:15,textDecoration:"none"}}>
+              <Typography
+                color="textPrimary"
+                sx={{ fontSize: 15, textDecoration: "none" }}
+              >
                 Digital Marketing Solutions Mbali
               </Typography>
             </Breadcrumbs>
@@ -145,7 +156,7 @@ export default function ProductDetails({ item }) {
                 width: "50%",
                 border: "none",
                 borderRight: "1px lightgray solid",
-                backgroundColor: "lightblue",
+                //backgroundColor: "lightblue",
               }}
             >
               <Typography>SGSG</Typography>
@@ -157,14 +168,15 @@ export default function ProductDetails({ item }) {
               sx={{
                 height: "100%",
                 width: "50%",
-                backgroundColor: "pink",
+                //backgroundColor: "pink",
               }}
             >
               <Box
                 sx={{
-                  pt: 1,
-                  pb: 1,
-                  border: "1px red solid",display:"flex",alignItems:"center"
+                  border: "1px red solid",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
                 }}
               >
                 <Button
@@ -176,11 +188,26 @@ export default function ProductDetails({ item }) {
                   }}
                 >
                   <Typography
-                    sx={{ fontWeight: "600", fontSize: 12, color: "white" }}
+                    sx={{ fontWeight: "600", fontSize: 12, color: "#072840" }}
                   >
                     PHYSICAL
                   </Typography>
                 </Button>
+              </Box>
+              <Box>
+                <Box>
+                  <Typography></Typography>
+                </Box>
+                <Box>
+                  <Typography></Typography>
+                </Box>
+                <Box>
+                  <Typography></Typography>
+                </Box>
+                <Box>
+                  <Typography></Typography>
+                </Box>
+                <Box></Box>
               </Box>
             </Box>
             {/*END - Right side Panel*/}

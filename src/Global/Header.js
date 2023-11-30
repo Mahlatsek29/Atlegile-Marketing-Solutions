@@ -12,8 +12,18 @@ import { Box, Typography, IconButton } from "@mui/material";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import Icon2 from "react-native-vector-icons/Feather";
 import Icon3 from "react-native-vector-icons/EvilIcons";
+import { useNavigation } from '@react-navigation/native';
+
+
 
 const FollowUs = () => {
+  const navigation = useNavigation();
+
+
+  const openYouTube = () => {
+    navigate.navigation("https://www.youtube.com/");
+  };
+
   return (
     <Box
       sx={{
@@ -58,7 +68,7 @@ const FollowUs = () => {
           color="white"
           style={{ paddingHorizontal: 10 }}
         />
-        <Icon
+        <Icon onPress={openYouTube}
           name="youtube"
           size={16}
           color="white"

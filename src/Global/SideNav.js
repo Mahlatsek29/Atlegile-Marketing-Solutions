@@ -59,9 +59,9 @@ const SideNav = () => {
         elevation={3}
         style={{
           padding: "20px",
-          height: "100%",
+          height: "138%",
           width: "300px",
-          margin: "auto", // Center the paper on large screens
+          margin: "auto",
         }}
       >
         <Box textAlign="center">
@@ -72,13 +72,14 @@ const SideNav = () => {
               width: "100px",
               height: "100px",
               borderRadius: "50%",
-              marginBottom: "10px",
+              marginTop: "80%",
             }}
           />
-
-          <Typography variant="h6">SARAH</Typography>
-          <Typography variant="subtitle1">0123456789</Typography>
-          <Typography variant="subtitle2">example@gmail.com</Typography>
+          <Box sx={{marginTop:'10%'}}>
+            <Typography variant="h6">SARAH</Typography>
+            <Typography variant="subtitle1">0123456789</Typography>
+            <Typography variant="subtitle2">example@gmail.com</Typography>
+          </Box>
         </Box>
 
         <Box>
@@ -87,7 +88,7 @@ const SideNav = () => {
           </Typography>
         </Box>
 
-        <Box style={{ marginTop: 20 }}>
+        <Box style={{ marginTop: '50%' }}>
           <Ionicons name="ios-timer-outline" size={15} color="gray" />
           <Button
             style={{ marginLeft: 5, color: "gray" }}
@@ -117,7 +118,7 @@ const SideNav = () => {
           </Button>
         </Box>
 
-        <Box>
+        <Box sx={{}}>
           <Ionicons name="ios-timer-outline" size={15} color="gray" />
           <Button
             style={{ marginLeft: 5, color: "gray" }}
@@ -139,15 +140,16 @@ const SideNav = () => {
           }}
         >
           <Button
-            sx={{ fontWeight: "bolder", color: "black" }}
+            sx={{ fontWeight: "bolder", color: "black", marginTop: '10%' }}
             onClick={handlePress}
           >
             Julian James
           </Button>
-          <Button sx={{ color: "gray", mt: 1 }}>Alternative Contact</Button>
+
+          <Button sx={{ color: "gray", mt: 1, marginTop: '10%' }}>Alternative Contact</Button>
         </Box>
 
-        <Box textAlign="center" marginTop="20px">
+        <Box textAlign="center" marginTop="10%">
           <Button onClick={handleSignOut} style={{ color: "red" }}>
             SIGN OUT
           </Button>

@@ -252,7 +252,7 @@ const Landing = ({navigation}) => {
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}
-              style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
+              style={{ marginTop: 20, display: "flex", flexDirection: "row",  marginHorizontal:10 }}>
               {productIds.map((productId) => (
                 <ProductCard key={productId} productId={productId} />
               ))}

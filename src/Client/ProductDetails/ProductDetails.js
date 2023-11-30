@@ -1,16 +1,16 @@
 
 import React, { useState } from 'react';
 import { Box, Typography, Button, IconButton, Paper, Breadcrumbs, Link, Container, Grid, TextField } from '@mui/material';
-import logo from '../images/logo.png';
+import logo from '../../Global/images/logo.png';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import image from '../images/carousel-inner.png';
+import image from '../../Global/images/fixed-height.png';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import Rating from '@mui/material/Rating';
 import StarIcon from '@mui/icons-material/Star';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import fixed from '../images/fixed-height.png'
-import yellow from '../images/fixed-height-yellow.png';
+import fixed from '../../Global/images/fixed-height.png'
+import yellow from '../../Global/images/headphones.png';
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
 

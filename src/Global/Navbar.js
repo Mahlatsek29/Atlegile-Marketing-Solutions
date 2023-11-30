@@ -26,6 +26,10 @@ const Navbar = () => {
     navigation.navigate('SignUp');
   };
 
+
+  const navigateaboutus = () => {
+    navigation.navigate('AboutUs')
+  }
   return (
     <Toolbar
       sx={{
@@ -65,7 +69,7 @@ const Navbar = () => {
             >
               Shop
             </Button>
-            <Button
+            <Button onClick={navigateaboutus}
               sx={{
                 borderRadius: "25px",
                 "&:hover": {

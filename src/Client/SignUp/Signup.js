@@ -28,6 +28,11 @@ const Signup = () => {
   };
 
 
+  const navigatealreadyhaveaccount = () => {
+    navigation.navigate('SignIn')
+  }
+
+
   const handleSignup = async () => {
     try {
       if (email.trim() === "" || password.trim() === "") {
@@ -69,6 +74,8 @@ const Signup = () => {
   const handleBusinessSignup = () => {
     console.log("Signing up as a business");
   };
+
+
 
   return (
     <ImageBackground
@@ -123,7 +130,7 @@ const Signup = () => {
           <Text style={styles.buttonText}>SIGN UP</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={navigatealreadyhaveaccount}>
           <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>
         </TouchableOpacity>
 

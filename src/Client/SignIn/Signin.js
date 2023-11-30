@@ -124,9 +124,9 @@ const Signin = () => {
           <Text style={styles.buttonText}>SIGN IN</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity>
           <Text style={styles.linkText1}>

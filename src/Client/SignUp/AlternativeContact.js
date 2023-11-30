@@ -10,10 +10,10 @@ import NativeSelect from '@mui/material/NativeSelect';
 
 const AlternativeContact = () => {
     return (
-        <ImageBackground source={require('../Global/images/Reed.jpg')} style={styles.background}>
+        <ImageBackground source={require('../../Global/images/Reed.jpg')} style={styles.background}>
             <View style={styles.container}>
                 <View>
-                    <Image source={require('../Global/images/logo.png')} style={styles.logo} />
+                    <Image source={require('../../Global/images/logo.png')} style={styles.logo} />
 
                     <View>
                         <Text style={styles.subtitle}>ALTERNATIVE CONTACT</Text>

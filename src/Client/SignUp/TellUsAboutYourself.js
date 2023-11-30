@@ -6,14 +6,12 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
 
-
-
 const AccountHolder = () => {
     return (
-        <ImageBackground source={require('../Global/images/Reed.jpg')} style={styles.background}>
+        <ImageBackground source={require('../../Global/images/Reed.jpg')} style={styles.background}>
             <View style={styles.container}>
                 <View>
-                    <Image source={require('../Global/images/logo.png')} style={styles.logo} />
+                    <Image source={require('../../Global/images/logo.png')} style={styles.logo} />
                     <View style={{ width: '120%', flexDirection: 'row', justifyContent: 'space-around' }}>
                         <Text style={styles.title}>MAIN ACCOUNT HOLDER </Text>
                     </View>

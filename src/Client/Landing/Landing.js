@@ -31,13 +31,13 @@ const Landing = () => {
 
   return (
     <>
-      <Navbar />
       <FollowUs />
+      <Navbar />
       <SearchBar />
       <View>
-        <Container fixed>
+        <Container fixed sx={{backgroundColor:'blue'}}>
           <Grid
-            container
+            container 
             style={{
               alignItems: "center",
               justifyContent: "center",

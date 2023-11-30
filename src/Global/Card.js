@@ -37,6 +37,7 @@ const ProductCard = ({ item }) => {
         margin: "10px",
         height: "35rem",
         width: "20rem",
+        paddingTop: "1.2rem",
         border: "none",
         boxShadow: "none",
         // backgroundColor: "red",
@@ -53,11 +54,15 @@ const ProductCard = ({ item }) => {
             height: "270px",
             // width: "5rem",
             borderRadius: "50%",
+            alignself:'center',
+            justifyContent:'center',
             // borderRadius: "14rem",
-
+            //  backgroundColor:'blue',
+             marginLeft:'1.5rem',
+            //  alignself:'center',
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
+            alignSelf: "center",
             justifyContent: "center",
           }}>
           <CardMedia
@@ -71,6 +76,8 @@ const ProductCard = ({ item }) => {
               objectFit: "cover",
               width: 220,
               height: 220,
+              alignSelf: "center",
+              // border:'1px solid red'
             }}
           />
           <Box
@@ -81,6 +88,7 @@ const ProductCard = ({ item }) => {
               padding: 2,
               width: "22%",
               borderRadius: "8%",
+              alignSelf: "center",
             }}>
             <Typography
               variant="h5"
@@ -99,6 +107,7 @@ const ProductCard = ({ item }) => {
               flexDirection: "row",
               // backgroundColor: "red",
               justifyContent: "space-between",
+              alignSelf: "center",
             }}>
             <TouchableOpacity>
               <Icon

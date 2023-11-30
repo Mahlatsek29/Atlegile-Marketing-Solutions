@@ -5,8 +5,8 @@ import logo from "../../Global/images/logo.svg";
 import Banner from "../../Global/images/media bg-cover.png";
 import placeholder from "../../Global/images/login.jpg";
 import { useNavigation } from "@react-navigation/native";
-import { Linking } from "react-native";
-import { firestore } from "../../config";
+import { Linking, TouchableOpacity, View } from "react-native";
+import { storage, firestore } from "../../config";
 
 const AddProductsAndServices = () => {
   const emptyOption = [""];
@@ -55,10 +55,14 @@ const AddProductsAndServices = () => {
       setImages((prevImages) => [...prevImages, ...newImages]);
     }
   };
-
   const handleContinue = async () => {
     const isFormValid =
-      !!name && !!businessName && !!price && !!quantity && !!brand;
+      !!name &&
+      !!businessName &&
+      !!price &&
+      !!quantity &&
+      !!brand &&
+      selectedProductCategory !== "";
 
     if (isFormValid && images.length > 0) {
       try {
@@ -79,7 +83,7 @@ const AddProductsAndServices = () => {
           const imageRef = storage.ref(
             `product_images/${productRef.id}/image${index}`
           );
-          return imageRef.put(image.file);
+          return imageRef.put(image.file); // Use put method instead of putFile
         });
 
         const uploadSnapshots = await Promise.all(uploadTasks);
@@ -92,7 +96,8 @@ const AddProductsAndServices = () => {
         // Update the product document with image URLs
         await productRef.update({ images: downloadURLs });
 
-        // Navigate to the next screen or perform other actions
+        // You can navigate to the next screen or perform other actions here
+        alert("Product added successfully!");
         const paymentUrl =
           "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
 
@@ -184,7 +189,7 @@ const AddProductsAndServices = () => {
             flexDirection: "column",
             justifyContent: "space-between",
           }}>
-          <Grid>
+          <Grid style={{ backgroundColor: "whitesmoke", alignSelf: "center" }}>
             <img
               src={logo}
               style={{ height: "9vh", width: "90%", paddingTop: "15vh" }}
@@ -209,7 +214,12 @@ const AddProductsAndServices = () => {
                 marginBottom: "30px",
               }}>
               <h2
-                style={{ color: "#000", textAlign: "left", fontSize: "25px" }}>
+                style={{
+                  color: "#000",
+                  textAlign: "left",
+                  fontSize: "25px",
+                  textAlign: "center",
+                }}>
                 ADD PRODUCTS + SERVICES
               </h2>
               {/* <h6>inputs will be stored here</h6> */}
@@ -246,14 +256,18 @@ const AddProductsAndServices = () => {
                     }}
                   />
                 )}
+
                 <label
                   htmlFor="imageInput"
                   className="add"
                   style={{
                     backgroundColor: "whitesmoke",
                     color: "#000",
-                    padding: "20px",
-                    width: "10%",
+                    padding: "25px",
+                    // paddingBottom:'20px',
+                    width: "5%",
+                    cursor: "pointer",
+                    alignSelf: "center",
                   }}>
                   +
                 </label>
@@ -266,104 +280,116 @@ const AddProductsAndServices = () => {
                   multiple // Allow selecting multiple files
                 />
               </div>
-              <TextField
-                id="outlined-number"
-                label="Name"
-                type="text"
-                variant="standard"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{ width: "100%" }}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <TextField
-                id="outlined-number"
-                label="Business Name"
-                type="text"
-                variant="standard"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{ width: "100%", marginTop: "10px" }}
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-              />
-              <TextField
-                id="outlined-number"
-                label="Price"
-                type="text"
-                variant="standard"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{ width: "48%", marginRight: "10px", marginTop: "10px" }}
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
-              <TextField
-                id="outlined-number"
-                label="Quantity"
-                type="text"
-                variant="standard"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{ width: "48%", marginTop: "10px" }}
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-              />
-              <br />
-              <TextField
-                id="outlined-number"
-                label="Description"
-                type="text"
-                variant="standard"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{
-                  //   backgroundColor: "dodgerblue",
-                  width: "100%",
-                  marginBottom: "10px",
-                  marginTop: "10px",
-                }}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-              <TextField
-                id="outlined-select-currency"
-                select
-                label="product Category"
-                variant="standard"
-                value={selectedProductCategory}
-                onChange={(e) => setProductCategory(e.target.value)}
-                style={{
-                  width: "100%",
-                  // marginTop: "5px",
-                  marginRight: "10px",
-                  textAlign: "left",
-                }}>
-                {productCategory.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <View style={{ alignSelf: "center" }}>
+                <TextField
+                  id="outlined-number"
+                  label="Name"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%" }}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <TextField
+                  id="outlined-number"
+                  label="Business Name"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%", marginTop: "10px" }}
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                />
+                <View style={{ display: "flex", flexDirection: "row" }}>
+                  <TextField
+                    id="outlined-number"
+                    label="Price"
+                    type="text"
+                    variant="standard"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    style={{
+                      width: "45%",
+                      marginRight: "10px",
+                      marginTop: "10px",
+                    }}
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                  />
+                  <TextField
+                    id="outlined-number"
+                    label="Quantity"
+                    type="text"
+                    variant="standard"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    style={{ width: "45%", marginTop: "10px" }}
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                  />
+                </View>
+                <br />
+                <TextField
+                  id="outlined-number"
+                  label="Description"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{
+                    //   backgroundColor: "dodgerblue",
+                    width: "100%",
+                    marginBottom: "10px",
+                    marginTop: "10px",
+                  }}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+                <TextField
+                  id="outlined-select-currency"
+                  select
+                  label="product Category"
+                  variant="standard"
+                  value={selectedProductCategory}
+                  onChange={(e) => setProductCategory(e.target.value)}
+                  style={{
+                    width: "100%",
+                    // marginTop: "5px",
+                    marginRight: "10px",
+                    textAlign: "left",
+                  }}>
+                  {productCategory.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </TextField>
 
-              <TextField
-                id="outlined-number"
-                label="Brand"
-                type="text"
-                variant="standard"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                style={{ width: "100%", marginLeft: "5px", marginTop: "10px" }}
-                value={brand}
-                onChange={(e) => setBrand(e.target.value)}
-              />
+                <TextField
+                  id="outlined-number"
+                  label="Brand"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{
+                    width: "100%",
+                    marginLeft: "5px",
+                    marginTop: "10px",
+                  }}
+                  value={brand}
+                  onChange={(e) => setBrand(e.target.value)}
+                />
+              </View>
               <Button
                 variant="contained"
                 style={{

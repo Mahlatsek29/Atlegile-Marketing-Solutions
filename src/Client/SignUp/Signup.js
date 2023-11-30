@@ -30,19 +30,22 @@ const Signup = () => {
       console.log("Username:", username);
       console.log("Email:", email);
       console.log("Password:", password);
-
+  
       const userCredential = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
-
+  
       if (userCredential.user) {
         console.log("User signed up:", userCredential.user);
-
+  
+        // Save email in local storage
+        await AsyncStorage.setItem("userEmail", email);
+  
         // Create a user document with the UID in the Users collection
         await firestore.collection("Users").doc(userCredential.user.uid).set({
           email: email,
         });
-
+  
         // Navigate to "/TellUsAboutYourself" after successful sign-up
         navigation.navigate("TellUsAboutYourself");
       }

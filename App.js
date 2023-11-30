@@ -30,9 +30,8 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Landing"
-        initialRouteName="Landing"
-        screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Landing" component={Landing} />
+        screenOptions={{ headerShown: false }}
+      >
         <Stack.Screen name="Landing" component={Landing} />
         <Stack.Screen name="AboutUs" component={AboutUs} />
         <Stack.Screen name="SignUp" component={SignUp} />

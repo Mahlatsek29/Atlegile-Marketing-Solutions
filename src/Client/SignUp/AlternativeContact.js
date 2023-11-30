@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import {
     View,
@@ -10,7 +8,9 @@ import {
     StyleSheet,
     Image,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native"; const AccountHolder = () => {
+import { useNavigation } from "@react-navigation/native";
+
+const AccountHolder = () => {
     const navigation = useNavigation();
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -20,13 +20,13 @@ import { useNavigation } from "@react-navigation/native"; const AccountHolder = 
         console.log("Password:", password); navigation.navigate("AlternativeContact");
     }; return (
         <ImageBackground
-            source={require("../Global/images/Reed.jpg")}
+            source={require("../../Global/images/Reed.jpg")}
             style={styles.background}
         >
             <View style={styles.container}>
                 <View>
                     <Image
-                        source={require("../Global/images/logo.png")}
+                        source={require("../../Global/images/logo.png")}
                         style={styles.logo}
                     />
                 </View>        <View style={{ width: "75%" }}>

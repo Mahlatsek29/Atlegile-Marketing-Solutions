@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import BlackSilk from "../../Global/images/blackSilk.jpg";
 // import { IoMdStopwatch } from "react-icons/io";
 //import { GoCheckCircleFill } from "react-icons/go";
@@ -11,6 +11,7 @@ import NavBar from "../../Global/Navbar";
 import {
   View,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Image,
   Text,
   TextInput,
@@ -38,11 +39,13 @@ import { COLORS } from "../../Global/Color";
 import Header from "../../Global/Header";
 import { Ionicons } from "@expo/vector-icons";
 import { height } from "@mui/system";
+import SideNav from "../../Global/SideNav";
+import { Dimensions } from "react-native";
 export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
-  const [businessAuthorization, setBusinessAuthorization] = useState(true);
+  const [businessAuthorization, setBusinessAuthorization] = useState(false);
   const [subscreibed, setSubscreibed] = useState(false);
   const [businessRegistered, setBusinessRegistered] = useState(true);
 
@@ -61,6 +64,9 @@ export default function BusinessAccount() {
   const [other, setOther] = useState("");
   const [images, setImages] = useState([]);
   const [landing, setLanding] = useState(true);
+
+  const screenWidth = Dimensions.get("window").width;
+  const screenHeight = Dimensions.get("window").height;
   const list = [1, 2];
   let bannerListIndex = 0;
   let bannerList = [
@@ -160,6 +166,7 @@ export default function BusinessAccount() {
   };
 
   const handlePopUp = () => {
+    console.log('this is happening')
     setLanding(false);
   };
   useEffect(() => {
@@ -193,20 +200,25 @@ export default function BusinessAccount() {
         <View
           style={{
             position: "absolute",
-            width: "1000%",
+            width: "100%",
             height: "100%",
             backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
-            display: "flex",           
+            display: "flex",
             alignItems: "center",
             zIndex: 1000, // Adjust as needed
           }}
         >
           <View
-            style={{ flex: 1,  justifyContent: "felx-end", alignItems: "center" , width:50}}
+            style={{
+              flex: 1,
+              justifyContent: "felx-end",
+              alignItems: "center",
+              width: 50,
+            }}
           >
             <Card
               style={{
-               position: "fixed",
+                position: "fixed",
                 top: 0,
                 left: 0,
                 width: "100vw",
@@ -417,392 +429,406 @@ export default function BusinessAccount() {
         </View>
       ) : null}
 
-      {landing ? (
-        <TouchableOpacity
+      {landing && !businessAuthorization ? (
+        <View
           style={{
+            top: 50,
+            position: "absolute",
+            // width:"100%",
+            // height:"100vh",
             flex: 1,
             backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 1000, // Adjust as needed
+            zIndex: 1000,
           }}
-         // onClick={handlePopUp()}
         >
           <View
             style={{
-              position: "absolute",
-              top: 0,
-             
-              width: "60vw",
-             flex:1,
+              width: "60%",
               backgroundColor: "white",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              zIndex: 999,
             }}
           >
-            {" "}
-            {/* <ScrollView> */}
-              <View
+          
+            <TouchableOpacity
+              style={{                
+                borderRadius: 50,
+                paddingHorizontal: "10%",
+                paddingVertical: "5%",            
+                width: "100%",
+                height: "2px",
+              }}
+              onPress={ handlePopUp}
+            >
+               <AntDesign
+                name="close"
+                size={24}
+                color="black"
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  paddingBottom: 20,
-                  paddingTop: 20,
-                  height:"20vh",
-                  width:"100%"
+                  top: 50,
+                  position: "absolute",
+                  right: 50,
+                  width: 20, // Use numbers for dimensions, not strings
+                  height: 20,
                 }}
-              >
-                {/* <Image
-                      source={require("../../Global/images/BusinessPlus+.jpg")}
-                      alt="business plus logo"
-                      style={{ width: "85%", height: "20%", marginBottom: 5 }}
-                    /> */}
-                <Image
-                  source={logo}
-                  alt="cropped AMS Shadow Queen Logo BNY-1320x772"
-                  style={{width:"20%", height:"60%"}}
-                />
-              </View>
+              />
+             
+            </TouchableOpacity>
 
-              <Text
-                style={{
-                  fontWeight: 700,
-                  fontSize: 20,
-                  marginBottom: 20,
-                  textAlign: "center",
-                }}
-              >
-                BUSINESS REGISTRATION AUTHORIZATION
-              </Text>
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                //  paddingBottom: 20,
+                //paddingTop: 20,
+                height: "20vh",
+                width: "100%",
+              }}
+            >
+              <Image
+                source={logo}
+                alt="cropped AMS Shadow Queen Logo BNY-1320x772"
+                style={{ width: "20%", height: "40%" }}
+              />
+            </View>
 
-              <Text style={{ textAlign: "center", fontSize: 15 }}>
-                Welcome to AMS, where we strive to ensure a secure and
-                trustworthy <br />
-                environment for businesses and customers alike. As part of our
-                <br />
-                commitment to maintaining the integrity of our platform, we have
-                <br />
-                implemented an authorization process for new business
-                <br />
-                registrations. This process is designed to verify the legitimacy
-                <br />
-                and authenticity of the businesses that join our community.
-              </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  flexWrap: "wrap",                 
-                  paddingTop: 20,
-                  paddingBottom: 20,
-                  width: "80%",
-                  display: "flex",
-                  justifyContent: "center",                  
-                }}
-              >
-              
-                <Card
-                  style={{
-                    flexDirection: "column",
-                    alignItems: "center",
-                    border: "1px gray solid",
-                    width: "35%",
-                    padding: 10,
-                    margin: 10,
-                  }}
-                >
-                  <Typography
-                    style={{
-                      fontWeight: "700",
-                      fontSize: 15,
-                      marginBottom: 20,
-                      textAlign: "center",
-                    }}
-                  >
-                    Enhance Trust
-                  </Typography>
+            <Text
+              style={{
+                fontWeight: 700,
+                fontSize: 15,
+                marginTop: "-30px",
+                textAlign: "center",
+              }}
+            >
+              BUSINESS REGISTRATION AUTHORIZATION
+            </Text>
 
-                  <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
-                    By confirming the legitimacy of businesses, <br /> we build
-                    trust among our users, making it a<br /> safer place to
-                    conduct business.
-                  </Typography>
-                </Card>
-
-                <Card
-                  style={{
-                    flexDirection: "column",
-                    alignItems: "center",
-                    border: "1px gray solid",
-                    width: "35%",
-                    padding: 10,
-                    margin: 10,
-                  }}
-                >
-                  <Typography
-                    style={{
-                      fontWeight: "700",
-                      fontSize: 15,
-                      marginBottom: 20,
-                      textAlign: "center",
-                    }}
-                  >
-                    Review
-                  </Typography>
-                  <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
-                    Our dedicated team will review the
-                    <br /> provided details, ensuring they align with
-                    <br /> our platform's policies and standards.
-                  </Typography>
-                </Card>
-
-                <Card
-                  style={{
-                    flexDirection: "column",
-                    alignItems: "center",
-                    border: "1px gray solid",
-                    width: "35%",
-                    padding: 10,
-                    margin: 10,
-                  }}
-                >
-                  <Typography
-                    style={{
-                      fontWeight: "700",
-                      fontSize: 15,
-                      marginBottom: 20,
-                      textAlign: "center",
-                    }}
-                  >
-                    Verification
-                  </Typography>
-                  <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
-                    In some cases, we may request additional
-                    <br /> documents or information to verify the
-                    <br /> authenticity of your business.
-                  </Typography>
-                </Card>
-
-                <Card
-                  style={{
-                    flexDirection: "column",
-                    alignItems: "center",
-                    border: "1px gray solid",
-                    width: "35%",
-                    padding: 10,
-                    margin: 10,
-                  }}
-                >
-                  <Typography
-                    style={{
-                      fontWeight: "700",
-                      fontSize: 15,
-                      marginBottom: 20,
-                      textAlign: "center",
-                    }}
-                  >
-                    Approval
-                  </Typography>
-                  <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
-                    Once your registration is approved, your
-                    <br /> business profile will be live on our platform,
-                    <br /> and you can start receiving orders for your
-                    <br /> products and services.
-                  </Typography>
-                </Card>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                  justifyContent: "space-between",
-                  paddingTop: 20,
-                  paddingBottom: 20,
-                  width: "60%",
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "column",
-                    width: "49%",
-                    marginBottom: 10,
-                  }}
-                >
-                  <Typography
-                    style={{
-                      fontWeight: "700",
-                      fontSize: 15,
-                      marginBottom: 20,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    TIMEFRAME
-                  </Typography>
-                  <Typography sx={{ marginTop: "-20px" }}>
-                    The authorization process typically takes [X] business days,
-                    depending on the complexity of your business and the
-                    accuracy of the information provided.
-                  </Typography>
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: "column",
-                    width: "49%",
-                    marginBottom: 10,
-                  }}
-                >
-                  <Typography
-                    style={{
-                      fontWeight: "700",
-                      fontSize: 15,
-                      marginBottom: 20,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    CONTACT US
-                  </Typography>
-                  <Typography sx={{ marginTop: "-20px" }}>
-                    If you have any questions or require assistance during the
-                    authorization process, please don't hesitate to contact our
-                    support team at [Contact Information].
-                  </Typography>
-                </View>
-              </View>
+            <Text style={{ textAlign: "center", fontSize: 15 }}>
+              Welcome to AMS, where we strive to ensure a secure and trustworthy{" "}
+              <br />
+              environment for businesses and customers alike. As part of our
+              <br />
+              commitment to maintaining the integrity of our platform, we have
+              <br />
+              implemented an authorization process for new business
+              <br />
+              registrations. This process is designed to verify the legitimacy
+              <br />
+              and authenticity of the businesses that join our community.
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                paddingTop: 20,
+                paddingBottom: 20,
+                width: "80%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
               <Card
                 style={{
                   flexDirection: "column",
-                  border: "1px lightgray solid",
-                  padding: 40,
-                  height:"50vh",
-                  marginBottom:30
-
+                  alignItems: "center",
+                  border: "1px gray solid",
+                  width: "35%",
+                  padding: 10,
+                  margin: 10,
                 }}
               >
-                <Image
-                  source={BusinessAccountPlus}
-                  alt="business plus logo"
-                  style={{ width: "35%", height:"15%", marginBottom: 5 }}
-                />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Typography
-                    style={{
-                      color: "#252b42",
-                      fontWeight: "700",
-                      fontSize: 32,
-                      width: "50%",
-                    }}
-                  >
-                    BUSINESS PLUS SUBSCRIPTION
-                  </Typography>
-
-                  <View
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexDirection: "column",
-                      width: "20%",
-                    }}
-                  >
-                    <Typography
-                      style={{
-                        color: "#23a6f0",
-                        fontWeight: "700",
-                        fontSize: 40,
-                        marginBottom: -10,
-                      }}
-                    >
-                      R150
-                    </Typography>
-                    <Typography
-                      style={{
-                        color: "#b8d9f7",
-                        fontWeight: "700",
-                        fontSize: 20,
-                      }}
-                    >
-                      Per Month
-                    </Typography>
-                  </View>
-                </View>
                 <Typography
                   style={{
-                    color: "#9e9e9e",
                     fontWeight: "700",
-                    fontSize: 16,
-                    paddingTop: 10,
-                    paddingBottom: 10,
+                    fontSize: 15,
+                    marginBottom: 12,
+                    textAlign: "center",
                   }}
                 >
-                  Unlock More Opportunities with Business Plus Subscription
+                  Enhance Trust
                 </Typography>
-                <View style={{ flexDirection: "column" }}>
+
+                <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
+                  By confirming the legitimacy of businesses, <br /> we build
+                  trust among our users, making it a<br /> safer place to
+                  conduct business.
+                </Typography>
+              </Card>
+
+              <Card
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  border: "1px gray solid",
+                  width: "35%",
+                  padding: 10,
+                  margin: 10,
+                }}
+              >
+                <Typography
+                  style={{
+                    fontWeight: "700",
+                    fontSize: 15,
+                    marginBottom: 20,
+                    textAlign: "center",
+                  }}
+                >
+                  Review
+                </Typography>
+                <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
+                  Our dedicated team will review the
+                  <br /> provided details, ensuring they align with
+                  <br /> our platform's policies and standards.
+                </Typography>
+              </Card>
+
+              <Card
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  border: "1px gray solid",
+                  width: "35%",
+                  padding: 10,
+                  margin: 10,
+                }}
+              >
+                <Typography
+                  style={{
+                    fontWeight: "700",
+                    fontSize: 15,
+                    marginBottom: 20,
+                    textAlign: "center",
+                  }}
+                >
+                  Verification
+                </Typography>
+                <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
+                  In some cases, we may request additional
+                  <br /> documents or information to verify the
+                  <br /> authenticity of your business.
+                </Typography>
+              </Card>
+
+              <Card
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  border: "1px gray solid",
+                  width: "35%",
+                  padding: 10,
+                  margin: 10,
+                }}
+              >
+                <Typography
+                  style={{
+                    fontWeight: "700",
+                    fontSize: 15,
+                    marginBottom: 20,
+                    textAlign: "center",
+                  }}
+                >
+                  Approval
+                </Typography>
+                <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
+                  Once your registration is approved, your
+                  <br /> business profile will be live on our platform,
+                  <br /> and you can start receiving orders for your
+                  <br /> products and services.
+                </Typography>
+              </Card>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                paddingTop: 20,
+                paddingBottom: 20,
+                width: "60%",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "column",
+                  width: "49%",
+                  marginBottom: 10,
+                }}
+              >
+                <Typography
+                  style={{
+                    fontWeight: "700",
+                    fontSize: 15,
+                    marginBottom: 20,
+                    fontWeight: "bold",
+                  }}
+                >
+                  TIMEFRAME
+                </Typography>
+                <Typography sx={{ marginTop: "-20px" }}>
+                  The authorization process typically takes [X] business days,
+                  depending on the complexity of your business and the accuracy
+                  of the information provided.
+                </Typography>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: "column",
+                  width: "49%",
+                  marginBottom: 10,
+                }}
+              >
+                <Typography
+                  style={{
+                    fontWeight: "700",
+                    fontSize: 15,
+                    marginBottom: 20,
+                    fontWeight: "bold",
+                  }}
+                >
+                  CONTACT US
+                </Typography>
+                <Typography sx={{ marginTop: "-20px" }}>
+                  If you have any questions or require assistance during the
+                  authorization process, please don't hesitate to contact our
+                  support team at [Contact Information].
+                </Typography>
+              </View>
+            </View>
+            <Card
+              style={{
+                flexDirection: "column",
+                border: "1px lightgray solid",
+                padding: 40,
+                height: "40vh",
+                marginBottom: 30,
+              }}
+            >
+              <Image
+                source={BusinessAccountPlus}
+                alt="business plus logo"
+                style={{ width: "45%", height: "25%", marginBottom: 5 }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography
+                  style={{
+                    color: "#252b42",
+                    fontWeight: "700",
+                    fontSize: 32,
+                    width: "50%",
+                  }}
+                >
+                  BUSINESS PLUS SUBSCRIPTION
+                </Typography>
+
+                <View
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    width: "20%",
+                  }}
+                >
                   <Typography
                     style={{
-                      marginTop: 15,
+                      color: "#23a6f0",
                       fontWeight: "700",
-                      fontSize: 18,
-                      display: "flex",
-                      alignItems: "center",
+                      fontSize: 40,
+                      marginBottom: -10,
                     }}
                   >
-                    {" "}
-                    <Ionicons
-                      name="checkmark-circle"
-                      size={30}
-                      color="#2dc071"
-                    />{" "}
-                    List Unlimited Products
+                    R150
                   </Typography>
                   <Typography
                     style={{
+                      color: "#b8d9f7",
                       fontWeight: "700",
-                      fontSize: 18,
-                      marginTop: 15,
-                      display: "flex",
-                      alignItems: "center",
+                      fontSize: 20,
                     }}
                   >
-                    {" "}
-                    <Ionicons
-                      name="checkmark-circle"
-                      size={30}
-                      color="#2dc071"
-                    />{" "}
-                    Priority Support
-                  </Typography>
-                  <Typography
-                    style={{
-                      fontWeight: "700",
-                      fontSize: 18,
-                      marginTop: 15,
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    {" "}
-                    <Ionicons
-                      name="checkmark-circle"
-                      size={30}
-                      color="#2dc071"
-                    />{" "}
-                    Exclusive Promotions
+                    Per Month
                   </Typography>
                 </View>
-              </Card>
-            {/* </ScrollView> */}
+              </View>
+              <Typography
+                style={{
+                  color: "#9e9e9e",
+                  fontWeight: "700",
+                  fontSize: 16,
+                  paddingTop: 10,
+                  paddingBottom: 10,
+                }}
+              >
+                Unlock More Opportunities with Business Plus Subscription
+              </Typography>
+              <View style={{ flexDirection: "column" }}>
+                <Typography
+                  style={{
+                    marginTop: 15,
+                    fontWeight: "700",
+                    fontSize: 18,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {" "}
+                  <Ionicons
+                    name="checkmark-circle"
+                    size={30}
+                    color="#2dc071"
+                  />{" "}
+                  List Unlimited Products
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "700",
+                    fontSize: 18,
+                    marginTop: 12,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {" "}
+                  <Ionicons
+                    name="checkmark-circle"
+                    size={30}
+                    color="#2dc071"
+                  />{" "}
+                  Priority Support
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "700",
+                    fontSize: 18,
+                    marginTop: 12,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {" "}
+                  <Ionicons
+                    name="checkmark-circle"
+                    size={30}
+                    color="#2dc071"
+                  />{" "}
+                  Exclusive Promotions
+                </Typography>
+              </View>
+            </Card>
           </View>
-        </TouchableOpacity>
+        </View>
       ) : null}
       <Header />
       <NavBar />
@@ -816,6 +842,7 @@ export default function BusinessAccount() {
             justifyContent: "center",
           }}
         >
+          <SideNav />
           {/* <View id="sideNav">
             <View
               style={{
@@ -1830,7 +1857,6 @@ export default function BusinessAccount() {
                   flexDirection: "row",
                   paddingRight: 10,
                   marginBottom: 20,
-                  // backgroundColor:"white"
                 }}
               >
                 <View style={{ flex: 1 }}>
@@ -1861,12 +1887,17 @@ export default function BusinessAccount() {
                       height: 500,
                       //   zIndex:500,
                     }}
-                  >
-                    <Image
+                  > 
+                  {/* <TouchableOpacity
+                 // onPress={setBusinessAuthorization(true)}
+                  > */}
+                  <Image
                       source={require("../../Global/images/BusinessPlus+.jpg")}
                       alt="business plus logo"
                       style={{ width: "85%", height: "20%", marginBottom: 5 }}
                     />
+                  {/* </TouchableOpacity> */}
+                  
                     <Text
                       style={{
                         color: "#252b42",
@@ -1875,7 +1906,10 @@ export default function BusinessAccount() {
                         textAlign: "center",
                       }}
                     >
-                      BUSINESS PLUS SUBSCRIPTION
+                      <TouchableOpacity onPress={() => setBusinessAuthorization(true)}>
+  BUSINESS PLUS SUBSCRIPTION
+</TouchableOpacity>
+
                     </Text>
                     <Text
                       style={{

@@ -8,9 +8,9 @@ import FollowUs from "../../Global/Header";
 import { Footer } from "../../Global/Footer";
 import shop from "../../Global/images/svg_landing.svg";
 import shop2 from "../../Global/images/svg_landing.svg";
-import { firebase,auth } from "../../config";
+import { firebase, auth } from "../../config";
 
-const Landing = ({navigation}) => {
+const Landing = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const productIds = [
     "HWCHEa90akqO478j4soK",
@@ -33,7 +33,6 @@ const Landing = ({navigation}) => {
 
     fetchProducts();
   }, []);
-
 
   return (
     <>
@@ -247,13 +246,12 @@ const Landing = ({navigation}) => {
                 <ProductCard />
                 <ProductCard />
                 <ProductCard />
-    
               </>
             </ScrollView>
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}
-              style={{ marginTop: 20, display: "flex", flexDirection: "row",  marginHorizontal:10 }}>
+              style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
               {productIds.map((productId) => (
                 <ProductCard key={productId} productId={productId} />
               ))}

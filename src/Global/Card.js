@@ -48,7 +48,7 @@ const ProductCard = ({ productId }) => {
   }
 
   return (
-    <Card className="card-container">
+    <Card className="card-container" style={{ marginLeft: "1%", width:"100%" }}>
       <Box>
         <Box
           style={{
@@ -74,7 +74,7 @@ const ProductCard = ({ productId }) => {
                 ? product.images[0]
                 : "../../assets/image/headsets.png"
             }
-            alt={product.productName}
+            alt={product.name}
             style={{
               borderRadius: "100px",
               objectFit: "cover",
@@ -148,7 +148,7 @@ const ProductCard = ({ productId }) => {
               variant="h6"
               component="h6"
               style={{ fontSize: "16px", color: "#0074cc" }}>
-              {product.selectedCategory}{" "}
+              {product.selectedIndustry}
               {/* Assuming selectedCategory is a field in your product */}
             </Typography>
             <Typography
@@ -162,7 +162,7 @@ const ProductCard = ({ productId }) => {
             </Typography>
           </Box>
           <Typography variant="h5" component="h5">
-            {product.productName}
+            {product.name}
           </Typography>
           <Typography
             variant="subtitle2"
@@ -191,7 +191,7 @@ const ProductCard = ({ productId }) => {
                   fontWeight: "700",
                   marginRight: "10px",
                 }}>
-                R{product.price}700
+                R{product.price}
               </Typography>
               <Typography
                 variant="subtitle2"
@@ -201,7 +201,7 @@ const ProductCard = ({ productId }) => {
                   fontSize: "18px",
                   fontWeight: "700",
                 }}>
-                R{product.price}500
+                R{product.price}
               </Typography>
             </Box>
           </Box>

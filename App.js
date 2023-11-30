@@ -21,7 +21,7 @@ import Reciept from "./src/Client/CartAndOrderHistory/Reciept";
 import DeliveryOngoing from "./src/Client/CartAndOrderHistory/DeliveryOngoing";
 import DeliveryAndChatSystem from "./src/Client/CartAndOrderHistory/DeliveryAndChatSystem";
 import DateSelectionAndCheckout from "./src/Client/CartAndOrderHistory/DateSelectionAndCheckout";
-import  Favourites from "./src/Client/Favourites/Favourites"
+import Favourites from "./src/Client/Favourites/Favourites"
 
 const Stack = createStackNavigator();
 
@@ -31,14 +31,14 @@ function App() {
       <Stack.Navigator
         initialRouteName="Landing"
         screenOptions={{ headerShown: false }}>
-        {/* <Stack.Screen name="Landing" component={Landing} />
+        <Stack.Screen name="Landing" component={Landing} />
         <Stack.Screen name="AboutUs" component={AboutUs} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen
           name="TellUsAboutYourself"
           component={TellUsAboutYourself}
-        /> */}
-        {/* <Stack.Screen
+        />
+        <Stack.Screen
           name="AlternativeContact"
           component={AlternativeContact}
         />
@@ -50,26 +50,26 @@ function App() {
         <Stack.Screen
           name="AddProductsAndServices"
           component={AddProductsAndServices}
-        /> */}
-        {/* <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
+        />
+        <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="BusinessProducts" component={BusinessProducts} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
-        <Stack.Screen name="AccountAndBusiness" component={AccountAndBusiness}/>
+        <Stack.Screen name="AccountAndBusiness" component={AccountAndBusiness} />
         <Stack.Screen name="OrderHistory" component={OrderHistory} />
         <Stack.Screen name="PayFast" component={PayFast} />
         <Stack.Screen name="CourierGuy" component={CourierGuy} />
-        <Stack.Screen name="DateSelectionAndCheckout" component={DateSelectionAndCheckout}/>
+        <Stack.Screen name="DateSelectionAndCheckout" component={DateSelectionAndCheckout} />
         <Stack.Screen name="Reciept" component={Reciept} />
         <Stack.Screen name="DeliveryOngoing" component={DeliveryOngoing} />
         <Stack.Screen
           name="DeliveryAndChatSystem"
           component={DeliveryAndChatSystem}
-        /> */}
+        />
         <Stack.Screen name="Favourites" component={Favourites} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
-export default App;
+export default App

@@ -10,6 +10,8 @@ import shop from "../../Global/images/svg_landing.svg";
 import shop2 from "../../Global/images/svg_landing.svg";
 import { firebase, auth } from "../../config";
 
+
+
 const Landing = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const productIds = [

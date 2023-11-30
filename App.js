@@ -34,11 +34,23 @@ function App() {
         <Stack.Screen name="Landing" component={Landing} />
         <Stack.Screen name="AboutUs" component={AboutUs} />
         <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="TellUsAboutYourself" component={TellUsAboutYourself}/>
-        <Stack.Screen name="AlternativeContact" component={AlternativeContact}/>
+        <Stack.Screen
+          name="TellUsAboutYourself"
+          component={TellUsAboutYourself}
+        />
+        <Stack.Screen
+          name="AlternativeContact"
+          component={AlternativeContact}
+        />
         <Stack.Screen name="SignIn" component={SignIn} />
-        <Stack.Screen name="BusinessRegistration" component={BusinessRegistration}/>
-        <Stack.Screen name="AddProductsAndServices" component={AddProductsAndServices}/>
+        <Stack.Screen
+          name="BusinessRegistration"
+          component={BusinessRegistration}
+        />
+        <Stack.Screen
+          name="AddProductsAndServices"
+          component={AddProductsAndServices}
+        />
         <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="BusinessProducts" component={BusinessProducts} />
@@ -50,7 +62,10 @@ function App() {
         <Stack.Screen name="DateSelectionAndCheckout" component={DateSelectionAndCheckout}/>
         <Stack.Screen name="Reciept" component={Reciept} />
         <Stack.Screen name="DeliveryOngoing" component={DeliveryOngoing} />
-        <Stack.Screen name="DeliveryAndChatSystem" component={DeliveryAndChatSystem}/>
+        <Stack.Screen
+          name="DeliveryAndChatSystem"
+          component={DeliveryAndChatSystem}
+        />
         <Stack.Screen name="Favourites" component={Favourites} />
       </Stack.Navigator>
     </NavigationContainer>

@@ -16,8 +16,10 @@ import {
   Text,
   TextInput,
   ScrollView,
+  Portal,
+  Modal,
 } from "react-native";
-import { Modal, Title } from "react-native-paper";
+// import { Modal, Title } from "react-native-paper";
 import { Footer } from "../../Global/Footer";
 import ProductCard from "../../Global/Card";
 const logo = require("../../Global/images/cropped-AMS-Shadow-Queen-Logo_BNY-1320x772 1.png");
@@ -64,7 +66,7 @@ export default function BusinessAccount() {
   const [other, setOther] = useState("");
   const [images, setImages] = useState([]);
   const [landing, setLanding] = useState(true);
-
+    const [addProduct,setAddProduct] = useState("")
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
   const list = [1, 2];
@@ -163,10 +165,10 @@ export default function BusinessAccount() {
 
   const handleSavePaymentInfo = () => {
     setPaymentModal(false);
+    setBusinessAuthorization(true)
   };
 
   const handlePopUp = () => {
-    console.log('this is happening')
     setLanding(false);
   };
   useEffect(() => {
@@ -196,6 +198,608 @@ export default function BusinessAccount() {
   };
   return (
     <>
+ {editModal ? (
+               <View
+               // visible={true}
+               // onDismiss={() => setPaymentModal(false)}
+               style={{
+                 top: 65,
+                 position: "absolute",
+                 // width: "100%",
+                 // height: "100%",
+                 flex: 1,
+                 backgroundColor: "rgba(0, 0, 0, 0.5)",
+                 display: "flex",
+                 justifyContent: "flex-end",
+                 alignItems: "flex-end",
+                 zIndex: 9999,
+                 alignSelf: "flex-end",
+               }}
+             >
+                {/* <View
+                  style={{
+                    width: "33%",
+                  }}
+                  onTouchEnd={() => setEditModal(false)}
+                ></View>
+                <View
+                  style={{
+                    width: "33%",
+                  }}
+                  onTouchEnd={() => setEditModal(false)}
+                ></View> */}
+                <View
+                  style={{
+                    height:'100vh',
+                    backgroundColor: "white",
+                 //   backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    
+                  }}
+                >
+                  <View
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "40%",
+                    }}
+                  >
+                    <Image
+                      source={require("../../Global/images/logo.svg")} // Make sure to provide the correct path to your logo
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        resizeMode: "contain",
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={{ height: "60%", paddingRight: 40, paddingLeft: 40 }}
+                  >
+                    <Text
+                      style={{
+                        fontWeight: "600",
+                        fontSize: 30,
+                        marginBottom: 5,
+                      }}
+                    >
+                      EDIT PRODUCT
+                    </Text>
+                    <View>
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          paddingTop: 10,
+                          paddingBottom: 20,
+                        }}
+                      >
+                        {image && (
+                          <Image
+                            source={{ uri: image }} // Assuming image is a URI
+                            style={{
+                              backgroundColor: "#fafafa",
+                              borderWidth: 1,
+                              borderColor: "lightgray",
+                              width: 100,
+                              padding: 7,
+                              marginRight: 10,
+                            }}
+                          />
+                        )}
+                        <TouchableOpacity
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            backgroundColor: "#fafafa",
+                            borderWidth: 1,
+                            borderColor: "lightgray",
+                            width: 100,
+                            padding: 20,
+                          }}
+                          onPress={openFileInput}
+                        >
+                          <Text
+                            style={{
+                              color: "gray",
+                              fontSize: 20,
+                              fontWeight: "700",
+                            }}
+                          >
+                            +
+                          </Text>
+                          <Text style={{ color: "gray" }}>Upload</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <TextInput
+                        placeholder="Name"
+                        onChangeText={(text) => setProductName(text)}
+                        style={{
+                          width: "100%",
+                          border: "none",
+                          borderBottomWidth: 1,
+                          borderBottomColor: "gray",
+                          paddingBottom: 5,
+                          marginTop: 30,
+                        }}
+                      />
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <View
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <TextInput
+                            placeholder="Price"
+                            onChangeText={(text) => setPrice(text)}
+                            style={{
+                              border: "none",
+                              borderBottomWidth: 1,
+                              borderBottomColor: "gray",
+                              paddingBottom: 5,
+                              marginTop: 40,
+                            }}
+                          />
+                          <Text style={{ fontSize: 12, paddingRight: 10 }}>
+                            There will be VAT, Service Fees, Delivery Fees added
+                            to this amount.
+                          </Text>
+                        </View>
+                        <View>
+                          <TextInput
+                            placeholder="Quantity"
+                            onChangeText={(text) => setQuantity(text)}
+                            style={{
+                              border: "none",
+                              borderBottomWidth: 1,
+                              borderBottomColor: "gray",
+                              paddingBottom: 5,
+                              marginTop: 40,
+                              marginLeft: 20,
+                            }}
+                          />
+                          <Text></Text>
+                        </View>
+                      </View>
+                      <TextInput
+                        placeholder="Description"
+                        onChangeText={(text) => setDescription(text)}
+                        style={{
+                          width: "100%",
+                          border: "none",
+                          borderBottomWidth: 1,
+                          borderBottomColor: "gray",
+                          paddingBottom: 5,
+                          marginTop: 40,
+                        }}
+                      />
+                      <TextInput
+                        placeholder="Type of Product"
+                        onChangeText={(text) => setProductType(text)}
+                        style={{
+                          width: "100%",
+                          border: "none",
+                          borderBottomWidth: 1,
+                          borderBottomColor: "gray",
+                          paddingBottom: 5,
+                          marginTop: 40,
+                        }}
+                      />
+                      <TextInput
+                        placeholder="Other"
+                        onChangeText={(text) => setOther(text)}
+                        style={{
+                          width: "100%",
+                          border: "none",
+                          borderBottomWidth: 1,
+                          borderBottomColor: "gray",
+                          paddingBottom: 5,
+                          marginTop: 40,
+                        }}
+                      />
+
+                      <TouchableOpacity
+                        onPress={handleSaveEditProduct}
+                        style={{
+                          color: "white",
+                          fontWeight: "600",
+                          fontSize: 14,
+                          backgroundColor: "#072840",
+                          borderRadius: 20,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          textAlign: "center",
+                          padding: 10,
+                          marginTop: 20,
+                        }}
+                      >
+                        <Text style={{ color: "white" }}>SAVE</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </View>
+           
+           ): null}
+{ addProduct ? (
+   <View
+   // visible={true}
+   // onDismiss={() => setPaymentModal(false)}
+   style={{
+     top: 0,
+     position: "absolute",
+    width: "100vw",
+      height: "100vh",
+    
+     backgroundColor: "rgba(0, 0, 0, 0.5)",
+     display: "flex",
+     justifyContent: "flex-end",
+     alignItems: "flex-end",
+     zIndex: 9999,
+     
+   }}>
+              <Container fixed style={{ display:"flex", height: "100vh" ,alignSelf: "flex-end",}}>
+                <Grid container spacing={2} justifyContent="center">
+                  <Grid item xs={5}>
+                    <Card>
+                      <CardContent
+                        style={{
+                          textAlign: "center",
+                          justifyContent: "center",
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            height: "300px",
+                          }}
+                        >
+                          <img
+                            src={logo}
+                            alt="Logo"
+                            style={{ width: "100px", margin: "0 auto" }}
+                          />
+                        </Box>
+                        <Typography
+                          variant="h5"
+                          style={{ textAlign: "left", fontWeight: "bold" }}
+                        >
+                          ADD PRODUCTS + SERVICES
+                        </Typography>
+                        <form onSubmit={handleSubmit}>
+                          <Grid container spacing={2} direction="column">
+                            <Box
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                height: "100px",
+                                // width:"100px"
+                              }}
+                            >
+                              {images.map((item, index) => (
+                                <Card
+                                  key={index}
+                                  style={{
+                                    backgroundColor: "green",
+                                    height: "10vh",
+                                    width: "10vw",
+                                  }}
+                                >
+                                  <CardMedia
+                                    component="img"
+                                    alt="Product Image"
+                                    height="140"
+                                    image={item}
+                                  />
+                                </Card>
+                              ))}
+                              <Box
+                                className="upload"
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  position: "relative",
+                                  backgroundColor: "yellow",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <AntDesign
+                                  name="plus"
+                                  size={24}
+                                  color="black"
+                                />
+                                <Typography style={{ marginLeft: "8px" }}>
+                                  Upload
+                                </Typography>
+
+                                <input
+                                  type="file"
+                                  onChange={handleImageChange}
+                                  style={{
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                    opacity: 0,
+                                    width: "100%",
+                                    height: "100%",
+                                    cursor: "pointer",
+                                  }}
+                                />
+                              </Box>
+                            </Box>
+
+                            <Grid
+                              item
+                              xs={12}
+                              sm={6}
+                              style={{ justifyContent: "center" }}
+                            >
+                              <TextField
+                                variant="standard"
+                                fullWidth
+                                type="text"
+                                label="Name"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                                style={{ width: "80%" }}
+                              />
+                              <Grid container spacing={2}>
+                                <Grid item xs={8}>
+                                  <TextField
+                                    variant="standard"
+                                    fullWidth
+                                    type="text"
+                                    label="Price"
+                                    value={price}
+                                    onChange={(e) => setPrice(e.target.value)}
+                                    required
+                                    style={{ width: "100%" }}
+                                  />
+                                </Grid>
+                                <Grid item xs={3}>
+                                  <TextField
+                                    variant="standard"
+                                    fullWidth
+                                    type="text"
+                                    label="Quantity"
+                                    value={quantity}
+                                    onChange={(e) =>
+                                      setQuantity(e.target.value)
+                                    }
+                                    required
+                                    style={{ width: "100%" }}
+                                  />
+                                </Grid>
+                              </Grid>
+                              <Typography
+                                variant="body2"
+                                style={{ marginTop: "8px" }}
+                              >
+                                There will be VAT, Fee, and Delivery Fees
+                                added to this amount
+                              </Typography>
+                            </Grid>
+                          </Grid>
+
+                          <TextField
+                            fullWidth
+                            variant="standard"
+                            type="text"
+                            label="Description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            required
+                            style={{ marginTop: "16px", width: "80%" }}
+                          />
+
+                          <TextField
+                            fullWidth
+                            variant="standard"
+                            type="text"
+                            label="Type of Product"
+                            value={productType}
+                            onChange={(e) => setProductType(e.target.value)}
+                            required
+                            style={{ marginTop: "16px", width: "80%" }}
+                          />
+
+                          <TextField
+                            fullWidth
+                            variant="standard"
+                            type="text"
+                            label="Other"
+                            value={other}
+                            onChange={(e) => setOther(e.target.value)}
+                            required
+                            style={{ marginTop: "16px", width: "80%" }}
+                          />
+
+                          <Button
+                            variant="contained"
+                            style={{
+                              marginTop: "16px",
+                              backgroundColor: COLORS.darkBlue,
+                              borderRadius: 50,
+                              width: "80%",
+                            }}
+                            type="submit"
+                          >
+                            CONTINUE
+                          </Button>
+                        </form>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+              </Container>
+            </View>
+) :null}
+      {paymentModal ? (
+        <View
+          // visible={true}
+          // onDismiss={() => setPaymentModal(false)}
+          style={{
+            top: 65,
+            position: "absolute",
+            // width: "100%",
+            // height: "100%",
+            flex: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+            zIndex: 9999,
+            alignSelf: "flex-end",
+          }}
+        >
+          {/* <View
+            style={{ height: "10%", width: "33%", backgroundColor: "red" }}
+            onPress={() => setPaymentModal(false)}
+          ></View>
+          <View
+            style={{ height: "10%", width: "33%", backgroundColor: "yellow" }}
+            onPress={() => setPaymentModal(false)}
+          ></View> */}
+          <Card
+            style={{
+              height: "100vh",
+              width: "100%",
+              // backgroundColor: "blue",
+             
+              display:"flex",
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+            }}
+          >
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "60%",
+              }}
+            >
+              <Image
+                source={logo}
+                alt="cropped AMS Shadow Queen Logo BNY-1320x772"
+              />
+            </View>
+            <View
+              style={{
+                height: "40%",
+                paddingRight: 40,
+                paddingLeft: 40,
+              }}
+            >
+              <Text
+                style={{
+                  fontWeight: 600,
+                  fontSize: 30,
+                  marginBottom: 5,
+                }}
+              >
+                PAYMENT INFO
+              </Text>
+              <View>
+                <View style={{ marginTop: 30 }}>
+                  <TextInput
+                   variant="standard"
+                    placeholder="Card Holder"
+                    // style={{
+                    //   width: "100%",
+                    //   border: "none",
+                    //   borderBottomWidth: 1,
+                    //   borderBottomColor: "gray",
+                    //   paddingBottom: 5,
+
+                      
+                    // }}
+                    
+                           value={name}
+                            onChange={(e) => setName(e.target.value)}
+                               required
+                               style={{ width: "80%" }}
+                  />
+                </View>
+                <View style={{ marginTop: 30 }}>
+                  <TextInput
+                    placeholder="Card Number"
+                    style={{
+                      width: "100%",
+                      border: "none",
+                      borderBottomWidth: 1,
+                      borderBottomColor: "gray",
+                      paddingBottom: 5,
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginTop: 40,
+                  }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <TextInput
+                      placeholder="Expiry Date"
+                      style={{
+                        border: "none",
+                        borderBottomWidth: 1,
+                        borderBottomColor: "gray",
+                        paddingBottom: 5,
+                      }}
+                    />
+                  </View>
+                  <View style={{ flex: 1, marginLeft: 20 }}>
+                    <TextInput
+                      placeholder="CVV"
+                      style={{
+                        border: "none",
+                        borderBottomWidth: 1,
+                        borderBottomColor: "gray",
+                        paddingBottom: 5,
+                      }}
+                    />
+                  </View>
+                </View>
+                <TouchableOpacity
+                  onPress={handleSavePaymentInfo}
+              
+                  style={{
+                    color: "white",
+                    fontWeight: 600,
+                    fontSize: 14,
+                    backgroundColor: "#072840",
+                    borderRadius: 20,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                    padding: 10,
+                    marginTop: 20,
+                  }}
+
+                >
+                  <Text style={{ color: "white" }}>SAVE</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Card>
+        </View>
+      ) : null}
       {bannerModal ? (
         <View
           style={{
@@ -453,18 +1057,18 @@ export default function BusinessAccount() {
               justifyContent: "center",
             }}
           >
-          
             <TouchableOpacity
-              style={{                
+              style={{
                 borderRadius: 50,
                 paddingHorizontal: "10%",
-                paddingVertical: "5%",            
+                paddingVertical: "3%",
                 width: "100%",
-                height: "2px",
+                height: "5px",
+                // backgroundColor:"green"
               }}
-              onPress={ handlePopUp}
+              onPress={handlePopUp}
             >
-               <AntDesign
+              <AntDesign
                 name="close"
                 size={24}
                 color="black"
@@ -476,7 +1080,6 @@ export default function BusinessAccount() {
                   height: 20,
                 }}
               />
-             
             </TouchableOpacity>
 
             <View
@@ -493,7 +1096,7 @@ export default function BusinessAccount() {
               <Image
                 source={logo}
                 alt="cropped AMS Shadow Queen Logo BNY-1320x772"
-                style={{ width: "20%", height: "40%" }}
+                style={{ width: "15%", height: "35%" }}
               />
             </View>
 
@@ -1111,580 +1714,9 @@ export default function BusinessAccount() {
           <View
           // style={{backgroundColor:"white"}}
           >
-            {editModal ? (
-              <Modal
-                visible={true}
-                onDismiss={() => setEditModal(false)}
-                contentContainerStyle={{
-                  position: "absolute",
-                  width: "80%",
-                  height: "100%",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  //  zIndex: 1000,
-                }}
-              >
-                <View
-                  style={{
-                    width: "33%",
-                  }}
-                  onTouchEnd={() => setEditModal(false)}
-                ></View>
-                <View
-                  style={{
-                    width: "33%",
-                  }}
-                  onTouchEnd={() => setEditModal(false)}
-                ></View>
-                <View
-                  style={{
-                    width: "34%",
-                    backgroundColor: "white",
-                  }}
-                >
-                  <View
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "40%",
-                    }}
-                  >
-                    <Image
-                      source={require("../../Global/images/logo.svg")} // Make sure to provide the correct path to your logo
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        resizeMode: "contain",
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{ height: "60%", paddingRight: 40, paddingLeft: 40 }}
-                  >
-                    <Text
-                      style={{
-                        fontWeight: "600",
-                        fontSize: 30,
-                        marginBottom: 5,
-                      }}
-                    >
-                      EDIT PRODUCT
-                    </Text>
-                    <View>
-                      <View
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          paddingTop: 10,
-                          paddingBottom: 20,
-                        }}
-                      >
-                        {image && (
-                          <Image
-                            source={{ uri: image }} // Assuming image is a URI
-                            style={{
-                              backgroundColor: "#fafafa",
-                              borderWidth: 1,
-                              borderColor: "lightgray",
-                              width: 100,
-                              padding: 7,
-                              marginRight: 10,
-                            }}
-                          />
-                        )}
-                        <TouchableOpacity
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            backgroundColor: "#fafafa",
-                            borderWidth: 1,
-                            borderColor: "lightgray",
-                            width: 100,
-                            padding: 20,
-                          }}
-                          onPress={openFileInput}
-                        >
-                          <Text
-                            style={{
-                              color: "gray",
-                              fontSize: 20,
-                              fontWeight: "700",
-                            }}
-                          >
-                            +
-                          </Text>
-                          <Text style={{ color: "gray" }}>Upload</Text>
-                        </TouchableOpacity>
-                      </View>
-                      <TextInput
-                        placeholder="Name"
-                        onChangeText={(text) => setProductName(text)}
-                        style={{
-                          width: "100%",
-                          border: "none",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "gray",
-                          paddingBottom: 5,
-                          marginTop: 30,
-                        }}
-                      />
-                      <View
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <View
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                        >
-                          <TextInput
-                            placeholder="Price"
-                            onChangeText={(text) => setPrice(text)}
-                            style={{
-                              border: "none",
-                              borderBottomWidth: 1,
-                              borderBottomColor: "gray",
-                              paddingBottom: 5,
-                              marginTop: 40,
-                            }}
-                          />
-                          <Text style={{ fontSize: 12, paddingRight: 10 }}>
-                            There will be VAT, Service Fees, Delivery Fees added
-                            to this amount.
-                          </Text>
-                        </View>
-                        <View>
-                          <TextInput
-                            placeholder="Quantity"
-                            onChangeText={(text) => setQuantity(text)}
-                            style={{
-                              border: "none",
-                              borderBottomWidth: 1,
-                              borderBottomColor: "gray",
-                              paddingBottom: 5,
-                              marginTop: 40,
-                              marginLeft: 20,
-                            }}
-                          />
-                          <Text></Text>
-                        </View>
-                      </View>
-                      <TextInput
-                        placeholder="Description"
-                        onChangeText={(text) => setDescription(text)}
-                        style={{
-                          width: "100%",
-                          border: "none",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "gray",
-                          paddingBottom: 5,
-                          marginTop: 40,
-                        }}
-                      />
-                      <TextInput
-                        placeholder="Type of Product"
-                        onChangeText={(text) => setProductType(text)}
-                        style={{
-                          width: "100%",
-                          border: "none",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "gray",
-                          paddingBottom: 5,
-                          marginTop: 40,
-                        }}
-                      />
-                      <TextInput
-                        placeholder="Other"
-                        onChangeText={(text) => setOther(text)}
-                        style={{
-                          width: "100%",
-                          border: "none",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "gray",
-                          paddingBottom: 5,
-                          marginTop: 40,
-                        }}
-                      />
+           
 
-                      <TouchableOpacity
-                        onPress={handleSaveEditProduct}
-                        style={{
-                          color: "white",
-                          fontWeight: "600",
-                          fontSize: 14,
-                          backgroundColor: "#072840",
-                          borderRadius: 20,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          textAlign: "center",
-                          padding: 10,
-                          marginTop: 20,
-                        }}
-                      >
-                        <Text style={{ color: "white" }}>SAVE</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-              </Modal>
-            ) : // <Modal
-            //   visible={true}
-            //   onDismiss={() => setEditModal(false)}
-            //   contentContainerStyle={{
-            //     position: "absolute",
-            //     width: "80%",
-            //     height: "100%",
-            //     backgroundColor: "rgba(0, 0, 0, 0.5)",
-            //     justifyContent: "center",
-            //     alignItems: "center",
-            //     zIndex: 1000,
-            //   }}
-            // >
-            //   <Container fixed style={{ height: "100vh" }}>
-            //     <Grid container spacing={2} justifyContent="center">
-            //       <Grid item xs={5}>
-            //         <Card>
-            //           <CardContent
-            //             style={{
-            //               textAlign: "center",
-            //               justifyContent: "center",
-            //               display: "flex",
-            //               flexDirection: "column",
-            //             }}
-            //           >
-            //             <Box
-            //               sx={{
-            //                 display: "flex",
-            //                 alignItems: "center",
-            //                 height: "300px",
-            //               }}
-            //             >
-            //               <img
-            //                 src={logo}
-            //                 alt="Logo"
-            //                 style={{ width: "100px", margin: "0 auto" }}
-            //               />
-            //             </Box>
-            //             <Typography
-            //               variant="h5"
-            //               style={{ textAlign: "left", fontWeight: "bold" }}
-            //             >
-            //               ADD PRODUCTS + SERVICES
-            //             </Typography>
-            //             <form onSubmit={handleSubmit}>
-            //               <Grid container spacing={2} direction="column">
-            //                 <Box
-            //                   style={{
-            //                     display: "flex",
-            //                     flexDirection: "row",
-            //                     alignItems: "center",
-            //                     height: "100px",
-            //                   }}
-            //                 >
-            //                   {images.map((item, index) => (
-            //                     <Card
-            //                       key={index}
-            //                       style={{
-            //                         backgroundColor: "green",
-            //                         height: "10vh",
-            //                         width: "10vw",
-            //                       }}
-            //                     >
-            //                       <CardMedia
-            //                         component="img"
-            //                         alt="Product Image"
-            //                         height="140"
-            //                         image={item}
-            //                       />
-            //                     </Card>
-            //                   ))}
-            //                   <Box
-            //                     className="upload"
-            //                     style={{
-            //                       display: "flex",
-            //                       alignItems: "center",
-            //                       position: "relative",
-            //                       backgroundColor: "yellow",
-            //                       flexDirection: "column",
-            //                     }}
-            //                   >
-            //                     <AntDesign
-            //                       name="plus"
-            //                       size={24}
-            //                       color="black"
-            //                     />
-            //                     <Typography style={{ marginLeft: "8px" }}>
-            //                       Upload
-            //                     </Typography>
 
-            //                     <input
-            //                       type="file"
-            //                       onChange={handleImageChange}
-            //                       style={{
-            //                         position: "absolute",
-            //                         top: 0,
-            //                         left: 0,
-            //                         opacity: 0,
-            //                         width: "100%",
-            //                         height: "100%",
-            //                         cursor: "pointer",
-            //                       }}
-            //                     />
-            //                   </Box>
-            //                 </Box>
-
-            //                 <Grid
-            //                   item
-            //                   xs={12}
-            //                   sm={6}
-            //                   style={{ justifyContent: "center" }}
-            //                 >
-            //                   <TextField
-            //                     variant="standard"
-            //                     fullWidth
-            //                     type="text"
-            //                     label="Name"
-            //                     value={name}
-            //                     onChange={(e) => setName(e.target.value)}
-            //                     required
-            //                     style={{ width: "80%" }}
-            //                   />
-            //                   <Grid container spacing={2}>
-            //                     <Grid item xs={8}>
-            //                       <TextField
-            //                         variant="standard"
-            //                         fullWidth
-            //                         type="text"
-            //                         label="Price"
-            //                         value={price}
-            //                         onChange={(e) => setPrice(e.target.value)}
-            //                         required
-            //                         style={{ width: "100%" }}
-            //                       />
-            //                     </Grid>
-            //                     <Grid item xs={3}>
-            //                       <TextField
-            //                         variant="standard"
-            //                         fullWidth
-            //                         type="text"
-            //                         label="Quantity"
-            //                         value={quantity}
-            //                         onChange={(e) =>
-            //                           setQuantity(e.target.value)
-            //                         }
-            //                         required
-            //                         style={{ width: "100%" }}
-            //                       />
-            //                     </Grid>
-            //                   </Grid>
-            //                   <Typography
-            //                     variant="body2"
-            //                     style={{ marginTop: "8px" }}
-            //                   >
-            //                     There will be VAT, Fee, and Delivery Fees
-            //                     added to this amount
-            //                   </Typography>
-            //                 </Grid>
-            //               </Grid>
-
-            //               <TextField
-            //                 fullWidth
-            //                 variant="standard"
-            //                 type="text"
-            //                 label="Description"
-            //                 value={description}
-            //                 onChange={(e) => setDescription(e.target.value)}
-            //                 required
-            //                 style={{ marginTop: "16px", width: "80%" }}
-            //               />
-
-            //               <TextField
-            //                 fullWidth
-            //                 variant="standard"
-            //                 type="text"
-            //                 label="Type of Product"
-            //                 value={productType}
-            //                 onChange={(e) => setProductType(e.target.value)}
-            //                 required
-            //                 style={{ marginTop: "16px", width: "80%" }}
-            //               />
-
-            //               <TextField
-            //                 fullWidth
-            //                 variant="standard"
-            //                 type="text"
-            //                 label="Other"
-            //                 value={other}
-            //                 onChange={(e) => setOther(e.target.value)}
-            //                 required
-            //                 style={{ marginTop: "16px", width: "80%" }}
-            //               />
-
-            //               <Button
-            //                 variant="contained"
-            //                 style={{
-            //                   marginTop: "16px",
-            //                   backgroundColor: COLORS.darkBlue,
-            //                   borderRadius: 50,
-            //                   width: "80%",
-            //                 }}
-            //                 type="submit"
-            //               >
-            //                 CONTINUE
-            //               </Button>
-            //             </form>
-            //           </CardContent>
-            //         </Card>
-            //       </Grid>
-            //     </Grid>
-            //   </Container>
-            // </Modal>
-            null}
-
-            {paymentModal ? (
-              <Portal>
-                <Modal
-                  visible={visible}
-                  onDismiss={() => setPaymentModal(false)}
-                  contentContainerStyle={{
-                    position: "absolute",
-                    width: "80%",
-                    height: "100%",
-                    backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <View
-                    style={{ height: "100%", width: "33%" }}
-                    onClick={() => setPaymentModal(false)}
-                  ></View>
-                  <View
-                    style={{ height: "100%", width: "33%" }}
-                    onClick={() => setPaymentModal(false)}
-                  ></View>
-                  <Card
-                    style={{
-                      height: "100%",
-                      width: "34%",
-                      backgroundColor: "white",
-                    }}
-                  >
-                    <View
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "60%",
-                      }}
-                    >
-                      <Image
-                        source={logo}
-                        alt="cropped AMS Shadow Queen Logo BNY-1320x772"
-                      />
-                    </View>
-                    <View
-                      style={{
-                        height: "40%",
-                        paddingRight: 40,
-                        paddingLeft: 40,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontWeight: 600,
-                          fontSize: 30,
-                          marginBottom: 5,
-                        }}
-                      >
-                        PAYMENT INFO
-                      </Text>
-                      <View>
-                        <View style={{ marginTop: 30 }}>
-                          <TextInput
-                            placeholder="Card Holder"
-                            style={{
-                              width: "100%",
-                              border: "none",
-                              borderBottomWidth: 1,
-                              borderBottomColor: "gray",
-                              paddingBottom: 5,
-                            }}
-                          />
-                        </View>
-                        <View style={{ marginTop: 30 }}>
-                          <TextInput
-                            placeholder="Card Number"
-                            style={{
-                              width: "100%",
-                              border: "none",
-                              borderBottomWidth: 1,
-                              borderBottomColor: "gray",
-                              paddingBottom: 5,
-                            }}
-                          />
-                        </View>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            marginTop: 40,
-                          }}
-                        >
-                          <View style={{ flex: 1 }}>
-                            <TextInput
-                              placeholder="Expiry Date"
-                              style={{
-                                border: "none",
-                                borderBottomWidth: 1,
-                                borderBottomColor: "gray",
-                                paddingBottom: 5,
-                              }}
-                            />
-                          </View>
-                          <View style={{ flex: 1, marginLeft: 20 }}>
-                            <TextInput
-                              placeholder="CVV"
-                              style={{
-                                border: "none",
-                                borderBottomWidth: 1,
-                                borderBottomColor: "gray",
-                                paddingBottom: 5,
-                              }}
-                            />
-                          </View>
-                        </View>
-                        <TouchableOpacity
-                          onPress={handleSavePaymentInfo}
-                          style={{
-                            color: "white",
-                            fontWeight: 600,
-                            fontSize: 14,
-                            backgroundColor: "#072840",
-                            borderRadius: 20,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            textAlign: "center",
-                            padding: 10,
-                            marginTop: 20,
-                          }}
-                        >
-                          <Text style={{ color: "white" }}>SAVE</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </Card>
-                </Modal>
-              </Portal>
-            ) : null}
 
             <Card
               style={{
@@ -1698,9 +1730,9 @@ export default function BusinessAccount() {
               }}
             >
               <View>
-                <Title style={{ fontWeight: "700", fontSize: 30 }}>
+                <Text style={{ fontWeight: "700", fontSize: 30 }}>
                   PRODUCTS & SERVICES
-                </Title>
+                </Text>
                 <Text
                   style={{
                     display: businessAuthorization ? "none" : "",
@@ -1727,7 +1759,27 @@ export default function BusinessAccount() {
                   AUTHORIZATION PENDING
                 </Text>
               </View>
-              <View>
+              <View  style={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+              <TouchableOpacity
+               onPress={()=>setAddProduct(true)}
+              >
+                  <Text
+                   style={{
+                    color: "white",
+                    fontWeight: 600,
+                    fontSize: 14,
+                    backgroundColor: "#072840",
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    paddingLeft: 25,
+                    paddingRight: 25,
+                    borderRadius: 20,
+                    display: !businessAuthorization ? "none" : "flex",
+                    marginRight:20
+                  }}>ADD PRODUCT</Text>
+
+
+                </TouchableOpacity>
                 <Text
                   style={{
                     color: "white",
@@ -1868,6 +1920,7 @@ export default function BusinessAccount() {
                     }}
                   >
                     {list.map((item, index) => (
+                      
                       <ProductCard
                         key={index}
                         open={() => setEditModal(true)}
@@ -1887,17 +1940,17 @@ export default function BusinessAccount() {
                       height: 500,
                       //   zIndex:500,
                     }}
-                  > 
-                  {/* <TouchableOpacity
+                  >
+                    {/* <TouchableOpacity
                  // onPress={setBusinessAuthorization(true)}
                   > */}
-                  <Image
+                    <Image
                       source={require("../../Global/images/BusinessPlus+.jpg")}
                       alt="business plus logo"
                       style={{ width: "85%", height: "20%", marginBottom: 5 }}
                     />
-                  {/* </TouchableOpacity> */}
-                  
+                    {/* </TouchableOpacity> */}
+
                     <Text
                       style={{
                         color: "#252b42",
@@ -1906,10 +1959,9 @@ export default function BusinessAccount() {
                         textAlign: "center",
                       }}
                     >
-                      <TouchableOpacity onPress={() => setBusinessAuthorization(true)}>
-  BUSINESS PLUS SUBSCRIPTION
-</TouchableOpacity>
-
+                      <TouchableOpacity onPress={() => setPaymentModal(true)}>
+                        <Text>BUSINESS PLUS SUBSCRIPTION</Text>
+                      </TouchableOpacity>
                     </Text>
                     <Text
                       style={{

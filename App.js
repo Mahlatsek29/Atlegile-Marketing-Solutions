@@ -29,7 +29,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        // initialRouteName="Landing"
+        initialRouteName="Landing"
         screenOptions={{ headerShown: false }}>
         {/* <Stack.Screen name="Landing" component={Landing} />
         <Stack.Screen name="AboutUs" component={AboutUs} />
@@ -55,17 +55,11 @@ function App() {
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="BusinessProducts" component={BusinessProducts} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
-        <Stack.Screen
-          name="AccountAndBusiness"
-          component={AccountAndBusiness}
-        />
+        <Stack.Screen name="AccountAndBusiness" component={AccountAndBusiness}/>
         <Stack.Screen name="OrderHistory" component={OrderHistory} />
         <Stack.Screen name="PayFast" component={PayFast} />
         <Stack.Screen name="CourierGuy" component={CourierGuy} />
-        <Stack.Screen
-          name="DateSelectionAndCheckout"
-          component={DateSelectionAndCheckout}
-        />
+        <Stack.Screen name="DateSelectionAndCheckout" component={DateSelectionAndCheckout}/>
         <Stack.Screen name="Reciept" component={Reciept} />
         <Stack.Screen name="DeliveryOngoing" component={DeliveryOngoing} />
         <Stack.Screen

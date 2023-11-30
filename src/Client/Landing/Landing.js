@@ -8,10 +8,15 @@ import FollowUs from "../../Global/Header";
 import { Footer } from "../../Global/Footer";
 import shop from "../../Global/images/svg_landing.svg";
 import shop2 from "../../Global/images/svg_landing.svg";
-import { firebase } from "../../config";
+import { firebase,auth } from "../../config";
 
-const Landing = () => {
+const Landing = ({navigation}) => {
   const [products, setProducts] = useState([]);
+  const productIds = [
+    "HWCHEa90akqO478j4soK",
+    "V19CXL5ZOBbosMYGYBEX",
+    "DAC7rmML4d0z7uTnLY04",
+  ];
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -29,15 +34,17 @@ const Landing = () => {
     fetchProducts();
   }, []);
 
+
   return (
     <>
       <FollowUs />
       <Navbar />
       <SearchBar />
       <View>
-        <Container fixed sx={{backgroundColor:'blue'}}>
+        <Container sx={{ width: "100vw", width: "100%" }}>
+          {/* <Grid></Grid> */}
           <Grid
-            container 
+            container
             style={{
               alignItems: "center",
               justifyContent: "center",
@@ -111,12 +118,11 @@ const Landing = () => {
             </Typography>
             <ScrollView
               horizontal={true}
+              showsHorizontalScrollIndicator={false}
               style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
-              <>
-                {products.map((product, index) => (
-                  <ProductCard key={index} product={product} />
-                ))}
-              </>
+              {productIds.map((productId) => (
+                <ProductCard key={productId} productId={productId} />
+              ))}
             </ScrollView>
             <View style={{ color: "white", marginTop: 20 }}>
               <Grid container style={{ backgroundColor: "#072840" }}>
@@ -218,6 +224,7 @@ const Landing = () => {
             </View>
             <ScrollView
               horizontal={true}
+              showsHorizontalScrollIndicator={false}
               style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
               <>
                 <ProductCard />
@@ -234,6 +241,7 @@ const Landing = () => {
             </Typography>
             <ScrollView
               horizontal={true}
+              showsHorizontalScrollIndicator={false}
               style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
               <>
                 <ProductCard />
@@ -241,6 +249,14 @@ const Landing = () => {
                 <ProductCard />
     
               </>
+            </ScrollView>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
+              {productIds.map((productId) => (
+                <ProductCard key={productId} productId={productId} />
+              ))}
             </ScrollView>
           </View>
 
@@ -348,6 +364,7 @@ const Landing = () => {
           </Typography>
           <ScrollView
             horizontal={true}
+            showsHorizontalScrollIndicator={false}
             style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
             <>
               <ProductCard />
@@ -442,7 +459,7 @@ const Landing = () => {
                   <Typography
                     variant="h6"
                     style={{ fontSize: "12px", fontSize: "10px" }}>
-                    soWhereTo  <br /> Township Business
+                    soWhereTo <br /> Township Business
                     <br />
                   </Typography>
                   <Typography style={{ color: "orange" }}>
@@ -458,7 +475,7 @@ const Landing = () => {
                   <Typography
                     variant="h6"
                     style={{ fontSize: "12px", fontSize: "10px" }}>
-                    soWhereTo  <br /> Youth Training
+                    soWhereTo <br /> Youth Training
                     <br />
                   </Typography>
                   <Typography style={{ color: "orange" }}>

@@ -10,14 +10,13 @@ import shop from "../../Global/images/svg_landing.svg";
 import shop2 from "../../Global/images/svg_landing.svg";
 import { firebase, auth } from "../../config";
 
-
-
 const Landing = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const productIds = [
     "HWCHEa90akqO478j4soK",
     "V19CXL5ZOBbosMYGYBEX",
     "DAC7rmML4d0z7uTnLY04",
+    "GSmAL4QSmUOKiw24iQ8x",
   ];
 
   useEffect(() => {
@@ -120,9 +119,9 @@ const Landing = ({ navigation }) => {
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}
-              style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
+              style={{ marginTop: 20, display: "flex", flexDirection: "row"}}>
               {productIds.map((productId) => (
-                <ProductCard key={productId} productId={productId} />
+                <ProductCard key={productId} productId={productId} style={{marginHorizontal:10}} />
               ))}
             </ScrollView>
             <View style={{ color: "white", marginTop: 20 }}>
@@ -359,10 +358,10 @@ const Landing = ({ navigation }) => {
           </Grid>
           <Typography
             variant="h5"
-            style={{ fontWeight: "600", marginBottom: 10, marginTop: 10 }}>
-            TechWise Electronics
+            style={{ fontWeight: "600", marginBottom: 10, marginTop: 20 , padding:30}}>
+            SucureTech Solutions
           </Typography>
-          <ScrollView
+          {/* <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
@@ -371,6 +370,14 @@ const Landing = ({ navigation }) => {
               <ProductCard />
               <ProductCard />
             </>
+          </ScrollView> */}
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
+            {productIds.map((productId) => (
+              <ProductCard key={productId} productId={productId} />
+            ))}
           </ScrollView>
         </Container>
       </View>

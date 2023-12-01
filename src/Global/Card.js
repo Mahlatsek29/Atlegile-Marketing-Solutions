@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
-import { TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { firestore } from "../config";
 
 const ProductCard = ({ productId }) => {
@@ -50,8 +50,23 @@ const ProductCard = ({ productId }) => {
   return (
     <Card
       className="card-container"
-      style={{ marginLeft: "1%", width: "100%",paddingRight: "1%" }}>
-      <Box>
+      style={{
+        width: "21vw",
+        // paddingRight: "1%",
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+        // marginHorizontal:"5vw",
+        // backgroundColor:'purple'
+      }}>
+      <View
+        style={{
+          // backgroundColor: "purple",
+          justifyContent: "center",
+          alignItems: "center",
+          paddingHorizontal: 16,
+    
+        }}>
         <Box
           style={{
             borderRadius: "16px",
@@ -78,6 +93,7 @@ const ProductCard = ({ productId }) => {
             }
             alt={product.name}
             style={{
+              position: "relative",
               borderRadius: "100px",
               objectFit: "cover",
               width: 220,
@@ -139,76 +155,118 @@ const ProductCard = ({ productId }) => {
             </TouchableOpacity>
           </Box>
         </Box>
-        <CardContent sx={{ paddingInline: 2, paddingRight: 8 }}>
-          <Box
+        <View
+          style={{
+            width: "100%",
+            justifyContent: "center",
+            marginTop: 16,
+          }}>
+          <View>
+            {/* <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}>
-            <Typography
+              justifyContent: "center",
+              alignItems: "center", // Center items vertically
+              backgroundColor: "red",
+              paddingBottom: "10%",
+              position: "relative",
+            }}> */}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+              <Text style={{ flex: 1 }}>{product.selectedProductCategory}</Text>
+              <View
+                style={{
+                  backgroundColor: "#072840",
+                  paddingHorizontal: 5,
+                  paddingVertical: 3,
+                  borderRadius: 15,
+                }}>
+                <Text style={{}}>
+                  ⭐ <Text style={{ color: "white" }}> 4.9</Text>
+                </Text>
+              </View>
+            </View>
+            {/* <Typography
               variant="h6"
               component="h6"
-              style={{ fontSize: "16px", color: "#0074cc" }}>
+              style={{
+                fontSize: "16px",
+                color: "#0074cc",
+                marginRight: "auto", // Push the first Typography to the left
+                backgroundColor:'#fff',
+                wordWrap: "break-word", 
+                // marginLeft:10
+              }}>
               {product.selectedProductCategory}
-              {/* Assuming selectedCategory is a field in your product */}
             </Typography>
             <Typography
               style={{
-                backgroundColor: "#072840",
+                backgroundColor: "blue",
                 color: "#fff",
                 borderRadius: "15px",
                 padding: "4px",
+                position: "absolute",
+                right: 0, // Align the second Typography to the right
+                wordWrap: "break-word"
               }}>
               ⭐ 4.9
+            </Typography> */}
+            {/* </Box> */}
+
+            <Typography variant="h5" component="h5">
+              {product.name}
             </Typography>
-          </Box>
-          <Typography variant="h5" component="h5">
-            {product.name}
-          </Typography>
-          <Typography
-            variant="subtitle2"
-            component="p"
-            style={{ color: "gray" }}>
-            {product.description && product.description.slice(0, 110)}
-            {product.description && product.description.length < 110
-              ? ""
-              : "..."}
-          </Typography>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="flex-start"
-            justifyContent="space-between">
-            <Typography variant="body2" component="p" style={{ color: "gray" }}>
-              <Icon2 name="download" size={20} /> 15 Sales
+            <Typography
+              variant="subtitle2"
+              component="p"
+              style={{ color: "gray" }}>
+              {product.description && product.description.slice(0, 110)}
+              {product.description && product.description.length < 110
+                ? ""
+                : "..."}
             </Typography>
-            <Box display="flex" flexDirection="row">
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="flex-start"
+              justifyContent="space-between">
               <Typography
-                variant="subtitle2"
+                variant="body2"
                 component="p"
-                style={{
-                  color: "#BDBDBD",
-                  fontSize: "18px",
-                  fontWeight: "700",
-                  marginRight: "10px",
-                }}>
-                R{product.price}
+                style={{ color: "gray" }}>
+                <Icon2 name="download" size={20} /> 15 Sales
               </Typography>
-              <Typography
-                variant="subtitle2"
-                component="p"
-                style={{
-                  color: "rgb(97, 151, 97)",
-                  fontSize: "18px",
-                  fontWeight: "700",
-                }}>
-                R{product.price}
-              </Typography>
+              <Box display="flex" flexDirection="row">
+                <Typography
+                  variant="subtitle2"
+                  component="p"
+                  style={{
+                    color: "#BDBDBD",
+                    fontSize: "18px",
+                    fontWeight: "700",
+                    marginRight: "10px",
+                  }}>
+                  R{product.price}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  component="p"
+                  style={{
+                    color: "rgb(97, 151, 97)",
+                    fontSize: "18px",
+                    fontWeight: "700",
+                  }}>
+                  R{product.price}
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-        </CardContent>
-      </Box>
+          </View>
+        </View>
+      </View>
       <CardContent>
         <Button
           variant="outlined"
@@ -225,6 +283,7 @@ const ProductCard = ({ productId }) => {
             fontSize: "18px",
             display: "flex",
             alignItems: "center",
+            marginBottom:"2vh",
           }}
           onClick={() => console.log("View Button Clicked!!!")}>
           VIEW

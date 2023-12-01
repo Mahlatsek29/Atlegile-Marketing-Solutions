@@ -267,19 +267,18 @@ export default function BusinessAccount() {
     //   !!brand &&
     //   selectedProductCategory !== "";
 
+    // if (
+    //   !name ||
+    //   !price ||
+    //   !quantity ||
+    //   !businessName ||
+    //   !selectedProductCategory ||
+    //   !brand
+    // ) {
+    //   alert("Please fill in all fields before continuing.");
+    //   return;
+    // }
 
-      if (
-        !name ||
-        !price ||
-        !quantity ||
-        !businessName ||
-        !selectedProductCategory ||
-        !brand
-      ) {
-        alert("Please fill in all fields before continuing.");
-        return;
-      }
-  
     if (images.length > 0) {
       try {
         // Store the data in Firestore
@@ -323,7 +322,7 @@ export default function BusinessAccount() {
         console.error("Error storing data in Firestore:", error);
       }
     } else {
-      alert("Please fill in all required fields and select at least one image");
+      alert("Please pick an image");
     }
   };
 
@@ -687,8 +686,7 @@ export default function BusinessAccount() {
                     ADD PRODUCTS + SERVICES
                   </Typography>
                   {/* <h6>inputs will be stored here</h6> */}
-                  
-                  
+
                   <div
                     className="uploadContainer"
                     style={{
@@ -748,131 +746,148 @@ export default function BusinessAccount() {
                       multiple // Allow selecting multiple files
                     />
                   </div>
+
                   <View style={{ alignSelf: "center" }}>
-                    <TextField
-                      id="outlined-number"
-                      label="Name"
-                      type="text"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{ width: "100%" }}
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                    <TextField
-                      id="outlined-number"
-                      label="Business Name"
-                      type="text"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{ width: "100%", marginTop: "10px" }}
-                      value={businessName}
-                      onChange={(e) => setBusinessName(e.target.value)}
-                    />
-                    <View style={{ display: "flex", flexDirection: "row" }}>
+                    <form onSubmit={handleContinue}>
                       <TextField
+                        fullWidth
                         id="outlined-number"
-                        label="Price"
+                        label="Name"
+                        type="text"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{ width: "100%" }}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                      />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="Business Name"
+                        type="text"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{ width: "100%", marginTop: "10px" }}
+                        value={businessName}
+                        onChange={(e) => setBusinessName(e.target.value)}
+                        required
+                      />
+                      <View style={{ display: "flex", flexDirection: "row" }}>
+                        <TextField
+                          fullWidth
+                          id="outlined-number"
+                          label="Price"
+                          type="text"
+                          variant="standard"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          style={{
+                            width: "45%",
+                            marginRight: "10px",
+                            marginTop: "10px",
+                          }}
+                          value={price}
+                          onChange={(e) => setPrice(e.target.value)}
+                          required
+                        />
+                        <TextField
+                          fullWidth
+                          id="outlined-number"
+                          label="Quantity"
+                          type="text"
+                          variant="standard"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          style={{ width: "45%", marginTop: "10px" }}
+                          value={quantity}
+                          onChange={(e) => setQuantity(e.target.value)}
+                          required
+                        />
+                      </View>
+                      <br />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="Description"
                         type="text"
                         variant="standard"
                         InputLabelProps={{
                           shrink: true,
                         }}
                         style={{
-                          width: "45%",
-                          marginRight: "10px",
+                          //   backgroundColor: "dodgerblue",
+                          width: "100%",
+                          marginBottom: "10px",
                           marginTop: "10px",
                         }}
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        required
                       />
                       <TextField
+                        fullWidth
+                        id="outlined-select-currency"
+                        select
+                        label="product Category"
+                        variant="standard"
+                        value={selectedProductCategory}
+                        onChange={(e) => setProductCategory(e.target.value)}
+                        style={{
+                          width: "100%",
+                          // marginTop: "5px",
+                          marginRight: "10px",
+                          textAlign: "left",
+                        }}
+                        required
+                      >
+                        {productCategory.map((option) => (
+                          <MenuItem key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+
+                      <TextField
+                        fullWidth
                         id="outlined-number"
-                        label="Quantity"
+                        label="Brand"
                         type="text"
                         variant="standard"
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        style={{ width: "45%", marginTop: "10px" }}
-                        value={quantity}
-                        onChange={(e) => setQuantity(e.target.value)}
+                        style={{
+                          width: "100%",
+                          marginLeft: "5px",
+                          marginTop: "10px",
+                        }}
+                        value={brand}
+                        onChange={(e) => setBrand(e.target.value)}
+                        required
                       />
-                    </View>
-                    <br />
-                    <TextField
-                      id="outlined-number"
-                      label="Description"
-                      type="text"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{
-                        //   backgroundColor: "dodgerblue",
-                        width: "100%",
-                        marginBottom: "10px",
-                        marginTop: "10px",
-                      }}
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                    />
-                    <TextField
-                      id="outlined-select-currency"
-                      select
-                      label="product Category"
-                      variant="standard"
-                      value={selectedProductCategory}
-                      onChange={(e) => setProductCategory(e.target.value)}
-                      style={{
-                        width: "100%",
-                        // marginTop: "5px",
-                        marginRight: "10px",
-                        textAlign: "left",
-                      }}
-                    >
-                      {productCategory.map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-
-                    <TextField
-                      id="outlined-number"
-                      label="Brand"
-                      type="text"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{
-                        width: "100%",
-                        marginLeft: "5px",
-                        marginTop: "10px",
-                      }}
-                      value={brand}
-                      onChange={(e) => setBrand(e.target.value)}
-                    />
+                      <Button
+                        variant="contained"
+                        style={{
+                          width: "100%",
+                          height: "10%",
+                          //   padding: "15px",
+                          margin: "20px 0px",
+                          background: "#072840",
+                          borderRadius: "30px",
+                        }}
+                        type="submit"
+                      >
+                        continue
+                      </Button>
+                    </form>
                   </View>
-                  <Button
-                    variant="contained"
-                    style={{
-                      width: "80%",
-                      height: "10%",
-                      //   padding: "15px",
-                      margin: "20px 0px",
-                      background: "#072840",
-                      borderRadius: "30px",
-                    }}
-                    onClick={handleContinue}
-                  >
-                    continue
-                  </Button>
                 </div>
               </Box>
             </Grid>
@@ -891,95 +906,99 @@ export default function BusinessAccount() {
             display: "flex",
             justifyContent: "flex-end", // Align to the end
             zIndex: 9999,
-            
+
             flexDirection: "row",
           }}
         >
-        
-            <View style={{  height: "100vh" }}>
-              <View style={{ flex: 1, justifyContent: "space-between",backgroundColor: "white" }}>
-                <View
+          <View style={{ height: "100vh" }}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "space-between",
+                backgroundColor: "white",
+              }}
+            >
+              <View
+                style={{
+                  height: "50vh",
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  source={{ uri: logo }}
                   style={{
-                    height: "50vh",
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    height: "9%",
+                    width: "80%",
+                    paddingTop: "30%",
+                    scale: "0.5",
                   }}
-                >
-                  <Image
-                    source={{ uri: logo }}
-                    style={{
-                      height: "9%",
-                      width: "80%",
-                      paddingTop: "30%",
-                      scale: "0.5",
-                    }}
-                  />
-                </View>
+                />
+              </View>
 
-                <View
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "75%",
+                  marginLeft: 80,
+                  marginBottom: 30,
+                }}
+              >
+                <Text
                   style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "75%",
-                    marginLeft: 80,
-                    marginBottom: 30,
+                    color: "#000",
+                    textAlign: "left",
+                    fontSize: 30,
+                    fontWeight: "bold",
                   }}
                 >
-                  <Text
-                    style={{
-                      color: "#000",
-                      textAlign: "left",
-                      fontSize: 30,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    PAYMENT INFO
-                  </Text>
+                  PAYMENT INFO
+                </Text>
+                <TextField
+                  id="standard-basic"
+                  label="Card Holder"
+                  variant="standard"
+                  style={{ width: "100%" }}
+                />
+                <TextField
+                  id="standard-basic"
+                  label="Card Number"
+                  variant="standard"
+                  style={{ width: "100%" }}
+                />
+                <View style={{ display: "flex", flexDirection: "row" }}>
                   <TextField
                     id="standard-basic"
-                    label="Card Holder"
+                    label="Expiary"
                     variant="standard"
-                    style={{ width: "100%" }}
+                    style={{ width: "45%", marginRight: "15px" }}
                   />
                   <TextField
                     id="standard-basic"
-                    label="Card Number"
+                    label="CVV"
                     variant="standard"
-                    style={{ width: "100%" }}
+                    style={{ width: "45%", marginRight: "15px" }}
                   />
-                  <View style={{ display: "flex", flexDirection: "row" }}>
-                    <TextField
-                      id="standard-basic"
-                      label="Expiary"
-                      variant="standard"
-                      style={{ width: "45%", marginRight: "15px" }}
-                    />
-                    <TextField
-                      id="standard-basic"
-                      label="CVV"
-                      variant="standard"
-                      style={{ width: "45%", marginRight: "15px" }}
-                    />
-                  </View>
-                  <Button
-                    mode="contained"
-                    onPress={handlePaymentButtonPress}
-                    style={{
-                      width: "80%",
-                      height: "15%",
-                      margin: 20,
-                      borderRadius: 30,
-                      backgroundColor: "#072840",
-                    }}
-                  >
-                    Continue
-                  </Button>
                 </View>
+                <Button
+                  mode="contained"
+                  onPress={handlePaymentButtonPress}
+                  style={{
+                    width: "80%",
+                    height: "15%",
+                    margin: 20,
+                    borderRadius: 30,
+                    backgroundColor: "#072840",
+                  }}
+                >
+                  Continue
+                </Button>
               </View>
             </View>
-          
+          </View>
         </View>
       ) : null}
       {bannerModal ? (
@@ -1628,218 +1647,6 @@ export default function BusinessAccount() {
           }}
         >
           <SideNav />
-          {/* <View id="sideNav">
-            <View
-              style={{
-                color: "white",
-                alignItems: "center",
-                justifyContent: "center",
-                marginTop: 20,
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: "lightgray",
-                  width: 150,
-                  height: 150,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: 100,
-                }}
-              >
-                <Text>S</Text>
-              </View>
-            </View>
-
-            <View style={{ alignItems: "center", flexDirection: "column" }}>
-              <Text style={{ fontSize: 30, fontWeight: 700 }}>SARAH</Text>
-              <Text style={{ fontSize: 14, fontWeight: 700 }}>0123456789</Text>
-              <Text style={{ fontWeight: 700 }}>example@mail.ccom</Text>
-            </View>
-
-            <View style={{ textAlign: "center", marginTop: 30 }}>
-              <Text>
-                1235 Vilakazi Street, Orlando West, Soweto, 1804, South Africa
-              </Text>
-            </View>
-
-            <View
-              style={{
-                alignItems: "center",
-                flexDirection: "column",
-                padding: 30,
-                backgroundColor: businessRegistered ? "white" : "",
-                marginTop: 30,
-              }}
-            >
-              <Text>
-                <Text
-                  style={{ color: "#072840", fontWeight: 600, fontSize: 22 }}
-                >
-                  Julian Jameson
-                </Text>
-                {"\n"}
-                <Text style={{ color: "gray", fontWeight: 600 }}>
-                  Alternative Contact
-                </Text>
-              </Text>
-            </View>
-
-            <View style={{ marginTop: 30 }}>
-              <TouchableOpacity
-                style={{
-                  borderStyle: "solid",
-                  borderBottomWidth: businessRegistered ? 2 : 0,
-                  borderBottomColor: "#072840",
-                  flexDirection: "row",
-                  paddingTop: 10,
-                  paddingBottom: 10,
-                  alignItems: "center",
-                }}
-              >
-                <button
-                  name="md-stopwatch"
-                  size={24}
-                  color="#072840"
-                  style={{ marginRight: 25 }}
-                />
-                <Text style={{ fontWeight: "bold", fontSize: 12 }}>
-                  ORDER HISTORY
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={{
-                  borderStyle: "solid",
-                  borderBottomWidth: businessRegistered ? 2 : 0,
-                  borderBottomColor: "#072840",
-                  flexDirection: "row",
-                  paddingTop: 10,
-                  paddingBottom: 10,
-                  alignItems: "center",
-                }}
-              >
-                <button
-                  name="md-stopwatch"
-                  size={24}
-                  color="#072840"
-                  style={{ marginRight: 25 }}
-                />
-                <Text style={{ fontWeight: "bold", fontSize: 12 }}>
-                  FAVOURITES
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={{
-                  borderStyle: "solid",
-                  borderBottomWidth: businessRegistered ? 2 : 0,
-                  borderBottomColor: "#072840",
-                  flexDirection: "row",
-                  paddingTop: 10,
-                  paddingBottom: 10,
-                  alignItems: "center",
-                }}
-              >
-                <button
-                  name="md-stopwatch"
-                  size={24}
-                  color="#072840"
-                  style={{ marginRight: 25 }}
-                />
-                <Text style={{ fontWeight: "bold", fontSize: 12 }}>
-                  TERMS & CONDITIONS
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={{
-                  borderStyle: "solid",
-                  borderBottomWidth: businessRegistered ? 2 : 0,
-                  borderBottomColor: "#072840",
-                  flexDirection: "row",
-                  paddingTop: 10,
-                  paddingBottom: 10,
-                  alignItems: "center",
-                }}
-              >
-                <button
-                  name="md-stopwatch"
-                  size={24}
-                  color="#072840"
-                  style={{ marginRight: 25 }}
-                />
-                <Text style={{ fontWeight: "bold", fontSize: 12 }}>
-                  PRIVACY POLICY
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={{
-                  color: "#f44336",
-                  flexDirection: "row",
-                  paddingTop: 40,
-                  paddingBottom: 10,
-                  alignItems: "center",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                }}
-              >
-                <Text
-                  style={{ color: "#f44336" }}
-                  onPress={() => console.log("SIGN OUT")}
-                >
-                  SIGN OUT
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View
-              style={{
-                display: businessRegistered ? "none" : "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                paddingTop: 20,
-                paddingBottom: 150,
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  color: "#072840",
-                  fontWeight: 600,
-                  fontSize: 14,
-                  border: "1px #072840 solid",
-                  padding: 10,
-                  borderRadius: 20,
-                  display: "inline-block",
-                  marginTop: 5,
-                  cursor: "pointer",
-                  marginRight: 5,
-                }}
-                onPress={() => setBusinessAuthorization(true)}
-              >
-                REGISTER BUSINESS
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={{
-                  color: "#072840",
-                  fontWeight: 600,
-                  fontSize: 14,
-                  border: "1px #072840 solid",
-                  padding: 10,
-                  borderRadius: 20,
-                  display: "inline-block",
-                  marginTop: 5,
-                  cursor: "pointer",
-                }}
-                onPress={() => setBusinessAuthorization(true)}
-              >
-                REGISTER AS A FREELANCER
-              </TouchableOpacity>
-            </View>
-          </View> */}
         </View>
 
         <View
@@ -1904,7 +1711,7 @@ export default function BusinessAccount() {
                 paddingBottom: 30,
                 paddingTop: 30,
                 paddingLeft: 30,
-                height: "100px",
+                // height: "100px",
               }}
             >
               <View>
@@ -1987,11 +1794,12 @@ export default function BusinessAccount() {
               <Card
                 style={{
                   width: "100%",
-                  height: "80px",
+                  // height: "80px",
                   flexDirection: "row",
                   justifyContent: "space-between",
                   // paddingLeft: 10,
-
+                  // paddingBottom: 30,
+                  // paddingTop: 30,
                   display: "flex",
                 }}
               >
@@ -2104,7 +1912,6 @@ export default function BusinessAccount() {
                     }}
                   >
                     {list.map((item, index) => (
-                      
                       <ProductCard
                         key={index}
                         open={() => setEditModal(true)}

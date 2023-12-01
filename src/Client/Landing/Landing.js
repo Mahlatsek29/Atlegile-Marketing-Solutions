@@ -17,6 +17,8 @@ const Landing = ({ navigation }) => {
     "V19CXL5ZOBbosMYGYBEX",
     "DAC7rmML4d0z7uTnLY04",
     "GSmAL4QSmUOKiw24iQ8x",
+    "CnmIcL3GwRrqzCNHuRPT",
+    "3oYa5b5SR63nTVBgatIC",
   ];
 
   useEffect(() => {
@@ -119,9 +121,13 @@ const Landing = ({ navigation }) => {
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}
-              style={{ marginTop: 20, display: "flex", flexDirection: "row"}}>
+              style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
               {productIds.map((productId) => (
-                <ProductCard key={productId} productId={productId} style={{marginHorizontal:10}} />
+                <ProductCard
+                  key={productId}
+                  productId={productId}
+                  style={{ marginHorizontal: 10 }}
+                />
               ))}
             </ScrollView>
             <View style={{ color: "white", marginTop: 20 }}>
@@ -358,7 +364,12 @@ const Landing = ({ navigation }) => {
           </Grid>
           <Typography
             variant="h5"
-            style={{ fontWeight: "600", marginBottom: 10, marginTop: 20 , padding:30}}>
+            style={{
+              fontWeight: "600",
+              marginBottom: 10,
+              marginTop: 20,
+              padding: 30,
+            }}>
             SucureTech Solutions
           </Typography>
           {/* <ScrollView

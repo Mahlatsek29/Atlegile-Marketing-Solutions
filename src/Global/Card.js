@@ -1,5 +1,3 @@
-// ProductCard.js
-
 import React, { useState, useEffect } from "react";
 import {
   Card,
@@ -8,7 +6,6 @@ import {
   Typography,
   Box,
   Button,
-  IconButton,
 } from "@mui/material";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
@@ -18,6 +15,7 @@ import { firestore } from "../config";
 const ProductCard = ({ productId }) => {
   const [isRed, setIsRed] = useState(true);
   const [product, setProduct] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const toggleHeart = () => {
     setIsRed((prevState) => !prevState);
@@ -42,6 +40,20 @@ const ProductCard = ({ productId }) => {
     fetchProductData();
   }, [productId]);
 
+  useEffect(() => {
+    // Change the image every 3 seconds (adjust the interval as needed)
+    const intervalId = setInterval(() => {
+      setCurrentImageIndex(
+        (prevIndex) => (prevIndex + 1) % (product?.images?.length || 1)
+      );
+    }, 2000);
+
+    return () => {
+      // Clear the interval on component unmount to avoid memory leaks
+      clearInterval(intervalId);
+    };
+  }, [product?.images]);
+
   if (!product) {
     // Render a loading state or return null if data is still being fetched
     return null;
@@ -65,7 +77,6 @@ const ProductCard = ({ productId }) => {
           justifyContent: "center",
           alignItems: "center",
           paddingHorizontal: 16,
-    
         }}>
         <Box
           style={{
@@ -87,8 +98,8 @@ const ProductCard = ({ productId }) => {
             component="img"
             height="140"
             image={
-              product.images && product.images.length > 0
-                ? product.images[0]
+              product?.images?.length > 0
+                ? product.images[currentImageIndex]
                 : "../../assets/image/headsets.png"
             }
             alt={product.name}
@@ -283,7 +294,7 @@ const ProductCard = ({ productId }) => {
             fontSize: "18px",
             display: "flex",
             alignItems: "center",
-            marginBottom:"2vh",
+            marginBottom: "2vh",
           }}
           onClick={() => console.log("View Button Clicked!!!")}>
           VIEW

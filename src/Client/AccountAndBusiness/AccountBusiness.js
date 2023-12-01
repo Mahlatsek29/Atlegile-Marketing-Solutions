@@ -57,13 +57,13 @@ import { storage, firestore } from "../../config";
 import { PaperTextInput } from "react-native-paper";
 
 export default function BusinessAccount() {
-  const [editModal, setEditModal] = useState(false);
+  const [editModal, setEditModal] = useState(true);
   const [bannerModal, setBannerModal] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
   const [businessAuthorization, setBusinessAuthorization] = useState(true);
   const [subscreibed, setSubscreibed] = useState(false);
   const [businessRegistered, setBusinessRegistered] = useState(true);
-
+  const [landing, setLanding] = useState(true);
   const [productName, setProductName] = useState("");
   const [otherBanner, setOtherBanner] = useState("");
   const [priceOriginal, setPriceOriginal] = useState(0);
@@ -78,11 +78,14 @@ export default function BusinessAccount() {
   const [productType, setProductType] = useState("");
   const [other, setOther] = useState("");
   const [images, setImages] = useState([]);
-  const [landing, setLanding] = useState(true);
+
   const [addProduct, setAddProduct] = useState("");
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
-
+  const [cardHolder, setCardHolder] = useState("");
+  const [cardNumber, setCardNumber] = useState();
+  const [expiery, setExpiery] = useState();
+  const [cvv, setCvv] = useState();
   const emptyOption = [""];
 
   const [businessName, setBusinessName] = useState("");
@@ -393,147 +396,178 @@ export default function BusinessAccount() {
                 EDIT PRODUCT
               </Text>
               <View>
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    paddingTop: 10,
-                    paddingBottom: 20,
-                  }}
-                >
-                  {image && (
-                    <Image
-                      source={{ uri: image }} // Assuming image is a URI
-                      style={{
-                        backgroundColor: "#fafafa",
-                        borderWidth: 1,
-                        borderColor: "lightgray",
-                        width: 100,
-                        padding: 7,
-                        marginRight: 10,
-                      }}
-                    />
-                  )}
-                  <TouchableOpacity
+              <div
+                    className="uploadContainer"
                     style={{
                       display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      backgroundColor: "#fafafa",
-                      borderWidth: 1,
-                      borderColor: "lightgray",
-                      width: 100,
-                      padding: 20,
+                      flexDirection: "row",
+                      justifyContent: "center",
                     }}
-                    onPress={openFileInput}
                   >
-                    <Text
+                    {images.length > 0 ? (
+                      images.map((image, index) => (
+                        <img
+                          key={index}
+                          src={image.url}
+                          alt={`Product Image ${index + 1}`}
+                          style={{
+                            padding: "10px",
+                            marginRight: "10px",
+                            width: "16%",
+                            height: "8vh",
+                          }}
+                        />
+                      ))
+                    ) : (
+                      <img
+                        src={placeholder}
+                        alt="Placeholder"
+                        style={{
+                          padding: "5px",
+                          marginRight: "10px",
+                          width: "16%",
+                          height: "8vh",
+                        }}
+                      />
+                    )}
+
+                    <label
+                      htmlFor="imageInput"
+                      className="add"
                       style={{
-                        color: "gray",
-                        fontSize: 20,
-                        fontWeight: "700",
+                        backgroundColor: "whitesmoke",
+                        color: "#000",
+                        padding: "25px",
+                        // paddingBottom:'20px',
+                        width: "5%",
+                        cursor: "pointer",
+                        alignSelf: "center",
                       }}
                     >
                       +
-                    </Text>
-                    <Text style={{ color: "gray" }}>Upload</Text>
-                  </TouchableOpacity>
-                </View>
-                <TextInput
-                  placeholder="Name"
-                  onChangeText={(text) => setProductName(text)}
-                  style={{
-                    width: "100%",
-                    border: "none",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "gray",
-                    paddingBottom: 5,
-                    marginTop: 30,
-                  }}
-                />
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
+                    </label>
+                    <input
+                      type="file"
+                      id="imageInput"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={handleImageChange}
+                      multiple // Allow selecting multiple files
+                    />
+                  </div>
+
+                <form onSubmit={(e)=> setEditModal(false)}>
+                  <TextField
+                    fullWidth
+                    required
+                    type="text"
+                    variant="standard"
+                    id="outlined-number"
+                    label="Name"
+                    value={productName}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange ={(e) => setProductName(e.target.value)}
+                    style={{ width: "100%", marginTop: "10px" }}
+                  />
                   <View
                     style={{
                       display: "flex",
-                      flexDirection: "column",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
                     }}
                   >
-                    <TextInput
-                      placeholder="Price"
-                      onChangeText={(text) => setPrice(text)}
+                    <View
                       style={{
-                        border: "none",
-                        borderBottomWidth: 1,
-                        borderBottomColor: "gray",
-                        paddingBottom: 5,
-                        marginTop: 40,
+                        display: "flex",
+                        flexDirection: "column",
                       }}
-                    />
-                    <Text style={{ fontSize: 12, paddingRight: 10 }}>
-                      There will be VAT, Service Fees, Delivery Fees added to
-                      this amount.
-                    </Text>
+                    >
+                      <TextField
+                        fullWidth
+                        required
+                        type="text"
+                        variant="standard"
+                        id="outlined-number"
+                        label="Price"
+                        value={price}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        onChange={(e) => setPrice(e.target.value)}
+                        style={{ width: "100%", marginTop: "10px" }}
+                      />
+                      <Text style={{ fontSize: 12, paddingRight: 10 }}>
+                        There will be VAT, Service Fee and
+                        <br /> Delivery Fees added to this amount.
+                      </Text>
+                    </View>
+                    <View>
+                      <TextField
+                        fullWidth
+                        required
+                        type="text"
+                        variant="standard"
+                        id="outlined-number"
+                        label="Quantity"
+                        value={quantity}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        onChange={(e) => setQuantity(e.target.value)}
+                        style={{ width: "100%", marginTop: "10px" }}
+                      />
+                      <Text></Text>
+                    </View>
                   </View>
-                  <View>
-                    <TextInput
-                      placeholder="Quantity"
-                      onChangeText={(text) => setQuantity(text)}
-                      style={{
-                        border: "none",
-                        borderBottomWidth: 1,
-                        borderBottomColor: "gray",
-                        paddingBottom: 5,
-                        marginTop: 40,
-                        marginLeft: 20,
-                      }}
-                    />
-                    <Text></Text>
-                  </View>
-                </View>
-                <TextInput
-                  placeholder="Description"
-                  onChangeText={(text) => setDescription(text)}
-                  style={{
-                    width: "100%",
-                    border: "none",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "gray",
-                    paddingBottom: 5,
-                    marginTop: 40,
-                  }}
-                />
-                <TextInput
-                  placeholder="Type of Product"
-                  onChangeText={(text) => setProductType(text)}
-                  style={{
-                    width: "100%",
-                    border: "none",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "gray",
-                    paddingBottom: 5,
-                    marginTop: 40,
-                  }}
-                />
-                <TextInput
-                  placeholder="Other"
-                  onChangeText={(text) => setOther(text)}
-                  style={{
-                    width: "100%",
-                    border: "none",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "gray",
-                    paddingBottom: 5,
-                    marginTop: 40,
-                  }}
-                />
+                  <br />
+                  <TextField
+                    fullWidth
+                    required
+                    type="text"
+                    variant="standard"
+                    id="outlined-number"
+                    label="Description"
+                    value={description}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange={(e) => setDescription(e.target.value)}
+                    style={{ width: "100%", marginTop: "10px" }}
+                  />
+                  <TextField
+                    fullWidth
+                    required
+                    type="text"
+                    variant="standard"
+                    id="outlined-number"
+                    label="Type of Product"
+                    value={productType}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange={(e) => setProductType(e.target.value)}
+                    style={{ width: "100%", marginTop: "10px" }}
+                  />
 
-                <TouchableOpacity
+                  <TextField
+                    fullWidth
+                    required
+                    type="text"
+                    variant="standard"
+                    id="outlined-number"
+                    label="Other"
+                    value={other}
+                     InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange ={(e) => setOther(e.target.value)}
+                    style={{ width: "100%", marginTop: "10px" }}
+                  />
+               
+           
+              <Button
                   onPress={handleSaveEditProduct}
                   style={{
                     color: "white",
@@ -547,9 +581,12 @@ export default function BusinessAccount() {
                     padding: 10,
                     marginTop: 20,
                   }}
+                  type='submit'
                 >
                   <Text style={{ color: "white" }}>SAVE</Text>
-                </TouchableOpacity>
+                </Button>
+                </form>
+
               </View>
             </View>
           </View>
@@ -957,45 +994,68 @@ export default function BusinessAccount() {
                 >
                   PAYMENT INFO
                 </Text>
-                <TextField
-                  id="standard-basic"
-                  label="Card Holder"
-                  variant="standard"
-                  style={{ width: "100%" }}
-                />
-                <TextField
-                  id="standard-basic"
-                  label="Card Number"
-                  variant="standard"
-                  style={{ width: "100%" }}
-                />
-                <View style={{ display: "flex", flexDirection: "row" }}>
+
+                <form onSubmit={setBusinessAuthorization(true)}>
                   <TextField
                     id="standard-basic"
-                    label="Expiary"
+                    label="Card Holder"
                     variant="standard"
-                    style={{ width: "45%", marginRight: "15px" }}
+                    fullWidth
+                    required
+                    value={cardHolder}
+                    onChange={(e) => setCardHolder(e.target.value)}
+                    style={{ width: "100%" }}
                   />
                   <TextField
                     id="standard-basic"
-                    label="CVV"
+                    label="Card Number"
                     variant="standard"
-                    style={{ width: "45%", marginRight: "15px" }}
+                    fullWidth
+                    required
+                    type="text"
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(e.target.value)}
+                    style={{ width: "100%" }}
                   />
-                </View>
-                <Button
-                  mode="contained"
-                  onPress={handlePaymentButtonPress}
-                  style={{
-                    width: "80%",
-                    height: "15%",
-                    margin: 20,
-                    borderRadius: 30,
-                    backgroundColor: "#072840",
-                  }}
-                >
-                  Continue
-                </Button>
+                  <View style={{ display: "flex", flexDirection: "row" }}>
+                    <TextField
+                      id="standard-basic"
+                      label="Expiary"
+                      variant="standard"
+                      fullWidth
+                      value={expiery}
+                      type="text"
+                      required
+                      onChange={(e) => setExpiery(e.target.value)}
+                      style={{ width: "45%", marginRight: "15px" }}
+                    />
+                    <TextField
+                      id="standard-basic"
+                      label="CVV"
+                      variant="standard"
+                      fullWidth
+                      value={cvv}
+                      type="text"
+                      required
+                      onChange={(e) => setCvv(e.target.value)}
+                      style={{ width: "45%", marginRight: "15px" }}
+                    />
+                  </View>
+                  <Button
+                    mode="contained"
+                    onPress={handlePaymentButtonPress}
+                    style={{
+                      width: "80%",
+                      height: "15%",
+                      margin: 20,
+                      borderRadius: 30,
+                      backgroundColor: "#072840",
+                    }}
+                    type="submit"
+                  >
+                    Continue
+                  </Button>
+                </form>
               </View>
             </View>
           </View>
@@ -1086,146 +1146,160 @@ export default function BusinessAccount() {
                     ADD BANNER
                   </Text>
                   <View>
-                    <View
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        paddingTop: 10,
-                        paddingBottom: 20,
-                      }}
-                    >
-                      {image && (
-                        <Image
-                          source={{ uri: image }} // Assuming image is a URI
+                  <div
+                    className="uploadContainer"
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {images.length > 0 ? (
+                      images.map((image, index) => (
+                        <img
+                          key={index}
+                          src={image.url}
+                          alt={`Product Image ${index + 1}`}
                           style={{
-                            backgroundColor: "#fafafa",
-                            borderWidth: 1,
-                            borderColor: "lightgray",
-                            width: 100,
-                            padding: 7,
-                            marginRight: 10,
+                            padding: "5px",
+                            marginRight: "10px",
+                            width: "16%",
+                            height: "8vh",
                           }}
                         />
-                      )}
-                      <TouchableOpacity
+                      ))
+                    ) : (
+                      <img
+                        src={placeholder}
+                        alt="Placeholder"
                         style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          backgroundColor: "#fafafa",
-                          borderWidth: 1,
-                          borderColor: "lightgray",
-                          width: 100,
-                          padding: 20,
+                          padding: "5px",
+                          marginRight: "10px",
+                          width: "16%",
+                          height: "8vh",
                         }}
-                        onPress={openFileInput}
-                      >
-                        <Text
-                          style={{
-                            color: "gray",
-                            fontSize: 20,
-                            fontWeight: "700",
-                          }}
-                        >
-                          +
-                        </Text>
-                        <Text style={{ color: "gray" }}>Upload</Text>
-                      </TouchableOpacity>
-                    </View>
-                    <TextInput
-                      placeholder="Product Name"
-                      onChangeText={(text) => setProductName(text)}
+                      />
+                    )}
+
+                    <label
+                      htmlFor="imageInput"
+                      className="add"
                       style={{
-                        width: "100%",
-                        border: "none",
-                        borderBottomWidth: 1,
-                        borderBottomColor: "gray",
-                        paddingBottom: 5,
-                        marginTop: 30,
-                      }}
-                    />
-                    <View
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
+                        backgroundColor: "whitesmoke",
+                        color: "#000",
+                        padding: "25px",
+                        // paddingBottom:'20px',
+                        width: "5%",
+                        cursor: "pointer",
+                        alignSelf: "center",
                       }}
                     >
+                      +
+                    </label>
+                    <input
+                      type="file"
+                      id="imageInput"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={handleImageChange}
+                      multiple // Allow selecting multiple files
+                    />
+                  </div>
+
+                    <form onSubmit={handleContinue}>
+                      <TextField
+                        fullWidth
+                        required
+                        type="text"
+                        variant="standard"
+                        id="outlined-number"
+                        value={productName}
+                        label="Product Name"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        onChange={(text) => setProductName(text)}
+                        style={{ width: "100%", marginTop: "10px" }}
+                      />
+                      <br />
                       <View
                         style={{
                           display: "flex",
-                          flexDirection: "column",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
                         }}
                       >
-                        <TextInput
-                          placeholder="Discount Price"
-                          onChangeText={(text) => setPriceDiscount(text)}
+                        <View
                           style={{
-                            border: "none",
-                            borderBottomWidth: 1,
-                            borderBottomColor: "gray",
-                            paddingBottom: 5,
-                            marginTop: 40,
+                            display: "flex",
+                            flexDirection: "column",
                           }}
-                        />
+                        >
+                          <TextField
+                            fullWidth
+                            required
+                            type="text"
+                            variant="standard"
+                            value={priceDiscount}
+                            label="Discount Price"
+                            onChange={(text) => setPriceDiscount(text)}
+                            style={{ width: "100%", marginTop: "10px" }}
+                          />
+                        </View>
+                        <View>
+                          <TextField
+                            fullWidth
+                            required
+                            type="text"
+                            variant="standard"
+                            value={quantity}
+                            label="Quantity"
+                            onChange={(text) => setQuantity(text)}
+                            style={{ width: "100%", marginTop: "10px" }}
+                          />
+                        </View>
                       </View>
-                      <View>
-                        <TextInput
-                          placeholder="Quantity"
-                          onChangeText={(text) => setQuantity(text)}
-                          style={{
-                            border: "none",
-                            borderBottomWidth: 1,
-                            borderBottomColor: "gray",
-                            paddingBottom: 5,
-                            marginTop: 40,
-                            marginLeft: 20,
-                          }}
-                        />
-                      </View>
-                    </View>
-                    <TextInput
-                      placeholder="Original Price"
-                      onChangeText={(text) => setPriceOriginal(text)}
-                      style={{
-                        width: "100%",
-                        border: "none",
-                        borderBottomWidth: 1,
-                        borderBottomColor: "gray",
-                        paddingBottom: 5,
-                        marginTop: 40,
-                      }}
-                    />
-                    <TextInput
-                      placeholder="Other"
-                      onChangeText={(text) => setOtherBanner(text)}
-                      style={{
-                        width: "100%",
-                        border: "none",
-                        borderBottomWidth: 1,
-                        borderBottomColor: "gray",
-                        paddingBottom: 5,
-                        marginTop: 40,
-                      }}
-                    />
+                      <TextField
+                        fullWidth
+                        required
+                        variant="standard"
+                        type="text"
+                        value={priceOriginal}
+                        label="Original Price"
+                        onChange={(text) => setPriceOriginal(text)}
+                        style={{ width: "100%", marginTop: "10px" }}
+                      />
 
-                    <TouchableOpacity
-                      onPress={handleSaveAddBanner}
-                      style={{
-                        color: "white",
-                        fontWeight: "600",
-                        fontSize: 14,
-                        backgroundColor: "#072840",
-                        borderRadius: 20,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        textAlign: "center",
-                        padding: 10,
-                        marginTop: 20,
-                      }}
-                    >
-                      <Text style={{ color: "white" }}>SAVE</Text>
-                    </TouchableOpacity>
+                      <TextField
+                        fullWidth
+                        required
+                        variant="standard"
+                        label="Other"
+                        type="text"
+                        value={otherBanner}
+                        onChange={(text) => setOtherBanner(text)}
+                        style={{ width: "100%", marginTop: "10px" }}
+                      />
+                      <Button
+                        variant="contained"
+                        onPress={handleSaveAddBanner}
+                        style={{
+                          color: "white",
+                          fontWeight: "600",
+                          fontSize: 14,
+                          backgroundColor: "#072840",
+                          borderRadius: 20,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          textAlign: "center",
+                          padding: 10,
+                          marginTop: 20,
+                        }}
+                        type="submit"
+                      >
+                        continue
+                      </Button>
+                    </form>
                   </View>
                 </View>
               </View>
@@ -1912,11 +1986,15 @@ export default function BusinessAccount() {
                     }}
                   >
                     {list.map((item, index) => (
+                      <Card2 key={index} open={() => setEditModal(true)} />
+                    ))}
+
+                    {/* {list.map((item, index) => (
                       <ProductCard
                         key={index}
                         open={() => setEditModal(true)}
                       />
-                    ))}
+                    ))} */}
                   </View>
                 </View>
 

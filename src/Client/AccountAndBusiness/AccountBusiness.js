@@ -2104,9 +2104,11 @@ export default function BusinessAccount() {
                     }}
                   >
                     {list.map((item, index) => (
-                      <TouchableOpacity onPress={setEditModal}>
-                        <Card2 key={index} open={() => setEditModal(true)} />
-                      </TouchableOpacity>
+                      
+                      <ProductCard
+                        key={index}
+                        open={() => setEditModal(true)}
+                      />
                     ))}
                   </View>
                 </View>

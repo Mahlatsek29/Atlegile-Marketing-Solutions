@@ -121,12 +121,12 @@ const Signin = () => {
           </Text>
         </View>
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
-          <Text style={styles.buttonText}>SIGN UP</Text>
+          <Text style={styles.buttonText}>SIGN IN</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity>
           <Text style={styles.linkText1}>

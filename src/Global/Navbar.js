@@ -1,5 +1,4 @@
 import React from "react";
-// import { Link } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -8,33 +7,43 @@ import {
   Button,
   Box,
 } from "@mui/material";
-// import { ShoppingCart as ShoppingCartIcon } from "@mui/icons-material";
-// import { useFetchProfileData } from "../../hooks/useFetchUsers";
+import { useNavigation } from '@react-navigation/native';
+
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { View, Image, Text } from "react-native";
+import { View, Image, Text, TouchableOpacity } from "react-native";
 
 const Navbar = () => {
+  const navigation = useNavigation();
   const imageLogo = require("../../assets/logo.png");
   const uid = localStorage.getItem("user");
-  // const { userData } = useFetchProfileData(uid);
   const userData = null;
+
+  const navigateToSignIn = () => {
+    navigation.navigate('SignIn');
+  };
+
+  const navigateToSignUp = () => {
+    navigation.navigate('SignUp');
+  };
+
+
+  const navigateaboutus = () => {
+    navigation.navigate('AboutUs')
+  }
   return (
     <Toolbar
       sx={{
         color: "#252b42",
-        // background: "red",
         display: "flex",
         flexDirection: "row",
       }}>
       <View>
         <Image
           source={require("../../assets/logo.png")}
-          // alt="Your Logo"
           style={{ width: 120, height: 60, resizeMode: "contain" }}
         />
       </View>
-      {/* <Typography>Logo</Typography> */}
-      {/* <Text>Logo</Text> */}
+
 
       <View
         style={{ marginLeft: "auto", display: "flex", flexDirection: "row" }}>
@@ -55,12 +64,12 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-              // component={Link}
-              // to="/shop"
+            // component={Link}
+            // to="/shop"
             >
               Shop
             </Button>
-            <Button
+            <Button onClick={navigateaboutus}
               sx={{
                 borderRadius: "25px",
                 "&:hover": {
@@ -70,48 +79,54 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-              // component={Link}
-              // to="/about-us"
+            // component={Link}
+            // to="/about-us"
             >
               About Us
             </Button>
-            <Button
-              sx={{
-                transition: "backgroundCcolor 0.3s, color 0.3s",
-                border: "1px solid #252b42",
-                borderRadius: "25px",
-                marginLeft: "10px",
-                "&:hover": {
-                  backgroundColor: "#252b42",
+
+            <TouchableOpacity>
+              <Button onClick={navigateToSignIn}
+                sx={{
+                  transition: "backgroundCcolor 0.3s, color 0.3s",
+                  border: "1px solid #252b42",
                   borderRadius: "25px",
-                  color: "white",
-                },
-              }}
-              color="inherit"
+                  marginLeft: "10px",
+                  "&:hover": {
+                    backgroundColor: "#252b42",
+                    borderRadius: "25px",
+                    color: "white",
+                  },
+                }}
+                color="inherit"
               // component={Link}
               // to="/sign-in"
-            >
-              Sign In
-            </Button>
-            <Button
-              sx={{
-                transition: "backgroundCcolor 0.3s, color 0.3s",
-                border: "1px solid #252b42",
-                borderRadius: "25px",
-                marginLeft: "10px",
+              >
+                Sign In
+              </Button>
+            </TouchableOpacity>
 
-                "&:hover": {
-                  backgroundColor: "#252b42",
+            <TouchableOpacity>
+              <Button onClick={navigateToSignUp}
+                sx={{
+                  transition: "backgroundCcolor 0.3s, color 0.3s",
+                  border: "1px solid #252b42",
                   borderRadius: "25px",
-                  color: "white",
-                },
-              }}
-              color="inherit"
+                  marginLeft: "10px",
+
+                  "&:hover": {
+                    backgroundColor: "#252b42",
+                    borderRadius: "25px",
+                    color: "white",
+                  },
+                }}
+                color="inherit"
               // component={Link}
               // to="/sign-up"
-            >
-              Sign Up
-            </Button>
+              >
+                Sign Up
+              </Button>
+            </TouchableOpacity>
           </View>
         ) : (
           <View
@@ -130,8 +145,8 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-              // component={Link}
-              // to="/shop"
+            // component={Link}
+            // to="/shop"
             >
               Shop
             </Button>
@@ -145,8 +160,8 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-              // component={Link}
-              // to="/about-us"
+            // component={Link}
+            // to="/about-us"
             >
               About Us
             </Button>

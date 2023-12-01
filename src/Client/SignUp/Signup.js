@@ -9,17 +9,29 @@ import {
   Image,
   Link,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 import { COLORS } from "../../Global/Color";
 import { FontAwesome } from "@expo/vector-icons";
 import { firebase, firestore } from "../../config";
+import { useNavigation } from '@react-navigation/native';
+
 
 const Signup = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+
+  const navigateSignUpBussiness = () => {
+    navigation.navigate('BusinessRegistration');
+  };
+
+
+  const navigatealreadyhaveaccount = () => {
+    navigation.navigate('SignIn')
+  }
+
 
   const handleSignup = async () => {
     try {
@@ -30,22 +42,22 @@ const Signup = () => {
       console.log("Username:", username);
       console.log("Email:", email);
       console.log("Password:", password);
-  
+
       const userCredential = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
-  
+
       if (userCredential.user) {
         console.log("User signed up:", userCredential.user);
-  
+
         // Save email in local storage
         await AsyncStorage.setItem("userEmail", email);
-  
+
         // Create a user document with the UID in the Users collection
         await firestore.collection("Users").doc(userCredential.user.uid).set({
           email: email,
         });
-  
+
         // Navigate to "/TellUsAboutYourself" after successful sign-up
         navigation.navigate("TellUsAboutYourself");
       }
@@ -62,6 +74,8 @@ const Signup = () => {
   const handleBusinessSignup = () => {
     console.log("Signing up as a business");
   };
+
+
 
   return (
     <ImageBackground
@@ -116,7 +130,7 @@ const Signup = () => {
           <Text style={styles.buttonText}>SIGN UP</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={navigatealreadyhaveaccount}>
           <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>
         </TouchableOpacity>
 
@@ -130,7 +144,7 @@ const Signup = () => {
 
         <TouchableOpacity
           style={styles.businessButton}
-          onPress={handleBusinessSignup}>
+          onPress={navigateSignUpBussiness}>
           <Text style={styles.buttonText1}>
             SIGN UP AS A BUSINESS{" "}
             <FontAwesome

@@ -33,6 +33,7 @@ import {
   Card,
   CardContent,
   CardMedia,
+  MenuItem,
   Box,
 } from "@mui/material";
 import { AntDesign } from "@expo/vector-icons";
@@ -44,11 +45,22 @@ import { height } from "@mui/system";
 import SideNav from "../../Global/SideNav";
 import { Dimensions } from "react-native";
 import Card2 from "../../Global/Card2";
+
+import background from "../../Global/images/Reed.jpg";
+
+import Banner from "../../Global/images/media bg-cover.png";
+import placeholder from "../../Global/images/login.jpg";
+import { useNavigation } from "@react-navigation/native";
+import { Linking } from "react-native";
+import { storage, firestore } from "../../config";
+
+import { PaperTextInput } from "react-native-paper";
+
 export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
-  const [businessAuthorization, setBusinessAuthorization] = useState(false);
+  const [businessAuthorization, setBusinessAuthorization] = useState(true);
   const [subscreibed, setSubscreibed] = useState(false);
   const [businessRegistered, setBusinessRegistered] = useState(true);
 
@@ -67,9 +79,48 @@ export default function BusinessAccount() {
   const [other, setOther] = useState("");
   const [images, setImages] = useState([]);
   const [landing, setLanding] = useState(true);
-    const [addProduct,setAddProduct] = useState("")
+  const [addProduct, setAddProduct] = useState("");
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
+
+  const emptyOption = [""];
+
+  const [businessName, setBusinessName] = useState("");
+
+  const [selectedProductCategory, setProductCategory] = useState("");
+  const [brand, setBrand] = useState("");
+  const [showWebView, setShowWebView] = useState(false);
+  const handlePaymentButtonPress = () => {
+    const paymentUrl =
+      "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
+
+    // Open the payment URL in the device's default browser
+    Linking.openURL(paymentUrl);
+  };
+
+  const productCategory = [
+    ...emptyOption,
+    "Electronics",
+    "Clothing and Apparel",
+    "Home and Furniture",
+    "Beauty and Personal Care",
+    "Sports and Outdoors",
+    "Toys and Games",
+    "Books and Stationery",
+    "Health and Wellness",
+    "Automotive",
+    "Grocery and Gourmet",
+    "Jewelry and Watches",
+    "Home Improvement",
+    "Pet Supplies",
+    "Office Supplies",
+    "Music and Instruments",
+    "Garden and Outdoor Living",
+    "Art and Craft Supplies",
+    "Travel and Luggage",
+    "Baby and Maternity",
+    "Electrical and Lighting",
+  ];
   const list = [1, 2];
   let bannerListIndex = 0;
   let bannerList = [
@@ -166,7 +217,7 @@ export default function BusinessAccount() {
 
   const handleSavePaymentInfo = () => {
     setPaymentModal(false);
-    setBusinessAuthorization(true)
+    setBusinessAuthorization(true);
   };
 
   const handlePopUp = () => {
@@ -182,473 +233,103 @@ export default function BusinessAccount() {
     }
   }, []);
 
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+
+  //   if (file) {
+  //     const reader = new FileReader();
+
+  //     reader.onload = (e) => {
+  //       const dataUrl = e.target.result;
+  //       const newImage = [...images, dataUrl];
+  //       setImages(newImage);
+  //     };
+
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const dataUrl = e.target.result;
-        const newImage = [...images, dataUrl];
-        setImages(newImage);
-      };
-
-      reader.readAsDataURL(file);
+    const files = e.target.files;
+    if (files.length > 0) {
+      const newImages = Array.from(files).map((file) => ({
+        url: URL.createObjectURL(file),
+        file,
+      }));
+      setImages((prevImages) => [...prevImages, ...newImages]);
     }
   };
+  const handleContinue = async () => {
+    // const isFormValid =
+    //   !!name &&
+    //   !!businessName &&
+    //   !!price &&
+    //   !!quantity &&
+    //   !!brand &&
+    //   selectedProductCategory !== "";
+
+
+      if (
+        !name ||
+        !price ||
+        !quantity ||
+        !businessName ||
+        !selectedProductCategory ||
+        !brand
+      ) {
+        alert("Please fill in all fields before continuing.");
+        return;
+      }
+  
+    if (images.length > 0) {
+      try {
+        // Store the data in Firestore
+        const productRef = await firestore.collection("Products").add({
+          name,
+          businessName,
+          price,
+          quantity,
+          description,
+          selectedProductCategory,
+          brand,
+          // ... (other fields)
+        });
+
+        // Upload images to Firebase Storage
+        const uploadTasks = images.map((image, index) => {
+          const imageRef = storage.ref(
+            `product_images/${productRef.id}/image${index}`
+          );
+          return imageRef.put(image.file); // Use put method instead of putFile
+        });
+
+        const uploadSnapshots = await Promise.all(uploadTasks);
+
+        // Get download URLs of the images
+        const downloadURLs = await Promise.all(
+          uploadSnapshots.map((snapshot) => snapshot.ref.getDownloadURL())
+        );
+
+        // Update the product document with image URLs
+        await productRef.update({ images: downloadURLs });
+
+        // You can navigate to the next screen or perform other actions here
+        alert("Product added successfully!");
+        const paymentUrl =
+          "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
+
+        // Open the payment URL in the device's default browser
+        Linking.openURL(paymentUrl);
+      } catch (error) {
+        console.error("Error storing data in Firestore:", error);
+      }
+    } else {
+      alert("Please fill in all required fields and select at least one image");
+    }
+  };
+
   return (
     <>
- {editModal ? (
-               <View
-               // visible={true}
-               // onDismiss={() => setPaymentModal(false)}
-               style={{
-                 top: 65,
-                 position: "absolute",
-                 // width: "100%",
-                 // height: "100%",
-                 flex: 1,
-                 backgroundColor: "rgba(0, 0, 0, 0.5)",
-                 display: "flex",
-                 justifyContent: "flex-end",
-                 alignItems: "flex-end",
-                 zIndex: 9999,
-                 alignSelf: "flex-end",
-               }}
-             >
-                {/* <View
-                  style={{
-                    width: "33%",
-                  }}
-                  onTouchEnd={() => setEditModal(false)}
-                ></View>
-                <View
-                  style={{
-                    width: "33%",
-                  }}
-                  onTouchEnd={() => setEditModal(false)}
-                ></View> */}
-                <View
-                  style={{
-                    height:'100vh',
-                    backgroundColor: "white",
-                 //   backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    
-                  }}
-                >
-                  <View
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "40%",
-                    }}
-                  >
-                    <Image
-                      source={require("../../Global/images/logo.svg")} // Make sure to provide the correct path to your logo
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        resizeMode: "contain",
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{ height: "60%", paddingRight: 40, paddingLeft: 40 }}
-                  >
-                    <Text
-                      style={{
-                        fontWeight: "600",
-                        fontSize: 30,
-                        marginBottom: 5,
-                      }}
-                    >
-                      EDIT PRODUCT
-                    </Text>
-                    <View>
-                      <View
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          paddingTop: 10,
-                          paddingBottom: 20,
-                        }}
-                      >
-                        {image && (
-                          <Image
-                            source={{ uri: image }} // Assuming image is a URI
-                            style={{
-                              backgroundColor: "#fafafa",
-                              borderWidth: 1,
-                              borderColor: "lightgray",
-                              width: 100,
-                              padding: 7,
-                              marginRight: 10,
-                            }}
-                          />
-                        )}
-                        <TouchableOpacity
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            backgroundColor: "#fafafa",
-                            borderWidth: 1,
-                            borderColor: "lightgray",
-                            width: 100,
-                            padding: 20,
-                          }}
-                          onPress={openFileInput}
-                        >
-                          <Text
-                            style={{
-                              color: "gray",
-                              fontSize: 20,
-                              fontWeight: "700",
-                            }}
-                          >
-                            +
-                          </Text>
-                          <Text style={{ color: "gray" }}>Upload</Text>
-                        </TouchableOpacity>
-                      </View>
-                      <TextInput
-                        placeholder="Name"
-                        onChangeText={(text) => setProductName(text)}
-                        style={{
-                          width: "100%",
-                          border: "none",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "gray",
-                          paddingBottom: 5,
-                          marginTop: 30,
-                        }}
-                      />
-                      <View
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <View
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                        >
-                          <TextInput
-                            placeholder="Price"
-                            onChangeText={(text) => setPrice(text)}
-                            style={{
-                              border: "none",
-                              borderBottomWidth: 1,
-                              borderBottomColor: "gray",
-                              paddingBottom: 5,
-                              marginTop: 40,
-                            }}
-                          />
-                          <Text style={{ fontSize: 12, paddingRight: 10 }}>
-                            There will be VAT, Service Fees, Delivery Fees added
-                            to this amount.
-                          </Text>
-                        </View>
-                        <View>
-                          <TextInput
-                            placeholder="Quantity"
-                            onChangeText={(text) => setQuantity(text)}
-                            style={{
-                              border: "none",
-                              borderBottomWidth: 1,
-                              borderBottomColor: "gray",
-                              paddingBottom: 5,
-                              marginTop: 40,
-                              marginLeft: 20,
-                            }}
-                          />
-                          <Text></Text>
-                        </View>
-                      </View>
-                      <TextInput
-                        placeholder="Description"
-                        onChangeText={(text) => setDescription(text)}
-                        style={{
-                          width: "100%",
-                          border: "none",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "gray",
-                          paddingBottom: 5,
-                          marginTop: 40,
-                        }}
-                      />
-                      <TextInput
-                        placeholder="Type of Product"
-                        onChangeText={(text) => setProductType(text)}
-                        style={{
-                          width: "100%",
-                          border: "none",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "gray",
-                          paddingBottom: 5,
-                          marginTop: 40,
-                        }}
-                      />
-                      <TextInput
-                        placeholder="Other"
-                        onChangeText={(text) => setOther(text)}
-                        style={{
-                          width: "100%",
-                          border: "none",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "gray",
-                          paddingBottom: 5,
-                          marginTop: 40,
-                        }}
-                      />
-
-                      <TouchableOpacity
-                        onPress={handleSaveEditProduct}
-                        style={{
-                          color: "white",
-                          fontWeight: "600",
-                          fontSize: 14,
-                          backgroundColor: "#072840",
-                          borderRadius: 20,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          textAlign: "center",
-                          padding: 10,
-                          marginTop: 20,
-                        }}
-                      >
-                        <Text style={{ color: "white" }}>SAVE</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-              </View>
-           
-           ): null}
-{ addProduct ? (
-   <View
-   // visible={true}
-   // onDismiss={() => setPaymentModal(false)}
-   style={{
-     top: 0,
-     position: "absolute",
-    width: "100vw",
-      height: "100vh",
-    
-     backgroundColor: "rgba(0, 0, 0, 0.5)",
-     display: "flex",
-     justifyContent: "flex-end",
-     alignItems: "flex-end",
-     zIndex: 9999,
-     
-   }}>
-              <Container fixed style={{ display:"flex", height: "100vh" ,alignSelf: "flex-end",}}>
-                <Grid container spacing={2} justifyContent="center">
-                  <Grid item xs={5}>
-                    <Card>
-                      <CardContent
-                        style={{
-                          textAlign: "center",
-                          justifyContent: "center",
-                          display: "flex",
-                          flexDirection: "column",
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            height: "300px",
-                          }}
-                        >
-                          <img
-                            src={logo}
-                            alt="Logo"
-                            style={{ width: "100px", margin: "0 auto" }}
-                          />
-                        </Box>
-                        <Typography
-                          variant="h5"
-                          style={{ textAlign: "left", fontWeight: "bold" }}
-                        >
-                          ADD PRODUCTS + SERVICES
-                        </Typography>
-                        <form onSubmit={handleSubmit}>
-                          <Grid container spacing={2} direction="column">
-                            <Box
-                              style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                                height: "100px",
-                                // width:"100px"
-                              }}
-                            >
-                              {images.map((item, index) => (
-                                <Card
-                                  key={index}
-                                  style={{
-                                    backgroundColor: "green",
-                                    height: "10vh",
-                                    width: "10vw",
-                                  }}
-                                >
-                                  <CardMedia
-                                    component="img"
-                                    alt="Product Image"
-                                    height="140"
-                                    image={item}
-                                  />
-                                </Card>
-                              ))}
-                              <Box
-                                className="upload"
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  position: "relative",
-                                  backgroundColor: "yellow",
-                                  flexDirection: "column",
-                                }}
-                              >
-                                <AntDesign
-                                  name="plus"
-                                  size={24}
-                                  color="black"
-                                />
-                                <Typography style={{ marginLeft: "8px" }}>
-                                  Upload
-                                </Typography>
-
-                                <input
-                                  type="file"
-                                  onChange={handleImageChange}
-                                  style={{
-                                    position: "absolute",
-                                    top: 0,
-                                    left: 0,
-                                    opacity: 0,
-                                    width: "100%",
-                                    height: "100%",
-                                    cursor: "pointer",
-                                  }}
-                                />
-                              </Box>
-                            </Box>
-
-                            <Grid
-                              item
-                              xs={12}
-                              sm={6}
-                              style={{ justifyContent: "center" }}
-                            >
-                              <TextField
-                                variant="standard"
-                                fullWidth
-                                type="text"
-                                label="Name"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                required
-                                style={{ width: "80%" }}
-                              />
-                              <Grid container spacing={2}>
-                                <Grid item xs={8}>
-                                  <TextField
-                                    variant="standard"
-                                    fullWidth
-                                    type="text"
-                                    label="Price"
-                                    value={price}
-                                    onChange={(e) => setPrice(e.target.value)}
-                                    required
-                                    style={{ width: "100%" }}
-                                  />
-                                </Grid>
-                                <Grid item xs={3}>
-                                  <TextField
-                                    variant="standard"
-                                    fullWidth
-                                    type="text"
-                                    label="Quantity"
-                                    value={quantity}
-                                    onChange={(e) =>
-                                      setQuantity(e.target.value)
-                                    }
-                                    required
-                                    style={{ width: "100%" }}
-                                  />
-                                </Grid>
-                              </Grid>
-                              <Typography
-                                variant="body2"
-                                style={{ marginTop: "8px" }}
-                              >
-                                There will be VAT, Fee, and Delivery Fees
-                                added to this amount
-                              </Typography>
-                            </Grid>
-                          </Grid>
-
-                          <TextField
-                            fullWidth
-                            variant="standard"
-                            type="text"
-                            label="Description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            required
-                            style={{ marginTop: "16px", width: "80%" }}
-                          />
-
-                          <TextField
-                            fullWidth
-                            variant="standard"
-                            type="text"
-                            label="Type of Product"
-                            value={productType}
-                            onChange={(e) => setProductType(e.target.value)}
-                            required
-                            style={{ marginTop: "16px", width: "80%" }}
-                          />
-
-                          <TextField
-                            fullWidth
-                            variant="standard"
-                            type="text"
-                            label="Other"
-                            value={other}
-                            onChange={(e) => setOther(e.target.value)}
-                            required
-                            style={{ marginTop: "16px", width: "80%" }}
-                          />
-
-                          <Button
-                            variant="contained"
-                            style={{
-                              marginTop: "16px",
-                              backgroundColor: COLORS.darkBlue,
-                              borderRadius: 50,
-                              width: "80%",
-                            }}
-                            type="submit"
-                          >
-                            CONTINUE
-                          </Button>
-                        </form>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                </Grid>
-              </Container>
-            </View>
-) :null}
-      {paymentModal ? (
+      {editModal ? (
         <View
           // visible={true}
           // onDismiss={() => setPaymentModal(false)}
@@ -667,22 +348,22 @@ export default function BusinessAccount() {
           }}
         >
           {/* <View
-            style={{ height: "10%", width: "33%", backgroundColor: "red" }}
-            onPress={() => setPaymentModal(false)}
-          ></View>
+                  style={{
+                    width: "33%",
+                  }}
+                  onTouchEnd={() => setEditModal(false)}
+                ></View>
+                <View
+                  style={{
+                    width: "33%",
+                  }}
+                  onTouchEnd={() => setEditModal(false)}
+                ></View> */}
           <View
-            style={{ height: "10%", width: "33%", backgroundColor: "yellow" }}
-            onPress={() => setPaymentModal(false)}
-          ></View> */}
-          <Card
             style={{
               height: "100vh",
-              width: "100%",
-              // backgroundColor: "blue",
-             
-              display:"flex",
-              justifyContent: "flex-end",
-              alignItems: "flex-end",
+              backgroundColor: "white",
+              //   backgroundColor: "rgba(0, 0, 0, 0.5)",
             }}
           >
             <View
@@ -690,99 +371,174 @@ export default function BusinessAccount() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                height: "60%",
+                height: "40%",
               }}
             >
               <Image
-                source={logo}
-                alt="cropped AMS Shadow Queen Logo BNY-1320x772"
+                source={require("../../Global/images/logo.svg")} // Make sure to provide the correct path to your logo
+                style={{
+                  width: "50%",
+                  height: "30%",
+                  resizeMode: "contain",
+                }}
               />
             </View>
-            <View
-              style={{
-                height: "40%",
-                paddingRight: 40,
-                paddingLeft: 40,
-              }}
-            >
+            <View style={{ height: "60%", paddingRight: 40, paddingLeft: 40 }}>
               <Text
                 style={{
-                  fontWeight: 600,
+                  fontWeight: "600",
                   fontSize: 30,
                   marginBottom: 5,
                 }}
               >
-                PAYMENT INFO
+                EDIT PRODUCT
               </Text>
               <View>
-                <View style={{ marginTop: 30 }}>
-                  <TextInput
-                   variant="standard"
-                    placeholder="Card Holder"
-                    // style={{
-                    //   width: "100%",
-                    //   border: "none",
-                    //   borderBottomWidth: 1,
-                    //   borderBottomColor: "gray",
-                    //   paddingBottom: 5,
-
-                      
-                    // }}
-                    
-                           value={name}
-                            onChange={(e) => setName(e.target.value)}
-                               required
-                               style={{ width: "80%" }}
-                  />
-                </View>
-                <View style={{ marginTop: 30 }}>
-                  <TextInput
-                    placeholder="Card Number"
-                    style={{
-                      width: "100%",
-                      border: "none",
-                      borderBottomWidth: 1,
-                      borderBottomColor: "gray",
-                      paddingBottom: 5,
-                    }}
-                  />
-                </View>
                 <View
                   style={{
+                    display: "flex",
                     flexDirection: "row",
-                    justifyContent: "space-between",
-                    marginTop: 40,
+                    paddingTop: 10,
+                    paddingBottom: 20,
                   }}
                 >
-                  <View style={{ flex: 1 }}>
+                  {image && (
+                    <Image
+                      source={{ uri: image }} // Assuming image is a URI
+                      style={{
+                        backgroundColor: "#fafafa",
+                        borderWidth: 1,
+                        borderColor: "lightgray",
+                        width: 100,
+                        padding: 7,
+                        marginRight: 10,
+                      }}
+                    />
+                  )}
+                  <TouchableOpacity
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      backgroundColor: "#fafafa",
+                      borderWidth: 1,
+                      borderColor: "lightgray",
+                      width: 100,
+                      padding: 20,
+                    }}
+                    onPress={openFileInput}
+                  >
+                    <Text
+                      style={{
+                        color: "gray",
+                        fontSize: 20,
+                        fontWeight: "700",
+                      }}
+                    >
+                      +
+                    </Text>
+                    <Text style={{ color: "gray" }}>Upload</Text>
+                  </TouchableOpacity>
+                </View>
+                <TextInput
+                  placeholder="Name"
+                  onChangeText={(text) => setProductName(text)}
+                  style={{
+                    width: "100%",
+                    border: "none",
+                    borderBottomWidth: 1,
+                    borderBottomColor: "gray",
+                    paddingBottom: 5,
+                    marginTop: 30,
+                  }}
+                />
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
                     <TextInput
-                      placeholder="Expiry Date"
+                      placeholder="Price"
+                      onChangeText={(text) => setPrice(text)}
                       style={{
                         border: "none",
                         borderBottomWidth: 1,
                         borderBottomColor: "gray",
                         paddingBottom: 5,
+                        marginTop: 40,
                       }}
                     />
+                    <Text style={{ fontSize: 12, paddingRight: 10 }}>
+                      There will be VAT, Service Fees, Delivery Fees added to
+                      this amount.
+                    </Text>
                   </View>
-                  <View style={{ flex: 1, marginLeft: 20 }}>
+                  <View>
                     <TextInput
-                      placeholder="CVV"
+                      placeholder="Quantity"
+                      onChangeText={(text) => setQuantity(text)}
                       style={{
                         border: "none",
                         borderBottomWidth: 1,
                         borderBottomColor: "gray",
                         paddingBottom: 5,
+                        marginTop: 40,
+                        marginLeft: 20,
                       }}
                     />
+                    <Text></Text>
                   </View>
                 </View>
+                <TextInput
+                  placeholder="Description"
+                  onChangeText={(text) => setDescription(text)}
+                  style={{
+                    width: "100%",
+                    border: "none",
+                    borderBottomWidth: 1,
+                    borderBottomColor: "gray",
+                    paddingBottom: 5,
+                    marginTop: 40,
+                  }}
+                />
+                <TextInput
+                  placeholder="Type of Product"
+                  onChangeText={(text) => setProductType(text)}
+                  style={{
+                    width: "100%",
+                    border: "none",
+                    borderBottomWidth: 1,
+                    borderBottomColor: "gray",
+                    paddingBottom: 5,
+                    marginTop: 40,
+                  }}
+                />
+                <TextInput
+                  placeholder="Other"
+                  onChangeText={(text) => setOther(text)}
+                  style={{
+                    width: "100%",
+                    border: "none",
+                    borderBottomWidth: 1,
+                    borderBottomColor: "gray",
+                    paddingBottom: 5,
+                    marginTop: 40,
+                  }}
+                />
+
                 <TouchableOpacity
-                  onPress={handleSavePaymentInfo}
-              
+                  onPress={handleSaveEditProduct}
                   style={{
                     color: "white",
-                    fontWeight: 600,
+                    fontWeight: "600",
                     fontSize: 14,
                     backgroundColor: "#072840",
                     borderRadius: 20,
@@ -792,13 +548,438 @@ export default function BusinessAccount() {
                     padding: 10,
                     marginTop: 20,
                   }}
-
                 >
                   <Text style={{ color: "white" }}>SAVE</Text>
                 </TouchableOpacity>
               </View>
             </View>
-          </Card>
+          </View>
+        </View>
+      ) : null}
+      {addProduct ? (
+        <View
+          // visible={true}
+          // onDismiss={() => setPaymentModal(false)}
+          style={{
+            top: 65,
+            position: "absolute",
+            // width: "100%",
+            // height: "100%",
+            flex: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+            zIndex: 9999,
+            alignSelf: "flex-end",
+          }}
+        >
+          <Grid
+            container
+            style={{
+              width: "100%",
+              //marginBottom: "-10vh",
+              //   border: "1px solid green",
+            }}
+          >
+            <Grid
+              item
+              lg={8}
+              md={8}
+              sm={{ hidden: true }}
+              style={{
+                // border: "1px solid",
+                // backgroundColor: "blue",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <Grid
+                Container
+                lg={6}
+                md={6}
+                style={{
+                  //   backgroudColor: "blue",
+                  width: "100vw",
+                  //   border: "1px solid yellow",
+                }}
+              ></Grid>
+              <Grid
+                Container
+                lg={6}
+                md={6}
+                style={{
+                  // backgroudColor: "yellow",
+                  width: "100vw",
+                  // border: "1px solid yellow",
+                  marginBottom: "-8px",
+                }}
+              >
+                {/* <img
+              src={Banner}
+              style={{
+                height: "21vh",
+                width: "65vw",
+                paddingTop: "30vh",
+                marginLeft: "10px",
+                marginRight: "2px",
+              }}
+            /> */}
+              </Grid>
+            </Grid>
+
+            <Grid
+              item
+              lg={4}
+              md={4}
+              style={{
+                // border: "1px solid red",
+                backgroundColor: "#fff",
+                marginLeft: "-10px",
+                width: "100%",
+                height: "98vh",
+                // marginLeft: "2px",
+                alignSelf: "center",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid
+                style={{ backgroundColor: "whitesmoke", alignSelf: "center" }}
+              >
+                <img
+                  src={logo}
+                  style={{ height: "9vh", width: "90%", paddingTop: "15vh" }}
+                />
+              </Grid>
+              <Box
+                component="form"
+                sx={{
+                  "& > :not(style)": { m: 1, width: "25ch" },
+                }}
+                noValidate
+                autoComplete="off"
+              >
+                <div
+                  className="form-container"
+                  style={{
+                    justifyContent: "center",
+                    textAlign: "center",
+                    alignItems: "center",
+                    width: "75%",
+                    // backgroundColor: "red",
+                    marginLeft: "80px",
+                    marginBottom: "30px",
+                  }}
+                >
+                  <Typography
+                    style={{
+                      color: "#000",
+                      textAlign: "left",
+                      fontSize: "25px",
+                      textAlign: "center",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    ADD PRODUCTS + SERVICES
+                  </Typography>
+                  {/* <h6>inputs will be stored here</h6> */}
+                  
+                  
+                  <div
+                    className="uploadContainer"
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {images.length > 0 ? (
+                      images.map((image, index) => (
+                        <img
+                          key={index}
+                          src={image.url}
+                          alt={`Product Image ${index + 1}`}
+                          style={{
+                            padding: "10px",
+                            marginRight: "10px",
+                            width: "16%",
+                            height: "8vh",
+                          }}
+                        />
+                      ))
+                    ) : (
+                      <img
+                        src={placeholder}
+                        alt="Placeholder"
+                        style={{
+                          padding: "5px",
+                          marginRight: "10px",
+                          width: "16%",
+                          height: "8vh",
+                        }}
+                      />
+                    )}
+
+                    <label
+                      htmlFor="imageInput"
+                      className="add"
+                      style={{
+                        backgroundColor: "whitesmoke",
+                        color: "#000",
+                        padding: "25px",
+                        // paddingBottom:'20px',
+                        width: "5%",
+                        cursor: "pointer",
+                        alignSelf: "center",
+                      }}
+                    >
+                      +
+                    </label>
+                    <input
+                      type="file"
+                      id="imageInput"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={handleImageChange}
+                      multiple // Allow selecting multiple files
+                    />
+                  </div>
+                  <View style={{ alignSelf: "center" }}>
+                    <TextField
+                      id="outlined-number"
+                      label="Name"
+                      type="text"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{ width: "100%" }}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                    <TextField
+                      id="outlined-number"
+                      label="Business Name"
+                      type="text"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{ width: "100%", marginTop: "10px" }}
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                    />
+                    <View style={{ display: "flex", flexDirection: "row" }}>
+                      <TextField
+                        id="outlined-number"
+                        label="Price"
+                        type="text"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{
+                          width: "45%",
+                          marginRight: "10px",
+                          marginTop: "10px",
+                        }}
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                      />
+                      <TextField
+                        id="outlined-number"
+                        label="Quantity"
+                        type="text"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{ width: "45%", marginTop: "10px" }}
+                        value={quantity}
+                        onChange={(e) => setQuantity(e.target.value)}
+                      />
+                    </View>
+                    <br />
+                    <TextField
+                      id="outlined-number"
+                      label="Description"
+                      type="text"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{
+                        //   backgroundColor: "dodgerblue",
+                        width: "100%",
+                        marginBottom: "10px",
+                        marginTop: "10px",
+                      }}
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                    />
+                    <TextField
+                      id="outlined-select-currency"
+                      select
+                      label="product Category"
+                      variant="standard"
+                      value={selectedProductCategory}
+                      onChange={(e) => setProductCategory(e.target.value)}
+                      style={{
+                        width: "100%",
+                        // marginTop: "5px",
+                        marginRight: "10px",
+                        textAlign: "left",
+                      }}
+                    >
+                      {productCategory.map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+
+                    <TextField
+                      id="outlined-number"
+                      label="Brand"
+                      type="text"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{
+                        width: "100%",
+                        marginLeft: "5px",
+                        marginTop: "10px",
+                      }}
+                      value={brand}
+                      onChange={(e) => setBrand(e.target.value)}
+                    />
+                  </View>
+                  <Button
+                    variant="contained"
+                    style={{
+                      width: "80%",
+                      height: "10%",
+                      //   padding: "15px",
+                      margin: "20px 0px",
+                      background: "#072840",
+                      borderRadius: "30px",
+                    }}
+                    onClick={handleContinue}
+                  >
+                    continue
+                  </Button>
+                </div>
+              </Box>
+            </Grid>
+          </Grid>
+        </View>
+      ) : null}
+      {paymentModal ? (
+        <View
+          // visible={true}
+          // onDismiss={() => setPaymentModal(false)}
+          style={{
+            position: "absolute",
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "flex-end", // Align to the end
+            zIndex: 9999,
+            
+            flexDirection: "row",
+          }}
+        >
+        
+            <View style={{  height: "100vh" }}>
+              <View style={{ flex: 1, justifyContent: "space-between",backgroundColor: "white" }}>
+                <View
+                  style={{
+                    height: "50vh",
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    source={{ uri: logo }}
+                    style={{
+                      height: "9%",
+                      width: "80%",
+                      paddingTop: "30%",
+                      scale: "0.5",
+                    }}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "75%",
+                    marginLeft: 80,
+                    marginBottom: 30,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#000",
+                      textAlign: "left",
+                      fontSize: 30,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    PAYMENT INFO
+                  </Text>
+                  <TextField
+                    id="standard-basic"
+                    label="Card Holder"
+                    variant="standard"
+                    style={{ width: "100%" }}
+                  />
+                  <TextField
+                    id="standard-basic"
+                    label="Card Number"
+                    variant="standard"
+                    style={{ width: "100%" }}
+                  />
+                  <View style={{ display: "flex", flexDirection: "row" }}>
+                    <TextField
+                      id="standard-basic"
+                      label="Expiary"
+                      variant="standard"
+                      style={{ width: "45%", marginRight: "15px" }}
+                    />
+                    <TextField
+                      id="standard-basic"
+                      label="CVV"
+                      variant="standard"
+                      style={{ width: "45%", marginRight: "15px" }}
+                    />
+                  </View>
+                  <Button
+                    mode="contained"
+                    onPress={handlePaymentButtonPress}
+                    style={{
+                      width: "80%",
+                      height: "15%",
+                      margin: 20,
+                      borderRadius: 30,
+                      backgroundColor: "#072840",
+                    }}
+                  >
+                    Continue
+                  </Button>
+                </View>
+              </View>
+            </View>
+          
         </View>
       ) : null}
       {bannerModal ? (
@@ -1715,10 +1896,6 @@ export default function BusinessAccount() {
           <View
           // style={{backgroundColor:"white"}}
           >
-           
-
-
-
             <Card
               style={{
                 display: "flex",
@@ -1760,26 +1937,32 @@ export default function BusinessAccount() {
                   AUTHORIZATION PENDING
                 </Text>
               </View>
-              <View  style={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
-              <TouchableOpacity
-               onPress={()=>setAddProduct(true)}
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
+                <TouchableOpacity onPress={() => setAddProduct(true)}>
                   <Text
-                   style={{
-                    color: "white",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    backgroundColor: "#072840",
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                    paddingLeft: 25,
-                    paddingRight: 25,
-                    borderRadius: 20,
-                    display: !businessAuthorization ? "none" : "flex",
-                    marginRight:20
-                  }}>ADD PRODUCT</Text>
-
-
+                    style={{
+                      color: "white",
+                      fontWeight: 600,
+                      fontSize: 14,
+                      backgroundColor: "#072840",
+                      paddingTop: 10,
+                      paddingBottom: 10,
+                      paddingLeft: 25,
+                      paddingRight: 25,
+                      borderRadius: 20,
+                      display: !businessAuthorization ? "none" : "flex",
+                      marginRight: 20,
+                    }}
+                  >
+                    ADD PRODUCT
+                  </Text>
                 </TouchableOpacity>
                 <Text
                   style={{
@@ -1804,7 +1987,7 @@ export default function BusinessAccount() {
               <Card
                 style={{
                   width: "100%",
-                  height: "100px",
+                  height: "80px",
                   flexDirection: "row",
                   justifyContent: "space-between",
                   // paddingLeft: 10,
@@ -1922,7 +2105,7 @@ export default function BusinessAccount() {
                   >
                     {list.map((item, index) => (
                       
-                      <Card2
+                      <ProductCard
                         key={index}
                         open={() => setEditModal(true)}
                       />

@@ -60,7 +60,7 @@ export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
-  const [businessAuthorization, setBusinessAuthorization] = useState(false);
+  const [businessAuthorization, setBusinessAuthorization] = useState(true);
   const [subscreibed, setSubscreibed] = useState(false);
   const [businessRegistered, setBusinessRegistered] = useState(true);
 
@@ -259,15 +259,28 @@ export default function BusinessAccount() {
     }
   };
   const handleContinue = async () => {
-    const isFormValid =
-      !!name &&
-      !!businessName &&
-      !!price &&
-      !!quantity &&
-      !!brand &&
-      selectedProductCategory !== "";
+    // const isFormValid =
+    //   !!name &&
+    //   !!businessName &&
+    //   !!price &&
+    //   !!quantity &&
+    //   !!brand &&
+    //   selectedProductCategory !== "";
 
-    if (isFormValid && images.length > 0) {
+
+      if (
+        !name ||
+        !price ||
+        !quantity ||
+        !businessName ||
+        !selectedProductCategory ||
+        !brand
+      ) {
+        alert("Please fill in all fields before continuing.");
+        return;
+      }
+  
+    if (images.length > 0) {
       try {
         // Store the data in Firestore
         const productRef = await firestore.collection("Products").add({
@@ -674,6 +687,8 @@ export default function BusinessAccount() {
                     ADD PRODUCTS + SERVICES
                   </Typography>
                   {/* <h6>inputs will be stored here</h6> */}
+                  
+                  
                   <div
                     className="uploadContainer"
                     style={{
@@ -1972,7 +1987,7 @@ export default function BusinessAccount() {
               <Card
                 style={{
                   width: "100%",
-                  height: "100px",
+                  height: "80px",
                   flexDirection: "row",
                   justifyContent: "space-between",
                   // paddingLeft: 10,

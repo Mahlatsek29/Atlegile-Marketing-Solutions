@@ -57,10 +57,10 @@ import { storage, firestore } from "../../config";
 import { PaperTextInput } from "react-native-paper";
 
 export default function BusinessAccount() {
-  const [editModal, setEditModal] = useState(true);
+  const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
-  const [businessAuthorization, setBusinessAuthorization] = useState(true);
+  const [businessAuthorization, setBusinessAuthorization] = useState(false);
   const [subscreibed, setSubscreibed] = useState(false);
   const [businessRegistered, setBusinessRegistered] = useState(true);
   const [landing, setLanding] = useState(true);

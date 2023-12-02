@@ -188,7 +188,7 @@ const ProductCard = ({ productId }) => {
                 justifyContent: "center",
                 alignItems: "center",
               }}>
-              <Text style={{ flex: 1 }}>{product.selectedProductCategory}</Text>
+              <Text style={{ flex: 1, fontSize:'15px', color:'#4FC3F7', fontWeight:'bold' }}>{product.selectedProductCategory}</Text>
               <View
                 style={{
                   backgroundColor: "#072840",

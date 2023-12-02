@@ -176,7 +176,7 @@ const UserProfile = () => {
                 {/* Map out order history here */}
                 {orderHistory.map((order, index) => (
                   <View key={index}>
-                    <Text style={{color:'black'}}>
+                    <Text style={{ color: "black" }}>
                       Product Name: {order.productName}, Purchase Date:{" "}
                       {order.createdAt}, Total: {order.price}
                       {console.log(order.price)}

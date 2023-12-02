@@ -21,43 +21,52 @@ const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignup = async () => {
+  const handleSignin = async () => {
     try {
       if (email.trim() === "" || password.trim() === "") {
         alert("Please fill in all fields before signing in.");
         return;
       }
-      console.log("Username:", username);
+
       console.log("Email:", email);
       console.log("Password:", password);
 
+      // Use signInWithEmailAndPassword for signing in
       const userCredential = await firebase
         .auth()
-        .createUserWithEmailAndPassword(email, password);
+        .signInWithEmailAndPassword(email, password);
 
       if (userCredential.user) {
-        console.log("User signed up:", userCredential.user);
+        console.log("User signed in:", userCredential.user);
 
-        // Create a user document with the UID in the Users collection
-        await firestore.collection("Users").doc(userCredential.user.uid).set({
-          email: email,
-        });
+        // You can add additional logic here if needed after successful sign-in
 
-        // Navigate to "/TellUsAboutYourself" after successful sign-up
+        // Navigate to "/TellUsAboutYourself" after successful sign-in
         navigation.navigate("TellUsAboutYourself");
       }
     } catch (error) {
-      console.error("Error signing up:", error.message);
-      alert("Error signing up. Please try again.");
+      console.error("Error signing in:", error.message);
+      alert("Error signing in. Please try again.");
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const { idToken } = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+      await firebase.auth().signInWithCredential(googleCredential);
+
+      // Navigate or perform additional logic after successful Google sign-in
+      navigation.navigate("TellUsAboutYourself");
+    } catch (error) {
+      console.error("Error signing in with Google:", error.message);
+      alert("Error signing in with Google. Please try again.");
     }
   };
 
   const handleShop = () => {
-    navigate("/Landing");
-  };
-
-  const handleBusinessSignup = () => {
-    console.log("Signing up as a business");
+    navigation.navigate("Landing");
   };
 
   return (
@@ -81,15 +90,17 @@ const Signin = () => {
           }}>
           <Text style={styles.title}>SIGN IN </Text>
           {/*Insert arrow logo */}
-          <Text style={{ fontSize: "70%", marginBottom: "-20%" }}>
-            SHOP{" "}
-            <FontAwesome
-              style={styles.arrow}
-              name="angle-right"
-              size={20}
-              color="#072840"
-            />{" "}
-          </Text>
+          <TouchableOpacity onPress={handleShop}>
+            <Text style={{ fontSize: "70%", marginBottom: "-20%" }}>
+              SHOP{" "}
+              <FontAwesome
+                style={styles.arrow}
+                name="angle-right"
+                size={20}
+                color="#072840"
+              />{" "}
+            </Text>
+          </TouchableOpacity>
         </View>
         {/* TextInput fields container */}
         <View style={{ width: "75%" }}>
@@ -120,7 +131,7 @@ const Signin = () => {
             FORGOT PASSWORD?
           </Text>
         </View>
-        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+        <TouchableOpacity style={styles.button} onPress={handleSignin}>
           <Text style={styles.buttonText}>SIGN IN</Text>
         </TouchableOpacity>
 
@@ -128,7 +139,7 @@ const Signin = () => {
           <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>
         </TouchableOpacity> */}
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={{ handleGoogleSignIn }}>
           <Text style={styles.linkText1}>
             {" "}
             <AntDesign name="google" size={15} color="red" />

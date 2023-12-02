@@ -58,12 +58,16 @@ const UserProfile = () => {
     fetchOrderHistory();
   }, []);
 
-  const handleOrderHistory = () => {
-    setShowOrderHistory(!showOrderHistory);
-  };
+  const handleOrderHistoryNav = () => {
+    navigation.navigate("OrderHistory");  };
 
   const handleBusiness = () => {
     navigation.navigate("BusinessRegistration");
+    // alert('button clicked!')
+  };
+
+  const handleFavourites = () => {
+    navigation.navigate("Favourites");
     // alert('button clicked!')
   };
 
@@ -167,7 +171,7 @@ const UserProfile = () => {
                   fontWeight: "bold",
                   textDecoration: "none",
                 }}
-                onPress={handleOrderHistory}>
+                onPress={handleOrderHistoryNav}>
                 <Text>ORDER HISTORY</Text>
               </TouchableOpacity>
             </View>
@@ -201,7 +205,8 @@ const UserProfile = () => {
                   color: "gray",
                   fontWeight: "bold",
                   textDecoration: "none",
-                }}>
+                }}
+                onPress={handleFavourites}>
                 <Text>FAVOURITES </Text>
               </TouchableOpacity>
             </View>

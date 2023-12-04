@@ -11,11 +11,19 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
 import { Text, TouchableOpacity, View } from "react-native";
 import { firestore } from "../config";
+import { useNavigation } from '@react-navigation/native';
+
 
 const ProductCard = ({ productId }) => {
+  const navigation = useNavigation();
   const [isRed, setIsRed] = useState(true);
   const [product, setProduct] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+
+  const navigateproductdetails = () => {
+    navigation.navigate('ProductDetails')
+  }
 
   const toggleHeart = () => {
     setIsRed((prevState) => !prevState);
@@ -188,7 +196,7 @@ const ProductCard = ({ productId }) => {
                 justifyContent: "center",
                 alignItems: "center",
               }}>
-              <Text style={{ flex: 1, fontSize:'15px', color:'#4FC3F7', fontWeight:'bold' }}>{product.selectedProductCategory}</Text>
+              <Text style={{ flex: 1, fontSize: '15px', color: '#4FC3F7', fontWeight: 'bold' }}>{product.selectedProductCategory}</Text>
               <View
                 style={{
                   backgroundColor: "#072840",
@@ -295,8 +303,8 @@ const ProductCard = ({ productId }) => {
             display: "flex",
             alignItems: "center",
             marginBottom: "2vh",
-          }}
-          onClick={() => console.log("View Button Clicked!!!")}>
+          }} onClick={navigateproductdetails}
+        >
           VIEW
           <Icon name="arrow-right" size={20} />
         </Button>

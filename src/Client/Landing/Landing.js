@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Image } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import { Container, Typography, Grid } from "@mui/material";
 import Navbar from "../../Global/Navbar";
 import SearchBar from "../../Global/SearchBar";
@@ -12,6 +12,8 @@ import { firebase, auth } from "../../config";
 
 const Landing = ({ navigation }) => {
   const [products, setProducts] = useState([]);
+  const scrollViewRef = useRef(null);
+
   const productIds = [
     "HWCHEa90akqO478j4soK",
     "V19CXL5ZOBbosMYGYBEX",
@@ -36,6 +38,18 @@ const Landing = ({ navigation }) => {
 
     fetchProducts();
   }, []);
+
+  const scrollLeft = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ x: 0, animated: true });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  };
 
   return (
     <>
@@ -119,17 +133,29 @@ const Landing = ({ navigation }) => {
               LearnZA
             </Typography>
             <ScrollView
+              ref={scrollViewRef}
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
               {productIds.map((productId) => (
-                <ProductCard
-                  key={productId}
-                  productId={productId}
-                  style={{ marginHorizontal: 10 }}
-                />
+                <ProductCard key={productId} productId={productId} />
               ))}
             </ScrollView>
+            <TouchableOpacity
+              onPress={scrollLeft}
+              style={{
+                position: "absolute",
+                left: 10,
+                top: "43%",
+                // backgroundColor: "blue",
+              }}>
+              <Text style={{ fontSize: 25 }}>{"<"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={scrollRight}
+              style={{ position: "absolute", right: 10, top: "43%" }}>
+              <Text style={{ fontSize: 25 }}>{">"}</Text>
+            </TouchableOpacity>
             <View style={{ color: "white", marginTop: 20 }}>
               <Grid container style={{ backgroundColor: "#072840" }}>
                 <Grid
@@ -228,16 +254,6 @@ const Landing = ({ navigation }) => {
                 </Grid>
               </Grid>
             </View>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
-              <>
-                <ProductCard />
-                <ProductCard />
-                <ProductCard />
-              </>
-            </ScrollView>
           </View>
           <View style={{ padding: 30 }}>
             <Typography
@@ -245,17 +261,9 @@ const Landing = ({ navigation }) => {
               style={{ fontWeight: "600", marginBottom: 10 }}>
               TechWise Electronics
             </Typography>
+
             <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
-              <>
-                <ProductCard />
-                <ProductCard />
-                <ProductCard />
-              </>
-            </ScrollView>
-            <ScrollView
+              ref={scrollViewRef}
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
@@ -263,6 +271,21 @@ const Landing = ({ navigation }) => {
                 <ProductCard key={productId} productId={productId} />
               ))}
             </ScrollView>
+            <TouchableOpacity
+              onPress={scrollLeft}
+              style={{
+                position: "absolute",
+                left: 10,
+                top: "43%",
+                // backgroundColor: "blue",
+              }}>
+              <Text style={{ fontSize: 25 }}>{"<"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={scrollRight}
+              style={{ position: "absolute", right: 10, top: "43%" }}>
+              <Text style={{ fontSize: 25 }}>{">"}</Text>
+            </TouchableOpacity>
           </View>
 
           <Grid container style={{ backgroundColor: "#072840" }}>
@@ -362,34 +385,39 @@ const Landing = ({ navigation }) => {
               {`>`}
             </Grid>
           </Grid>
-          <Typography
-            variant="h5"
-            style={{
-              fontWeight: "600",
-              marginBottom: 10,
-              marginTop: 20,
-              padding: 30,
-            }}>
-            SucureTech Solutions
-          </Typography>
-          {/* <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
-            <>
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-            </>
-          </ScrollView> */}
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
-            {productIds.map((productId) => (
-              <ProductCard key={productId} productId={productId} />
-            ))}
-          </ScrollView>
+
+          <View style={{ padding: 30 }}>
+            <Typography
+              variant="h5"
+              style={{ fontWeight: "600", marginBottom: 10 }}>
+              SucureTech Solutions{" "}
+            </Typography>
+
+            <ScrollView
+              ref={scrollViewRef}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
+              {productIds.map((productId) => (
+                <ProductCard key={productId} productId={productId} />
+              ))}
+            </ScrollView>
+            <TouchableOpacity
+              onPress={scrollLeft}
+              style={{
+                position: "absolute",
+                left: 10,
+                top: "43%",
+                // backgroundColor: "blue",
+              }}>
+              <Text style={{ fontSize: 25 }}>{"<"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={scrollRight}
+              style={{ position: "absolute", right: 10, top: "43%" }}>
+              <Text style={{ fontSize: 25 }}>{">"}</Text>
+            </TouchableOpacity>
+          </View>
         </Container>
       </View>
       <Grid container style={{ width: "100%", height: "40vh" }}>

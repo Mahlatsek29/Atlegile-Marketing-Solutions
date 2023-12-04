@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
-import { Container, Typography, Grid } from "@mui/material";
+import { Container, Typography, Grid, Button } from "@mui/material";
 import Navbar from "../../Global/Navbar";
 import SearchBar from "../../Global/SearchBar";
 import ProductCard from "../../Global/Card";
@@ -9,12 +9,19 @@ import { Footer } from "../../Global/Footer";
 import shop from "../../Global/images/svg_landing.svg";
 import shop2 from "../../Global/images/svg_landing.svg";
 import { firebase, auth } from "../../config";
+import { useNavigation } from '@react-navigation/native';
 
-const Landing = ({ navigation }) => {
+
+const Landing = () => {
+  const navigation = useNavigation();
   const [products, setProducts] = useState([]);
   const scrollViewRef1 = useRef(null);
   const scrollViewRef2 = useRef(null);
   const scrollViewRef3 = useRef(null);
+
+  const navigatebusinessproduct = () => {
+    navigation.navigate('BusinessProducts')
+  }
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -123,11 +130,10 @@ const Landing = ({ navigation }) => {
           </Grid>
 
           <View style={{ padding: 30 }}>
-            <Typography
-              variant="h5"
-              style={{ fontWeight: "600", marginBottom: 10 }}>
+            <Button sx= {{fontWeight: 'bold', color: 'black', marginRight: '90%'}}  onClick={navigatebusinessproduct}
+            >
               LearnZA
-            </Typography>
+            </Button>
             <ScrollView
               ref={scrollViewRef1}
               horizontal={true}
@@ -161,7 +167,7 @@ const Landing = ({ navigation }) => {
                     paddingTop: "5%",
                     paddingLeft: "10px",
                   }}>
-                
+
                 </Grid>
                 <Grid lg={8} sm={8}>
                   <View
@@ -241,7 +247,7 @@ const Landing = ({ navigation }) => {
                     paddingTop: "5%",
                     paddingRight: "10px",
                   }}>
-        
+
                 </Grid>
               </Grid>
             </View>
@@ -263,11 +269,11 @@ const Landing = ({ navigation }) => {
               ))}
             </ScrollView>
             <TouchableOpacity onPress={() => scrollLeft(scrollViewRef2)} style={{ position: "absolute", left: 10, top: "43%" }}>
-        <Text style={{ fontSize: 25 }}>{"<"}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => scrollRight(scrollViewRef2)} style={{ position: "absolute", right: 10, top: "43%" }}>
-        <Text style={{ fontSize: 25 }}>{">"}</Text>
-      </TouchableOpacity>
+              <Text style={{ fontSize: 25 }}>{"<"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => scrollRight(scrollViewRef2)} style={{ position: "absolute", right: 10, top: "43%" }}>
+              <Text style={{ fontSize: 25 }}>{">"}</Text>
+            </TouchableOpacity>
           </View>
 
           <Grid container style={{ backgroundColor: "#072840" }}>
@@ -284,7 +290,7 @@ const Landing = ({ navigation }) => {
                 justifySelf: "center",
                 justifyContent: "center",
               }}>
-             
+
             </Grid>
             <Grid lg={8} xs={8}>
               <View
@@ -364,7 +370,7 @@ const Landing = ({ navigation }) => {
                 justifySelf: "center",
                 justifyContent: "center",
               }}>
-          
+
             </Grid>
           </Grid>
 
@@ -385,11 +391,11 @@ const Landing = ({ navigation }) => {
               ))}
             </ScrollView>
             <TouchableOpacity onPress={() => scrollLeft(scrollViewRef3)} style={{ position: "absolute", left: 10, top: "43%" }}>
-        <Text style={{ fontSize: 25 }}>{"<"}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => scrollRight(scrollViewRef3)} style={{ position: "absolute", right: 10, top: "43%" }}>
-        <Text style={{ fontSize: 25 }}>{">"}</Text>
-      </TouchableOpacity>
+              <Text style={{ fontSize: 25 }}>{"<"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => scrollRight(scrollViewRef3)} style={{ position: "absolute", right: 10, top: "43%" }}>
+              <Text style={{ fontSize: 25 }}>{">"}</Text>
+            </TouchableOpacity>
           </View>
         </Container>
       </View>

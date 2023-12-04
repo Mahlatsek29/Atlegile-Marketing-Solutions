@@ -168,25 +168,25 @@ const Landing = ({ navigation }) => {
             >
               LearnZA
             </Typography>
-            <ScrollView
+            {/* <ScrollView
               ref={scrollViewRef}
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               style={{ marginTop: 20, display: "flex", flexDirection: "row" }}
-            >
-              {/* {productIds.map((productId) => (
+            > */}
+            {/* {productIds.map((productId) => (
                 <ProductCard
                   key={productId}
                   productId={productId}
                   style={{ marginHorizontal: 10 }}
                 />
               ))} */}
-              {firebaseProducts?.map((item) => {
-                return <Card2 item={item} />;
-              })}
-            </ScrollView>
+            {firebaseProducts?.map((item) => {
+              return <Card2 item={item} />;
+            })}
+            {/* </ScrollView> */}
             <TouchableOpacity
-              onPress={scrollLeft}
+              //   onPress={scrollLeft}
               style={{
                 position: "absolute",
                 left: 10,
@@ -196,7 +196,7 @@ const Landing = ({ navigation }) => {
               <Text style={{ fontSize: 25 }}>{"<"}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={scrollRight}
+              //   onPress={scrollRight}
               style={{ position: "absolute", right: 10, top: "43%" }}
             >
               <Text style={{ fontSize: 25 }}>{">"}</Text>

@@ -130,7 +130,7 @@ const Landing = () => {
           </Grid>
 
           <View style={{ padding: 30 }}>
-            <Button sx= {{fontWeight: 'bold', color: 'black', marginRight: '90%'}}  onClick={navigatebusinessproduct}
+            <Button sx={{ fontWeight: 'bold', color: 'black', marginRight: '90%' }} onClick={navigatebusinessproduct}
             >
               LearnZA
             </Button>
@@ -253,11 +253,9 @@ const Landing = () => {
             </View>
           </View>
           <View style={{ padding: 30 }}>
-            <Typography
-              variant="h5"
-              style={{ fontWeight: "600", marginBottom: 10 }}>
+            <Button sx={{ fontWeight: 'bold', color: 'black', marginRight: '90%' }} onClick={navigatebusinessproduct}>
               TechWise Electronics
-            </Typography>
+            </Button>
 
             <ScrollView
               ref={scrollViewRef2}
@@ -375,11 +373,10 @@ const Landing = () => {
           </Grid>
 
           <View style={{ padding: 30 }}>
-            <Typography
-              variant="h5"
-              style={{ fontWeight: "600", marginBottom: 10 }}>
+            <Button
+              sx={{ fontWeight: 'bold', color: 'black', marginRight: '90%' }} onClick={navigatebusinessproduct}>
               SucureTech Solutions{" "}
-            </Typography>
+            </Button>
 
             <ScrollView
               ref={scrollViewRef3}

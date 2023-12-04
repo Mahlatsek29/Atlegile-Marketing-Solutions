@@ -24,38 +24,41 @@ import yellow from "../../Global/images/headphones.png";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
 
 export default function ProductDetails({ item }) {
-  const navigation = useNavigation();
-  const labels = {
-    0.5: "Useless",
-    1: "Useless+",
-    1.5: "Poor",
-    2: "Poor+",
-    2.5: "Ok",
-    3: "Ok+",
-    3.5: "",
-    4: "Good+",
-    4.5: "Excellent",
-    5: "Excellent+",
+  let productImage = [
+    "https://images.pexels.com/photos/19288075/pexels-photo-19288075/free-photo-of-aerial-view-of-a-church-in-the-middle-of-a-field.jpeg",
+    "https://images.pexels.com/photos/19238352/pexels-photo-19238352/free-photo-of-a-man-is-sitting-at-a-desk-with-a-computer-monitor.jpeg",
+    "https://images.pexels.com/photos/19328627/pexels-photo-19328627/free-photo-of-halong-bay.jpeg",
+  ];
+
+  const [currentImage, setCurrentImage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+
+  const handleNext = () => {
+    setCurrentImage((prev) => (prev + 1) % productImage.length);
   };
 
-  const value = 3.5;
-
-  const [count, setCount] = useState(1);
-
-  const handleIncrement = () => {
-    setCount(count + 1);
+  const handlePrev = () => {
+    setCurrentImage(
+      (prev) => (prev - 1 + productImage.length) % productImage.length
+    );
   };
-
-  const handleDecrement = () => {
-    if (count > 1) {
-      setCount(count - 1);
+  const increaseQuantity = () => {
+    setQuantity(quantity + 1);
+  };
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
     }
   };
-
-  const handleAddToCart = () => {
-    alert("Item added to cart!");
+  const handleThumbnailClick = (index) => {
+    setCurrentImage(index);
   };
 
   return (
@@ -108,19 +111,7 @@ export default function ProductDetails({ item }) {
       {/* End of Navbar */}
 
       <Box sx={{ backgroundColor: "white", height: "100%", overflowY: "auto" }}>
-        <Container
-          maxWidth="md"
-          sx={{
-            // display: "flex",
-            // alignItems: "center",
-            // flexDirection: "column",
-            height: "100%",
-            // width: "100%",
-            border: "1px blue solid",
-            //backgroundColor: "red",
-          }}
-        >
-          {/*Breadcrumbs and Box container */}
+        <Container maxWidth="md">
           <Box sx={{ pl: 2, pb: 2, backgroundColor: "white" }}>
             <Breadcrumbs>
               <Link
@@ -130,7 +121,6 @@ export default function ProductDetails({ item }) {
               >
                 Home
               </Link>
-
               <Link
                 color="inherit"
                 href="/vaas"
@@ -138,7 +128,6 @@ export default function ProductDetails({ item }) {
               >
                 VAAS
               </Link>
-
               <Typography
                 color="textPrimary"
                 sx={{ fontSize: 15, textDecoration: "none" }}
@@ -149,31 +138,64 @@ export default function ProductDetails({ item }) {
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "row" }}>
-            {/*START - Left side Panel*/}
+            {/*START - Left side Panel */}
             <Box
               sx={{
                 height: "100%",
                 width: "50%",
-                border: "none",
-                borderRight: "1px lightgray solid",
-                //backgroundColor: "lightblue",
+                border: "1px lightgray solid",
+                borderRadius: 2,
               }}
             >
-              <Typography>SGSG</Typography>
+              <Box sx={{ position: "relative" }}>
+                <IconButton
+                  onClick={handlePrev}
+                  sx={{ position: "absolute", top: "50%", left: "5px" }}
+                >
+                  <ArrowBackIosIcon />
+                </IconButton>
+                <img
+                  src={productImage[currentImage]}
+                  alt={`image-${currentImage}`}
+                  style={{ width: "100%", borderRadius: 10 }}
+                />
+                <IconButton
+                  onClick={handleNext}
+                  sx={{ position: "absolute", top: "50%", right: "5px" }}
+                >
+                  <ArrowForwardIosIcon />
+                </IconButton>
+              </Box>
+              <Box sx={{ display: "flex", mt: 1 }}>
+                {productImage.map((url, index) => (
+                  <img
+                    key={index}
+                    src={url}
+                    alt={`thumbnail-${index}`}
+                    onClick={() => handleThumbnailClick(index)}
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      marginRight: 10,
+                      opacity: index === currentImage ? 1 : 0.5,
+                    }}
+                  />
+                ))}
+              </Box>
             </Box>
-            {/* END - Left side Panel*/}
+            {/*END - Left side Panel */}
 
             {/*START - Right side Panel*/}
             <Box
               sx={{
                 height: "100%",
                 width: "50%",
-                //backgroundColor: "pink",
+                pl: 2,
               }}
             >
               <Box
                 sx={{
-                  border: "1px red solid",
+                  //border: "1px red solid",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "flex-end",
@@ -181,33 +203,143 @@ export default function ProductDetails({ item }) {
               >
                 <Button
                   onClick={() => navigation.navigate("/main/dashboard")}
-                  variant="filled"
                   sx={{
                     border: "1px #072840 solid",
                     borderRadius: 20,
                   }}
                 >
                   <Typography
-                    sx={{ fontWeight: "600", fontSize: 12, color: "#072840" }}
+                    sx={{ fontWeight: "600", fontSize: 10, color: "#072840" }}
                   >
                     PHYSICAL
                   </Typography>
                 </Button>
               </Box>
-              <Box>
+
+              <Box sx={{ mt: 2 }}>
                 <Box>
-                  <Typography></Typography>
+                  <Typography sx={{ fontWeight: "600", fontSize: 20 }}>
+                    DIGITAL MARKETING COURSE
+                  </Typography>
                 </Box>
-                <Box>
-                  <Typography></Typography>
+                <Box sx={{ mt: 2 }}>
+                  <Typography>
+                    An in-depth online course covering digital marketing
+                    strategies and techniques
+                  </Typography>
                 </Box>
-                <Box>
-                  <Typography></Typography>
+                <Box sx={{ mt: 2 }}>
+                  <Typography sx={{ fontWeight: "600" }}>R15OO</Typography>
                 </Box>
-                <Box>
-                  <Typography></Typography>
+                <Box sx={{ mt: 2 }}>
+                  <Typography sx={{ fontWeight: "600", color: "lightgray" }}>
+                    Quantity
+                  </Typography>
                 </Box>
-                <Box></Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Grid container sx={{ mt: 2, width: "50%", p: 1 }}>
+                    <Grid
+                      item
+                      xs={2}
+                      onClick={increaseQuantity}
+                      sx={{
+                        //border: "1px red solid",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <AddIcon />
+                    </Grid>
+                    <Grid
+                      item
+                      xs={2}
+                      sx={{
+                        //border: "1px red solid",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {quantity}
+                    </Grid>
+                    <Grid
+                      item
+                      xs={2}
+                      onClick={decreaseQuantity}
+                      sx={{
+                        //border: "1px red solid",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <RemoveIcon />
+                    </Grid>
+                  </Grid>
+                  <Button
+                    onClick={() => navigation.navigate("/main/dashboard")}
+                    sx={{
+                      backgroundColor: "#072840",
+                      borderRadius: 20,
+                    }}
+                  >
+                    <Typography
+                      sx={{ fontSize: 15, color: "white", pl: 1, pr: 1 }}
+                    >
+                      ADD TO CART
+                    </Typography>
+                  </Button>
+                </Box>
+                <Box
+                  sx={{
+                    // display: "flex",
+                    // flexDirection: "row",
+                    // alignItems: "center",
+                    // justifyContent: "space-between",
+                    border: "10px red solid"
+                  }}
+                >
+                  <Grid container sx={{height:"100%"}}>
+                    <Grid
+                      item
+                      xs={4}
+                      onClick={increaseQuantity}
+                      sx={{
+                        border: "1px #d32f2f solid",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        backgroundColor:"#d32f2f"
+                      }}
+                    >
+                      <CreditCardOutlinedIcon sx={{color:"white"}} />
+                    </Grid>
+
+                    <Grid
+                      item
+                      xs={8}
+                      onClick={decreaseQuantity}
+                      sx={{
+                        border: "1px red solid",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <RemoveIcon />
+                    </Grid>
+                  </Grid>
+                </Box>
               </Box>
             </Box>
             {/*END - Right side Panel*/}

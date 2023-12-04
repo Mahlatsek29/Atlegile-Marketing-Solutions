@@ -161,7 +161,7 @@ const Landing = ({ navigation }) => {
                     paddingTop: "5%",
                     paddingLeft: "10px",
                   }}>
-                  {`<`}
+                
                 </Grid>
                 <Grid lg={8} sm={8}>
                   <View
@@ -241,7 +241,7 @@ const Landing = ({ navigation }) => {
                     paddingTop: "5%",
                     paddingRight: "10px",
                   }}>
-                  {`>`}
+        
                 </Grid>
               </Grid>
             </View>
@@ -284,7 +284,7 @@ const Landing = ({ navigation }) => {
                 justifySelf: "center",
                 justifyContent: "center",
               }}>
-              {`<`}
+             
             </Grid>
             <Grid lg={8} xs={8}>
               <View
@@ -364,7 +364,7 @@ const Landing = ({ navigation }) => {
                 justifySelf: "center",
                 justifyContent: "center",
               }}>
-              {`>`}
+          
             </Grid>
           </Grid>
 

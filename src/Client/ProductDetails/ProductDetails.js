@@ -10,6 +10,7 @@ import {
   Container,
   Grid,
   TextField,
+  Avatar,
 } from "@mui/material";
 import logo from "../../Global/images/logo.png";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -28,17 +29,57 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
+import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
+import ReviewsCard from "./ReviewsCard";
+import Card from "../../Global/Card2";
 
 export default function ProductDetails({ item }) {
+  const [myRatings, setMyRatings] = useState(2.5);
   let productImage = [
     "https://images.pexels.com/photos/19288075/pexels-photo-19288075/free-photo-of-aerial-view-of-a-church-in-the-middle-of-a-field.jpeg",
     "https://images.pexels.com/photos/19238352/pexels-photo-19238352/free-photo-of-a-man-is-sitting-at-a-desk-with-a-computer-monitor.jpeg",
     "https://images.pexels.com/photos/19328627/pexels-photo-19328627/free-photo-of-halong-bay.jpeg",
   ];
 
+  const reviews = [
+    {
+      id: "XYZ123abc456def789",
+      createdAt: "2023-01-01T12:00:00Z",
+      comment: "This is a test comment for the product.",
+      userName: "John",
+      userSurname: "Doe",
+      userID: "ghIJKL123mnoPQR456",
+      productID: "78PQRstUvwXYZ90abc",
+      role: "Photographer",
+      ratings: 4.0,
+    },
+    {
+      id: "PQrs56tuVW78xyZ90",
+      createdAt: "2023-01-02T12:00:00Z",
+      comment: "Another test comment for the product.",
+      userName: "Jane",
+      userSurname: "Smith",
+      userID: "stuvwX789YZabc012D",
+      productID: "78PQRstUvwXYZ90abc",
+      role: "Designer",
+      ratings: 3.5,
+    },
+    {
+      id: "ABcde12FGhijk34LMno",
+      createdAt: "2023-01-03T12:00:00Z",
+      comment: "Yet another test comment for the product.",
+      userName: "Bob",
+      userSurname: "Johnson",
+      userID: "EFGhi123JKLMno456",
+      productID: "78PQRstUvwXYZ90abc",
+      role: "Carpenter",
+      ratings: 5.0,
+    },
+  ];
+
   const [currentImage, setCurrentImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [review, setReview] = useState("");
 
   const handleNext = () => {
     setCurrentImage((prev) => (prev + 1) % productImage.length);
@@ -59,6 +100,10 @@ export default function ProductDetails({ item }) {
   };
   const handleThumbnailClick = (index) => {
     setCurrentImage(index);
+  };
+
+  const handleReviewPost = () => {
+    console.log("Posted review!");
   };
 
   return (
@@ -137,13 +182,13 @@ export default function ProductDetails({ item }) {
             </Breadcrumbs>
           </Box>
 
-          <Box sx={{ display: "flex", flexDirection: "row" }}>
+          <Box sx={{ display: "flex", flexDirection: "row", mb: 10 }}>
             {/*START - Left side Panel */}
             <Box
               sx={{
                 height: "100%",
                 width: "50%",
-                border: "1px lightgray solid",
+                //border: "1px lightgray solid",
                 borderRadius: 2,
               }}
             >
@@ -248,7 +293,7 @@ export default function ProductDetails({ item }) {
                     <Grid
                       item
                       xs={2}
-                      onClick={increaseQuantity}
+                      onClick={decreaseQuantity}
                       sx={{
                         //border: "1px red solid",
                         display: "flex",
@@ -256,7 +301,7 @@ export default function ProductDetails({ item }) {
                         justifyContent: "center",
                       }}
                     >
-                      <AddIcon />
+                      <RemoveIcon />
                     </Grid>
                     <Grid
                       item
@@ -273,7 +318,7 @@ export default function ProductDetails({ item }) {
                     <Grid
                       item
                       xs={2}
-                      onClick={decreaseQuantity}
+                      onClick={increaseQuantity}
                       sx={{
                         //border: "1px red solid",
                         display: "flex",
@@ -281,7 +326,7 @@ export default function ProductDetails({ item }) {
                         justifyContent: "center",
                       }}
                     >
-                      <RemoveIcon />
+                      <AddIcon />
                     </Grid>
                   </Grid>
                   <Button
@@ -300,49 +345,122 @@ export default function ProductDetails({ item }) {
                 </Box>
                 <Box
                   sx={{
-                    // display: "flex",
-                    // flexDirection: "row",
-                    // alignItems: "center",
-                    // justifyContent: "space-between",
-                    border: "10px red solid"
+                    borderLeft: "10px red solid",
                   }}
                 >
-                  <Grid container sx={{height:"100%"}}>
-                    <Grid
-                      item
-                      xs={4}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      p: 3,
+                    }}
+                  >
+                    <Box
                       onClick={increaseQuantity}
                       sx={{
-                        border: "1px #d32f2f solid",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        backgroundColor:"#d32f2f"
+                        //border: "1px #d32f2f solid",
+                        pr: 2,
                       }}
                     >
-                      <CreditCardOutlinedIcon sx={{color:"white"}} />
-                    </Grid>
+                      <Avatar sx={{ backgroundColor: "#d32f2f", p: 1 }}>
+                        <CreditCardOutlinedIcon sx={{ color: "white" }} />
+                      </Avatar>
+                    </Box>
 
-                    <Grid
-                      item
-                      xs={8}
+                    <Box
                       onClick={decreaseQuantity}
-                      sx={{
-                        border: "1px red solid",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                      }}
+                      sx={
+                        {
+                          //border: "1px red solid",
+                        }
+                      }
                     >
-                      <RemoveIcon />
-                    </Grid>
-                  </Grid>
+                      <Typography sx={{ fontWeight: "600" }}>
+                        Digital Product
+                      </Typography>
+                      <Typography sx={{ mt: "1" }}>
+                        Please note that you will receive this product in your
+                        email
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+              <Box>
+                <Typography
+                  sx={{ fontWeight: "600", fontSize: 15, mt: 3, mb: 4 }}
+                >
+                  REVIEWS
+                </Typography>
+                <Box>
+                  {reviews.map((review) => (
+                    <ReviewsCard key={review.id} review={review} />
+                  ))}
+                </Box>
+                <Box sx={{}}>
+                  <Rating
+                    name="hover-feedback"
+                    value={myRatings}
+                    precision={0.5}
+                    onChange={(event, newValue) => {
+                      setMyRatings(newValue);
+                    }}
+                  />
+                  <TextField
+                    fullWidth
+                    id="review"
+                    label="Write a review"
+                    variant="standard"
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                    sx={{ mb: 1 }}
+                  />
+                  <Button
+                    fullWidth
+                    sx={{
+                      textDecoration: "none",
+                      border: "none",
+                      backgroundColor: "#072840",
+                      fontWeight: "500",
+                      color: "white",
+                      width: "100%",
+                      borderRadius: 20,
+                      fontSize: 15,
+                      p: 1,
+                    }}
+                    onClick={handleReviewPost}
+                    variant="filled"
+                  >
+                    REVIEW
+                  </Button>
                 </Box>
               </Box>
             </Box>
             {/*END - Right side Panel*/}
+          </Box>
+          <Box>
+            <Typography sx={{ fontWeight: "600", fontSize: 20, mt: 3, mb: 4 }}>
+              RELATED PRODUCTS
+            </Typography>
+            <Box sx={{ pl: 2 }}>
+              <Typography
+                sx={{ fontWeight: "600", fontSize: 15, mb: 2 }}
+              >
+                MindMatters Publication
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  overflowX: "auto",
+                }}
+              >
+                <Card />
+                <Card />
+              </Box>
+            </Box>
           </Box>
         </Container>
       </Box>

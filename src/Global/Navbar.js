@@ -30,6 +30,10 @@ const Navbar = () => {
   const navigateaboutus = () => {
     navigation.navigate('AboutUs')
   }
+
+  const navigatelanding = () => {
+    navigation.navigate('Landing')
+  }
   return (
     <Toolbar
       sx={{
@@ -54,7 +58,7 @@ const Navbar = () => {
               display: "flex",
               flexDirection: "row",
             }}>
-            <Button
+            <Button onClick={navigatelanding}
               sx={{
                 borderRadius: "25px",
                 "&:hover": {
@@ -64,8 +68,7 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-            // component={Link}
-            // to="/shop"
+          
             >
               Shop
             </Button>
@@ -79,8 +82,7 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-            // component={Link}
-            // to="/about-us"
+         
             >
               About Us
             </Button>
@@ -99,8 +101,7 @@ const Navbar = () => {
                   },
                 }}
                 color="inherit"
-              // component={Link}
-              // to="/sign-in"
+             
               >
                 Sign In
               </Button>
@@ -121,8 +122,7 @@ const Navbar = () => {
                   },
                 }}
                 color="inherit"
-              // component={Link}
-              // to="/sign-up"
+          
               >
                 Sign Up
               </Button>
@@ -145,8 +145,7 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-            // component={Link}
-            // to="/shop"
+           
             >
               Shop
             </Button>
@@ -160,15 +159,12 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-            // component={Link}
-            // to="/about-us"
+         
             >
               About Us
             </Button>
 
-            {/* <IconButton color="inherit" onClick={() => alert("Go to Cart")}>
-              <ShoppingCartIcon />
-            </IconButton> */}
+         
             <Box
               sx={{
                 "&:hover": {
@@ -208,7 +204,6 @@ const Navbar = () => {
                     padding: "10px",
                   }}>
                   {
-                    // userData?.name && userData?.name.charAt(0).toUpperCase()
                   }
                   AS
                 </Typography>

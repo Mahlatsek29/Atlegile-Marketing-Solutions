@@ -58,7 +58,6 @@ const Landing = ({ navigation }) => {
       <SearchBar />
       <View>
         <Container sx={{ width: "100vw", width: "100%" }}>
-          {/* <Grid></Grid> */}
           <Grid
             container
             style={{
@@ -147,7 +146,6 @@ const Landing = ({ navigation }) => {
                 position: "absolute",
                 left: 10,
                 top: "43%",
-                // backgroundColor: "blue",
               }}>
               <Text style={{ fontSize: 25 }}>{"<"}</Text>
             </TouchableOpacity>
@@ -277,7 +275,6 @@ const Landing = ({ navigation }) => {
                 position: "absolute",
                 left: 10,
                 top: "43%",
-                // backgroundColor: "blue",
               }}>
               <Text style={{ fontSize: 25 }}>{"<"}</Text>
             </TouchableOpacity>
@@ -408,7 +405,6 @@ const Landing = ({ navigation }) => {
                 position: "absolute",
                 left: 10,
                 top: "43%",
-                // backgroundColor: "blue",
               }}>
               <Text style={{ fontSize: 25 }}>{"<"}</Text>
             </TouchableOpacity>

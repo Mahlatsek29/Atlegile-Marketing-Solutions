@@ -16,6 +16,8 @@ import { TouchableOpacity } from "react-native";
 const ProductCard = ({ item }) => {
   const [isRed, setIsRed] = React.useState(true);
 
+  console.log("item images: ");
+  const imgSrc = item?.images?.find((item, index) => index === 0);
   const toggleHeart = () => {
     console.log("toggleHeart Clicked");
     setIsRed((prevState) => !prevState);
@@ -55,7 +57,8 @@ const ProductCard = ({ item }) => {
           <CardMedia
             component="img"
             height="140"
-            image={require("../../assets/image/headsets.png")}
+            // image={require("../../assets/image/headsets.png")}
+            src={imgSrc}
             alt="shop 2"
             style={{
               borderRadius: "100px",
@@ -64,6 +67,13 @@ const ProductCard = ({ item }) => {
               height: 220,
               alignSelf: "center",
             }}
+            // style={{
+            //   borderRadius: "100px",
+            //   objectFit: "cover",
+            //   width: 220,
+            //   height: 220,
+            //   alignSelf: "center",
+            // }}
           />
           <Box
             style={{
@@ -137,8 +147,9 @@ const ProductCard = ({ item }) => {
               component="h6"
               style={{ fontSize: "16px", color: "#0074cc" }}
             >
-              {item?.selectedCategory}
-              English Department
+              {item?.selectedProductCategory}
+
+              {/* English Department */}
             </Typography>
             <Typography
               style={{
@@ -152,8 +163,8 @@ const ProductCard = ({ item }) => {
             </Typography>
           </Box>
           <Typography variant="h5" component="h5">
-            {item?.productName}
-            Graphic Design
+            {item?.name}
+            {/* Graphic Design */}
           </Typography>
           <Typography
             variant="subtitle2"

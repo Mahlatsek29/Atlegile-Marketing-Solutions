@@ -1,22 +1,20 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
-// Import your images and components here
-// import logo from '../../Global/images/logo.svg'
 import Plane from "../../Global/images/plane.svg";
 import Lion from "../../Global/images/bigger-lion.png";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
 import { yellow } from "@mui/material/colors";
-// import FollowUs from '../../Global/Header';
-// import Navbar from '../../Global/Navbar';
-// import Footer from '../../Global/Footer';
-// import FollowUs from '../../Components/FollowUs/FollowUs';
-// import Navbar from '../../Components/NavBar/NavBar';
 import { COLORS } from "../../Global/Color";
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function AboutUs() {
+
+  
+
   const amsArr = [];
 
   return (
@@ -61,8 +59,7 @@ export default function AboutUs() {
               aim to drive sales, increase revenue, and create a lasting impact.
             </Text>
           </View>
-          {/* Add styles for your cards, plane, etc. */}
-          {/* ... */}
+         
           <View
             style={{ display: "flex", flexDirection: "row", paddingTop: 30 }}
           >
@@ -323,55 +320,43 @@ export default function AboutUs() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // Add any other styles for the main container
   },
   logo: {
     minWidth: 250,
     maxWidth: 400,
 
-    // Add any other styles for the logo
   },
   aboutLogo: {
     marginTop: 100,
-    // Add any other styles for the logo container
   },
   aboutContainer: {
     width: "100%",
     height: "auto",
     alignItems: "center",
     justifyContent: "center",
-    // backgroundColor:'yellow',
     display: "flex",
-    //backgroundColor:"green"
-    // Add any other styles for the container
   },
   aboutHeaderContainer: {
     width: "65%",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    // backgroundColor:'yellow',
     display: "flex",
-    // Add any other styles for the header container
   },
   aboutTextSection: {
     flexDirection: "column",
     alignItems: "center",
     display: "flex",
     justifyContent: "center",
-    //  backgroundColor:"red",
-    // Add any other styles for the text section
+  
   },
   aboutPlane: {
     marginTop: 50,
-    // Add any other styles for the plane container
   },
   plane: {
-    // Add any styles for the plane image
   },
   amsContainer: {
     marginTop: 20,
-    // Add any other styles for the AMS container
   },
   amsHeader: {
     flexDirection: "column",
@@ -380,29 +365,23 @@ const styles = StyleSheet.create({
     marginTop: 70,
     marginBottom: 30,
     fontSize: 30,
-    // Add any other styles for the AMS header
   },
   amsLists: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-    // Add any other styles for the AMS lists
   },
   amsText: {
     flexDirection: "column",
     alignItems: "center",
     marginTop: 50,
-    // Add any other styles for the AMS text
   },
   lionImagesContainer: {
     position: "relative",
-    // Add any other styles for the lion images container
   },
   bigLion: {
-    // Add any styles for the big lion container
   },
   lion: {
     width: "100%",
-    // Add any other styles for the lion image
   },
 });

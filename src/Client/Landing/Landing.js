@@ -408,9 +408,7 @@ const Landing = ({ navigation }) => {
                 position: "absolute",
                 left: 10,
                 top: "43%",
-                backgroundColor: "#0f0",
-                padding:10,
-                borderRadius:'25px'
+                // backgroundColor: "blue",
               }}>
               <Text style={{ fontSize: 25 }}>{"<"}</Text>
             </TouchableOpacity>

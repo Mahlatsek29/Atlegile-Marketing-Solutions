@@ -453,7 +453,6 @@ const Landing = ({ navigation }) => {
             <View>
               <Typography
                 variant="h4"
-                variant="h4"
                 style={{
                   fontWeight: "bolder",
                   justifySelf: "center",
@@ -562,5 +561,4 @@ const Landing = ({ navigation }) => {
   );
 };
 
-export default Landing;
 export default Landing;

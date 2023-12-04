@@ -52,10 +52,13 @@ import Banner from "../../Global/images/media bg-cover.png";
 import placeholder from "../../Global/images/login.jpg";
 import { useNavigation } from "@react-navigation/native";
 import { Linking } from "react-native";
-import { storage, firestore } from "../../config";
+
+import { auth, firestore, storage } from "../../config";
+import firebase from "firebase/compat/app";
 
 import { PaperTextInput } from "react-native-paper";
-
+import { Flag } from "@mui/icons-material";
+import CircularProgress from "@mui/material/CircularProgress";
 export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
@@ -78,7 +81,7 @@ export default function BusinessAccount() {
   const [productType, setProductType] = useState("");
   const [other, setOther] = useState("");
   const [images, setImages] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const [addProduct, setAddProduct] = useState("");
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
@@ -87,9 +90,7 @@ export default function BusinessAccount() {
   const [expiery, setExpiery] = useState();
   const [cvv, setCvv] = useState();
   const emptyOption = [""];
-
   const [businessName, setBusinessName] = useState("");
-
   const [selectedProductCategory, setProductCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [showWebView, setShowWebView] = useState(false);
@@ -200,7 +201,8 @@ export default function BusinessAccount() {
     setEditModal(false);
   };
 
-  const handleSaveAddBanner = () => {
+  const handleSaveAddBanner = (e) => {
+    e.preventDefault();
     console.log("productName: ", productName);
     console.log("priceOriginal: ", priceOriginal);
     console.log("priceDiscount: ", priceDiscount);
@@ -218,7 +220,8 @@ export default function BusinessAccount() {
     setBannerModal(false);
   };
 
-  const handleSavePaymentInfo = () => {
+  const handleSavePaymentInfo = (e) => {
+    e.preventDefault();
     setPaymentModal(false);
     setBusinessAuthorization(true);
   };
@@ -236,21 +239,6 @@ export default function BusinessAccount() {
     }
   }, []);
 
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-
-  //   if (file) {
-  //     const reader = new FileReader();
-
-  //     reader.onload = (e) => {
-  //       const dataUrl = e.target.result;
-  //       const newImage = [...images, dataUrl];
-  //       setImages(newImage);
-  //     };
-
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
   const handleImageChange = (e) => {
     const files = e.target.files;
     if (files.length > 0) {
@@ -261,71 +249,70 @@ export default function BusinessAccount() {
       setImages((prevImages) => [...prevImages, ...newImages]);
     }
   };
-  const handleContinue = async () => {
-    // const isFormValid =
-    //   !!name &&
-    //   !!businessName &&
-    //   !!price &&
-    //   !!quantity &&
-    //   !!brand &&
-    //   selectedProductCategory !== "";
 
-    // if (
-    //   !name ||
-    //   !price ||
-    //   !quantity ||
-    //   !businessName ||
-    //   !selectedProductCategory ||
-    //   !brand
-    // ) {
-    //   alert("Please fill in all fields before continuing.");
-    //   return;
-    // }
-
-    if (images.length > 0) {
-      try {
-        // Store the data in Firestore
-        const productRef = await firestore.collection("Products").add({
-          name,
-          businessName,
-          price,
-          quantity,
-          description,
-          selectedProductCategory,
-          brand,
-          // ... (other fields)
-        });
-
-        // Upload images to Firebase Storage
-        const uploadTasks = images.map((image, index) => {
-          const imageRef = storage.ref(
-            `product_images/${productRef.id}/image${index}`
-          );
-          return imageRef.put(image.file); // Use put method instead of putFile
-        });
-
-        const uploadSnapshots = await Promise.all(uploadTasks);
-
-        // Get download URLs of the images
-        const downloadURLs = await Promise.all(
-          uploadSnapshots.map((snapshot) => snapshot.ref.getDownloadURL())
-        );
-
-        // Update the product document with image URLs
-        await productRef.update({ images: downloadURLs });
-
-        // You can navigate to the next screen or perform other actions here
-        alert("Product added successfully!");
-        const paymentUrl =
-          "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
-
-        // Open the payment URL in the device's default browser
-        Linking.openURL(paymentUrl);
-      } catch (error) {
-        console.error("Error storing data in Firestore:", error);
-      }
-    } else {
-      alert("Please pick an image");
+   const handleContinue = async (e) => {
+    e.preventDefault();
+  
+    // Check if at least one image is selected
+    if (images.length === 0) {
+      alert("Please select at least one image.");
+      return;
+    }
+  
+    // Set loading to true when the form is submitted
+    setLoading(true);
+  
+    // Reset previous error messages
+  
+    try {
+      // Create a new document reference
+      const productRef = firestore.collection("Products").doc();
+  
+      // Get the autogenerated product ID
+      const productId = productRef.id;
+  
+      // Store the data in Firestore with autogenerated product ID
+      await productRef.set({
+        name,
+        businessName,
+        price,
+        quantity,
+        description,
+        selectedProductCategory,
+        brand,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        // ... (other fields)
+      });
+  
+      // Upload images to Firebase Storage
+      const uploadTasks = images.map((image, index) => {
+        const imageRef = storage.ref(`product_images/${productId}/image${index}`);
+        return imageRef.put(image.file);
+      });
+  
+      await Promise.all(uploadTasks); // Wait for all images to be uploaded
+  
+      // Get download URLs of the images
+      const downloadURLs = await Promise.all(
+        uploadTasks.map((task) => task.snapshot.ref.getDownloadURL())
+      );
+  
+      // Update the product document with image URLs
+      await productRef.update({ images: downloadURLs });
+  
+      // Set loading back to false after successful upload
+      setLoading(false);
+  
+      // You can navigate to the next screen or perform other actions here
+      alert("Product added successfully!");
+      const paymentUrl = "..."; // (your payment URL)
+  
+      // Open the payment URL in the device's default browser
+      Linking.openURL(paymentUrl);
+    } catch (error) {
+      console.error("Error storing data in Firestore:", error);
+      // Set loading back to false in case of an error
+      setLoading(false);
     }
   };
 
@@ -396,67 +383,67 @@ export default function BusinessAccount() {
                 EDIT PRODUCT
               </Text>
               <View>
-              <div
-                    className="uploadContainer"
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {images.length > 0 ? (
-                      images.map((image, index) => (
-                        <img
-                          key={index}
-                          src={image.url}
-                          alt={`Product Image ${index + 1}`}
-                          style={{
-                            padding: "10px",
-                            marginRight: "10px",
-                            width: "16%",
-                            height: "8vh",
-                          }}
-                        />
-                      ))
-                    ) : (
+                <div
+                  className="uploadContainer"
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }}
+                >
+                  {images.length > 0 ? (
+                    images.map((image, index) => (
                       <img
-                        src={placeholder}
-                        alt="Placeholder"
+                        key={index}
+                        src={image.url}
+                        alt={`Product Image ${index + 1}`}
                         style={{
-                          padding: "5px",
+                          padding: "10px",
                           marginRight: "10px",
                           width: "16%",
                           height: "8vh",
                         }}
                       />
-                    )}
-
-                    <label
-                      htmlFor="imageInput"
-                      className="add"
+                    ))
+                  ) : (
+                    <img
+                      src={placeholder}
+                      alt="Placeholder"
                       style={{
-                        backgroundColor: "whitesmoke",
-                        color: "#000",
-                        padding: "25px",
-                        // paddingBottom:'20px',
-                        width: "5%",
-                        cursor: "pointer",
-                        alignSelf: "center",
+                        padding: "5px",
+                        marginRight: "10px",
+                        width: "16%",
+                        height: "8vh",
                       }}
-                    >
-                      +
-                    </label>
-                    <input
-                      type="file"
-                      id="imageInput"
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      onChange={handleImageChange}
-                      multiple // Allow selecting multiple files
                     />
-                  </div>
+                  )}
 
-                <form onSubmit={(e)=> setEditModal(false)}>
+                  <label
+                    htmlFor="imageInput"
+                    className="add"
+                    style={{
+                      backgroundColor: "whitesmoke",
+                      color: "#000",
+                      padding: "25px",
+                      // paddingBottom:'20px',
+                      width: "5%",
+                      cursor: "pointer",
+                      alignSelf: "center",
+                    }}
+                  >
+                    +
+                  </label>
+                  <input
+                    type="file"
+                    id="imageInput"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                    multiple // Allow selecting multiple files
+                  />
+                </div>
+
+                <form onSubmit={(e) => setEditModal(false)}>
                   <TextField
                     fullWidth
                     required
@@ -468,7 +455,7 @@ export default function BusinessAccount() {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    onChange ={(e) => setProductName(e.target.value)}
+                    onChange={(e) => setProductName(e.target.value)}
                     style={{ width: "100%", marginTop: "10px" }}
                   />
                   <View
@@ -559,34 +546,32 @@ export default function BusinessAccount() {
                     id="outlined-number"
                     label="Other"
                     value={other}
-                     InputLabelProps={{
+                    InputLabelProps={{
                       shrink: true,
                     }}
-                    onChange ={(e) => setOther(e.target.value)}
+                    onChange={(e) => setOther(e.target.value)}
                     style={{ width: "100%", marginTop: "10px" }}
                   />
-               
-           
-              <Button
-                  onPress={handleSaveEditProduct}
-                  style={{
-                    color: "white",
-                    fontWeight: "600",
-                    fontSize: 14,
-                    backgroundColor: "#072840",
-                    borderRadius: 20,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                    padding: 10,
-                    marginTop: 20,
-                  }}
-                  type='submit'
-                >
-                  <Text style={{ color: "white" }}>SAVE</Text>
-                </Button>
-                </form>
 
+                  <Button
+                    onPress={handleSaveEditProduct}
+                    style={{
+                      color: "white",
+                      fontWeight: "600",
+                      fontSize: 14,
+                      backgroundColor: "#072840",
+                      borderRadius: 20,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      textAlign: "center",
+                      padding: 10,
+                      marginTop: 20,
+                    }}
+                    type="submit"
+                  >
+                    <Text style={{ color: "white" }}>SAVE</Text>
+                  </Button>
+                </form>
               </View>
             </View>
           </View>
@@ -610,50 +595,46 @@ export default function BusinessAccount() {
             alignSelf: "flex-end",
           }}
         >
+         <Grid
+        container
+        style={{
+          width: "100%",
+          marginBottom: "-10vh",
+          //   border: "1px solid green",
+        }}>
+        <Grid
+          item
+          lg={8}
+          md={8}
+          sm={{ hidden: true }}
+          style={{
+            // border: "1px solid",
+            // backgroundColor: "blue",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            width: "100%",
+          }}>
           <Grid
-            container
+            Container
+            lg={6}
+            md={6}
             style={{
-              width: "100%",
-              //marginBottom: "-10vh",
-              //   border: "1px solid green",
-            }}
-          >
-            <Grid
-              item
-              lg={8}
-              md={8}
-              sm={{ hidden: true }}
-              style={{
-                // border: "1px solid",
-                // backgroundColor: "blue",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                width: "100%",
-              }}
-            >
-              <Grid
-                Container
-                lg={6}
-                md={6}
-                style={{
-                  //   backgroudColor: "blue",
-                  width: "100vw",
-                  //   border: "1px solid yellow",
-                }}
-              ></Grid>
-              <Grid
-                Container
-                lg={6}
-                md={6}
-                style={{
-                  // backgroudColor: "yellow",
-                  width: "100vw",
-                  // border: "1px solid yellow",
-                  marginBottom: "-8px",
-                }}
-              >
-                {/* <img
+              //   backgroudColor: "blue",
+              width: "100vw",
+              //   border: "1px solid yellow",
+            }}></Grid>
+          <Grid
+            Container
+            lg={6}
+            md={6}
+            style={{
+              // backgroudColor: "yellow",
+              width: "100vw",
+              // border: "1px solid yellow",
+              marginBottom: "-8px",
+            }}>
+            <img
               src={Banner}
               style={{
                 height: "21vh",
@@ -662,273 +643,283 @@ export default function BusinessAccount() {
                 marginLeft: "10px",
                 marginRight: "2px",
               }}
-            /> */}
-              </Grid>
-            </Grid>
-
-            <Grid
-              item
-              lg={4}
-              md={4}
-              style={{
-                // border: "1px solid red",
-                backgroundColor: "#fff",
-                marginLeft: "-10px",
-                width: "100%",
-                height: "98vh",
-                // marginLeft: "2px",
-                alignSelf: "center",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <Grid
-                style={{ backgroundColor: "whitesmoke", alignSelf: "center" }}
-              >
-                <img
-                  src={logo}
-                  style={{ height: "9vh", width: "90%", paddingTop: "15vh" }}
-                />
-              </Grid>
-              <Box
-                component="form"
-                sx={{
-                  "& > :not(style)": { m: 1, width: "25ch" },
-                }}
-                noValidate
-                autoComplete="off"
-              >
-                <div
-                  className="form-container"
-                  style={{
-                    justifyContent: "center",
-                    textAlign: "center",
-                    alignItems: "center",
-                    width: "75%",
-                    // backgroundColor: "red",
-                    marginLeft: "80px",
-                    marginBottom: "30px",
-                  }}
-                >
-                  <Typography
-                    style={{
-                      color: "#000",
-                      textAlign: "left",
-                      fontSize: "25px",
-                      textAlign: "center",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    ADD PRODUCTS + SERVICES
-                  </Typography>
-                  {/* <h6>inputs will be stored here</h6> */}
-
-                  <div
-                    className="uploadContainer"
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {images.length > 0 ? (
-                      images.map((image, index) => (
-                        <img
-                          key={index}
-                          src={image.url}
-                          alt={`Product Image ${index + 1}`}
-                          style={{
-                            padding: "10px",
-                            marginRight: "10px",
-                            width: "16%",
-                            height: "8vh",
-                          }}
-                        />
-                      ))
-                    ) : (
-                      <img
-                        src={placeholder}
-                        alt="Placeholder"
-                        style={{
-                          padding: "5px",
-                          marginRight: "10px",
-                          width: "16%",
-                          height: "8vh",
-                        }}
-                      />
-                    )}
-
-                    <label
-                      htmlFor="imageInput"
-                      className="add"
-                      style={{
-                        backgroundColor: "whitesmoke",
-                        color: "#000",
-                        padding: "25px",
-                        // paddingBottom:'20px',
-                        width: "5%",
-                        cursor: "pointer",
-                        alignSelf: "center",
-                      }}
-                    >
-                      +
-                    </label>
-                    <input
-                      type="file"
-                      id="imageInput"
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      onChange={handleImageChange}
-                      multiple // Allow selecting multiple files
-                    />
-                  </div>
-
-                  <View style={{ alignSelf: "center" }}>
-                    <form onSubmit={handleContinue}>
-                      <TextField
-                        fullWidth
-                        id="outlined-number"
-                        label="Name"
-                        type="text"
-                        variant="standard"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        style={{ width: "100%" }}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                      />
-                      <TextField
-                        fullWidth
-                        id="outlined-number"
-                        label="Business Name"
-                        type="text"
-                        variant="standard"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        style={{ width: "100%", marginTop: "10px" }}
-                        value={businessName}
-                        onChange={(e) => setBusinessName(e.target.value)}
-                        required
-                      />
-                      <View style={{ display: "flex", flexDirection: "row" }}>
-                        <TextField
-                          fullWidth
-                          id="outlined-number"
-                          label="Price"
-                          type="text"
-                          variant="standard"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          style={{
-                            width: "45%",
-                            marginRight: "10px",
-                            marginTop: "10px",
-                          }}
-                          value={price}
-                          onChange={(e) => setPrice(e.target.value)}
-                          required
-                        />
-                        <TextField
-                          fullWidth
-                          id="outlined-number"
-                          label="Quantity"
-                          type="text"
-                          variant="standard"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          style={{ width: "45%", marginTop: "10px" }}
-                          value={quantity}
-                          onChange={(e) => setQuantity(e.target.value)}
-                          required
-                        />
-                      </View>
-                      <br />
-                      <TextField
-                        fullWidth
-                        id="outlined-number"
-                        label="Description"
-                        type="text"
-                        variant="standard"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        style={{
-                          //   backgroundColor: "dodgerblue",
-                          width: "100%",
-                          marginBottom: "10px",
-                          marginTop: "10px",
-                        }}
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        required
-                      />
-                      <TextField
-                        fullWidth
-                        id="outlined-select-currency"
-                        select
-                        label="product Category"
-                        variant="standard"
-                        value={selectedProductCategory}
-                        onChange={(e) => setProductCategory(e.target.value)}
-                        style={{
-                          width: "100%",
-                          // marginTop: "5px",
-                          marginRight: "10px",
-                          textAlign: "left",
-                        }}
-                        required
-                      >
-                        {productCategory.map((option) => (
-                          <MenuItem key={option} value={option}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-
-                      <TextField
-                        fullWidth
-                        id="outlined-number"
-                        label="Brand"
-                        type="text"
-                        variant="standard"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        style={{
-                          width: "100%",
-                          marginLeft: "5px",
-                          marginTop: "10px",
-                        }}
-                        value={brand}
-                        onChange={(e) => setBrand(e.target.value)}
-                        required
-                      />
-                      <Button
-                        variant="contained"
-                        style={{
-                          width: "100%",
-                          height: "10%",
-                          //   padding: "15px",
-                          margin: "20px 0px",
-                          background: "#072840",
-                          borderRadius: "30px",
-                        }}
-                        type="submit"
-                      >
-                        continue
-                      </Button>
-                    </form>
-                  </View>
-                </div>
-              </Box>
-            </Grid>
+            />
           </Grid>
+        </Grid>
+
+        <Grid
+          item
+          lg={4}
+          md={4}
+          style={{
+            // border: "1px solid red",
+            backgroundColor: "#fff",
+            marginLeft: "-10px",
+            width: "100%",
+            height: "98vh",
+            // marginLeft: "2px",
+            alignSelf: "center",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}>
+          <Grid style={{ alignSelf: "center" }}>
+            <img
+              src={logo}
+              style={{ height: "9vh", width: "90%", paddingTop: "15vh" }}
+            />
+          </Grid>
+          {/* <Box
+            component="form"
+            sx={{
+              "& > :not(style)": { m: 1, width: "25ch" },
+            }}
+            noValidate
+            autoComplete="off"
+            onSubmit={handleContinue}> */}
+          <View
+            className="form-container"
+            style={{
+              justifyContent: "center",
+              textAlign: "center",
+              alignItems: "center",
+              width: "75%",
+              // backgroundColor: "red",
+              marginLeft: "80px",
+              marginBottom: "30px",
+            }}>
+            <h2
+              style={{
+                color: "#000",
+                textAlign: "left",
+                fontSize: "25px",
+                textAlign: "center",
+              }}>
+              ADD PRODUCTS + SERVICES
+            </h2>
+            {/* <h6>inputs will be stored here</h6> */}
+            <View
+              className="uploadContainer"
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "8vh",
+              }}>
+              {images.length > 0 ? (
+                images.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image.url}
+                    alt={`Product Image ${index + 1}`}
+                    style={{
+                      padding: "15px",
+                      marginRight: "10px",
+                      width: "16%",
+                      height: "8vh",
+                    }}
+                  />
+                ))
+              ) : (
+                <img
+                  src={placeholder}
+                  alt="Placeholder"
+                  style={{
+                    padding: "5px",
+                    marginRight: "10px",
+                    width: "16%",
+                    height: "8vh",
+                  }}
+                />
+              )}
+
+              <label
+                htmlFor="imageInput"
+                className="add"
+                style={{
+                  backgroundColor: "whitesmoke",
+                  color: "#000",
+                  padding: "25px",
+                  // paddingBottom:'20px',
+                  width: "5%",
+                  cursor: "pointer",
+                  alignSelf: "center",
+                }}>
+                +
+              </label>
+              <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleImageChange}
+                multiple // Allow selecting multiple files
+              />
+            </View>
+            {/* <form onSubmit={handleContinue}> */}
+
+            <View style={{ alignSelf: "center" }}>
+              <form onSubmit={handleContinue}>
+                <TextField
+                  fullWidth
+                  id="outlined-number"
+                  label="Name"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%" }}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+                <TextField
+                  fullWidth
+                  id="outlined-number"
+                  label="Business Name"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%", marginTop: "10px" }}
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  required
+                />
+                <View style={{ display: "flex", flexDirection: "row" }}>
+                  <TextField
+                    fullWidth
+                    id="outlined-number"
+                    label="Price"
+                    type="text"
+                    variant="standard"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    style={{
+                      width: "45%",
+                      marginRight: "10px",
+                      marginTop: "10px",
+                    }}
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    required
+                  />
+                  <TextField
+                    fullWidth
+                    id="outlined-number"
+                    label="Quantity"
+                    type="text"
+                    variant="standard"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    style={{ width: "45%", marginTop: "10px" }}
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                    required
+                  />
+                </View>
+                <br />
+                <TextField
+                  fullWidth
+                  id="outlined-number"
+                  label="Description"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{
+                    //   backgroundColor: "dodgerblue",
+                    width: "100%",
+                    marginBottom: "10px",
+                    marginTop: "10px",
+                  }}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                />
+                <TextField
+                  fullWidth
+                  id="outlined-select-currency"
+                  select
+                  label="product Category"
+                  variant="standard"
+                  value={selectedProductCategory}
+                  onChange={(e) => setProductCategory(e.target.value)}
+                  style={{
+                    width: "100%",
+                    // marginTop: "5px",
+                    marginRight: "10px",
+                    textAlign: "left",
+                  }}
+                  required>
+                  {productCategory.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </TextField>
+
+                <TextField
+                  fullWidth
+                  id="outlined-number"
+                  label="Brand"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{
+                    width: "100%",
+                    marginLeft: "5px",
+                    marginTop: "10px",
+                  }}
+                  value={brand}
+                  onChange={(e) => setBrand(e.target.value)}
+                  required
+                />
+
+                {/* <Typography variant="caption" color="error" style={{ marginBottom: "10px" }}>
+              {nameError || businessNameError || priceError || quantityError || brandError || categoryError}
+            </Typography> */}
+
+                {loading ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "1vh",
+                    }}>
+                    <CircularProgress />
+                  </Box>
+                ) : (
+                  <Button
+                    variant="contained"
+                    style={{
+                      width: "80%",
+                      height: "10%",
+                      margin: "20px 0px",
+                      background: "#072840",
+                      borderRadius: "30px",
+                    }}
+                    type="submit">
+                    continue
+                  </Button>
+                )}
+                {/* </View> */}
+              </form>
+            </View>
+          </View>
+          {/* </Box> */}
+        </Grid>
+      </Grid>
         </View>
       ) : null}
       {paymentModal ? (
@@ -995,7 +986,7 @@ export default function BusinessAccount() {
                   PAYMENT INFO
                 </Text>
 
-                <form onSubmit={setBusinessAuthorization(true)}>
+                <form onSubmit={handleSavePaymentInfo}>
                   <TextField
                     id="standard-basic"
                     label="Card Holder"
@@ -1043,7 +1034,8 @@ export default function BusinessAccount() {
                   </View>
                   <Button
                     mode="contained"
-                    onPress={handlePaymentButtonPress}
+                    type="submit"
+                    // onPress={handlePaymentButtonPress}
                     style={{
                       width: "80%",
                       height: "15%",
@@ -1051,7 +1043,6 @@ export default function BusinessAccount() {
                       borderRadius: 30,
                       backgroundColor: "#072840",
                     }}
-                    type="submit"
                   >
                     Continue
                   </Button>
@@ -1146,20 +1137,32 @@ export default function BusinessAccount() {
                     ADD BANNER
                   </Text>
                   <View>
-                  <div
-                    className="uploadContainer"
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {images.length > 0 ? (
-                      images.map((image, index) => (
+                    <div
+                      className="uploadContainer"
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {images.length > 0 ? (
+                        images.map((image, index) => (
+                          <img
+                            key={index}
+                            src={image.url}
+                            alt={`Product Image ${index + 1}`}
+                            style={{
+                              padding: "5px",
+                              marginRight: "10px",
+                              width: "16%",
+                              height: "8vh",
+                            }}
+                          />
+                        ))
+                      ) : (
                         <img
-                          key={index}
-                          src={image.url}
-                          alt={`Product Image ${index + 1}`}
+                          src={placeholder}
+                          alt="Placeholder"
                           style={{
                             padding: "5px",
                             marginRight: "10px",
@@ -1167,46 +1170,34 @@ export default function BusinessAccount() {
                             height: "8vh",
                           }}
                         />
-                      ))
-                    ) : (
-                      <img
-                        src={placeholder}
-                        alt="Placeholder"
+                      )}
+
+                      <label
+                        htmlFor="imageInput"
+                        className="add"
                         style={{
-                          padding: "5px",
-                          marginRight: "10px",
-                          width: "16%",
-                          height: "8vh",
+                          backgroundColor: "whitesmoke",
+                          color: "#000",
+                          padding: "25px",
+                          // paddingBottom:'20px',
+                          width: "5%",
+                          cursor: "pointer",
+                          alignSelf: "center",
                         }}
+                      >
+                        +
+                      </label>
+                      <input
+                        type="file"
+                        id="imageInput"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={handleImageChange}
+                        multiple // Allow selecting multiple files
                       />
-                    )}
+                    </div>
 
-                    <label
-                      htmlFor="imageInput"
-                      className="add"
-                      style={{
-                        backgroundColor: "whitesmoke",
-                        color: "#000",
-                        padding: "25px",
-                        // paddingBottom:'20px',
-                        width: "5%",
-                        cursor: "pointer",
-                        alignSelf: "center",
-                      }}
-                    >
-                      +
-                    </label>
-                    <input
-                      type="file"
-                      id="imageInput"
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      onChange={handleImageChange}
-                      multiple // Allow selecting multiple files
-                    />
-                  </div>
-
-                    <form onSubmit={handleContinue}>
+                    <form onSubmit={handleSaveAddBanner}>
                       <TextField
                         fullWidth
                         required
@@ -1282,7 +1273,6 @@ export default function BusinessAccount() {
                       />
                       <Button
                         variant="contained"
-                        onPress={handleSaveAddBanner}
                         style={{
                           color: "white",
                           fontWeight: "600",
@@ -1308,13 +1298,11 @@ export default function BusinessAccount() {
         </View>
       ) : null}
 
-      {landing && !businessAuthorization ? (
+      {landing ? (
         <View
           style={{
             top: 50,
             position: "absolute",
-            // width:"100%",
-            // height:"100vh",
             flex: 1,
             backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
             display: "flex",
@@ -1336,10 +1324,10 @@ export default function BusinessAccount() {
               style={{
                 borderRadius: 50,
                 paddingHorizontal: "10%",
-                paddingVertical: "3%",
+                paddingVertical: "4%",
                 width: "100%",
-                height: "5px",
-                // backgroundColor:"green"
+                // height: "7px",
+                //backgroundColor:"green"
               }}
               onPress={handlePopUp}
             >
@@ -1361,7 +1349,7 @@ export default function BusinessAccount() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
+                justifyContent: "flex-start",
                 //  paddingBottom: 20,
                 //paddingTop: 20,
                 height: "20vh",

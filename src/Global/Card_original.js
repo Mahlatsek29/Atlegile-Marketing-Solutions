@@ -13,7 +13,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { firestore } from "../config";
 import { useNavigation } from "@react-navigation/native";
 
-const ProductCard = ({ productId }) => {
+const ProductCard2 = ({ productId }) => {
   const navigation = useNavigation();
   const [isRed, setIsRed] = useState(true);
   const [product, setProduct] = useState(null);

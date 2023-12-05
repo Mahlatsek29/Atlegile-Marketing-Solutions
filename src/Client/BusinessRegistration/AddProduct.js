@@ -48,17 +48,56 @@ const AddProductsAndServices = () => {
   ];
 
   const navigation = useNavigation();
-
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const files = e.target.files;
     if (files.length > 0) {
-      const newImages = Array.from(files).map((file) => ({
-        url: URL.createObjectURL(file),
-        file,
-      }));
-      setImages((prevImages) => [...prevImages, ...newImages]);
+      try {
+        const compressedImages = await Promise.all(
+          Array.from(files).map(async (file) => {
+            const compressedImage = await compressImage(file);
+            return {
+              url: URL.createObjectURL(compressedImage),
+              file: compressedImage,
+            };
+          })
+        );
+        setImages((prevImages) => [...prevImages, ...compressedImages]);
+      } catch (error) {
+        console.error("Error compressing image:", error);
+      }
     }
   };
+
+  const compressImage = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          canvas.width = 300; // Set the desired width (adjust as needed)
+          canvas.height = (300 * img.height) / img.width; // Maintain the aspect ratio
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(
+            (blob) => {
+              const compressedFile = new File([blob], file.name, {
+                type: "image/jpeg", // Adjust the type based on your requirements
+                lastModified: Date.now(),
+              });
+              resolve(compressedFile);
+            },
+            "image/jpeg",
+            0.7 // Adjust the quality (0.7 means 70% quality)
+          );
+        };
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
   const handleContinue = async (e) => {
     e.preventDefault();
 
@@ -158,7 +197,8 @@ const AddProductsAndServices = () => {
             width: "100%",
           }}>
           <Grid
-            Container
+            item
+            // Container
             lg={6}
             md={6}
             style={{
@@ -167,7 +207,8 @@ const AddProductsAndServices = () => {
               //   border: "1px solid yellow",
             }}></Grid>
           <Grid
-            Container
+            // Container
+            item
             lg={6}
             md={6}
             style={{
@@ -205,7 +246,7 @@ const AddProductsAndServices = () => {
             flexDirection: "column",
             justifyContent: "space-between",
           }}>
-          <Grid style={{ alignSelf: "center" }}>
+          <Grid item style={{ alignSelf: "center" }}>
             <img
               src={logo}
               style={{ height: "9vh", width: "90%", paddingTop: "15vh" }}
@@ -293,7 +334,7 @@ const AddProductsAndServices = () => {
               </label>
               <input
                 type="file"
-                id="imageInput"
+                // id="imageInput"
                 accept="image/*"
                 style={{ display: "none" }}
                 onChange={handleImageChange}
@@ -306,7 +347,7 @@ const AddProductsAndServices = () => {
               <form onSubmit={handleContinue}>
                 <TextField
                   fullWidth
-                  id="outlined-number"
+                  // id="outlined-number"
                   label="Name"
                   type="text"
                   variant="standard"
@@ -320,7 +361,7 @@ const AddProductsAndServices = () => {
                 />
                 <TextField
                   fullWidth
-                  id="outlined-number"
+                  // id="outlined-number"
                   label="Business Name"
                   type="text"
                   variant="standard"
@@ -353,7 +394,7 @@ const AddProductsAndServices = () => {
                   />
                   <TextField
                     fullWidth
-                    id="outlined-number"
+                    // id="outlined-number"
                     label="Quantity"
                     type="text"
                     variant="standard"
@@ -369,7 +410,7 @@ const AddProductsAndServices = () => {
                 <br />
                 <TextField
                   fullWidth
-                  id="outlined-number"
+                  // id="outlined-number"
                   label="Description"
                   type="text"
                   variant="standard"
@@ -388,7 +429,7 @@ const AddProductsAndServices = () => {
                 />
                 <TextField
                   fullWidth
-                  id="outlined-select-currency"
+                  // id="outlined-select-currency"
                   select
                   label="product Category"
                   variant="standard"
@@ -410,7 +451,7 @@ const AddProductsAndServices = () => {
 
                 <TextField
                   fullWidth
-                  id="outlined-number"
+                  // id="outlined-number"
                   label="Brand"
                   type="text"
                   variant="standard"

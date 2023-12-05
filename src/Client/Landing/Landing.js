@@ -9,8 +9,7 @@ import { Footer } from "../../Global/Footer";
 import shop from "../../Global/images/svg_landing.svg";
 import shop2 from "../../Global/images/svg_landing.svg";
 import { firebase, auth } from "../../config";
-import { useNavigation } from '@react-navigation/native';
-
+import { useNavigation } from "@react-navigation/native";
 
 const Landing = () => {
   const navigation = useNavigation();
@@ -20,8 +19,8 @@ const Landing = () => {
   const scrollViewRef3 = useRef(null);
 
   const navigatebusinessproduct = () => {
-    navigation.navigate('BusinessProducts')
-  }
+    navigation.navigate("BusinessProducts");
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -71,6 +70,7 @@ const Landing = () => {
               flexDirection: "column",
             }}>
             <Grid
+              item
               xl={12}
               style={{
                 alignItems: "right",
@@ -86,7 +86,7 @@ const Landing = () => {
                 EXPLORE
               </Text>
             </Grid>
-            <Grid style={{ marginTop: "20px" }}>
+            <Grid item style={{ marginTop: "20px" }}>
               <button
                 style={{
                   width: "78px",
@@ -130,8 +130,14 @@ const Landing = () => {
           </Grid>
 
           <View style={{ padding: 30 }}>
-            <Button sx={{ fontWeight: 'bold', color: 'black', marginRight: '90%', fontSize: '150%' }} onClick={navigatebusinessproduct}
-            >
+            <Button
+              sx={{
+                fontWeight: "bold",
+                color: "black",
+                marginRight: "90%",
+                fontSize: "150%",
+              }}
+              onClick={navigatebusinessproduct}>
               LearnZA
             </Button>
             <ScrollView
@@ -156,6 +162,7 @@ const Landing = () => {
             <View style={{ color: "white", marginTop: 20 }}>
               <Grid container style={{ backgroundColor: "#072840" }}>
                 <Grid
+                  item
                   lg={1}
                   sm={1}
                   xs={1}
@@ -166,10 +173,8 @@ const Landing = () => {
                     fontSize: "30px",
                     paddingTop: "5%",
                     paddingLeft: "10px",
-                  }}>
-
-                </Grid>
-                <Grid lg={8} sm={8}>
+                  }}></Grid>
+                <Grid item lg={8} sm={8}>
                   <View
                     style={{
                       color: "white",
@@ -237,6 +242,7 @@ const Landing = () => {
                 </Grid>
 
                 <Grid
+                  item
                   lg={3}
                   sm={4}
                   style={{
@@ -246,14 +252,19 @@ const Landing = () => {
                     fontSize: "30px",
                     paddingTop: "5%",
                     paddingRight: "10px",
-                  }}>
-
-                </Grid>
+                  }}></Grid>
               </Grid>
             </View>
           </View>
           <View style={{ padding: 30 }}>
-            <Button sx={{ fontWeight: 'bold', color: 'black', marginRight: '90%', fontSize: '150%' }} onClick={navigatebusinessproduct}>
+            <Button
+              sx={{
+                fontWeight: "bold",
+                color: "black",
+                marginRight: "90%",
+                fontSize: "150%",
+              }}
+              onClick={navigatebusinessproduct}>
               TechWise Electronics
             </Button>
 
@@ -266,16 +277,21 @@ const Landing = () => {
                 <ProductCard key={product.id} productId={product.id} />
               ))}
             </ScrollView>
-            <TouchableOpacity onPress={() => scrollLeft(scrollViewRef2)} style={{ position: "absolute", left: 10, top: "43%" }}>
+            <TouchableOpacity
+              onPress={() => scrollLeft(scrollViewRef2)}
+              style={{ position: "absolute", left: 10, top: "43%" }}>
               <Text style={{ fontSize: 25 }}>{"<"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => scrollRight(scrollViewRef2)} style={{ position: "absolute", right: 10, top: "43%" }}>
+            <TouchableOpacity
+              onPress={() => scrollRight(scrollViewRef2)}
+              style={{ position: "absolute", right: 10, top: "43%" }}>
               <Text style={{ fontSize: 25 }}>{">"}</Text>
             </TouchableOpacity>
           </View>
 
           <Grid container style={{ backgroundColor: "#072840" }}>
             <Grid
+              item
               lg={1}
               xs={1}
               style={{
@@ -287,10 +303,8 @@ const Landing = () => {
                 paddingLeft: "10px",
                 justifySelf: "center",
                 justifyContent: "center",
-              }}>
-
-            </Grid>
-            <Grid lg={8} xs={8}>
+              }}></Grid>
+            <Grid item lg={8} xs={8}>
               <View
                 style={{
                   justifyContent: "center",
@@ -356,6 +370,7 @@ const Landing = () => {
             </Grid>
 
             <Grid
+              item
               lg={3}
               xs={3}
               style={{
@@ -367,14 +382,18 @@ const Landing = () => {
                 paddingRight: "10px",
                 justifySelf: "center",
                 justifyContent: "center",
-              }}>
-
-            </Grid>
+              }}></Grid>
           </Grid>
 
           <View style={{ padding: 30 }}>
             <Button
-              sx={{ fontWeight: 'bold', color: 'black', marginRight: '90%', fontSize: '150%' }} onClick={navigatebusinessproduct}>
+              sx={{
+                fontWeight: "bold",
+                color: "black",
+                marginRight: "90%",
+                fontSize: "150%",
+              }}
+              onClick={navigatebusinessproduct}>
               SucureTech Solutions{" "}
             </Button>
 
@@ -387,17 +406,21 @@ const Landing = () => {
                 <ProductCard key={product.id} productId={product.id} />
               ))}
             </ScrollView>
-            <TouchableOpacity onPress={() => scrollLeft(scrollViewRef3)} style={{ position: "absolute", left: 10, top: "43%" }}>
+            <TouchableOpacity
+              onPress={() => scrollLeft(scrollViewRef3)}
+              style={{ position: "absolute", left: 10, top: "43%" }}>
               <Text style={{ fontSize: 25 }}>{"<"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => scrollRight(scrollViewRef3)} style={{ position: "absolute", right: 10, top: "43%" }}>
+            <TouchableOpacity
+              onPress={() => scrollRight(scrollViewRef3)}
+              style={{ position: "absolute", right: 10, top: "43%" }}>
               <Text style={{ fontSize: 25 }}>{">"}</Text>
             </TouchableOpacity>
           </View>
         </Container>
       </View>
       <Grid container style={{ width: "100%", height: "40vh" }}>
-        <Grid xl={2} lg={2} sm={2} xs={2}>
+        <Grid item xl={2} lg={2} sm={2} xs={2}>
           <Image
             source={shop}
             style={{
@@ -411,6 +434,7 @@ const Landing = () => {
           />
         </Grid>
         <Grid
+          item
           xl={8}
           lg={8}
           md={8}
@@ -518,7 +542,7 @@ const Landing = () => {
             </View>
           </View>
         </Grid>
-        <Grid xl={2} lg={2} sm={2} xs={2}>
+        <Grid item xl={2} lg={2} sm={2} xs={2}>
           <Image
             source={shop2}
             style={{

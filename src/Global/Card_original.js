@@ -103,7 +103,11 @@ const ProductCard = ({ productId }) => {
           <CardMedia
             component="img"
             height="140"
-            image={"../../assets/image/headsets.png"}
+            image={
+              product?.images?.length > 0
+                ? product.images[currentImageIndex]
+                : "../../assets/image/headsets.png"
+            }
             alt={product.name}
             style={{
               position: "relative",

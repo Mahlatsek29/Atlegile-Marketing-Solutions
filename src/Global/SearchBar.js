@@ -1,9 +1,11 @@
 import { Box, TextField, IconButton } from "@mui/material";
 import { View, Text, Image } from "react-native";
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import { useNavigation } from "@react-navigation/native"; // Import useNavigation
+import { useState } from "react";
 
+export default function SearchBar() {
+  const [search, setSearch] = useState("");
 
-const SearchBar = () => {
   const handleFilterIconClick = () => {
     console.log("Filter Button Clicked!!!");
   };
@@ -76,22 +78,13 @@ const SearchBar = () => {
           }}
         >
           <TextField
-            id="search-input"
-            label="Search..."
-            value=""
-            // onChange={(event) => {
-            //   console.log("Search text changed:", event.target.value);
-            // }}
-            sx={{
-              marginBottom: 8,
-              fontSize: "16px",
-              width: "80%",
-              height: "30px",
-            }}
-            hiddenLabel
-            defaultValue="Small"
-            size="small"
+            fullWidth
+            id="search"
+            label="search..."
             variant="standard"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            sx={{  }}
           />
           <Box
             className="icons-container"
@@ -129,6 +122,4 @@ const SearchBar = () => {
       />
     </Box>
   );
-};
-
-export default SearchBar;
+}

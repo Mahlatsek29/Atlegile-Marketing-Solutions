@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Image,
   Link,
+  Button
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { COLORS } from "../../Global/Color";
@@ -51,15 +52,12 @@ const Signup = () => {
       if (userCredential.user) {
         console.log("User signed up:", userCredential.user);
 
-        // Save email in local storage
         await AsyncStorage.setItem("userEmail", email);
 
-        // Create a user document with the UID in the Users collection
         await firestore.collection("Users").doc(userCredential.user.uid).set({
           email: email,
         });
 
-        // Navigate to "/TellUsAboutYourself" after successful sign-up
         navigation.navigate("TellUsAboutYourself");
       }
     } catch (error) {
@@ -69,7 +67,7 @@ const Signup = () => {
   };
 
   const handleShop = () => {
-    navigate("/Landing");
+    navigation.navigate("Landing");
   };
 
   const handleBusinessSignup = () => {
@@ -83,14 +81,12 @@ const Signup = () => {
       source={require("../../Global/images/Reed.jpg")}
       style={styles.background}>
       <View style={styles.container}>
-        {/* Logo image container */}
         <View style={{}}>
           <Image
             source={require("../../Global/images/logo.png")}
             style={styles.logo}
           />
         </View>
-        {/* SignUp text container */}
         <View
           style={{
             width: "120%",
@@ -98,18 +94,18 @@ const Signup = () => {
             justifyContent: "space-around",
           }}>
           <Text style={styles.title}>SIGN UP </Text>
-          {/*Insert arrow logo */}
-          <Text style={{ fontSize: "70%", marginBottom: "-20%" }}>
-            SHOP{" "}
-            <FontAwesome
-              style={styles.arrow}
-              name="angle-right"
-              size={20}
-              color="#072840"
-            />{" "}
-          </Text>
+          <TouchableOpacity onPress={handleShop}>
+            <Text style={{ fontSize: "70%", marginBottom: "-20%" }}>
+              SHOP{" "}
+              <FontAwesome
+                style={styles.arrow}
+                name="angle-right"
+                size={20}
+                color="#072840"
+              />{" "}
+            </Text>
+          </TouchableOpacity>
         </View>
-        {/* TextInput fields container */}
         <View style={{ width: "75%" }}>
           <TextInput
             style={styles.input}
@@ -128,8 +124,8 @@ const Signup = () => {
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
-        <Text style={styles.buttonText}>SIGN UP</Text>
-      </TouchableOpacity>
+          <Text style={styles.buttonText}>SIGN UP</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity onPress={navigatealreadyhaveaccount}>
           <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>
@@ -190,7 +186,6 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    // marginBottom: 10,
     width: "100%",
     borderBottomWidth: 1,
     borderBottomColor: "gray",

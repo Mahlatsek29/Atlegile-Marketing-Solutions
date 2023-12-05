@@ -35,39 +35,38 @@ const Signup = () => {
   }
 
 
-  const handleSignup = async () => {
+  const handleSignup = async (e) => {
+    e.preventDefault();
+  
+    if (email.trim() === "" || password.trim() === "") {
+      alert("Please fill in all fields before signing in.");
+      return;
+    }
+  
     try {
-      if (email.trim() === "" || password.trim() === "") {
-        alert("Please fill in all fields before signing in.");
-        return;
-      }
-      console.log("Username:", username);
-      console.log("Email:", email);
-      console.log("Password:", password);
-
       const userCredential = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
-
+  
       if (userCredential.user) {
         console.log("User signed up:", userCredential.user);
-
-        await AsyncStorage.setItem("userEmail", email);
-
+  
+        // Create a user document with the UID in the Users collection
         await firestore.collection("Users").doc(userCredential.user.uid).set({
           email: email,
         });
-
-        navigation.navigate("TellUsAboutYourself");
+  
+        // Navigate to "/TellUsAboutYourself" after successful sign-up
+        navigation.navigate("TellUsAboutYourself");  // Use navigation.navigate here
       }
     } catch (error) {
       console.error("Error signing up:", error.message);
       alert("Error signing up. Please try again.");
     }
   };
-
+  
   const handleShop = () => {
-    navigation.navigate("Landing");
+    navigation.navigate("TellUsAboutYourself");
   };
 
   const handleBusinessSignup = () => {

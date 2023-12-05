@@ -8,49 +8,50 @@ import {
   Image,
   TextInput,
 } from "react-native";
-import { TextField } from "@mui/material";
 import { firebase, firestore } from "../../config";
 
-const AlternativeContact = ({ userEmail, navigation }) => {
+const AlternativeContact = ({ navigation }) => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
-  const handleContinue = async () => {
+  const handleContinue = async (e) => {
+    e.preventDefault();
+
+    if (name.trim() === "" || phone.trim() === "") {
+      alert("Please fill in all fields before continuing.");
+      return;
+    }
+
     try {
-      // Validate name and phone
-      if (!name || !phone) {
-        alert("Please enter both name and phone.");
+      const user = firebase.auth().currentUser;
+
+      if (!user) {
+        alert("User not authenticated. Please sign in.");
         return;
       }
-  
-      // Validate userEmail
-      if (!userEmail) {
-        console.error("User email is undefined");
-        alert("User email is undefined. Please check the user data.");
-        return;
-      }
-  
-      const userDocRef = firestore.collection("Users").where("email", "==", userEmail);
-      const userSnapshot = await userDocRef.get();
-  
-      if (!userSnapshot.empty) {
-        const userId = userSnapshot.docs[0].id;
-  
-        await firestore.collection("Users").doc(userId).update({
-          alternativeContact: {
-            name,
-            phone,
-          },
-        });
-  
-        navigation.navigate("Landing");
-      } else {
-        console.error("User not found");
-        alert("User not found. Please try again.");
-      }
+
+      const serverTimestamp = firebase.firestore.FieldValue.serverTimestamp();
+
+      await firestore.collection("Users").doc(user.uid).set({
+        name: localStorage.getItem("name"),
+        surname: localStorage.getItem("surname"),
+        phone: localStorage.getItem("phone"),
+        gender: localStorage.getItem("gender"),
+        email: localStorage.getItem("email"),
+        location: localStorage.getItem("location"),
+        alternativeContact: {
+          name,
+          phone,
+          timestamp: serverTimestamp,
+        },
+      });
+
+      console.log("Alternative contact information submitted to 'Users' collection in Firestore.");
+
+      navigation.navigate("Landing");
+
     } catch (error) {
-      console.error("Error updating alternative contact:", error.message);
-      alert("Error. Please try again.");
+      console.error("Error submitting alternative contact information:", error.message);
     }
   };
 
@@ -70,19 +71,19 @@ const AlternativeContact = ({ userEmail, navigation }) => {
             <Text style={styles.subtitle}>ALTERNATIVE CONTACT</Text>
           </View>
           <View>
-          <TextInput
-            style={styles.input}
-            placeholder="Name"
-            value={name}
-            onChangeText={(text) => setName(text)}
-            keyboardType="Name"
+            <TextInput
+              style={styles.input}
+              placeholder="Name"
+              value={name}
+              onChangeText={(text) => setName(text)}
+              keyboardType="Name"
             />
-             <TextInput
-            style={styles.input}
-            placeholder="Phone"
-            value={phone}
-            onChangeText={(text) => setPhone(text)}
-            keyboardType="Phone"
+            <TextInput
+              style={styles.input}
+              placeholder="Phone"
+              value={phone}
+              onChangeText={(text) => setPhone(text)}
+              keyboardType="Phone"
             />
           </View>
 
@@ -102,6 +103,7 @@ const AlternativeContact = ({ userEmail, navigation }) => {
     </ImageBackground>
   );
 };
+
 
 const styles = StyleSheet.create({
   background: {

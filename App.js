@@ -38,12 +38,12 @@ function App() {
           name="TellUsAboutYourself"
           component={TellUsAboutYourself}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="AlternativeContact"
           component={AlternativeContact}
         />
         <Stack.Screen name="SignIn" component={SignIn} />
-        {/* <Stack.Screen
+        <Stack.Screen
           name="BusinessRegistration"
           component={BusinessRegistration}
         />
@@ -58,8 +58,8 @@ function App() {
         <Stack.Screen
           name="AccountAndBusiness"
           component={AccountAndBusiness}
-        /> */}
-        {/* <Stack.Screen name="OrderHistory" component={OrderHistory} />
+        />
+        <Stack.Screen name="OrderHistory" component={OrderHistory} />
         <Stack.Screen name="PayFast" component={PayFast} />
         <Stack.Screen name="CourierGuy" component={CourierGuy} />
         <Stack.Screen

@@ -31,35 +31,32 @@ const BusinessRegistration = () => {
 
   const navigation = useNavigation();
 
-  const handlechange = async () => {
-    const isFormValid =
-      !!businessName && !!selectedRole && !!regNumber && !!selectedBusinessType;
-
-    if (isFormValid) {
-      try {
-        // Store the data in Firestore
-        await firestore.collection("Business").add({
-          businessName,
-          selectedRole,
-          regNumber,
-          website,
-          location,
-          selectedBusinessType,
-          selectedIndustry,
-          phoneNumber,
-          bio,
-          cardHolder,
-          cardNumber,
-          cvv,
-        });
-
-        // Navigate to the next screen
-        navigation.navigate("AddProductsAndServices");
-      } catch (error) {
-        console.error("Error storing data in Firestore:", error);
+  const handlechange = async (event) => {
+    event.preventDefault();
+    try {
+      // Store the data in Firestore
+      await firestore.collection("Business").add({
+        businessName,
+        selectedRole,
+        regNumber,
+        website,
+        location,
+        selectedBusinessType,
+        selectedIndustry,
+        phoneNumber,
+        bio,
+        cardHolder,
+        cardNumber,
+        cvv,
+      });
+      {
+        alert("successfully registered");
       }
-    } else {
-      alert("Please fill in all required fields");
+
+      // Navigate to the next screen
+      navigation.navigate("AddProductsAndServices");
+    } catch (error) {
+      console.error("Error storing data in Firestore:", error);
     }
   };
 
@@ -212,13 +209,14 @@ const BusinessRegistration = () => {
                   style={{ height: "9vh", width: "90%", marginTop: "8vh" }}
                 />
               </Grid>
-              <Box
+              {/* <Box
                 component="form"
                 sx={{
                   "& > :not(style)": { m: 1, width: "25ch" },
                 }}
                 noValidate
-                autoComplete="off">
+                autoComplete="off"> */}
+              <form onSubmit={handlechange}>
                 <View
                   className="form-container"
                   style={{
@@ -234,7 +232,7 @@ const BusinessRegistration = () => {
                       color: "#000",
                       textAlign: "left",
                       fontSize: "20px",
-                      marginTop:'20px',
+                      marginTop: "20px",
                     }}>
                     BUSINESS REGISTRATION
                   </h2>
@@ -248,7 +246,6 @@ const BusinessRegistration = () => {
                       shrink: true,
                     }}
                     style={{ width: "100%" }}
-                   
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
                   />
@@ -264,8 +261,7 @@ const BusinessRegistration = () => {
                       width: "100%",
                       textAlign: "left",
                       marginTop: "10px",
-                    }}
-                    >
+                    }}>
                     {roleOptions.map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
@@ -286,9 +282,9 @@ const BusinessRegistration = () => {
                       width: "100%",
                       marginTop: "10px",
                     }}
-                    
                     value={regNumber}
                     onChange={(e) => setRegNumber(e.target.value)}
+                    required
                   />
                   <TextField
                     id="outlined-number"
@@ -311,9 +307,9 @@ const BusinessRegistration = () => {
                       shrink: true,
                     }}
                     style={{ width: "100%", marginTop: "10px" }}
-                    
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
+                    required
                   />
 
                   <View
@@ -335,7 +331,7 @@ const BusinessRegistration = () => {
                         marginRight: "10px",
                         textAlign: "left",
                       }}
-                      >
+                      required>
                       {businessTypeOptions.map((option) => (
                         <MenuItem key={option} value={option}>
                           {option}
@@ -354,7 +350,7 @@ const BusinessRegistration = () => {
                         marginTop: "5px",
                         textAlign: "left",
                       }}
-                      >
+                      required>
                       {industryOptions.map((option) => (
                         <MenuItem key={option} value={option}>
                           {option}
@@ -373,6 +369,7 @@ const BusinessRegistration = () => {
                     style={{ width: "100%", marginTop: "10px" }}
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
+                    required
                   />
                   <TextField
                     id="outlined-number"
@@ -385,6 +382,7 @@ const BusinessRegistration = () => {
                     style={{ width: "100%", marginTop: "10px" }}
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
+                    required
                   />
                   {/* Add other TextField components as needed */}
                   <Button
@@ -396,11 +394,12 @@ const BusinessRegistration = () => {
                       background: "#072840",
                       borderRadius: "30px",
                     }}
-                    onClick={handlechange}>
+                    type="submit">
                     Continue
                   </Button>
                 </View>
-              </Box>
+              </form>
+              {/* </Box> */}
             </Grid>
           </Grid>
         </View>

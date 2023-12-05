@@ -116,8 +116,7 @@ export default function ProductDetails({ item }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-        }}
-      >
+        }}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <img
             src={logo}
@@ -132,14 +131,12 @@ export default function ProductDetails({ item }) {
             alignItems: "center",
             flex: 1,
             justifyContent: "flex-end",
-          }}
-        >
+          }}>
           <Link to="/landingscreen">
             <Button
               sx={{ minWidth: "100px", mr: "20px", borderRadius: "40px" }}
               variant="contained"
-              color="primary"
-            >
+              color="primary">
               Shop
             </Button>
           </Link>
@@ -162,21 +159,18 @@ export default function ProductDetails({ item }) {
               <Link
                 color="inherit"
                 href="/"
-                sx={{ fontSize: 15, textDecoration: "none" }}
-              >
+                sx={{ fontSize: 15, textDecoration: "none" }}>
                 Home
               </Link>
               <Link
                 color="inherit"
                 href="/vaas"
-                sx={{ fontSize: 15, textDecoration: "none" }}
-              >
+                sx={{ fontSize: 15, textDecoration: "none" }}>
                 VAAS
               </Link>
               <Typography
                 color="textPrimary"
-                sx={{ fontSize: 15, textDecoration: "none" }}
-              >
+                sx={{ fontSize: 15, textDecoration: "none" }}>
                 Digital Marketing Solutions Mbali
               </Typography>
             </Breadcrumbs>
@@ -190,13 +184,11 @@ export default function ProductDetails({ item }) {
                 width: "50%",
                 //border: "1px lightgray solid",
                 borderRadius: 2,
-              }}
-            >
+              }}>
               <Box sx={{ position: "relative" }}>
                 <IconButton
                   onClick={handlePrev}
-                  sx={{ position: "absolute", top: "50%", left: "5px" }}
-                >
+                  sx={{ position: "absolute", top: "50%", left: "5px" }}>
                   <ArrowBackIosIcon />
                 </IconButton>
                 <img
@@ -206,8 +198,7 @@ export default function ProductDetails({ item }) {
                 />
                 <IconButton
                   onClick={handleNext}
-                  sx={{ position: "absolute", top: "50%", right: "5px" }}
-                >
+                  sx={{ position: "absolute", top: "50%", right: "5px" }}>
                   <ArrowForwardIosIcon />
                 </IconButton>
               </Box>
@@ -236,26 +227,22 @@ export default function ProductDetails({ item }) {
                 height: "100%",
                 width: "50%",
                 pl: 2,
-              }}
-            >
+              }}>
               <Box
                 sx={{
                   //border: "1px red solid",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "flex-end",
-                }}
-              >
+                }}>
                 <Button
                   onClick={() => navigation.navigate("/main/dashboard")}
                   sx={{
                     border: "1px #072840 solid",
                     borderRadius: 20,
-                  }}
-                >
+                  }}>
                   <Typography
-                    sx={{ fontWeight: "600", fontSize: 10, color: "#072840" }}
-                  >
+                    sx={{ fontWeight: "600", fontSize: 10, color: "#072840" }}>
                     PHYSICAL
                   </Typography>
                 </Button>
@@ -287,8 +274,7 @@ export default function ProductDetails({ item }) {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                  }}
-                >
+                  }}>
                   <Grid container sx={{ mt: 2, width: "50%", p: 1 }}>
                     <Grid
                       item
@@ -299,8 +285,7 @@ export default function ProductDetails({ item }) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                      }}
-                    >
+                      }}>
                       <RemoveIcon />
                     </Grid>
                     <Grid
@@ -311,8 +296,7 @@ export default function ProductDetails({ item }) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                      }}
-                    >
+                      }}>
                       {quantity}
                     </Grid>
                     <Grid
@@ -324,8 +308,7 @@ export default function ProductDetails({ item }) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                      }}
-                    >
+                      }}>
                       <AddIcon />
                     </Grid>
                   </Grid>
@@ -334,11 +317,9 @@ export default function ProductDetails({ item }) {
                     sx={{
                       backgroundColor: "#072840",
                       borderRadius: 20,
-                    }}
-                  >
+                    }}>
                     <Typography
-                      sx={{ fontSize: 15, color: "white", pl: 1, pr: 1 }}
-                    >
+                      sx={{ fontSize: 15, color: "white", pl: 1, pr: 1 }}>
                       ADD TO CART
                     </Typography>
                   </Button>
@@ -346,23 +327,20 @@ export default function ProductDetails({ item }) {
                 <Box
                   sx={{
                     borderLeft: "10px red solid",
-                  }}
-                >
+                  }}>
                   <Box
                     sx={{
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       p: 3,
-                    }}
-                  >
+                    }}>
                     <Box
                       onClick={increaseQuantity}
                       sx={{
                         //border: "1px #d32f2f solid",
                         pr: 2,
-                      }}
-                    >
+                      }}>
                       <Avatar sx={{ backgroundColor: "#d32f2f", p: 1 }}>
                         <CreditCardOutlinedIcon sx={{ color: "white" }} />
                       </Avatar>
@@ -374,8 +352,7 @@ export default function ProductDetails({ item }) {
                         {
                           //border: "1px red solid",
                         }
-                      }
-                    >
+                      }>
                       <Typography sx={{ fontWeight: "600" }}>
                         Digital Product
                       </Typography>
@@ -389,8 +366,7 @@ export default function ProductDetails({ item }) {
               </Box>
               <Box>
                 <Typography
-                  sx={{ fontWeight: "600", fontSize: 15, mt: 3, mb: 4 }}
-                >
+                  sx={{ fontWeight: "600", fontSize: 15, mt: 3, mb: 4 }}>
                   REVIEWS
                 </Typography>
                 <Box>
@@ -430,8 +406,7 @@ export default function ProductDetails({ item }) {
                       p: 1,
                     }}
                     onClick={handleReviewPost}
-                    variant="filled"
-                  >
+                    variant="filled">
                     REVIEW
                   </Button>
                 </Box>
@@ -444,9 +419,7 @@ export default function ProductDetails({ item }) {
               RELATED PRODUCTS
             </Typography>
             <Box sx={{ pl: 2 }}>
-              <Typography
-                sx={{ fontWeight: "600", fontSize: 15, mb: 2 }}
-              >
+              <Typography sx={{ fontWeight: "600", fontSize: 15, mb: 2 }}>
                 MindMatters Publication
               </Typography>
               <Box
@@ -455,8 +428,7 @@ export default function ProductDetails({ item }) {
                   flexDirection: "row",
                   alignItems: "center",
                   overflowX: "auto",
-                }}
-              >
+                }}>
                 <Card />
                 <Card />
               </Box>

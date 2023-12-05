@@ -13,7 +13,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { firestore } from "../config";
 import { useNavigation } from "@react-navigation/native";
 
-const ProductCard = ({ productId }) => {
+const ProductCard2 = ({ productId }) => {
   const navigation = useNavigation();
   const [isRed, setIsRed] = useState(true);
   const [product, setProduct] = useState(null);
@@ -103,7 +103,11 @@ const ProductCard = ({ productId }) => {
           <CardMedia
             component="img"
             height="140"
-            image={"../../assets/image/headsets.png"}
+            image={
+              product?.images?.length > 0
+                ? product.images[currentImageIndex]
+                : "../../assets/image/headsets.png"
+            }
             alt={product.name}
             style={{
               position: "relative",

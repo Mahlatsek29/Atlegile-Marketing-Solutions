@@ -61,7 +61,7 @@ function App() {
         />
         <Stack.Screen name="OrderHistory" component={OrderHistory} />
         <Stack.Screen name="PayFast" component={PayFast} />
-        <Stack.Screen name="CourierGuy" component={CourierGuy} />
+        {/* <Stack.Screen name="CourierGuy" component={CourierGuy} /> */}
         <Stack.Screen
           name="DateSelectionAndCheckout"
           component={DateSelectionAndCheckout}

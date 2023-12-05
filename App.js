@@ -31,7 +31,7 @@ function App() {
       <Stack.Navigator
         initialRouteName="Landing"
         screenOptions={{ headerShown: false }}>
-        {/* <Stack.Screen name="Landing" component={Landing} />
+        <Stack.Screen name="Landing" component={Landing} />
         <Stack.Screen name="AboutUs" component={AboutUs} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen
@@ -46,12 +46,12 @@ function App() {
         <Stack.Screen
           name="BusinessRegistration"
           component={BusinessRegistration}
-        /> */}
+        />
         <Stack.Screen
           name="AddProductsAndServices"
           component={AddProductsAndServices}
         />
-        {/* <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
+        <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="BusinessProducts" component={BusinessProducts} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
@@ -72,7 +72,7 @@ function App() {
           name="DeliveryAndChatSystem"
           component={DeliveryAndChatSystem}
         />
-        <Stack.Screen name="Favourites" component={Favourites} /> */}
+        <Stack.Screen name="Favourites" component={Favourites} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -14,6 +14,7 @@ import { COLORS } from "../../Global/Color";
 import { FontAwesome } from "@expo/vector-icons";
 import { firebase, firestore } from "../../config";
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Signup = () => {
@@ -127,8 +128,8 @@ const Signup = () => {
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
-          <Text style={styles.buttonText}>SIGN UP</Text>
-        </TouchableOpacity>
+        <Text style={styles.buttonText}>SIGN UP</Text>
+      </TouchableOpacity>
 
         <TouchableOpacity onPress={navigatealreadyhaveaccount}>
           <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>

@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 const AccountHolder = ({ navigation }) => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
+  const [phone, setPhone] = useState("");
   const [gender, setGender] = useState(30);
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
@@ -35,6 +36,7 @@ const AccountHolder = ({ navigation }) => {
       const userDocRef = await firestore.collection("Users").add({
         name,
         surname,
+        phone,
         gender,
         email,
         location,
@@ -43,7 +45,7 @@ const AccountHolder = ({ navigation }) => {
       console.log("User document created with ID:", userDocRef.id);
 
    
-      navigation.navigate("Landing");
+      navigation.navigate("AlternativeContact");
     } catch (error) {
       console.error("Error handling continue:", error.message);
       alert("Error. Please try again.");
@@ -77,47 +79,47 @@ const AccountHolder = ({ navigation }) => {
 
           <View style={{display:"flex",flexDirection:"row"}} >
             <View style={{marginRight:5}}>
-            <TextField
-              id="standard-basic"
-              label="Name"
-              variant="standard"
-              onChangeText={(text) => setName(text)}
-              value={name}
+            <TextInput
+            style={styles.input}
+            placeholder="Name"
+            value={name}
+            onChangeText={(text) => setName(text)}
+            keyboardType="Name"
             />
             </View>
             <View>
-           <TextField
-              id="standard-basic"
-              label="Surname"
-              variant="standard"
-              onChangeText={(text) => setSurname(text)}
-              value={surname}
+            <TextInput
+            style={styles.input}
+            placeholder="Surname"
+            value={surname}
+            onChangeText={(text) => setSurname(text)}
+            keyboardType="Surname"
             />
             </View>
           </View>
 
-          <View>
-          <TextField
-              id="standard-basic"
-              label="Email"
-              variant="standard"
-              onChangeText={(text) => setEmail(text)}
-              value={email}
+          <View style={{ width: "75%" }}>
+          <TextInput
+            style={styles.input}
+            placeholder="Phone"
+            value={phone}
+            onChangeText={(text) => setPhone(text)}
+            keyboardType="Phone"
             />
-            <TextField
-              id="standard-basic"
-              label="Email"
-              variant="standard"
-              onChangeText={(text) => setEmail(text)}
-              value={email}
+            <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+            keyboardType="email-address"
             />
     
-    <TextField
-              id="standard-basic"
-              label="Location"
-              variant="standard"
-              onChangeText={(text) => setLocation(text)}
-              value={location}
+    <TextInput
+            style={styles.input}
+            placeholder="Location"
+            value={location}
+            onChangeText={(text) =>setLocation(text)}
+            keyboardType="Location"
             />
           </View>
 
@@ -170,6 +172,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     borderColor: "#ccc",
     // borderRadius: 4,
+    borderBottomWidth: 1,
     marginVertical: 8,
     padding: 8,
     width: "100%",

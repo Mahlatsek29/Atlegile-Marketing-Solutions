@@ -76,8 +76,6 @@ const Signup = () => {
     console.log("Signing up as a business");
   };
 
-
-
   return (
     <ImageBackground
       source={require("../../Global/images/Reed.jpg")}

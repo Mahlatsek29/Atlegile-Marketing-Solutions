@@ -29,11 +29,11 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Landing"
+        // initialRouteName="Landing"
         screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Landing" component={Landing} />
+        {/* <Stack.Screen name="Landing" component={Landing} />
         <Stack.Screen name="AboutUs" component={AboutUs} />
-        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="SignUp" component={SignUp} /> */}
         <Stack.Screen
           name="TellUsAboutYourself"
           component={TellUsAboutYourself}
@@ -43,7 +43,7 @@ function App() {
           component={AlternativeContact}
         />
         <Stack.Screen name="SignIn" component={SignIn} />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="BusinessRegistration"
           component={BusinessRegistration}
         />
@@ -58,10 +58,10 @@ function App() {
         <Stack.Screen
           name="AccountAndBusiness"
           component={AccountAndBusiness}
-        />
-        <Stack.Screen name="OrderHistory" component={OrderHistory} />
+        /> */}
+        {/* <Stack.Screen name="OrderHistory" component={OrderHistory} />
         <Stack.Screen name="PayFast" component={PayFast} />
-        {/* <Stack.Screen name="CourierGuy" component={CourierGuy} /> */}
+        <Stack.Screen name="CourierGuy" component={CourierGuy} />
         <Stack.Screen
           name="DateSelectionAndCheckout"
           component={DateSelectionAndCheckout}
@@ -72,7 +72,7 @@ function App() {
           name="DeliveryAndChatSystem"
           component={DeliveryAndChatSystem}
         />
-        <Stack.Screen name="Favourites" component={Favourites} />
+        <Stack.Screen name="Favourites" component={Favourites} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

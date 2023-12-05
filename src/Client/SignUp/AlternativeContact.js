@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  TextInput,
 } from "react-native";
 import { TextField } from "@mui/material";
 import { firebase, firestore } from "../../config";
@@ -16,19 +17,32 @@ const AlternativeContact = ({ userEmail, navigation }) => {
 
   const handleContinue = async () => {
     try {
+      // Validate name and phone
+      if (!name || !phone) {
+        alert("Please enter both name and phone.");
+        return;
+      }
+  
+      // Validate userEmail
+      if (!userEmail) {
+        console.error("User email is undefined");
+        alert("User email is undefined. Please check the user data.");
+        return;
+      }
+  
       const userDocRef = firestore.collection("Users").where("email", "==", userEmail);
       const userSnapshot = await userDocRef.get();
-
+  
       if (!userSnapshot.empty) {
         const userId = userSnapshot.docs[0].id;
-
+  
         await firestore.collection("Users").doc(userId).update({
           alternativeContact: {
             name,
             phone,
           },
         });
-
+  
         navigation.navigate("Landing");
       } else {
         console.error("User not found");
@@ -56,19 +70,19 @@ const AlternativeContact = ({ userEmail, navigation }) => {
             <Text style={styles.subtitle}>ALTERNATIVE CONTACT</Text>
           </View>
           <View>
-            <TextField
-              id="standard-basic"
-              label="Name"
-              variant="standard"
-              value={name}
-              onChangeText={(text) => setName(text)}
+          <TextInput
+            style={styles.input}
+            placeholder="Name"
+            value={name}
+            onChangeText={(text) => setName(text)}
+            keyboardType="Name"
             />
-            <TextField
-              id="standard-basic"
-              label="Phone"
-              variant="standard"
-              value={phone}
-              onChangeText={(text) => setPhone(text)}
+             <TextInput
+            style={styles.input}
+            placeholder="Phone"
+            value={phone}
+            onChangeText={(text) => setPhone(text)}
+            keyboardType="Phone"
             />
           </View>
 
@@ -145,6 +159,15 @@ const styles = StyleSheet.create({
   buttonTextt: {
     color: "#072840",
     fontWeight: "bold",
+  },
+  input: {
+    // borderWidth: 1,
+    borderColor: "#ccc",
+    // borderRadius: 4,
+    borderBottomWidth: 1,
+    marginVertical: 8,
+    padding: 8,
+    width: "100%",
   },
 });
 

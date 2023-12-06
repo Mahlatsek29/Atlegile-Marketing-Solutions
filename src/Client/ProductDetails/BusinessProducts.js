@@ -3,7 +3,7 @@ import { Container,Typography } from "@mui/material";
 import React from "react";
 import Navbar from "../../Global/Navbar";
 import SearchBar from "../../Global/SearchBar";
-import ProductCard from "../../Global/Card";
+import ProductCard from "../../Global/Card2";
 
 const BusinessProducts = () => {
   return (

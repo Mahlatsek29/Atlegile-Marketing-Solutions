@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
+import Skeleton from "@mui/material/Skeleton";
 import { Text, TouchableOpacity, View } from "react-native";
 import { firestore } from "../config";
 import { useNavigation } from "@react-navigation/native";
@@ -17,9 +18,10 @@ const ProductCard = ({ productId }) => {
   const navigation = useNavigation();
   const [isRed, setIsRed] = useState(true);
   const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const navigateProductDetails = () => {
-    navigation.navigate("ProductDetails", { productId }); // Pass productId here
+    navigation.navigate("ProductDetails", { productId });
   };
 
   const toggleHeart = () => {
@@ -39,15 +41,27 @@ const ProductCard = ({ productId }) => {
         setProduct(productData);
       } catch (error) {
         console.error("Error fetching product data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProductData();
   }, [productId]);
 
-  if (!product) {
-    // Render a loading state or return null if data is still being fetched
-    return null;
+  if (loading) {
+    // Render a loading state using Skeleton
+    return (
+      <Card className="card-container">
+        <Skeleton variant="rectangular" width={270} height={270} />
+        <CardContent>
+          <Skeleton variant="text" width={100} height={20} />
+          <Skeleton variant="text" width={200} height={16} />
+          <Skeleton variant="text" width={200} height={16} />
+          <Skeleton variant="text" width={80} height={14} />
+        </CardContent>
+      </Card>
+    );
   }
 
   return (

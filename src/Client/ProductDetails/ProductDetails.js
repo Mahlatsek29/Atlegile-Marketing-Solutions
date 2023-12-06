@@ -11,6 +11,7 @@ import {
   Grid,
   TextField,
   Avatar,
+  Skeleton,
 } from "@mui/material";
 import logo from "../../Global/images/logo.png";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -44,6 +45,7 @@ export default function ProductDetails({ route }) {
   const [currentImage, setCurrentImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [review, setReview] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const app = initializeApp(firebaseConfig);
   const firestore = getFirestore(app);
@@ -68,16 +70,46 @@ export default function ProductDetails({ route }) {
         }
       } catch (error) {
         console.error("Error fetching product data:", error);
+      } finally {
+        setLoading(false); // Set loading to false after data fetching is complete
       }
     };
 
     fetchProductData();
   }, [firestore, productId]);
 
-  if (!product) {
-    // Render a loading state or return null if data is still being fetched
-    return null;
+  if (loading) {
+    // Render a loading state using Skeleton
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh", // Set minimum height to occupy the full viewport height
+        }}>
+        <Skeleton variant="rectangular" width="20%" height={540} />
+        <Container
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+          <Skeleton variant="text" width="40%" height={40} />
+          <Skeleton variant="text" width="40%" height={40} />
+
+          {/* Add more Skeleton components as needed for your design */}
+        </Container>
+      </Box>
+    );
   }
+
+  if (!product) {
+    // Render a message or handle the case where product is not available
+    return <Typography>No Product Found</Typography>;
+  }
+
   // Assuming the images are stored in an array field named 'images'
   let productImage = [
     "https://images.pexels.com/photos/19288075/pexels-photo-19288075/free-photo-of-aerial-view-of-a-church-in-the-middle-of-a-field.jpeg",

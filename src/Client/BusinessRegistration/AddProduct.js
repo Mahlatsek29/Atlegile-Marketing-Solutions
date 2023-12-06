@@ -15,8 +15,8 @@ const AddProductsAndServices = () => {
   const navigation = useNavigation();
 
   const navigatepaymentinfo = () => {
-    navigation.navigate('AddProductsAndServices')
-  }
+    navigation.navigate("AddProductsAndServices");
+  };
 
   const emptyOption = [""];
   const [images, setImages] = useState([]);
@@ -53,8 +53,6 @@ const AddProductsAndServices = () => {
     "Electrical and Lighting",
   ];
 
-  const navigation = useNavigation();
-
   const handleImageChange = (e) => {
     const files = e.target.files;
     if (files.length > 0) {
@@ -74,7 +72,6 @@ const AddProductsAndServices = () => {
     }
 
     setLoading(true);
-
 
     try {
       const productRef = firestore.collection("Products").doc();
@@ -109,7 +106,7 @@ const AddProductsAndServices = () => {
       setLoading(false);
 
       alert("Product added successfully!");
-      const paymentUrl = "..."; 
+      const paymentUrl = "...";
 
       Linking.openURL(paymentUrl);
     } catch (error) {
@@ -139,7 +136,6 @@ const AddProductsAndServices = () => {
           md={8}
           sm={{ hidden: true }}
           style={{
-          
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
@@ -193,7 +189,7 @@ const AddProductsAndServices = () => {
               style={{ height: "9vh", width: "90%", paddingTop: "15vh" }}
             />
           </Grid>
-          
+
           <View
             className="form-container"
             style={{
@@ -269,7 +265,7 @@ const AddProductsAndServices = () => {
                 accept="image/*"
                 style={{ display: "none" }}
                 onChange={handleImageChange}
-                multiple 
+                multiple
               />
             </View>
 
@@ -396,8 +392,6 @@ const AddProductsAndServices = () => {
                   required
                 />
 
-         
-
                 {loading ? (
                   <Box
                     sx={{
@@ -409,7 +403,8 @@ const AddProductsAndServices = () => {
                     <CircularProgress />
                   </Box>
                 ) : (
-                  <Button onPress={navigatepaymentinfo}
+                  <Button
+                    onPress={navigatepaymentinfo}
                     variant="contained"
                     style={{
                       width: "80%",

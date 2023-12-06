@@ -1,22 +1,22 @@
 import React, { useState } from "react";
 import { View, Text, Image, Linking } from "react-native";
 import { Button, TextInput as PaperTextInput } from "react-native-paper";
-
 import background from "../../Global/images/Reed.jpg";
 import logo from "../../Global/images/logo.svg";
 import Banner from "../../Global/images/media bg-cover.png";
 import { TextField } from "@mui/material";
 
 const PaymentInfo = () => {
+  
   const [showWebView, setShowWebView] = useState(false);
 
   const handlePaymentButtonPress = () => {
     const paymentUrl =
       "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
 
-    // Open the payment URL in the device's default browser
     Linking.openURL(paymentUrl);
   };
+
 
   return (
     <View style={{ flex: 1 }}>
@@ -67,7 +67,7 @@ const PaymentInfo = () => {
                 marginLeft: 80,
                 marginBottom: 30,
               }}>
-              <Text style={{ color: "#000", textAlign: "left", fontSize: 30, fontWeight:'bold' }}>
+              <Text style={{ color: "#000", textAlign: "left", fontSize: 30, fontWeight: 'bold' }}>
                 PAYMENT INFO
               </Text>
               <TextField
@@ -95,22 +95,8 @@ const PaymentInfo = () => {
                   variant="standard"
                   style={{ width: "45%", marginRight: "15px" }}
                 />
-                
-               {/* <TextField
-                id="outlined-select-currency"
-                select
-                label="Expiry"
-                variant="standard"
-                // helperText="Please select your currency"
-                value={selectedExpiry}
-                onChange={handleExpiryChange}
-                style={{ width: "48%" }}>
-                {expiryOptions.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </TextField> */}
+
+
               </View>
               <Button
                 mode="contained"

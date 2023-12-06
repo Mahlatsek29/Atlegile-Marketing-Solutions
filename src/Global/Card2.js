@@ -16,8 +16,6 @@ import { TouchableOpacity } from "react-native";
 const ProductCard = ({ item }) => {
   const [isRed, setIsRed] = React.useState(true);
 
-  console.log("item images: ");
-  const imgSrc = item?.images?.find((item, index) => index === 0);
   const toggleHeart = () => {
     console.log("toggleHeart Clicked");
     setIsRed((prevState) => !prevState);
@@ -33,8 +31,7 @@ const ProductCard = ({ item }) => {
         paddingTop: "1.2rem",
         border: "none",
         boxShadow: "none",
-      }}
-    >
+      }}>
       <Box>
         <Box
           style={{
@@ -52,13 +49,11 @@ const ProductCard = ({ item }) => {
             flexDirection: "column",
             alignSelf: "center",
             justifyContent: "center",
-          }}
-        >
+          }}>
           <CardMedia
             component="img"
             height="140"
-            // image={require("../../assets/image/headsets.png")}
-            src={imgSrc}
+            image={require("../../assets/image/headsets.png")}
             alt="shop 2"
             style={{
               borderRadius: "100px",
@@ -67,13 +62,6 @@ const ProductCard = ({ item }) => {
               height: 220,
               alignSelf: "center",
             }}
-            // style={{
-            //   borderRadius: "100px",
-            //   objectFit: "cover",
-            //   width: 220,
-            //   height: 220,
-            //   alignSelf: "center",
-            // }}
           />
           <Box
             style={{
@@ -84,12 +72,10 @@ const ProductCard = ({ item }) => {
               width: "22%",
               borderRadius: "8%",
               alignSelf: "center",
-            }}
-          >
+            }}>
             <Typography
               variant="h5"
-              style={{ color: "#fff", textAlign: "center" }}
-            >
+              style={{ color: "#fff", textAlign: "center" }}>
               {" "}
               sale
             </Typography>
@@ -105,8 +91,7 @@ const ProductCard = ({ item }) => {
               // backgroundColor: "red",
               justifyContent: "space-between",
               alignSelf: "center",
-            }}
-          >
+            }}>
             <TouchableOpacity>
               <Icon
                 name={isRed ? "heart" : "heart-o"}
@@ -140,16 +125,13 @@ const ProductCard = ({ item }) => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-            }}
-          >
+            }}>
             <Typography
               variant="h6"
               component="h6"
-              style={{ fontSize: "16px", color: "#0074cc" }}
-            >
-              {item?.selectedProductCategory}
-
-              {/* English Department */}
+              style={{ fontSize: "16px", color: "#0074cc" }}>
+              {item?.selectedCategory}
+              English Department
             </Typography>
             <Typography
               style={{
@@ -157,20 +139,18 @@ const ProductCard = ({ item }) => {
                 color: "#fff",
                 borderRadius: "15px",
                 padding: "4px",
-              }}
-            >
+              }}>
               ⭐ 4.9
             </Typography>
           </Box>
           <Typography variant="h5" component="h5">
-            {item?.name}
-            {/* Graphic Design */}
+            {item?.productName}
+            Graphic Design
           </Typography>
           <Typography
             variant="subtitle2"
             component="p"
-            style={{ color: "gray" }}
-          >
+            style={{ color: "gray" }}>
             {item?.description.slice(0, 110)}
             {item?.description.length < 110 ? "" : "..."}
             We focus on ergonomics and meeting you where you work. It's only a
@@ -180,8 +160,7 @@ const ProductCard = ({ item }) => {
             display="flex"
             flexDirection="column"
             alignItems="flex-start"
-            justifyContent="space-between"
-          >
+            justifyContent="space-between">
             <Typography variant="body2" component="p" style={{ color: "gray" }}>
               <Icon2 name="download" size={20} /> 15 Sales
             </Typography>
@@ -194,8 +173,7 @@ const ProductCard = ({ item }) => {
                   fontSize: "18px",
                   fontWeight: "700",
                   marginRight: "10px",
-                }}
-              >
+                }}>
                 R{item?.price}700
               </Typography>
 
@@ -206,8 +184,7 @@ const ProductCard = ({ item }) => {
                   color: "rgb(97, 151, 97)",
                   fontSize: "18px",
                   fontWeight: "700",
-                }}
-              >
+                }}>
                 R{item?.price}500
               </Typography>
             </Box>

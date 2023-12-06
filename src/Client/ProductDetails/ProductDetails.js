@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -32,9 +32,53 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import ReviewsCard from "./ReviewsCard";
 import Card from "../../Global/Card2";
+import { initializeApp } from "firebase/app";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import firebaseConfig from "../../config";
 
-export default function ProductDetails({ item }) {
+export default function ProductDetails({ route }) {
+  const { productId } = route.params;
   const [myRatings, setMyRatings] = useState(2.5);
+  const [product, setProduct] = useState(null);
+
+  const [currentImage, setCurrentImage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [review, setReview] = useState("");
+
+  const app = initializeApp(firebaseConfig);
+  const firestore = getFirestore(app);
+
+  if (!productId) {
+    // Handle the case where productId is not provided
+    return <Typography>No Product ID provided</Typography>;
+  }
+
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        const productDocRef = doc(firestore, "Products", productId);
+        const productDocSnapshot = await getDoc(productDocRef);
+
+        if (productDocSnapshot.exists()) {
+          const productData = productDocSnapshot.data();
+          console.log("Fetched product data:", productData);
+          setProduct(productData);
+        } else {
+          console.log("Product not found");
+        }
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+      }
+    };
+
+    fetchProductData();
+  }, [firestore, productId]);
+
+  if (!product) {
+    // Render a loading state or return null if data is still being fetched
+    return null;
+  }
+  // Assuming the images are stored in an array field named 'images'
   let productImage = [
     "https://images.pexels.com/photos/19288075/pexels-photo-19288075/free-photo-of-aerial-view-of-a-church-in-the-middle-of-a-field.jpeg",
     "https://images.pexels.com/photos/19238352/pexels-photo-19238352/free-photo-of-a-man-is-sitting-at-a-desk-with-a-computer-monitor.jpeg",
@@ -76,10 +120,6 @@ export default function ProductDetails({ item }) {
       ratings: 5.0,
     },
   ];
-
-  const [currentImage, setCurrentImage] = useState(0);
-  const [quantity, setQuantity] = useState(1);
-  const [review, setReview] = useState("");
 
   const handleNext = () => {
     setCurrentImage((prev) => (prev + 1) % productImage.length);
@@ -251,14 +291,11 @@ export default function ProductDetails({ item }) {
               <Box sx={{ mt: 2 }}>
                 <Box>
                   <Typography sx={{ fontWeight: "600", fontSize: 20 }}>
-                    DIGITAL MARKETING COURSE
+                    {product.name}
                   </Typography>
                 </Box>
                 <Box sx={{ mt: 2 }}>
-                  <Typography>
-                    An in-depth online course covering digital marketing
-                    strategies and techniques
-                  </Typography>
+                  <Typography>{product.description}</Typography>
                 </Box>
                 <Box sx={{ mt: 2 }}>
                   <Typography sx={{ fontWeight: "600" }}>R15OO</Typography>

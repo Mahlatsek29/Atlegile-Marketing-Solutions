@@ -17,10 +17,9 @@ const ProductCard = ({ productId }) => {
   const navigation = useNavigation();
   const [isRed, setIsRed] = useState(true);
   const [product, setProduct] = useState(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const navigateproductdetails = () => {
-    navigation.navigate("ProductDetails");
+  const navigateProductDetails = () => {
+    navigation.navigate("ProductDetails", { productId }); // Pass productId here
   };
 
   const toggleHeart = () => {
@@ -45,20 +44,6 @@ const ProductCard = ({ productId }) => {
 
     fetchProductData();
   }, [productId]);
-
-  useEffect(() => {
-    // Change the image every 3 seconds (adjust the interval as needed)
-    const intervalId = setInterval(() => {
-      setCurrentImageIndex(
-        (prevIndex) => (prevIndex + 1) % (product?.images?.length || 1)
-      );
-    }, 2000);
-
-    return () => {
-      // Clear the interval on component unmount to avoid memory leaks
-      clearInterval(intervalId);
-    };
-  }, [product?.images]);
 
   if (!product) {
     // Render a loading state or return null if data is still being fetched
@@ -103,7 +88,11 @@ const ProductCard = ({ productId }) => {
           <CardMedia
             component="img"
             height="140"
-            image={"../../assets/image/headsets.png"}
+            image={
+              product.images && product.images.length > 0
+                ? product.images[0]
+                : "../../assets/image/headsets.png"
+            }
             alt={product.name}
             style={{
               position: "relative",
@@ -306,7 +295,7 @@ const ProductCard = ({ productId }) => {
             alignItems: "center",
             marginBottom: "2vh",
           }}
-          onClick={navigateproductdetails}>
+          onClick={navigateProductDetails}>
           VIEW
           <Icon name="arrow-right" size={20} />
         </Button>

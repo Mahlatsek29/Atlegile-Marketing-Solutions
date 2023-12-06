@@ -1,4 +1,3 @@
-// import React, { useState } from "react";
 import React, { useState } from "react";
 import { View, StyleSheet, Image, Text } from "react-native";
 import { TextInput, Picker } from "react-native";
@@ -9,13 +8,13 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-// import { useNavigate } from "react-router-dom";
 import background from "../../Global/images/Reed.jpg";
 import logo from "../../Global/images/logo.svg";
 import Banner from "../../Global/images/media bg-cover.png";
 import { auth, firestore } from "../../config";
 
 const BusinessRegistration = () => {
+  const navigation = useNavigation();
   const [businessName, setBusinessName] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
   const [regNumber, setRegNumber] = useState("");
@@ -29,12 +28,14 @@ const BusinessRegistration = () => {
   const [cardNumber, setCardNumber] = useState(null);
   const [cvv, setCvv] = useState(null);
 
-  const navigation = useNavigation();
+
+  const navigateaddproduct = () => {
+    navigation.navigate('AddProductsAndServices')
+  }
 
   const handlechange = async (event) => {
     event.preventDefault();
     try {
-      // Store the data in Firestore
       await firestore.collection("Business").add({
         businessName,
         selectedRole,
@@ -53,7 +54,6 @@ const BusinessRegistration = () => {
         alert("successfully registered");
       }
 
-      // Navigate to the next screen
       navigation.navigate("AddProductsAndServices");
     } catch (error) {
       console.error("Error storing data in Firestore:", error);
@@ -193,8 +193,6 @@ const BusinessRegistration = () => {
                 backgroundColor: "#fff",
                 marginLeft: "-10px",
                 marginRight: "-15px",
-                // paddingRight: "-25vw",
-                // margin:'-15px',
                 width: "100%",
                 height: "98vh",
                 alignSelf: "center",
@@ -209,13 +207,7 @@ const BusinessRegistration = () => {
                   style={{ height: "9vh", width: "90%", marginTop: "8vh" }}
                 />
               </Grid>
-              {/* <Box
-                component="form"
-                sx={{
-                  "& > :not(style)": { m: 1, width: "25ch" },
-                }}
-                noValidate
-                autoComplete="off"> */}
+
               <form onSubmit={handlechange}>
                 <View
                   className="form-container"
@@ -224,7 +216,6 @@ const BusinessRegistration = () => {
                     textAlign: "center",
                     alignSelf: "center",
                     width: "100%",
-                    // marginLeft: "80px",
                     marginBottom: "30px",
                   }}>
                   <h2
@@ -384,8 +375,7 @@ const BusinessRegistration = () => {
                     onChange={(e) => setBio(e.target.value)}
                     required
                   />
-                  {/* Add other TextField components as needed */}
-                  <Button
+                  <Button onClick={navigateaddproduct}
                     variant="contained"
                     style={{
                       width: "80%",
@@ -399,7 +389,6 @@ const BusinessRegistration = () => {
                   </Button>
                 </View>
               </form>
-              {/* </Box> */}
             </Grid>
           </Grid>
         </View>

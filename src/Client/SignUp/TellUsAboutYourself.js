@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,7 +10,6 @@ import {
   Picker,
 } from "react-native";
 import { firebase, firestore } from "../../config";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TellUsAboutYourself = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -22,7 +21,8 @@ const TellUsAboutYourself = ({ navigation }) => {
   const user = firebase.auth().currentUser;
 
   const handleContinue = async () => {
-    if (!name || !surname || !phone || !gender || !email || !location) {
+    // Ensure that all required fields are not empty
+    if (!name.trim() || !surname.trim() || !phone.trim() || !gender.trim() || !email.trim() || !location.trim()) {
       alert("Please fill in all fields before continuing.");
       return;
     }
@@ -30,18 +30,19 @@ const TellUsAboutYourself = ({ navigation }) => {
     try {
       const userRef = firestore.collection("Users").doc(user.uid);
 
+      // Directly use state values here
       await userRef.set({
-        name,
-        surname,
-        phone,
-        gender,
-        email,
-        location,
+        name: name.trim(),
+        surname: surname.trim(),
+        phone: phone.trim(),
+        gender: gender.trim(),
+        email: email.trim(),
+        location: location.trim(),
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         uid: user.uid,
       });
 
-      console.log("User information submitted to Users collection in Firestore.");
+      console.log("User information successfully submitted to Firestore.");
 
       navigation.navigate("AlternativeContact");
     } catch (error) {
@@ -138,49 +139,47 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   
-    alignItems: "center",
+    // alignItems: "center",
   },
   logo: {
     width: 150,
     height: 50,
     marginBottom: 150,
     resizeMode: "contain",
-    marginLeft: "29%",
+    // marginLeft: "29%",
   },
   title: {
-    fontSize: 15,
+    fontSize: 24,
     marginBottom: 10,
     fontWeight: "bold",
     textAlign: "left",
-    marginRight: "30%",
   },
   subtitle: {
     fontSize: 20,
     fontWeight: "bold",
   },
   input: {
-    borderColor: "#ccc",
-    borderBottomWidth: 1,
-    marginVertical: 8,
-    padding: 8,
+    height: 40,
+    // marginBottom: 10,
     width: "100%",
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
+    marginVertical: 15,
   },
   pickerItem: {
     color: "#072840",
 
   },
   button: {
-    marginTop: "20%",
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: "#072840",
-    borderRadius: 40,
-    width: 200,
-    height: 40,
-    marginLeft: "15%",
+    paddingVertical: 10,
+    borderRadius: 30,
+    marginTop: 10,
+    width: "75%",
   },
   buttonText: {
     color: "white",
+    textAlign: "center",
     fontWeight: "bold",
   },
   row: {

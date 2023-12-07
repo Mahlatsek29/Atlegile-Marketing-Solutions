@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { View, Text } from "react-native";
 import axios from "axios";
-import { async } from "@firebase/util";
+// import { async } from "@firebase/util";
 
 const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
 
@@ -194,7 +194,7 @@ const CourierGuy = () => {
           config
         );
         console.log("Courier API creating shpment response:", response.data);
-        return response.data; // Add this line to return the response data
+        return response.data; 
       } catch (error) {
         console.error("Error getting shipment details", error);
 
@@ -223,13 +223,13 @@ const CourierGuy = () => {
           config
         );
         console.log("Courier API shipment No response:", response.data);
-        return response.data.shipments; // Return the shipments array
+        return response.data.shipments;
       } catch (error) {
         console.error("Error getting shipments", error);
         if (error.response) {
           console.log("Response data:", error.response.data);
         }
-        return []; // Return an empty array in case of an error
+        return [];
       }
     };
 
@@ -237,7 +237,7 @@ const CourierGuy = () => {
       const shipments = await getShipment();
 
       if (shipments.length > 0) {
-        const ShipId = shipments[0].id; // Use the first shipment's id (you may adjust this based on your logic)
+        const ShipId = shipments[0].id; 
         //console.log(ShipId)
         const labelConfig = {
           headers: {
@@ -315,7 +315,7 @@ const CourierGuy = () => {
       try {
         const cancelResponse = await axios.post(
           `https://api.shiplogic.com/v2/shipments/cancel`,
-          { tracking_reference: trackingReference }, // Add the tracking reference in the request body
+          { tracking_reference: trackingReference },
           cancelConfig
         );
         console.log("Courier API cancel response:", cancelResponse.data);
@@ -341,13 +341,13 @@ const CourierGuy = () => {
           config
         );
         console.log("Courier API traking shipment response:", response.data);
-        return response.data.shipments; // Return the shipments array
+        return response.data.shipments; 
       } catch (error) {
         console.error("Error getting shipments", error);
         if (error.response) {
           console.log("Response data:", error.response.data);
         }
-        return []; // Return an empty array in case of an error
+        return []; 
       }
     };
 
@@ -404,9 +404,9 @@ const CourierGuy = () => {
     
       try {
         // Assuming ShipSikerLabel returns the filename in the response data
-        const labelResponse = await ShipSikerLabel();
-        const theFilename = labelResponse.filename;
-        console.log('filename is: ', theFilename);
+        // const labelResponse = await ShipSikerLabel();
+        // const theFilename = labelResponse.filename;
+        // console.log('filename is: ', theFilename);
     
         // Requesting the signed URL
         const signedURLResponse = await axios.get(
@@ -428,9 +428,112 @@ const CourierGuy = () => {
       }
     };
     
-    gettingRate();
-    gettingOpRates()
-    getShipment();
+    const getPODimage = async () => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${CourierAPIKey}`,
+          "Content-Type": "application/json",
+        },
+      };
+    
+      try {
+        const response = await axios.get(
+          "https://api.shiplogic.com/v2/shipments/pod/images?tracking_reference=XJXXLF",
+          config
+        );
+    
+        if (response.data && response.data.shipments) {
+          console.log("Courier API POD image response:", response.data);
+          return response.data.shipments; 
+        } else {
+          console.log("Courier API POD image response is null or missing shipments.");
+          return [];
+        }
+      } catch (error) {
+        console.error("Error getting shipments", error);
+        if (error.response) {
+          console.log("Response data:", error.response.data);
+        }
+        return []; 
+      }
+    };
+    
+    const getAllPODevents = async () => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${CourierAPIKey}`,
+          "Content-Type": "application/json",
+        },
+      };
+    
+      try {
+        const response = await axios.get(
+          "https://api.shiplogic.com/v2/shipments/pod?tracking_reference=XJXXLF",
+          config
+        );
+    
+        console.log('response is: ', response)
+        if (response.data && response.data.shipments) {
+          console.log("Courier API POD events response:", response.data);
+          return response.data.shipments;
+        } else {
+          console.log("Courier API POD events response is null or missing shipments.");
+          return [];
+        }
+      } catch (error) {
+        console.error("Error getting shipments", error);
+        if (error.response) {
+          console.log("Response data:", error.response.data);
+        }
+        return [];
+            }
+    };
+    
+    const getDigitalPOD = async () => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${CourierAPIKey}`,
+          "Content-Type": "application/json",
+        },
+      };
+    
+      try {
+        const response = await axios.get(
+          "https://api.shiplogic.com/v2/shipments/digital-pod?tracking_reference=XJXXLF",
+          config
+        );
+    
+        console.log('response is: ', response);
+    
+        if (response.data && response.data.shipments) {
+          console.log("Courier API digital POD response:", response.data);
+          return response.data.shipments;
+        } else {
+          console.log("Courier API digital POD response is null or missing shipments.");
+          return [];
+        }
+      } catch (error) {
+        console.error("Error getting digital POD shipments", error);
+    
+        if (error.response) {
+          console.log("Response data:", error.response.data);
+        } else if (error.request) {
+          console.log("No response received. Request made but no response.");
+        } else {
+          console.log("Error message:", error.message);
+        }
+    
+        return [];
+      }
+    };
+    
+    
+   
+  
+    //tackingShipment()
+   // getPODimage();
+   //getAllPODevents();
+   //getDigitalPOD();
    // signedURL();
     
     

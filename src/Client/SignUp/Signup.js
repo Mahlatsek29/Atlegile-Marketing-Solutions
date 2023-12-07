@@ -7,67 +7,59 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Link,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { COLORS } from "../../Global/Color";
 import { FontAwesome } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage"; 
 import { firebase, firestore } from "../../config";
 import { useNavigation } from '@react-navigation/native';
-
+import TextField from "@mui/material/TextField";
 
 const Signup = () => {
   const navigation = useNavigation();
-  const [username, setUsername] = useState("");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
 
   const navigateSignUpBussiness = () => {
     navigation.navigate('BusinessRegistration');
   };
 
-
   const navigatealreadyhaveaccount = () => {
-    navigation.navigate('SignIn')
-  }
-
+    navigation.navigate('SignIn');
+  };
 
   const handleSignup = async (e) => {
     e.preventDefault();
-  
+
     if (email.trim() === "" || password.trim() === "") {
       alert("Please fill in all fields before signing in.");
       return;
     }
-  
+
     try {
       const userCredential = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
-  
+
       if (userCredential.user) {
         console.log("User signed up:", userCredential.user);
 
-        // Save email in local storage
         await AsyncStorage.setItem("userEmail", email);
 
-        // Create a user document with the UID in the Users collection
-  
-        // Create a user document with the UID in the Users collection
         await firestore.collection("Users").doc(userCredential.user.uid).set({
           email: email,
         });
-  
-        // Navigate to "/TellUsAboutYourself" after successful sign-up
-        navigation.navigate("TellUsAboutYourself");  // Use navigation.navigate here
+
+        navigation.navigate("TellUsAboutYourself");
       }
     } catch (error) {
       console.error("Error signing up:", error.message);
       alert("Error signing up. Please try again.");
     }
   };
-  
+
   const handleShop = () => {
     navigation.navigate("TellUsAboutYourself");
   };
@@ -109,20 +101,32 @@ const Signup = () => {
         </View>
         {/* TextInput fields container */}
         <View style={{ width: "75%" }}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-            keyboardType="email-address"
+          <TextField
+           id="outlined-number"
+           label="Email"
+           type="text"
+           variant="standard"
+           InputLabelProps={{
+             shrink: true,
+           }}
+          
+           value={email}
+           onChange={(e) => setEmail(e.target.value)}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-            secureTextEntry={true}
-          />
+       
+          <TextField
+          id="outlined-number"
+          label="Password"
+          type="text"
+          variant="standard"
+          InputLabelProps={{
+            shrink: true,
+          }}
+         
+          value={Password}
+          onChange={(e) => setPassword(e.target.value)}
+          secureTextEntry = {true}
+         />
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleSignup}>

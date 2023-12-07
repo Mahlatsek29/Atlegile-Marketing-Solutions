@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  TextInput,
-  Picker,
+
 } from "react-native";
 import { firebase, firestore } from "../../config";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+
 
 const TellUsAboutYourself = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -21,11 +22,15 @@ const TellUsAboutYourself = ({ navigation }) => {
   const [location, setLocation] = useState("");
   const user = firebase.auth().currentUser;
 
-  const handleContinue = async () => {
+  const handleContinue =  async (e) => {
+    e.preventDefault();
+
     if (!name || !surname || !phone || !gender || !email || !location) {
       alert("Please fill in all fields before continuing.");
       return;
     }
+
+    localStorage.setItem("user", user.uid);
 
     try {
       const userRef = firestore.collection("Users").doc(user.uid);
@@ -41,7 +46,7 @@ const TellUsAboutYourself = ({ navigation }) => {
         uid: user.uid,
       });
 
-      console.log("User information submitted to Users collection in Firestore.");
+      console.log("User information successfully submitted to Firestore.");
 
       navigation.navigate("AlternativeContact");
     } catch (error) {
@@ -49,7 +54,7 @@ const TellUsAboutYourself = ({ navigation }) => {
       alert("Error submitting user information. Please try again.");
     }
   };
-
+  const emptyOption = [""];
   const genderOptions = ["Male", "Female", "Other"];
 
   return (
@@ -65,54 +70,124 @@ const TellUsAboutYourself = ({ navigation }) => {
         <Text style={styles.title}>MAIN ACCOUNT HOLDER</Text>
         <Text style={styles.subtitle}>TELL US ABOUT YOURSELF</Text>
 
-        <View style={styles.row}>
-          <TextInput
-            style={[styles.input, { marginRight: 5 }]}
-            placeholder="Name"
-            value={name}
-            onChangeText={(text) => setName(text)}
-            keyboardType="default"
+        <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "75%",
+                    }}>
+        <TextField
+           id="outlined-number"
+           label="Name"
+           type="text"
+           variant="standard"
+           InputLabelProps={{
+             shrink: true,
+           }}
+          
+           value={name}
+           onChange={(e) => setName(e.target.value)}
+           style={{
+            width: "48%",
+
+            marginRight: "5px",
+           
+          }}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Surname"
-            value={surname}
-            onChangeText={(text) => setSurname(text)}
-            keyboardType="default"
-          />
+        
+              <TextField
+              id="outlined-number"
+              label="Surname"
+              type="text"
+              variant="standard"
+              InputLabelProps={{
+                shrink: true,
+              }}
+             
+              value={surname}
+              onChange={(e) => setSurname(e.target.value)}
+               style={{
+            width: "48%",
+            // marginTop: "5px",
+            // marginRight: "10px",
+            // textAlign: "left",
+          }}
+             />
         </View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Phone"
-          value={phone}
-          onChangeText={(text) => setPhone(text)}
-          keyboardType="phone-pad"
-        />
-        <Picker
-          itemStyle={styles.pickerItem}
-          selectedValue={gender}
-          onValueChange={(itemValue) => setGender(itemValue)}
-        >
-          {genderOptions.map((option, index) => (
-            <Picker.Item key={index} label={option} value={option} />
-          ))}
-        </Picker>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-          keyboardType="email-address"
-        />
+        <TextField
+           id="outlined-number"
+           label="Phone"
+           type="text"
+           variant="standard"
+           InputLabelProps={{
+             shrink: true,
+           }}
+          
+           value={phone}
+           onChange={(e) => setPhone(e.target.value)}
+           style={{
+            width: "75%",
+            marginTop: "5px",
+            textAlign: "left",
+          }}
+          />
+            <br />
+     <TextField
+                    id="outlined"
+                    select
+                    label="Gender"
+                    variant="standard"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    style={{
+                      width: "75%",
+                      textAlign: "left",
+                      marginTop: "10px",
+                    }}>
+                    {genderOptions.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <br />
+        <TextField
+           id="outlined-number"
+           label="Email"
+           type="text"
+           variant="standard"
+           InputLabelProps={{
+             shrink: true,
+           }}
+          
+           value={email}
+           onChange={(e) => setEmail(e.target.value)}
+            style={{
+            width: "75%",
+            marginTop: "5px",
+            textAlign: "left",
+          }}
+          />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Location"
-          value={location}
-          onChangeText={(text) => setLocation(text)}
-          keyboardType="default"
-        />
+       
+           <TextField
+           id="outlined-number"
+           label="Location"
+           type="text"
+           variant="standard"
+           InputLabelProps={{
+             shrink: true,
+           }}
+          
+           value={location}
+           onChange={(e) => setLocation(e.target.value)}
+           style={{
+            width: "75%",
+            marginTop: "5px",
+            textAlign: "left",
+          }}
+          />
 
         <TouchableOpacity style={styles.button} onPress={handleContinue}>
           <Text style={styles.buttonText}>CONTINUE</Text>
@@ -138,49 +213,47 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   
-    alignItems: "center",
+    // alignItems: "center",
   },
   logo: {
     width: 150,
     height: 50,
     marginBottom: 150,
     resizeMode: "contain",
-    marginLeft: "29%",
+    // marginLeft: "29%",
   },
   title: {
-    fontSize: 15,
+    fontSize: 18,
     marginBottom: 10,
     fontWeight: "bold",
     textAlign: "left",
-    marginRight: "30%",
   },
   subtitle: {
     fontSize: 20,
     fontWeight: "bold",
   },
   input: {
-    borderColor: "#ccc",
-    borderBottomWidth: 1,
-    marginVertical: 8,
-    padding: 8,
+    height: 40,
+    // marginBottom: 10,
     width: "100%",
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
+    marginVertical: 15,
   },
   pickerItem: {
     color: "#072840",
 
   },
   button: {
-    marginTop: "20%",
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: "#072840",
-    borderRadius: 40,
-    width: 200,
-    height: 40,
-    marginLeft: "15%",
+    paddingVertical: 10,
+    borderRadius: 30,
+    marginTop: 10,
+    width: "75%",
   },
   buttonText: {
     color: "white",
+    textAlign: "center",
     fontWeight: "bold",
   },
   row: {

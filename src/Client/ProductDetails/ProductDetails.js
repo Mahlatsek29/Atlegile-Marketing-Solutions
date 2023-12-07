@@ -34,7 +34,13 @@ import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import ReviewsCard from "./ReviewsCard";
 import Card from "../../Global/Card2";
 import { initializeApp } from "firebase/app";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+} from "firebase/firestore";
 import firebaseConfig from "../../config";
 
 export default function ProductDetails({ route }) {
@@ -45,10 +51,78 @@ export default function ProductDetails({ route }) {
   const [currentImage, setCurrentImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [review, setReview] = useState("");
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const app = initializeApp(firebaseConfig);
   const firestore = getFirestore(app);
+
+  const fetchReviews = async () => {
+    try {
+      const reviewsCollectionRef = doc(firestore, "Reviews", productId);
+      const reviewsCollectionSnapshot = await getDoc(reviewsCollectionRef);
+
+      if (reviewsCollectionSnapshot.exists()) {
+        const reviewsData = reviewsCollectionSnapshot.data();
+        console.log("Fetched reviews data:", reviewsData);
+        setReviews(reviewsData.reviews || []);
+      } else {
+        console.log("Reviews collection not found for product:", productId);
+        setReviews([]);
+      }
+    } catch (error) {
+      console.log("Error fetching reviews:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, [firestore, productId]);
+
+  // ... (your existing code)
+
+  const handleReviewPost = async () => {
+    try {
+      // Get the reference to the Reviews document
+      const reviewsCollectionRef = doc(firestore, "Reviews", productId);
+  
+      // Check if the document exists
+      const reviewsCollectionSnapshot = await getDoc(reviewsCollectionRef);
+  
+      if (reviewsCollectionSnapshot.exists()) {
+        // If the document exists, update it
+        await updateDoc(reviewsCollectionRef, {
+          reviews: [
+            ...reviews,
+            {
+              myRatings,
+              productId,
+              review,
+            },
+          ],
+        });
+      } else {
+        // If the document does not exist, create a new one
+        await setDoc(reviewsCollectionRef, {
+          reviews: [
+            {
+              myRatings,
+              productId,
+              review,
+            },
+          ],
+        });
+      }
+  
+      // Fetch the updated reviews
+      fetchReviews();
+  
+      // Clear the review input
+      setReview("");
+    } catch (error) {
+      console.error("Error posting review:", error);
+    }
+  };
 
   if (!productId) {
     // Handle the case where productId is not provided
@@ -87,19 +161,55 @@ export default function ProductDetails({ route }) {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          marginRight: "50vh",
           minHeight: "100vh", // Set minimum height to occupy the full viewport height
         }}>
-        <Skeleton variant="rectangular" width="20%" height={540} />
         <Container
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            flexDirection: "row",
           }}>
-          <Skeleton variant="text" width="40%" height={40} />
-          <Skeleton variant="text" width="40%" height={40} />
-
+          <Skeleton
+            variant="rectangular"
+            width="40%"
+            animation="wave"
+            height={540}
+          />
+          <Skeleton variant="text" width="50%" height={35} />
           {/* Add more Skeleton components as needed for your design */}
+        </Container>
+        <Container
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            // backgroundColor: "red",
+            position: "relative",
+            alignSelf: "left",
+            alignItems: "left",
+            width: "30%",
+            left: -90,
+          }}>
+          <Skeleton
+            variant="text"
+            width="70%"
+            height={80}
+            style={{ marginLeft: "2%" }}
+          />
+          <Skeleton
+            variant="text"
+            width="70%"
+            height={80}
+            style={{ marginLeft: "2%" }}
+          />
+          <Skeleton
+            variant="text"
+            width="70%"
+            height={80}
+            style={{ marginLeft: "2%" }}
+          />
         </Container>
       </Box>
     );
@@ -110,56 +220,51 @@ export default function ProductDetails({ route }) {
     return <Typography>No Product Found</Typography>;
   }
 
-  // Assuming the images are stored in an array field named 'images'
-  let productImage = [
-    "https://images.pexels.com/photos/19288075/pexels-photo-19288075/free-photo-of-aerial-view-of-a-church-in-the-middle-of-a-field.jpeg",
-    "https://images.pexels.com/photos/19238352/pexels-photo-19238352/free-photo-of-a-man-is-sitting-at-a-desk-with-a-computer-monitor.jpeg",
-    "https://images.pexels.com/photos/19328627/pexels-photo-19328627/free-photo-of-halong-bay.jpeg",
-  ];
+  // // Assuming the images are stored in an array field named 'images'
 
-  const reviews = [
-    {
-      id: "XYZ123abc456def789",
-      createdAt: "2023-01-01T12:00:00Z",
-      comment: "This is a test comment for the product.",
-      userName: "John",
-      userSurname: "Doe",
-      userID: "ghIJKL123mnoPQR456",
-      productID: "78PQRstUvwXYZ90abc",
-      role: "Photographer",
-      ratings: 4.0,
-    },
-    {
-      id: "PQrs56tuVW78xyZ90",
-      createdAt: "2023-01-02T12:00:00Z",
-      comment: "Another test comment for the product.",
-      userName: "Jane",
-      userSurname: "Smith",
-      userID: "stuvwX789YZabc012D",
-      productID: "78PQRstUvwXYZ90abc",
-      role: "Designer",
-      ratings: 3.5,
-    },
-    {
-      id: "ABcde12FGhijk34LMno",
-      createdAt: "2023-01-03T12:00:00Z",
-      comment: "Yet another test comment for the product.",
-      userName: "Bob",
-      userSurname: "Johnson",
-      userID: "EFGhi123JKLMno456",
-      productID: "78PQRstUvwXYZ90abc",
-      role: "Carpenter",
-      ratings: 5.0,
-    },
-  ];
+  // const reviews = [
+  //   {
+  //     id: "XYZ123abc456def789",
+  //     createdAt: "2023-01-01T12:00:00Z",
+  //     comment: "This is a test comment for the product.",
+  //     userName: "John",
+  //     userSurname: "Doe",
+  //     userID: "ghIJKL123mnoPQR456",
+  //     productID: "78PQRstUvwXYZ90abc",
+  //     role: "Photographer",
+  //     ratings: 4.0,
+  //   },
+  //   {
+  //     id: "PQrs56tuVW78xyZ90",
+  //     createdAt: "2023-01-02T12:00:00Z",
+  //     comment: "Another test comment for the product.",
+  //     userName: "Jane",
+  //     userSurname: "Smith",
+  //     userID: "stuvwX789YZabc012D",
+  //     productID: "78PQRstUvwXYZ90abc",
+  //     role: "Designer",
+  //     ratings: 3.5,
+  //   },
+  //   {
+  //     id: "ABcde12FGhijk34LMno",
+  //     createdAt: "2023-01-03T12:00:00Z",
+  //     comment: "Yet another test comment for the product.",
+  //     userName: "Bob",
+  //     userSurname: "Johnson",
+  //     userID: "EFGhi123JKLMno456",
+  //     productID: "78PQRstUvwXYZ90abc",
+  //     role: "Carpenter",
+  //     ratings: 5.0,
+  //   },
+  // ];
 
   const handleNext = () => {
-    setCurrentImage((prev) => (prev + 1) % productImage.length);
+    setCurrentImage((prev) => (prev + 1) % product.images.length);
   };
 
   const handlePrev = () => {
     setCurrentImage(
-      (prev) => (prev - 1 + productImage.length) % productImage.length
+      (prev) => (prev - 1 + product.images.length) % product.images.length
     );
   };
   const increaseQuantity = () => {
@@ -174,9 +279,9 @@ export default function ProductDetails({ route }) {
     setCurrentImage(index);
   };
 
-  const handleReviewPost = () => {
-    console.log("Posted review!");
-  };
+  // const handleReviewPost = () => {
+  //   console.log("Posted review!");
+  // };
 
   return (
     <>
@@ -264,9 +369,13 @@ export default function ProductDetails({ route }) {
                   <ArrowBackIosIcon />
                 </IconButton>
                 <img
-                  src={productImage[currentImage]}
+                  src={product.images[currentImage]}
                   alt={`image-${currentImage}`}
-                  style={{ width: "100%", borderRadius: 10 }}
+                  style={{
+                    width: "100%",
+                    borderRadius: 10,
+                    backgroundColor: "blue",
+                  }}
                 />
                 <IconButton
                   onClick={handleNext}
@@ -275,16 +384,17 @@ export default function ProductDetails({ route }) {
                 </IconButton>
               </Box>
               <Box sx={{ display: "flex", mt: 1 }}>
-                {productImage.map((url, index) => (
+                {product.images.map((image, index) => (
                   <img
                     key={index}
-                    src={url}
+                    src={image}
                     alt={`thumbnail-${index}`}
                     onClick={() => handleThumbnailClick(index)}
                     style={{
                       width: "60px",
                       height: "60px",
                       marginRight: 10,
+                      border: "1px solid red",
                       opacity: index === currentImage ? 1 : 0.5,
                     }}
                   />

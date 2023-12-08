@@ -7,7 +7,7 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { View, Image, Text, TouchableOpacity } from "react-native";
@@ -19,21 +19,20 @@ const Navbar = () => {
   const userData = null;
 
   const navigateToSignIn = () => {
-    navigation.navigate('SignIn');
+    navigation.navigate("SignIn");
   };
 
   const navigateToSignUp = () => {
-    navigation.navigate('SignUp');
+    navigation.navigate("SignUp");
   };
 
-
   const navigateaboutus = () => {
-    navigation.navigate('AboutUs')
-  }
+    navigation.navigate("AboutUs");
+  };
 
   const navigatelanding = () => {
-    navigation.navigate('Landing')
-  }
+    navigation.navigate("Landing");
+  };
   return (
     <Toolbar
       sx={{
@@ -48,7 +47,6 @@ const Navbar = () => {
         />
       </View>
 
-
       <View
         style={{ marginLeft: "auto", display: "flex", flexDirection: "row" }}>
         {!uid ? (
@@ -58,7 +56,8 @@ const Navbar = () => {
               display: "flex",
               flexDirection: "row",
             }}>
-            <Button onClick={navigatelanding}
+            <Button
+              onClick={navigatelanding}
               sx={{
                 borderRadius: "25px",
                 "&:hover": {
@@ -67,12 +66,11 @@ const Navbar = () => {
                   color: "white",
                 },
               }}
-              color="inherit"
-          
-            >
+              color="inherit">
               Shop
             </Button>
-            <Button onClick={navigateaboutus}
+            <Button
+              onClick={navigateaboutus}
               sx={{
                 borderRadius: "25px",
                 "&:hover": {
@@ -81,14 +79,13 @@ const Navbar = () => {
                   color: "white",
                 },
               }}
-              color="inherit"
-         
-            >
+              color="inherit">
               About Us
             </Button>
 
             <TouchableOpacity>
-              <Button onClick={navigateToSignIn}
+              <Button
+                onClick={navigateToSignIn}
                 sx={{
                   transition: "backgroundCcolor 0.3s, color 0.3s",
                   border: "1px solid #252b42",
@@ -100,15 +97,14 @@ const Navbar = () => {
                     color: "white",
                   },
                 }}
-                color="inherit"
-             
-              >
+                color="inherit">
                 Sign In
               </Button>
             </TouchableOpacity>
 
             <TouchableOpacity>
-              <Button onClick={navigateToSignUp}
+              <Button
+              onClick={navigateToSignUp}
                 sx={{
                   transition: "backgroundCcolor 0.3s, color 0.3s",
                   border: "1px solid #252b42",
@@ -121,9 +117,7 @@ const Navbar = () => {
                     color: "white",
                   },
                 }}
-                color="inherit"
-          
-              >
+                color="inherit">
                 Sign Up
               </Button>
             </TouchableOpacity>
@@ -144,9 +138,7 @@ const Navbar = () => {
                   color: "white",
                 },
               }}
-              color="inherit"
-           
-            >
+              color="inherit">
               Shop
             </Button>
             <Button
@@ -158,13 +150,10 @@ const Navbar = () => {
                   color: "white",
                 },
               }}
-              color="inherit"
-         
-            >
+              color="inherit">
               About Us
             </Button>
 
-         
             <Box
               sx={{
                 "&:hover": {
@@ -203,8 +192,7 @@ const Navbar = () => {
                     color: "white",
                     padding: "10px",
                   }}>
-                  {
-                  }
+                  {}
                   AS
                 </Typography>
               </View>

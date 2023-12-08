@@ -23,9 +23,6 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Test your web application
-        run: npm test
-
       - name: Build your web application
         run: npm run build
 

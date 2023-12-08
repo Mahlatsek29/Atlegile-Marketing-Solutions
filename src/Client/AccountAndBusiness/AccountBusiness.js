@@ -1171,6 +1171,7 @@ export default function BusinessAccount() {
                         multiple // Allow selecting multiple files
                       />
                     </div>
+                    <View style={{display:'flex', justifyContent:'center'}}>
 
                     <form onSubmit={handleSaveAddBanner}>
                       <TextField
@@ -1257,11 +1258,15 @@ export default function BusinessAccount() {
                           textAlign: "center",
                           padding: 10,
                           marginTop: 20,
+                          alignSelf:"center",
+                          width:"100%"
                         }}
                         type="submit">
                         continue
                       </Button>
                     </form>
+                    </View>
+                
                   </View>
                 </View>
               </View>

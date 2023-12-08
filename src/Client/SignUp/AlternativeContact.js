@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, } from "react";
 import {
   View,
   Text,
@@ -10,44 +10,44 @@ import {
 } from "react-native";
 import { firebase, firestore } from "../../config";
 import TextField from "@mui/material/TextField";
+import { useNavigation } from "@react-navigation/native";
 
-const AlternativeContact = ({ navigation }) => {
+
+const AlternativeContact = () => {
   const user = firebase.auth().currentUser;
+  const navigation = useNavigation();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [nameAlternative, setNameAlternative] = useState("");
+  const [phoneAlternative, setPhoneAlternative] = useState("");
+  // const [phone, setPhone] = useState("");
+  // const [phone, setPhone] = useState("");
 
   const handleContinue = async (e) => {
     e.preventDefault();
-
+  
     if (name.trim() === "" || phone.trim() === "") {
       alert("Please fill in all fields before continuing.");
       return;
     }
-
+  
     try {
       const userRef = firestore.collection("Users").doc(user.uid);
       await userRef.set({
-        name: userData.name,
-        surname: userData.surname,
-        phone: userData.phone,
-        gender: userData.gender,
-        email: userData.email,
-        location: userData.location,
         uid: user.uid,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         alternativeContact: {
-          name,
-          phone,
-          timestamp: serverTimestamp(),
+          name: nameAlternative,
+          phone: phoneAlternative,
         },
       });
-
+      navigation.navigate('Landing');
+  
       console.log(
         "Alternative contact information submitted to 'Users' collection in Firestore."
       );
-
-      navigate("/");
+  
     } catch (error) {
       console.error(
         "Error submitting alternative contact information:",

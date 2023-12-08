@@ -42,7 +42,7 @@ const Signin = () => {
         // You can add additional logic here if needed after successful sign-in
 
         // Navigate to "/TellUsAboutYourself" after successful sign-in
-        navigation.navigate("TellUsAboutYourself");
+        navigation.navigate("Landing");
       }
     } catch (error) {
       console.error("Error signing in:", error.message);

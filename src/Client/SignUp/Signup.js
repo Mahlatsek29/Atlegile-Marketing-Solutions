@@ -3,31 +3,30 @@ import {
   View,
   Text,
   ImageBackground,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   Image,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
-import { COLORS } from "../../Global/Color";
-import { FontAwesome } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage"; 
 import { firebase, firestore } from "../../config";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import TextField from "@mui/material/TextField";
+import { FontAwesome } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 const Signup = () => {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [nameAlternative, setNameAlternative] = useState("");
+  const [phoneAlternative, setPhoneAlternative] = useState("");
 
   const navigateSignUpBussiness = () => {
-    navigation.navigate('BusinessRegistration');
+    navigation.navigate("BusinessRegistration");
   };
 
   const navigatealreadyhaveaccount = () => {
-    navigation.navigate('SignIn');
+    navigation.navigate("SignIn");
   };
 
   const handleSignup = async (e) => {
@@ -46,11 +45,16 @@ const Signup = () => {
       if (userCredential.user) {
         console.log("User signed up:", userCredential.user);
 
-        // await AsyncStorage.setItem("userEmail", email);
-
-        await firestore.collection("Users").doc(userCredential.user.uid).set({
-          email: email,
-        });
+        await firestore
+          .collection("Users")
+          .doc(userCredential.user.uid)
+          .set({
+            email: email,
+            alternativeContact: {
+              name: nameAlternative,
+              phone: phoneAlternative,
+            },
+          });
 
         navigation.navigate("TellUsAboutYourself");
       }
@@ -60,111 +64,116 @@ const Signup = () => {
     }
   };
 
-  const handleShop = () => {
-    navigation.navigate("TellUsAboutYourself");
-  };
-
-  const handleBusinessSignup = () => {
-    console.log("Signing up as a business");
-  };
-
   return (
-    <ImageBackground
-      source={require("../../Global/images/Reed.jpg")}
-      style={styles.background}>
-      <View style={styles.container}>
-        {/* Logo image container */}
-        <View style={{}}>
-          <Image
-            source={require("../../Global/images/logo.png")}
-            style={styles.logo}
-          />
-        </View>
-        {/* SignUp text container */}
-        <View
-          style={{
-            width: "120%",
-            flexDirection: "row",
-            justifyContent: "space-around",
-          }}>
-          <Text style={styles.title}>SIGN UP </Text>
-          {/*Insert arrow logo */}
-          <Text style={{ fontSize: "70%", marginBottom: "-20%" }}>
-            SHOP{" "}
-            <FontAwesome
-              style={styles.arrow}
-              name="angle-right"
-              size={20}
-              color="#072840"
-            />{" "}
-          </Text>
-        </View>
-        {/* TextInput fields container */}
-        <View style={{ width: "75%" }}>
-          <TextField
-           id="outlined-number"
-           label="Email"
-           type="text"
-           variant="standard"
-           InputLabelProps={{
-             shrink: true,
-           }}
-          
-           value={email}
-           onChange={(e) => setEmail(e.target.value)}
-          />
-       
-       <TextField
-  id="outlined-number"
-  label="Password"
-  type="text"
-  variant="standard"
-  InputLabelProps={{
-    shrink: true,
-  }}
-  value={password}  
-  onChange={(e) => setPassword(e.target.value)}
-  secureTextEntry={true}
-/>
-        </View>
+    // <ImageBackground
+    //   source={require("../../Global/images/Reed.jpg")}
+    //   style={styles.background}>
+    //   <View style={styles.container}>
+    //     <View>
+    //       <Image
+    //         source={require("../../Global/images/logo.png")}
+    //         style={styles.logo}
+    //       />
+    //     </View>
+    //     <View
+    //       style={{
+    //         width: "120%",
+    //         flexDirection: "row",
+    //         justifyContent: "space-around",
+    //       }}>
+    //       <Text style={styles.title}>SIGN UP </Text>
+    //       <Text style={{ fontSize: "70%", marginBottom: "-20%" }}>
+    //         SHOP{" "}
+    //         <FontAwesome
+    //           style={styles.arrow}
+    //           name="angle-right"
+    //           size={20}
+    //           color="#072840"
+    //         />{" "}
+    //       </Text>
+    //     </View>
+    //     <View style={{ width: "75%" }}>
+    //       <TextField
+    //         id="outlined-number"
+    //         label="Email"
+    //         type="text"
+    //         variant="standard"
+    //         InputLabelProps={{
+    //           shrink: true,
+    //         }}
+    //         value={email}
+    //         onChange={(e) => setEmail(e.target.value)}
+    //       />
+    //       <TextField
+    //         id="outlined-number"
+    //         label="Password"
+    //         type="text"
+    //         variant="standard"
+    //         InputLabelProps={{
+    //           shrink: true,
+    //         }}
+    //         value={password}
+    //         onChange={(e) => setPassword(e.target.value)}
+    //         secureTextEntry={true}
+    //       />
+    //     </View>
+    //     <TouchableOpacity style={styles.button} onPress={handleSignup}>
+    //       <Text style={styles.buttonText}>SIGN UP</Text>
+    //     </TouchableOpacity>
+    //     <TouchableOpacity onPress={navigatealreadyhaveaccount}>
+    //       <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>
+    //     </TouchableOpacity>
+    //     <TouchableOpacity>
+    //       <Text style={styles.linkText1}>
+    //         {" "}
+    //         <AntDesign name="google" size={15} color="red" />
+    //         SIGN UP WITH GOOGLE
+    //       </Text>
+    //     </TouchableOpacity>
+    //     <TouchableOpacity
+    //       style={styles.businessButton}
+    //       onPress={navigateSignUpBussiness}>
+    //       <Text style={styles.buttonText1}>
+    //         SIGN UP AS A BUSINESS{" "}
+    //         <FontAwesome
+    //           style={styles.arrow}
+    //           name="angle-right"
+    //           size={20}
+    //           color="#072840"
+    //         />
+    //       </Text>
+    //     </TouchableOpacity>
+    //   </View>
+    // </ImageBackground>
 
-        <TouchableOpacity style={styles.button} onPress={handleSignup}>
-          <Text style={styles.buttonText}>SIGN UP</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={navigatealreadyhaveaccount}>
-          <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity>
-          <Text style={styles.linkText1}>
-            {" "}
-            <AntDesign name="google" size={15} color="red" />
-            SIGN UP WITH GOOGLE
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.businessButton}
-          onPress={navigateSignUpBussiness}>
-          <Text style={styles.buttonText1}>
-            SIGN UP AS A BUSINESS{" "}
-            <FontAwesome
-              style={styles.arrow}
-              name="angle-right"
-              size={20}
-              color="#072840"
-            />
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </ImageBackground>
+    <View
+      style={{
+        flex: 1,
+        height: "100%",
+        width: "100%",
+      }}>
+      <Image
+        source={require("../../Global/images/Reed.jpg")}
+        style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}
+      />
+      <View
+        style={{
+          backgroundColor: "white",
+          width: 500,
+          position: "absolute",
+          right: 16,
+          top: 16,
+          bottom: 16,
+        }}></View>
+    </View>
   );
 };
+
 const styles = StyleSheet.create({
   background: {
     flex: 1,
     justifyContent: "center",
+    width: "100%",
     alignItems: "center",
   },
   container: {
@@ -191,7 +200,6 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    // marginBottom: 10,
     width: "100%",
     borderBottomWidth: 1,
     borderBottomColor: "gray",
@@ -220,7 +228,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   businessButton: {
-    borderColor: COLORS.darkBlue,
+    borderColor: "#072840",
     borderWidth: 1,
     paddingVertical: 10,
     borderRadius: 30,
@@ -241,4 +249,5 @@ const styles = StyleSheet.create({
     marginLeft: "10px",
   },
 });
+
 export default Signup;

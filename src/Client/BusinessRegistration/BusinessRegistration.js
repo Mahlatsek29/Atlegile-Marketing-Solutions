@@ -11,7 +11,7 @@ import Box from "@mui/material/Box";
 import background from "../../Global/images/Reed.jpg";
 import logo from "../../Global/images/logo.svg";
 import Banner from "../../Global/images/media bg-cover.png";
-import { auth, firestore } from "../../config";
+import { auth, firestore, firebase } from "../../config";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 
@@ -36,6 +36,8 @@ const BusinessRegistration = () => {
     navigation.navigate("AddProductsAndServices");
   };
 
+  const UID = "SvicFdSJJ3T5FIcSkDI3XRwx0fl1";
+
   const handlechange = async (event) => {
     event.preventDefault();
     try {
@@ -54,7 +56,8 @@ const BusinessRegistration = () => {
         cardHolder,
         cardNumber,
         cvv,
-        // createdAt: servertimestamp(),
+        userID: UID,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       });
       setShowSuccessAlert(true);
 

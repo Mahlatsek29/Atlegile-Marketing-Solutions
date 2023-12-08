@@ -11,6 +11,7 @@ import shop2 from "../../Global/images/svg_landing.svg";
 import { firebase, auth } from "../../config";
 import { useNavigation } from "@react-navigation/native";
 import BusinessCard from "./BusinessCard";
+import { AntDesign } from "@expo/vector-icons";
 
 const Landing = () => {
   const navigation = useNavigation();
@@ -83,8 +84,8 @@ const Landing = () => {
       <SearchBar />
       <View>
         <Container sx={{ width: "100vw", width: "100%" }}>
-      <Grid></Grid>
-      <Grid
+          <Grid></Grid>
+          <Grid
             container
             style={{
               alignItems: "center",
@@ -409,38 +410,96 @@ const Landing = () => {
           </Grid>
 
           <View style={{ padding: 30 }}>
-            <Button
-              sx={{
-                fontWeight: "bold",
-                color: "black",
-                marginRight: "90%",
-                fontSize: "150%",
-              }}
-              onClick={navigatebusinessproduct}>
-              SucureTech Solutions{" "}
-            </Button>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <Text>SucureTech Solutions</Text>
 
-            <ScrollView
-              ref={scrollViewRef3}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              style={{ marginTop: 20, display: "flex", flexDirection: "row" }}>
-              {products.map((product) => (
-                <ProductCard key={product.id} productId={product.id} />
-              ))}
-            </ScrollView>
-            <TouchableOpacity
+              <TouchableOpacity onPress={navigatebusinessproduct}>
+                <Text>View All</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                width: "100%",
+                flexDirection: "row",
+                alignItems: "center",
+              }}>
+              <TouchableOpacity
+                onPress={() => scrollLeft(scrollViewRef3)}
+                style={{ marginHorizontal: 16 }}>
+                <AntDesign name="leftcircle" size={40} color="black" />
+              </TouchableOpacity>
+              <ScrollView
+                ref={scrollViewRef3}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                style={{
+                  marginTop: 20,
+                  display: "flex",
+                  flexDirection: "row",
+                }}>
+                {products.map((product) => (
+                  <ProductCard key={product.id} productId={product.id} />
+                ))}
+              </ScrollView>
+              <TouchableOpacity
+                onPress={() => scrollRight(scrollViewRef3)}
+                style={{ marginHorizontal: 16 }}>
+                <AntDesign name="rightcircle" size={40} color="black" />
+              </TouchableOpacity>
+            </View>
+
+            {/* <TouchableOpacity
               onPress={() => scrollLeft(scrollViewRef3)}
-              style={{ position: "absolute", left: 10, top: "43%" }}>
-              <Text style={{ fontSize: 25 }}>{"<"}</Text>
+              style={{ position: "absolute", left: 10, }}>
+              <AntDesign name="leftcircle" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => scrollRight(scrollViewRef3)}
               style={{ position: "absolute", right: 10, top: "43%" }}>
-              <Text style={{ fontSize: 25 }}>{">"}</Text>
-            </TouchableOpacity>
+              <AntDesign name="rightcircle" size={24} color="black" />
+            </TouchableOpacity> */}
           </View>
         </Container>
+      </View>
+      <View
+        style={{
+          width: "80%",
+          marginLeft: "10%",
+          height: 500,
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexDirection: "row",
+        }}>
+        <TouchableOpacity>
+          <AntDesign name="leftcircle" size={40} color="black" />
+        </TouchableOpacity>
+
+        <TouchableOpacity>
+          <AntDesign name="rightcircle" size={40} color="black" />
+        </TouchableOpacity>
+
+        <View
+          style={{
+            zIndex: -10,
+            width: "100%",
+            position: "absolute",
+            marginVertical: 16,
+          }}>
+          <ScrollView
+            ref={scrollViewRef3}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+            }}>
+            {products.map((product) => (
+              <ProductCard key={product.id} productId={product.id} />
+            ))}
+          </ScrollView>
+        </View>
       </View>
       <Grid container style={{ width: "100%", height: "40vh" }}>
         <Grid item xl={2} lg={2} sm={2} xs={2}>

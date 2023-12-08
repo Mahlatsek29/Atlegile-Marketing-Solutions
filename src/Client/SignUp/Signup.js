@@ -114,19 +114,18 @@ const Signup = () => {
            onChange={(e) => setEmail(e.target.value)}
           />
        
-          <TextField
-          id="outlined-number"
-          label="Password"
-          type="text"
-          variant="standard"
-          InputLabelProps={{
-            shrink: true,
-          }}
-         
-          value={Password}
-          onChange={(e) => setPassword(e.target.value)}
-          secureTextEntry = {true}
-         />
+       <TextField
+  id="outlined-number"
+  label="Password"
+  type="text"
+  variant="standard"
+  InputLabelProps={{
+    shrink: true,
+  }}
+  value={password}  
+  onChange={(e) => setPassword(e.target.value)}
+  secureTextEntry={true}
+/>
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleSignup}>

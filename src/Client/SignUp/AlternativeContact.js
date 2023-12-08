@@ -9,8 +9,11 @@ import {
   TextInput,
 } from "react-native";
 import { firebase, firestore } from "../../config";
+import TextField from "@mui/material/TextField";
 
 const AlternativeContact = ({ navigation }) => {
+  const user = firebase.auth().currentUser;
+
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
@@ -23,36 +26,38 @@ const AlternativeContact = ({ navigation }) => {
     }
 
     try {
-      const user = firebase.auth().currentUser;
-
-      if (!user) {
-        alert("User not authenticated. Please sign in.");
-        return;
-      }
-
-      const serverTimestamp = firebase.firestore.FieldValue.serverTimestamp();
-
-      await firestore.collection("Users").doc(user.uid).set({
-        name: localStorage.getItem("name"),
-        surname: localStorage.getItem("surname"),
-        phone: localStorage.getItem("phone"),
-        gender: localStorage.getItem("gender"),
-        email: localStorage.getItem("email"),
-        location: localStorage.getItem("location"),
+      const userRef = firestore.collection("Users").doc(user.uid);
+      await userRef.set({
+        name: userData.name,
+        surname: userData.surname,
+        phone: userData.phone,
+        gender: userData.gender,
+        email: userData.email,
+        location: userData.location,
+        uid: user.uid,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         alternativeContact: {
           name,
           phone,
-          timestamp: serverTimestamp,
+          timestamp: serverTimestamp(),
         },
       });
 
-      console.log("Alternative contact information submitted to 'Users' collection in Firestore.");
+      console.log(
+        "Alternative contact information submitted to 'Users' collection in Firestore."
+      );
 
-      navigation.navigate("Landing");
-
+      navigate("/");
     } catch (error) {
-      console.error("Error submitting alternative contact information:", error.message);
+      console.error(
+        "Error submitting alternative contact information:",
+        error.message
+      );
     }
+  };
+
+  const handleNotNow = () => {
+    console.log("Not Now button clicked");
   };
 
   return (
@@ -70,20 +75,28 @@ const AlternativeContact = ({ navigation }) => {
           <View>
             <Text style={styles.subtitle}>ALTERNATIVE CONTACT</Text>
           </View>
-          <View>
-            <TextInput
-              style={styles.input}
-              placeholder="Name"
+          <View style={{ width: "75%" }}>
+            <TextField
+              id="outlined-number"
+              label="Name"
+              type="text"
+              variant="standard"
+              InputLabelProps={{
+                shrink: true,
+              }}
               value={name}
-              onChangeText={(text) => setName(text)}
-              keyboardType="Name"
+              onChange={(e) => setName(e.target.value)}
             />
-            <TextInput
-              style={styles.input}
-              placeholder="Phone"
+            <TextField
+              id="outlined-number"
+              label="Phone"
+              type="text"
+              variant="standard"
+              InputLabelProps={{
+                shrink: true,
+              }}
               value={phone}
-              onChangeText={(text) => setPhone(text)}
-              keyboardType="Phone"
+              onChange={(e) => setPhone(e.target.value)}
             />
           </View>
 
@@ -94,7 +107,10 @@ const AlternativeContact = ({ navigation }) => {
           </View>
 
           <View>
-            <TouchableOpacity style={styles.buttonn} onPress={() => navigation.navigate("Landing")}>
+            <TouchableOpacity
+              style={styles.buttonn}
+              onPress={() => navigation.navigate("Landing")}
+            >
               <Text style={styles.buttonTextt}>NOT NOW</Text>
             </TouchableOpacity>
           </View>
@@ -126,7 +142,7 @@ const styles = StyleSheet.create({
     height: 50,
     marginBottom: 150,
     resizeMode: "contain",
-    marginLeft: "29%",
+    marginLeft: "20%",
   },
   subtitle: {
     fontSize: 20,
@@ -137,10 +153,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 30,
     marginTop: 10,
-    width: "75%",
+    width: "120%",
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: "white",
+    textAlign: "center",
     fontWeight: "bold",
   },
   buttonn: {
@@ -148,12 +165,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 30,
     marginTop: "10%",
-    width: "75%",
+    width: "120%",
     borderColor: "#072840",
   },
   buttonTextt: {
     color: "#072840",
     fontWeight: "bold",
+    textAlign: "center",
+    
   },
   input: {
     // borderWidth: 1,

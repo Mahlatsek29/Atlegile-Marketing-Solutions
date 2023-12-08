@@ -10,9 +10,11 @@ import shop from "../../Global/images/svg_landing.svg";
 import shop2 from "../../Global/images/svg_landing.svg";
 import { firebase, auth } from "../../config";
 import { useNavigation } from "@react-navigation/native";
+import BusinessCard from "./BusinessCard";
 
 const Landing = () => {
   const navigation = useNavigation();
+  const [businesses, setBusinesses] = useState([]);
   const [products, setProducts] = useState([]);
   const scrollViewRef1 = useRef(null);
   const scrollViewRef2 = useRef(null);
@@ -21,6 +23,27 @@ const Landing = () => {
   const navigatebusinessproduct = () => {
     navigation.navigate("BusinessProducts");
   };
+
+  useEffect(() => {
+    const fetchBusinesses = async () => {
+      const businessesRef = firebase.firestore().collection("Business");
+
+      try {
+        const snapshot = await businessesRef.get();
+        const businessesData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        // console.log(businessesData);
+        setBusinesses(businessesData);
+      } catch (error) {
+        console.error("Error fetching businesses:", error);
+      }
+    };
+
+    fetchBusinesses();
+  }, []);
+  // console.log(businesses);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -60,8 +83,8 @@ const Landing = () => {
       <SearchBar />
       <View>
         <Container sx={{ width: "100vw", width: "100%" }}>
-          {/* <Grid></Grid> */}
-          <Grid
+      <Grid></Grid>
+      <Grid
             container
             style={{
               alignItems: "center",
@@ -556,6 +579,9 @@ const Landing = () => {
           />
         </Grid>
       </Grid>
+      {businesses.map((business) => {
+        <BusinessCard business={business} key={business.id} />;
+      })}
       <Footer />
     </>
   );

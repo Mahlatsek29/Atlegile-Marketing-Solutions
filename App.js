@@ -22,6 +22,7 @@ import DeliveryOngoing from "./src/Client/CartAndOrderHistory/DeliveryOngoing";
 import DeliveryAndChatSystem from "./src/Client/CartAndOrderHistory/DeliveryAndChatSystem";
 import DateSelectionAndCheckout from "./src/Client/CartAndOrderHistory/DateSelectionAndCheckout";
 import Favourites from "./src/Client/Favourites/Favourites";
+import BusinessCard from './src/Client/Landing/BusinessCard'
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,7 @@ function App() {
         initialRouteName="Landing"
         screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Landing" component={Landing} />
+        <Stack.Screen name="BusinessCard" component={BusinessCard} />
         <Stack.Screen name="AboutUs" component={AboutUs} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen

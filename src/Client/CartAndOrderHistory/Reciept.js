@@ -11,6 +11,7 @@ const Reciept = () => {
   const navigation = useNavigation();
 
   const navigateToLanding = () => {
+    // {alert("button clicked")}
     navigation.navigate("Landing");
   };
 
@@ -26,8 +27,7 @@ const Reciept = () => {
             display: "flex",
             alignItems: "center",
             flexDirection: "column",
-          }}
-        >
+          }}>
           <View>
             <Icon
               name="checkbox-outline"
@@ -51,8 +51,7 @@ const Reciept = () => {
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
-            }}
-          >
+            }}>
             <Typography style={{ marginTop: "40px" }}>
               Order Details:
             </Typography>
@@ -65,8 +64,7 @@ const Reciept = () => {
               fontWeight: "bold",
               marginBottom: "40px",
               marginTop: "40px",
-            }}
-          >
+            }}>
             Our team is working diligently to process and ship your order. If
             you have any questions or <br /> concerns, our customer support team
             is here to help. Contact us at 0123456789
@@ -75,8 +73,7 @@ const Reciept = () => {
           <Button
             style={{ borderRadius: "40px", backgroundColor: "#072840" }}
             variant="contained"
-            onPress={navigateToLanding}
-          >
+            onClick={navigateToLanding}>
             CONTINUE SHOPPING
           </Button>
         </View>

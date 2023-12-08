@@ -33,6 +33,7 @@ const SideNav = () => {
   };
 
   const handleorders = () => {
+    {alert('button clicked')}
     navigate("/orderhistrory");
   };
 

@@ -46,6 +46,10 @@ const TellUsAboutYourself = ({ navigation }) => {
         uid: user.uid,
       });
 
+      console.log(
+        "User information submitted to Users collection in Firestore."
+      );
+
       console.log("User information successfully submitted to Firestore.");
 
       navigation.navigate("AlternativeContact");

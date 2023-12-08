@@ -46,7 +46,7 @@ const Signup = () => {
       if (userCredential.user) {
         console.log("User signed up:", userCredential.user);
 
-        await AsyncStorage.setItem("userEmail", email);
+        // await AsyncStorage.setItem("userEmail", email);
 
         await firestore.collection("Users").doc(userCredential.user.uid).set({
           email: email,

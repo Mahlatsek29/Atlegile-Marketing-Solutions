@@ -12,6 +12,8 @@ import background from "../../Global/images/Reed.jpg";
 import logo from "../../Global/images/logo.svg";
 import Banner from "../../Global/images/media bg-cover.png";
 import { auth, firestore } from "../../config";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 
 const BusinessRegistration = () => {
   const navigation = useNavigation();
@@ -27,15 +29,18 @@ const BusinessRegistration = () => {
   const [cardHolder, setCardHolder] = useState(null);
   const [cardNumber, setCardNumber] = useState(null);
   const [cvv, setCvv] = useState(null);
-
+  const [loading, setLoading] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   const navigateaddproduct = () => {
-    navigation.navigate('AddProductsAndServices')
-  }
+    navigation.navigate("AddProductsAndServices");
+  };
 
   const handlechange = async (event) => {
     event.preventDefault();
     try {
+      setLoading(true); // Set loading state to true while submitting
+
       await firestore.collection("Business").add({
         businessName,
         selectedRole,
@@ -49,14 +54,21 @@ const BusinessRegistration = () => {
         cardHolder,
         cardNumber,
         cvv,
+        // createdAt: servertimestamp(),
       });
+      setShowSuccessAlert(true);
+
       {
-        alert("successfully registered");
+        alert("success");
       }
 
-      navigation.navigate("AddProductsAndServices");
+      setTimeout(() => {
+        setLoading(false); // Reset loading state
+        navigation.navigate("AddProductsAndServices");
+      }, 2000);
     } catch (error) {
       console.error("Error storing data in Firestore:", error);
+      setLoading(false); // Reset loading state in case of an error
     }
   };
 
@@ -375,7 +387,8 @@ const BusinessRegistration = () => {
                     onChange={(e) => setBio(e.target.value)}
                     required
                   />
-                  <Button onClick={navigateaddproduct}
+                  <Button
+                    // onClick={navigateaddproduct}
                     variant="contained"
                     style={{
                       width: "80%",
@@ -385,10 +398,20 @@ const BusinessRegistration = () => {
                       borderRadius: "30px",
                     }}
                     type="submit">
-                    Continue
+                    {loading ? "Submitting..." : "Continue"}
                   </Button>
                 </View>
               </form>
+              {/* Display the success alert when showSuccessAlert is true */}
+              {showSuccessAlert && (
+                <Alert
+                  sx={{ position: "relative", top: "10vh" }}
+                  severity="success"
+                  onClose={() => setShowSuccessAlert(false)}>
+                  <AlertTitle>Success</AlertTitle>
+                  This is a success alert — <strong>check it out!</strong>
+                </Alert>
+              )}
             </Grid>
           </Grid>
         </View>

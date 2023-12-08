@@ -7,11 +7,85 @@ import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
 import mapImage from "../../Global/images/mapImage.png";
 import hdtv from "../../Global/images/hdtv.jpg";
-
+import axios from "axios";
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
   const [orderTotal, setOrderTotal] = useState(0);
+  const [rates, setRates] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState(null);
 
+  const handlePress = (index) => {
+    setSelectedIndex(index);
+  };
+  const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
+  useEffect(() => {
+    const gettingRate = async () => {
+      const theRates = {
+        collection_address: {
+          type: "business",
+          company: "uAfrica.com",
+          street_address: "1188 Lois Avenue",
+          local_area: "Menlyn",
+          city: "Pretoria",
+          zone: "Gauteng",
+          country: "ZA",
+          code: "0181",
+          lat: -25.7863272,
+          lng: 28.277583,
+        },
+        delivery_address: {
+          type: "residential",
+          company: "",
+          street_address: "10 Midas Avenue",
+          local_area: "Olympus AH",
+          city: "Pretoria",
+          zone: "Gauteng",
+          country: "ZA",
+          code: "0081",
+          lat: -25.80665579999999,
+          lng: 28.334732,
+        },
+        parcels: [
+          {
+            submitted_length_cm: 42.5,
+            submitted_width_cm: 38.5,
+            submitted_height_cm: 5.5,
+            submitted_weight_kg: 3,
+          },
+        ],
+        declared_value: 1500,
+        collection_min_date: "2021-05-21",
+        delivery_min_date: "2021-05-21",
+      };
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${CourierAPIKey}`,
+          "Content-Type": "application/json",
+        },
+      };
+
+      try {
+        const response = await axios.post(
+          "https://api.shiplogic.com/v2/rates",
+          theRates,
+          config
+        );
+        console.log("Courier API rates response:", response.data);
+        if (response.data.rates) {
+          setRates(response.data.rates);
+        } else {
+          console.log("Rates not found in the response");
+        }
+      } catch (error) {
+        console.error("Error getting rates", error);
+        if (error.response) {
+          console.log("Response data:", error.response.data);
+        }
+      }
+    };
+    gettingRate();
+  }, []);
   const data = [
     { product: "HD TV", item: 1, amount: 4500.0 },
     { product: "HD TV", item: 1, amount: 4500.0 },
@@ -302,78 +376,49 @@ const DateSelectionAndCheckout = () => {
                   style={{
                     display: "flex",
                     flexDirection: "row",
-                    justifyContent: "space-evenly",
+                    justifyContent: "flex-start",
+                    flexWrap: "wrap", // Added flexWrap to allow wrapping
+                    width: "100%",
                   }}
                 >
-                  <TouchableOpacity
-                    style={{
-                      // backgroundColor: "grey",
-                      height: "100px",
-                      width: "80px",
-                      marginTop: "10px",
-                      borderWidth: 1,
-                      borderColor: "white",
-                    }}
-                  >
-                    <View
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginTop: "20px",
-                      }}
-                    >
-                      <Typography style={{ color: "white" }}>Jul</Typography>
-                      <Typography variant="h5" style={{ color: "white" }}>
-                        02
-                      </Typography>
+                  {rates.map((rate, index) => (
+                    <View key={index}>
+                      <TouchableOpacity
+                        onPress={() => handlePress(index)}
+                        style={{
+                          height: "100px",
+                          width: "80px",
+                          marginTop: "10px",
+                          borderWidth: 1,
+                          borderColor: "white",
+                          marginRight: 10,
+                          marginBottom: 10,
+                          backgroundColor:
+                            selectedIndex === index ? "#2E5A88" : "transparent", // Conditional background color
+                        }}
+                      >
+                        <View
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginTop: "20px",
+                          }}
+                        >
+                          {/* Extracting month and day from the delivery date */}
+                          <Typography style={{ color: "white" }}>
+                            {new Date(
+                              rate.service_level.delivery_date_to
+                            ).toLocaleString("default", { month: "short" })}
+                          </Typography>
+                          <Typography variant="h5" style={{ color: "white" }}>
+                            {new Date(
+                              rate.service_level.delivery_date_to
+                            ).getDate()}
+                          </Typography>
+                        </View>
+                      </TouchableOpacity>
                     </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{
-                      // backgroundColor: "grey",
-                      height: "100px",
-                      width: "80px",
-                      marginTop: "10px",
-                      borderWidth: 1,
-                      borderColor: "white",
-                    }}
-                  >
-                    <View
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginTop: "20px",
-                      }}
-                    >
-                      <Typography style={{ color: "white" }}>Jul</Typography>
-                      <Typography variant="h5" style={{ color: "white" }}>
-                        04
-                      </Typography>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{
-                      // backgroundColor: "grey",
-                      height: "100px",
-                      width: "80px",
-                      marginTop: "10px",
-                      borderWidth: 1,
-                      borderColor: "white",
-                    }}
-                  >
-                    <View
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginTop: "20px",
-                      }}
-                    >
-                      <Typography style={{ color: "white" }}>Jul</Typography>
-                      <Typography variant="h5" style={{ color: "white" }}>
-                        06
-                      </Typography>
-                    </View>
-                  </TouchableOpacity>
+                  ))}
                 </View>
 
                 <Button

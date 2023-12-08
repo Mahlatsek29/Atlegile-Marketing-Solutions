@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { View, Text } from "react-native";
 import axios from "axios";
 // import { async } from "@firebase/util";
@@ -6,6 +6,8 @@ import axios from "axios";
 const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
 
 const CourierGuy = () => {
+  const [rates, setRates] = useState([]);
+  const [opRates, setOpRates] = useState([]);
   useEffect(() => {
     const gettingRate = async () => {
       const theRates = {
@@ -60,6 +62,11 @@ const CourierGuy = () => {
           config
         );
         console.log("Courier API rates response:", response.data);
+        if (response.data.rates) {
+    setRates(response.data.rates);
+  } else {
+    console.log("Rates not found in the response");
+  }
       } catch (error) {
         console.error("Error getting rates", error);
         if (error.response) {
@@ -109,6 +116,7 @@ const CourierGuy = () => {
           config
         );
         console.log("Courier API option rates response:", response.data);
+        setOpRates(response.data.rates);
       } catch (error) {
         console.error("Error gettin option rates", error);
         if (error.response) {
@@ -528,9 +536,9 @@ const CourierGuy = () => {
     };
     
     
-   
-  
-    //tackingShipment()
+    gettingRate();
+    gettingOpRates();
+      //tackingShipment()
    // getPODimage();
    //getAllPODevents();
    //getDigitalPOD();
@@ -542,6 +550,43 @@ const CourierGuy = () => {
   return (
     <View>
       <Text>CourierGuy</Text>
+      <Text>Rates:</Text>
+      {rates.map((rate, index) => (
+        <View key={index}>
+          <Text>Rate: {rate.rate}</Text>
+          <Text>Charge per Parcel: {rate.base_rate.charge_per_parcel[0]}</Text>
+          <Text>Total Calculated Weight: {rate.base_rate.total_calculated_weight}</Text>
+          <Text>Service Level: {rate.service_level.name}</Text>
+          <Text>Delivery Date From: {rate.service_level.delivery_date_from}</Text>
+          <Text>Delivery Date To: {rate.service_level.delivery_date_to}</Text>
+          <Text>Collection Date: {rate.service_level.collection_date}</Text>
+          <Text>--------------------</Text>
+        </View>
+      ))}
+       <Text>Option Rates:</Text>
+       {opRates && opRates.opt_in_rates && opRates.opt_in_rates.map((rate, index) => (
+  <View key={index}>
+    {/* Display the relevant information for option rates */}
+    <Text>Option Rate ID: {rate.id}</Text>
+    <Text>Name: {rate.name}</Text>
+    <Text>Charge Type: {rate.charge_type}</Text>
+    <Text>Charge Value: {rate.charge_value}</Text>
+    <Text>--------------------</Text>
+  </View>
+))}
+
+{opRates && opRates.opt_in_time_based_rates && opRates.opt_in_time_based_rates.map((rate, index) => (
+  <View key={index}>
+    {/* Display the relevant information for time-based option rates */}
+    <Text>Option Rate ID: {rate.id}</Text>
+    <Text>Name: {rate.name}</Text>
+    <Text>Charge Type: {rate.charge_type}</Text>
+    <Text>Charge Value: {rate.charge_value}</Text>
+    <Text>Type: {rate.type}</Text>
+    <Text>--------------------</Text>
+  </View>
+))}
+
     </View>
   );
 };

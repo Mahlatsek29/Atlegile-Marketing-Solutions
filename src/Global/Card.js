@@ -79,7 +79,9 @@ const ProductCard = ({ productId }) => {
         justifyContent: "center",
         flexDirection: "column",
         // marginHorizontal:"5vw",
-        // backgroundColor:'purple'
+        // backgroundColor:'green',
+        marginHorizontal: 16,
+        // border:'10px solid black'
       }}>
       <View
         style={{
@@ -183,15 +185,6 @@ const ProductCard = ({ productId }) => {
             marginTop: 16,
           }}>
           <View>
-            {/* <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center", // Center items vertically
-              backgroundColor: "red",
-              paddingBottom: "10%",
-              position: "relative",
-            }}> */}
             <View
               style={{
                 flexDirection: "row",
@@ -219,32 +212,6 @@ const ProductCard = ({ productId }) => {
                 </Text>
               </View>
             </View>
-            {/* <Typography
-              variant="h6"
-              component="h6"
-              style={{
-                fontSize: "16px",
-                color: "#0074cc",
-                marginRight: "auto", // Push the first Typography to the left
-                backgroundColor:'#fff',
-                wordWrap: "break-word", 
-                // marginLeft:10
-              }}>
-              {product.selectedProductCategory}
-            </Typography>
-            <Typography
-              style={{
-                backgroundColor: "blue",
-                color: "#fff",
-                borderRadius: "15px",
-                padding: "4px",
-                position: "absolute",
-                right: 0, // Align the second Typography to the right
-                wordWrap: "break-word"
-              }}>
-              ⭐ 4.9
-            </Typography> */}
-            {/* </Box> */}
 
             <Typography variant="h5" component="h5">
               {product.name}

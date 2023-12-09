@@ -80,21 +80,24 @@ export default function BusinessCard({ business }) {
                 zIndex: -10,
                 width: "100%",
                 position: "absolute",
-                marginVertical: 16,
+                marginVertical: 20,
+                // backgroundColor: "purple",
               }}>
               <View
                 style={{
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
+                  backgroundColor: "blue",
+                  marginTop: 20,
                   // marginVertical:20
                 }}>
                 <Text
                   style={{
-                    fontSize: "30px",
+                    fontSize: "3px",
                     fontWeight: "bolder",
-                    backgroundColor: "red",
-                    marginTop: "10px",
+                    // backgroundColor: "red",
+                    // marginTop: "10vh",
                   }}>
                   {business.businessName}
                 </Text>

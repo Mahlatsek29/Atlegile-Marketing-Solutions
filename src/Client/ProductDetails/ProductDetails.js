@@ -43,7 +43,7 @@ import {
 } from "firebase/firestore";
 import firebaseConfig from "../../config";
 
-export default function ProductDetails({ route }) {
+export default function ProductDetails({ navigation, route }) {
   const { productId } = route.params;
   const [myRatings, setMyRatings] = useState(2.5);
   const [product, setProduct] = useState(null);
@@ -432,7 +432,7 @@ export default function ProductDetails({ route }) {
                 }}
               >
                 <Button
-                  onClick={() => navigation.navigate("/main/dashboard")}
+                  // onClick={() => navigation.navigate("/main/dashboard")}
                   sx={{
                     border: "1px #072840 solid",
                     borderRadius: 20,
@@ -512,7 +512,7 @@ export default function ProductDetails({ route }) {
                     </Grid>
                   </Grid>
                   <Button
-                    onClick={() => navigation.navigate("OrderHistory")}
+                    onClick={() => navigation.navigate("DeliveryOngoing")}
                     sx={{
                       backgroundColor: "#072840",
                       borderRadius: 20,

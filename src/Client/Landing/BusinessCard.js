@@ -54,7 +54,7 @@ export default function BusinessCard({ business }) {
             display: "flex",
             flexDirection: "column",
             marginTop: 50,
-            height: "70%",
+            height: "80%",
             // backgroundColor: "red",
           }}
         >

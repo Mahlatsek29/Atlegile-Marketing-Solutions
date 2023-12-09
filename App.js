@@ -14,6 +14,7 @@ import ProductDetails from "./src/Client/ProductDetails/ProductDetails";
 import BusinessProducts from "./src/Client/ProductDetails/BusinessProducts";
 import UserProfile from "./src/Client/AccountAndBusiness/UserProfile";
 import AccountAndBusiness from "./src/Client/AccountAndBusiness/AccountBusiness";
+// import OrderHistory from "./src/Client/CartAndOrderHistory/OrderHistory";
 import OrderHistory from "./src/Client/CartAndOrderHistory/OrderHistory";
 import PayFast from "./src/Client/CartAndOrderHistory/PayFast";
 import CourierGuy from "./src/Client/CartAndOrderHistory/CourierGuy";
@@ -22,7 +23,7 @@ import DeliveryOngoing from "./src/Client/CartAndOrderHistory/DeliveryOngoing";
 import DeliveryAndChatSystem from "./src/Client/CartAndOrderHistory/DeliveryAndChatSystem";
 import DateSelectionAndCheckout from "./src/Client/CartAndOrderHistory/DateSelectionAndCheckout";
 import Favourites from "./src/Client/Favourites/Favourites";
-import BusinessCard from './src/Client/Landing/BusinessCard'
+import BusinessCard from "./src/Client/Landing/BusinessCard";
 
 const Stack = createStackNavigator();
 
@@ -31,7 +32,8 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Landing"
-        screenOptions={{ headerShown: false }}>
+        screenOptions={{ headerShown: false }}
+      >
         <Stack.Screen name="Landing" component={Landing} />
         <Stack.Screen name="BusinessCard" component={BusinessCard} />
         <Stack.Screen name="AboutUs" component={AboutUs} />

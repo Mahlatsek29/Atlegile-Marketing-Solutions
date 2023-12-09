@@ -287,7 +287,7 @@ const DeliveryOngoing = () => {
                 PRODUCTS
               </Typography>
               <Typography style={{ marginBottom: "10px", fontWeight: "bold" }}>
-                27 JUL, 2023
+                {new Date().toLocaleDateString()}
               </Typography>
               <View>
                 {data.map((item, index) => (

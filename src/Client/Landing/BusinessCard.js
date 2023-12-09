@@ -8,9 +8,10 @@ import { AntDesign } from "@expo/vector-icons";
 export default function BusinessCard({ business }) {
   // const [business, setBusiness] = useState(null);
   console.log(business);
-  const scrollViewRef1 = useRef(null);
-  const scrollViewRef2 = useRef(null);
-  const scrollViewRef3 = useRef(null);
+  const scrollViewRef = useRef(null);
+  // const scrollViewRef1 = useRef(null);
+  // const scrollViewRef2 = useRef(null);
+  // const scrollViewRef3 = useRef(null);
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -34,13 +35,19 @@ export default function BusinessCard({ business }) {
 
   let oneCompany = products.filter((item) => item.company === business);
 
-  const scrollLeft = (scrollViewRef) => {
+  const scrollLeft = () => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({ x: 0, animated: true });
     }
   };
 
-  const scrollRight = (scrollViewRef) => {
+  const scrollRight = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  };
+
+  const handleContentSizeChange = (contentWidth) => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollToEnd({ animated: true });
     }
@@ -56,8 +63,7 @@ export default function BusinessCard({ business }) {
             marginTop: 50,
             height: "80%",
             // backgroundColor: "red",
-          }}
-        >
+          }}>
           <View>
             {/* <Text style={{ fontSize: "30px", fontWeight: "bolder" }}>
               {business.businessName}
@@ -71,13 +77,12 @@ export default function BusinessCard({ business }) {
               justifyContent: "space-between",
               alignItems: "center",
               flexDirection: "row",
-            }}
-          >
-            <TouchableOpacity>
+            }}>
+            <TouchableOpacity onPress={scrollLeft}>
               <AntDesign name="leftcircle" size={40} color="black" />
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={scrollRight}>
               <AntDesign name="rightcircle" size={40} color="black" />
             </TouchableOpacity>
 
@@ -87,26 +92,23 @@ export default function BusinessCard({ business }) {
                 width: "100%",
                 position: "absolute",
                 marginVertical: 16,
-              }}
-            >
+              }}>
               <View
                 style={{
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  backgroundColor: "blue",
+                  // backgroundColor: "blue",
                   marginTop: 20,
                   // marginVertical:20
-                }}
-              >
+                }}>
                 <Text
                   style={{
-                    fontSize: "3px",
+                    fontSize: "30px",
                     fontWeight: "bolder",
                     // backgroundColor: "red",
                     marginTop: "10px",
-                  }}
-                >
+                  }}>
                   {business}
                 </Text>
 
@@ -115,14 +117,13 @@ export default function BusinessCard({ business }) {
                 </TouchableOpacity>
               </View>
               <ScrollView
-                ref={scrollViewRef3}
-                horizontal={true}
+                ref={scrollViewRef}
+                horizontal
                 showsHorizontalScrollIndicator={false}
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                }}
-              >
+                style={{ flexDirection: "row" }}
+                onContentSizeChange={(contentWidth) =>
+                  handleContentSizeChange(contentWidth)
+                }>
                 {oneCompany.map((product) => (
                   <ProductCard key={product.id} productId={product.id} />
                 ))}

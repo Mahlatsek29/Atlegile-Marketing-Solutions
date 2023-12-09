@@ -32,6 +32,8 @@ export default function BusinessCard({ business }) {
     fetchProducts();
   }, []);
 
+  let oneCompany = products.filter((item) => item.company === business);
+
   const scrollLeft = (scrollViewRef) => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({ x: 0, animated: true });
@@ -51,8 +53,11 @@ export default function BusinessCard({ business }) {
           style={{
             display: "flex",
             flexDirection: "column",
+            marginTop: 50,
+            height: "70%",
             // backgroundColor: "red",
-          }}>
+          }}
+        >
           <View>
             {/* <Text style={{ fontSize: "30px", fontWeight: "bolder" }}>
               {business.businessName}
@@ -66,7 +71,8 @@ export default function BusinessCard({ business }) {
               justifyContent: "space-between",
               alignItems: "center",
               flexDirection: "row",
-            }}>
+            }}
+          >
             <TouchableOpacity>
               <AntDesign name="leftcircle" size={40} color="black" />
             </TouchableOpacity>
@@ -81,22 +87,25 @@ export default function BusinessCard({ business }) {
                 width: "100%",
                 position: "absolute",
                 marginVertical: 16,
-              }}>
+              }}
+            >
               <View
                 style={{
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
                   // marginVertical:20
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     fontSize: "30px",
                     fontWeight: "bolder",
-                    backgroundColor: "red",
+                    // backgroundColor: "red",
                     marginTop: "10px",
-                  }}>
-                  {business.businessName}
+                  }}
+                >
+                  {business}
                 </Text>
 
                 <TouchableOpacity>
@@ -110,8 +119,9 @@ export default function BusinessCard({ business }) {
                 style={{
                   display: "flex",
                   flexDirection: "row",
-                }}>
-                {products.map((product) => (
+                }}
+              >
+                {oneCompany.map((product) => (
                   <ProductCard key={product.id} productId={product.id} />
                 ))}
               </ScrollView>

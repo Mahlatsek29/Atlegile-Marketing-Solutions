@@ -1,4 +1,4 @@
-import React, { useState, } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -12,42 +12,43 @@ import { firebase, firestore } from "../../config";
 import TextField from "@mui/material/TextField";
 import { useNavigation } from "@react-navigation/native";
 
-
 const AlternativeContact = () => {
   const user = firebase.auth().currentUser;
   const navigation = useNavigation();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [nameAlternative, setNameAlternative] = useState("");
-  const [phoneAlternative, setPhoneAlternative] = useState("");
-  // const [phone, setPhone] = useState("");
-  // const [phone, setPhone] = useState("");
 
   const handleContinue = async (e) => {
     e.preventDefault();
-  
+
     if (name.trim() === "" || phone.trim() === "") {
       alert("Please fill in all fields before continuing.");
       return;
     }
-  
+
     try {
       const userRef = firestore.collection("Users").doc(user.uid);
-      await userRef.set({
-        uid: user.uid,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        alternativeContact: {
-          name: nameAlternative,
-          phone: phoneAlternative,
+
+      // Get the existing user data
+      const userData = await userRef.get();
+
+      // Update the user data with alternative contact information
+      await userRef.set(
+        {
+          alternativeContact: {
+            name: name,
+            phone: phone,
+          },
         },
-      });
-      navigation.navigate('Landing');
-  
+        { merge: true }
+      );
+
+      navigation.navigate("Landing");
+
       console.log(
         "Alternative contact information submitted to 'Users' collection in Firestore."
       );
-  
     } catch (error) {
       console.error(
         "Error submitting alternative contact information:",
@@ -63,8 +64,7 @@ const AlternativeContact = () => {
   return (
     <ImageBackground
       source={require("../../Global/images/Reed.jpg")}
-      style={styles.background}
-    >
+      style={styles.background}>
       <View style={styles.container}>
         <View>
           <Image
@@ -109,8 +109,7 @@ const AlternativeContact = () => {
           <View>
             <TouchableOpacity
               style={styles.buttonn}
-              onPress={() => navigation.navigate("Landing")}
-            >
+              onPress={() => navigation.navigate("Landing")}>
               <Text style={styles.buttonTextt}>NOT NOW</Text>
             </TouchableOpacity>
           </View>
@@ -119,7 +118,6 @@ const AlternativeContact = () => {
     </ImageBackground>
   );
 };
-
 
 const styles = StyleSheet.create({
   background: {
@@ -172,7 +170,6 @@ const styles = StyleSheet.create({
     color: "#072840",
     fontWeight: "bold",
     textAlign: "center",
-    
   },
   input: {
     // borderWidth: 1,

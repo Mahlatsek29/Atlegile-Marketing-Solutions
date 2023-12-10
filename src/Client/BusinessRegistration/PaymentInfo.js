@@ -9,9 +9,10 @@ import { TextField } from "@mui/material";
 const PaymentInfo = () => {
   const [showWebView, setShowWebView] = useState(false);
 
+  const url = "https://atlegile-marketing-solutions.vercel.app/";
+
   const handlePaymentButtonPress = () => {
-    const paymentUrl =
-      "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
+    const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=3170.00&item_name=TestProduct`;
 
     Linking.openURL(paymentUrl);
   };

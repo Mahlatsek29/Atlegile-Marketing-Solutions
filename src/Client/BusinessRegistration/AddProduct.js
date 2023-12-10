@@ -72,11 +72,11 @@ const AddProductsAndServices = () => {
 
   const url = "https://atlegile-marketing-solutions.vercel.app/";
 
-  const handlePaymentButtonPress = () => {
-    const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct`;
+  // const handlePaymentButtonPress = () => {
+  //   const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct`;
 
-    Linking.openURL(paymentUrl);
-  };
+  //   Linking.openURL(paymentUrl);
+  // };
 
   const handleImageChange = (e) => {
     const files = e.target.files;
@@ -97,42 +97,42 @@ const AddProductsAndServices = () => {
     }
 
     try {
-      // const productRef = firestore.collection("Products").doc();
+      const productRef = firestore.collection("Products").doc();
 
-      // const productId = productRef.id;
+      const productId = productRef.id;
 
-      // await productRef.set({
-      //   name,
-      //   company: companyName,
-      //   businessName,
-      //   price,
-      //   quantity,
-      //   description,
-      //   selectedProductCategory,
-      //   brand,
-      //   createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      // });
+      await productRef.set({
+        name,
+        company: companyName,
+        businessName,
+        price,
+        quantity,
+        description,
+        selectedProductCategory,
+        brand,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
 
-      // const uploadTasks = images.map((image, index) => {
-      //   const imageRef = storage.ref(
-      //     `product_images/${productId}/image${index}`
-      //   );
-      //   return imageRef.put(image.file);
-      // });
+      const uploadTasks = images.map((image, index) => {
+        const imageRef = storage.ref(
+          `product_images/${productId}/image${index}`
+        );
+        return imageRef.put(image.file);
+      });
 
-      // await Promise.all(uploadTasks);
-      // const downloadURLs = await Promise.all(
-      //   uploadTasks.map((task) => task.snapshot.ref.getDownloadURL())
-      // );
+      await Promise.all(uploadTasks);
+      const downloadURLs = await Promise.all(
+        uploadTasks.map((task) => task.snapshot.ref.getDownloadURL())
+      );
 
-      // await productRef.update({ images: downloadURLs });
+      await productRef.update({ images: downloadURLs });
 
       setLoading(true);
 
       setTimeout(() => {
         setLoading(false);
       }, 3000);
-      const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct`;
+      const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=270.00&item_name=subscription`;
       Linking.openURL(paymentUrl);
       navigation.navigate("Landing");
     } catch (error) {

@@ -31,7 +31,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="BusinessRegistration"
+        initialRouteName="Landing"
         screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Landing" component={Landing} />
         <Stack.Screen name="BusinessCard" component={BusinessCard} />

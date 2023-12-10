@@ -60,22 +60,22 @@ const BusinessRegistration = () => {
     try {
       setLoading(true);
 
-      // await firestore.collection("Business").add({
-      //   businessName,
-      //   selectedRole,
-      //   regNumber,
-      //   website,
-      //   location,
-      //   selectedBusinessType,
-      //   selectedIndustry,
-      //   phoneNumber,
-      //   bio,
-      //   cardHolder,
-      //   cardNumber,
-      //   cvv,
-      //   userID: currentUserUID,
-      //   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      // });
+      await firestore.collection("Business").add({
+        businessName,
+        selectedRole,
+        regNumber,
+        website,
+        location,
+        selectedBusinessType,
+        selectedIndustry,
+        phoneNumber,
+        bio,
+        cardHolder,
+        cardNumber,
+        cvv,
+        userID: currentUserUID,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      });
 
       setShowSuccessAlert(true);
 

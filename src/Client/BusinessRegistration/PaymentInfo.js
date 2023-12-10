@@ -7,7 +7,6 @@ import Banner from "../../Global/images/media bg-cover.png";
 import { TextField } from "@mui/material";
 
 const PaymentInfo = () => {
-  
   const [showWebView, setShowWebView] = useState(false);
 
   const handlePaymentButtonPress = () => {
@@ -16,7 +15,6 @@ const PaymentInfo = () => {
 
     Linking.openURL(paymentUrl);
   };
-
 
   return (
     <View style={{ flex: 1 }}>
@@ -67,7 +65,13 @@ const PaymentInfo = () => {
                 marginLeft: 80,
                 marginBottom: 30,
               }}>
-              <Text style={{ color: "#000", textAlign: "left", fontSize: 30, fontWeight: 'bold' }}>
+              <Text
+                style={{
+                  color: "#000",
+                  textAlign: "left",
+                  fontSize: 30,
+                  fontWeight: "bold",
+                }}>
                 PAYMENT INFO
               </Text>
               <TextField
@@ -95,8 +99,6 @@ const PaymentInfo = () => {
                   variant="standard"
                   style={{ width: "45%", marginRight: "15px" }}
                 />
-
-
               </View>
               <Button
                 mode="contained"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Toolbar, Typography, Box } from "@mui/material";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import { View, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { auth, firestore } from "../config";
@@ -12,8 +12,9 @@ const Navbar = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
+        console.log("User: ", user);
         try {
-          const userDocRef = firestore.collection('Users').doc(user.uid);
+          const userDocRef = firestore.collection("Users").doc(user.uid);
           const userDoc = await userDocRef.get();
           if (userDoc.exists) {
             setUserData(userDoc.data());
@@ -29,19 +30,20 @@ const Navbar = () => {
     });
     return () => unsubscribe();
   }, []);
-  
+
   const navigateToSignIn = () => {
-    navigation.navigate('SignIn');
+    navigation.navigate("SignIn");
   };
   const navigateToSignUp = () => {
-    navigation.navigate('SignUp');
+    navigation.navigate("SignUp");
   };
   const navigateAboutUs = () => {
-    navigation.navigate('AboutUs');
+    navigation.navigate("AboutUs");
   };
   const navigateLanding = () => {
-    navigation.navigate('Landing');
+    navigation.navigate("Landing");
   };
+
   return (
     <Toolbar
       sx={{

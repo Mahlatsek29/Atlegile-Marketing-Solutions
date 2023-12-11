@@ -7,16 +7,15 @@ import Banner from "../../Global/images/media bg-cover.png";
 import { TextField } from "@mui/material";
 
 const PaymentInfo = () => {
-  
   const [showWebView, setShowWebView] = useState(false);
 
+  const url = "https://atlegile-marketing-solutions.vercel.app/";
+
   const handlePaymentButtonPress = () => {
-    const paymentUrl =
-      "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
+    const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=3170.00&item_name=TestProduct`;
 
     Linking.openURL(paymentUrl);
   };
-
 
   return (
     <View style={{ flex: 1 }}>
@@ -67,7 +66,13 @@ const PaymentInfo = () => {
                 marginLeft: 80,
                 marginBottom: 30,
               }}>
-              <Text style={{ color: "#000", textAlign: "left", fontSize: 30, fontWeight: 'bold' }}>
+              <Text
+                style={{
+                  color: "#000",
+                  textAlign: "left",
+                  fontSize: 30,
+                  fontWeight: "bold",
+                }}>
                 PAYMENT INFO
               </Text>
               <TextField
@@ -95,8 +100,6 @@ const PaymentInfo = () => {
                   variant="standard"
                   style={{ width: "45%", marginRight: "15px" }}
                 />
-
-
               </View>
               <Button
                 mode="contained"

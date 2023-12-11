@@ -18,11 +18,15 @@ const Signup = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [nameAlternative, setNameAlternative] = useState("");
-  const [phoneAlternative, setPhoneAlternative] = useState("");
+  const [nameAlternative, setNameAlternative] = useState(null);
+  const [phoneAlternative, setPhoneAlternative] = useState(null);
 
   const navigateSignUpBussiness = () => {
     navigation.navigate("BusinessRegistration");
+  };
+
+  const navigateToShop = () => {
+    navigation.navigate("Landing");
   };
 
   const navigatealreadyhaveaccount = () => {
@@ -158,13 +162,93 @@ const Signup = () => {
       />
       <View
         style={{
-          backgroundColor: "white",
+          backgroundColor: "#fff",
           width: 500,
           position: "absolute",
           right: 16,
           top: 16,
           bottom: 16,
-        }}></View>
+          display: "flex",
+          alignItems: "center",
+          // justifyContent: "space-between",
+        }}>
+        <View>
+          <Image
+            source={require("../../Global/images/logo.png")}
+            style={styles.logo}
+          />
+        </View>
+        <View
+          style={{
+            width: "120%",
+            flexDirection: "row",
+            justifyContent: "space-around",
+          }}>
+          <Text style={styles.title}>SIGN UP </Text>
+          <TouchableOpacity onPress={navigateToShop}>
+            <Text style={{ fontSize: "70%", marginBottom: "-20%" }}>
+              SHOP{" "}
+              <FontAwesome
+                style={styles.arrow}
+                name="angle-right"
+                size={20}
+                color="#072840"
+              />{" "}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ width: "75%" , marginTop:15}}>
+          <TextField
+            id="outlined-number"
+            label="Email"
+            type="text"
+            variant="standard"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            id="outlined-number"
+            label="Password"
+            type="text"
+            variant="standard"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            secureTextEntry={true}
+          />
+        </View>
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <Text style={styles.buttonText}>SIGN UP</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={navigatealreadyhaveaccount}>
+          <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text style={styles.linkText1}>
+            {" "}
+            <AntDesign name="google" size={15} color="red" />
+            SIGN UP WITH GOOGLE
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.businessButton}
+          onPress={navigateSignUpBussiness}>
+          <Text style={styles.buttonText1}>
+            SIGN UP AS A BUSINESS{" "}
+            <FontAwesome
+              style={styles.arrow}
+              name="angle-right"
+              size={20}
+              color="#072840"
+            />
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -188,8 +272,8 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 150,
-    height: 50,
-    marginBottom: 150,
+    height: 100,
+    marginVertical: 30,
     resizeMode: "contain",
   },
   title: {

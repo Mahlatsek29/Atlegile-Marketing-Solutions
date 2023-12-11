@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image, Text } from "react-native";
 import { TextInput, Picker } from "react-native";
 import { WebView } from "react-native-webview";
 import { useNavigation } from "@react-navigation/native";
+import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
@@ -14,6 +15,7 @@ import Banner from "../../Global/images/media bg-cover.png";
 import { auth, firestore, firebase } from "../../config";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import { Typography } from "@mui/material";
 
 const BusinessRegistration = () => {
   const navigation = useNavigation();
@@ -31,17 +33,32 @@ const BusinessRegistration = () => {
   const [cvv, setCvv] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in, get the UID
+        setCurrentUserUID(user.uid);
+      } else {
+        // User is signed out
+        setCurrentUserUID(null);
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup on component unmount
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const navigateaddproduct = () => {
     navigation.navigate("AddProductsAndServices");
   };
 
-  const UID = "SvicFdSJJ3T5FIcSkDI3XRwx0fl1";
-
   const handlechange = async (event) => {
     event.preventDefault();
     try {
-      setLoading(true); // Set loading state to true while submitting
+      setLoading(true);
 
       await firestore.collection("Business").add({
         businessName,
@@ -56,25 +73,21 @@ const BusinessRegistration = () => {
         cardHolder,
         cardNumber,
         cvv,
-        userID: UID,
+        userID: currentUserUID,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       });
+
       setShowSuccessAlert(true);
 
-      {
-        alert("success");
-      }
-
       setTimeout(() => {
-        setLoading(false); // Reset loading state
+        setLoading(false);
         navigation.navigate("AddProductsAndServices");
       }, 2000);
     } catch (error) {
       console.error("Error storing data in Firestore:", error);
-      setLoading(false); // Reset loading state in case of an error
+      setLoading(false);
     }
   };
-
   const emptyOption = [""];
 
   const roleOptions = [
@@ -150,276 +163,243 @@ const BusinessRegistration = () => {
   ];
 
   return (
-    <>
-      <View>
-        <View
-          className="container"
+    <View
+      style={{
+        flex: 1,
+        height: "100%",
+        width: "100%",
+      }}>
+      <Image
+        source={require("../../Global/images/Reed.jpg")}
+        style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}
+      />
+      <View
+        style={{
+          backgroundColor: "white",
+          width: 500,
+          position: "absolute",
+          right: 16,
+          top: 16,
+          bottom: 16,
+        }}>
+        <div
           style={{
-            width: "100vw",
-            backgroundImage: `url(${background})`,
-            backgroundSize: "cover",
-            height: "100vh",
+            // backgroundColor: "red",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+            justifyContent: "space-around",
           }}>
-          <Grid
-            container
+          <div>
+            <img src={logo} style={{ height: "9vh", width: "90%" }} />
+          </div>
+          <div
             style={{
-              width: "100%",
-              marginBottom: "-10vh",
+              // backgroundColor: "yellow",
+              width: "80%",
+              display: "flex",
+              justifyContent: "left",
             }}>
-            <Grid
-              item
-              lg={8}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                width: "100%",
-              }}>
-              <Grid
-                container
-                lg={6}
+            <form onSubmit={handlechange} style={{ width: "100%" }}>
+              <View
+                className="form-container"
                 style={{
-                  width: "100vw",
-                }}></Grid>
-              <Grid
-                container
-                lg={6}
-                style={{
-                  width: "100vw",
-                  marginBottom: "-8px",
+                  justifyContent: "center",
+
+                  alignSelf: "center",
+
+                  display: "flex",
+                  // backgroundColor: "purple",
+                  alignSelf: "center",
+
+                  // marginBottom: "30px",
                 }}>
-                <img
-                  src={Banner}
-                  style={{
-                    height: "21vh",
-                    width: "65vw",
-                    paddingTop: "30vh",
-                    marginLeft: "10px",
-                    marginRight: "2px",
-                  }}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid
-              item
-              lg={4}
-              style={{
-                backgroundColor: "#fff",
-                marginLeft: "-10px",
-                marginRight: "-15px",
-                width: "100%",
-                height: "98vh",
-                alignSelf: "center",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}>
-              <Grid style={{ alignSelf: "center", justifySelf: "center" }}>
-                <img
-                  src={logo}
-                  style={{ height: "9vh", width: "90%", marginTop: "8vh" }}
-                />
-              </Grid>
-
-              <form onSubmit={handlechange}>
-                <View
-                  className="form-container"
-                  style={{
-                    justifyContent: "center",
-                    textAlign: "center",
-                    alignSelf: "center",
-                    width: "100%",
-                    marginBottom: "30px",
+                <Typography
+                  variant="h2"
+                  sx={{
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                    marginBottom: "10px",
                   }}>
-                  <h2
-                    style={{
-                      color: "#000",
-                      textAlign: "left",
-                      fontSize: "20px",
-                      marginTop: "20px",
-                    }}>
-                    BUSINESS REGISTRATION
-                  </h2>
+                  BUSINESS REGISTRATION
+                </Typography>
 
+                <TextField
+                  id="outlined-number"
+                  label="Business Name"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%" }}
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                />
+                <br />
+                <TextField
+                  id="outlined"
+                  select
+                  label="Role"
+                  variant="standard"
+                  value={selectedRole}
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                  style={{
+                    width: "100%",
+                    textAlign: "left",
+                    marginTop: "10px",
+                  }}>
+                  {roleOptions.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <br />
+
+                <TextField
+                  id="outlined-number"
+                  label="Reg Number"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{
+                    width: "100%",
+                    marginTop: "10px",
+                  }}
+                  value={regNumber}
+                  onChange={(e) => setRegNumber(e.target.value)}
+                  required
+                />
+                <br />
+
+                <TextField
+                  id="outlined-number"
+                  label="Website"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%", marginTop: "10px" }}
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+                <TextField
+                  id="outlined-number"
+                  label="Location"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%", marginTop: "10px" }}
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  required
+                />
+
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    width: "100%",
+                  }}>
                   <TextField
-                    id="outlined-number"
-                    label="Business Name"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{ width: "100%" }}
-                    value={businessName}
-                    onChange={(e) => setBusinessName(e.target.value)}
-                  />
-                  <br />
-                  <TextField
-                    id="outlined"
+                    id="outlined-select-currency"
                     select
-                    label="Role"
+                    label="Type of business"
                     variant="standard"
-                    value={selectedRole}
-                    onChange={(e) => setSelectedRole(e.target.value)}
+                    value={selectedBusinessType}
+                    onChange={(e) => setSelectedBusinessType(e.target.value)}
                     style={{
-                      width: "100%",
+                      width: "48%",
+                      marginTop: "5px",
+                      marginRight: "10px",
                       textAlign: "left",
-                      marginTop: "10px",
-                    }}>
-                    {roleOptions.map((option) => (
+                    }}
+                    required>
+                    {businessTypeOptions.map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
                       </MenuItem>
                     ))}
                   </TextField>
-                  <br />
-
                   <TextField
-                    id="outlined-number"
-                    label="Reg Number"
-                    type="number"
+                    id="outlined-select-currency"
+                    select
+                    label="Industry"
                     variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
+                    value={selectedIndustry}
+                    onChange={(e) => setSelectedIndustry(e.target.value)}
                     style={{
-                      width: "100%",
-                      marginTop: "10px",
+                      width: "48%",
+                      marginTop: "5px",
+                      textAlign: "left",
                     }}
-                    value={regNumber}
-                    onChange={(e) => setRegNumber(e.target.value)}
-                    required
-                  />
-                  <TextField
-                    id="outlined-number"
-                    label="Website"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{ width: "100%", marginTop: "10px" }}
-                    value={website}
-                    onChange={(e) => setWebsite(e.target.value)}
-                  />
-                  <TextField
-                    id="outlined-number"
-                    label="Location"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{ width: "100%", marginTop: "10px" }}
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    required
-                  />
-
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      width: "100%",
-                    }}>
-                    <TextField
-                      id="outlined-select-currency"
-                      select
-                      label="Type of business"
-                      variant="standard"
-                      value={selectedBusinessType}
-                      onChange={(e) => setSelectedBusinessType(e.target.value)}
-                      style={{
-                        width: "48%",
-                        marginTop: "5px",
-                        marginRight: "10px",
-                        textAlign: "left",
-                      }}
-                      required>
-                      {businessTypeOptions.map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                    <TextField
-                      id="outlined-select-currency"
-                      select
-                      label="Industry"
-                      variant="standard"
-                      value={selectedIndustry}
-                      onChange={(e) => setSelectedIndustry(e.target.value)}
-                      style={{
-                        width: "48%",
-                        marginTop: "5px",
-                        textAlign: "left",
-                      }}
-                      required>
-                      {industryOptions.map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </View>
-                  <TextField
-                    id="outlined-number"
-                    label="Phone Number"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{ width: "100%", marginTop: "10px" }}
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    required
-                  />
-                  <TextField
-                    id="outlined-number"
-                    label="Bio"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{ width: "100%", marginTop: "10px" }}
-                    value={bio}
-                    onChange={(e) => setBio(e.target.value)}
-                    required
-                  />
-                  <Button
-                    // onClick={navigateaddproduct}
-                    variant="contained"
-                    style={{
-                      width: "80%",
-                      height: "10%",
-                      marginTop: "5%",
-                      background: "#072840",
-                      borderRadius: "30px",
-                    }}
-                    type="submit">
-                    {loading ? "Submitting..." : "Continue"}
-                  </Button>
+                    required>
+                    {industryOptions.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 </View>
-              </form>
-              {/* Display the success alert when showSuccessAlert is true */}
-              {showSuccessAlert && (
-                <Alert
-                  sx={{ position: "relative", top: "10vh" }}
-                  severity="success"
-                  onClose={() => setShowSuccessAlert(false)}>
-                  <AlertTitle>Success</AlertTitle>
-                  This is a success alert — <strong>check it out!</strong>
-                </Alert>
-              )}
-            </Grid>
-          </Grid>
-        </View>
+                <TextField
+                  id="outlined-number"
+                  label="Phone Number"
+                  type="number"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%", marginTop: "10px" }}
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  required
+                />
+                <TextField
+                  id="outlined-number"
+                  label="Bio"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%", marginTop: "10px" }}
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  required
+                />
+                <Button
+                  // onClick={navigateaddproduct}
+                  variant="contained"
+                  style={{
+                    width: "100%",
+                    height: "10%",
+                    marginTop: "5%",
+                    background: "#072840",
+                    borderRadius: "30px",
+                  }}
+                  type="submit">
+                  {loading ? (
+                    <Box sx={{ display: "flex" }}>
+                      <CircularProgress />
+                    </Box>
+                  ) : (
+                    "Continue"
+                  )}
+                </Button>
+              </View>
+            </form>
+            {/* Display the success alert when showSuccessAlert is true */}
+          </div>
+        </div>
       </View>
-    </>
+    </View>
   );
 };
 

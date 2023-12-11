@@ -1,12 +1,25 @@
 import { useState } from "react";
-import { Grid, TextField, Box, MenuItem, Button } from "@mui/material";
+import {
+  Grid,
+  TextField,
+  Box,
+  MenuItem,
+  Button,
+  Typography,
+} from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import background from "../../Global/images/Reed.jpg";
 import logo from "../../Global/images/logo.svg";
 import Banner from "../../Global/images/media bg-cover.png";
 import placeholder from "../../Global/images/login.jpg";
 import { useNavigation } from "@react-navigation/native";
-import { Linking, TouchableOpacity, View } from "react-native";
+import {
+  Linking,
+  ScrollView,
+  Touchable,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { auth, firestore, storage } from "../../config";
 import firebase from "firebase/compat/app";
 import ImageCompressor from "image-compressor";
@@ -27,8 +40,12 @@ const AddProductsAndServices = () => {
   const [quantity, setQuantity] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [companyName, setCompanyName] = useState("");
   const [selectedProductCategory, setProductCategory] = useState("");
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+
   const [brand, setBrand] = useState("");
+
   const productCategory = [
     ...emptyOption,
     "Electronics",
@@ -53,6 +70,14 @@ const AddProductsAndServices = () => {
     "Electrical and Lighting",
   ];
 
+  const url = "https://atlegile-marketing-solutions.vercel.app/";
+
+  // const handlePaymentButtonPress = () => {
+  //   const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct`;
+
+  //   Linking.openURL(paymentUrl);
+  // };
+
   const handleImageChange = (e) => {
     const files = e.target.files;
     if (files.length > 0) {
@@ -71,8 +96,6 @@ const AddProductsAndServices = () => {
       return;
     }
 
-    setLoading(true);
-
     try {
       const productRef = firestore.collection("Products").doc();
 
@@ -80,6 +103,7 @@ const AddProductsAndServices = () => {
 
       await productRef.set({
         name,
+        company: companyName,
         businessName,
         price,
         quantity,
@@ -103,12 +127,14 @@ const AddProductsAndServices = () => {
 
       await productRef.update({ images: downloadURLs });
 
-      setLoading(false);
+      setLoading(true);
 
-      alert("Product added successfully!");
-      const paymentUrl = "...";
-
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
+      const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=270.00&item_name=subscription`;
       Linking.openURL(paymentUrl);
+      navigation.navigate("Landing");
     } catch (error) {
       console.error("Error storing data in Firestore:", error);
       setLoading(false);
@@ -129,6 +155,12 @@ const AddProductsAndServices = () => {
         style={{
           width: "100%",
           marginBottom: "-10vh",
+          position: "absolute",
+          top: 5,
+          left: -10,
+          // bottom: 10,
+          right: 10,
+          // backgroundColor: "purple",
         }}>
         <Grid
           item
@@ -186,7 +218,7 @@ const AddProductsAndServices = () => {
           <Grid style={{ alignSelf: "center" }}>
             <img
               src={logo}
-              style={{ height: "9vh", width: "90%", paddingTop: "15vh" }}
+              style={{ height: "9vh", width: "90%", paddingTop: "8vh" }}
             />
           </Grid>
 
@@ -194,21 +226,27 @@ const AddProductsAndServices = () => {
             className="form-container"
             style={{
               justifyContent: "center",
-              textAlign: "center",
+              textAlign: "left",
               alignItems: "center",
               width: "75%",
               marginLeft: "80px",
               marginBottom: "30px",
+              // backgroundColor: "red",
             }}>
-            <h2
-              style={{
+            <Typography
+              variant="h2"
+              sx={{
                 color: "#000",
                 textAlign: "left",
-                fontSize: "25px",
-                textAlign: "center",
+                fontSize: "15px",
+                width: "100%",
+                // backgroundColor: "blue",
+                // textAlign: "center",
+                fontWeight: "bold",
+                marginBottom: 1,
               }}>
               ADD PRODUCTS + SERVICES
-            </h2>
+            </Typography>
             <View
               className="uploadContainer"
               style={{
@@ -246,19 +284,21 @@ const AddProductsAndServices = () => {
                 />
               )}
 
-              <label
-                htmlFor="imageInput"
-                className="add"
-                style={{
-                  backgroundColor: "whitesmoke",
-                  color: "#000",
-                  padding: "25px",
-                  width: "5%",
-                  cursor: "pointer",
-                  alignSelf: "center",
-                }}>
-                +
-              </label>
+              <TouchableOpacity style={{ width: 60 }}>
+                <label
+                  htmlFor="imageInput"
+                  className="add"
+                  style={{
+                    backgroundColor: "whitesmoke",
+                    color: "#000",
+                    padding: "25px",
+                    width: "10%",
+                    cursor: "pointer",
+                    alignSelf: "center",
+                  }}>
+                  +
+                </label>
+              </TouchableOpacity>
               <input
                 type="file"
                 id="imageInput"
@@ -285,138 +325,148 @@ const AddProductsAndServices = () => {
                   onChange={(e) => setName(e.target.value)}
                   required
                 />
-                <TextField
-                  fullWidth
-                  id="outlined-number"
-                  label="Business Name"
-                  type="text"
-                  variant="standard"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  style={{ width: "100%", marginTop: "10px" }}
-                  value={businessName}
-                  onChange={(e) => setBusinessName(e.target.value)}
-                  required
-                />
-                <View style={{ display: "flex", flexDirection: "row" }}>
+                <ScrollView>
                   <TextField
                     fullWidth
                     id="outlined-number"
-                    label="Price"
+                    label="Business Name"
+                    type="text"
+                    variant="standard"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    style={{ width: "100%", marginTop: "10px" }}
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                    required
+                  />
+                  <TextField
+                    id="outlined-number"
+                    label="company name"
                     type="text"
                     variant="standard"
                     InputLabelProps={{
                       shrink: true,
                     }}
                     style={{
-                      width: "45%",
-                      marginRight: "10px",
+                      width: "100%",
                       marginTop: "10px",
                     }}
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
                     required
                   />
+                  <View style={{ display: "flex", flexDirection: "row" }}>
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Price"
+                      type="number"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{
+                        width: "45%",
+                        marginRight: "10px",
+                        marginTop: "10px",
+                      }}
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      required
+                    />
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Quantity"
+                      type="number"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{ width: "45%", marginTop: "10px" }}
+                      value={quantity}
+                      onChange={(e) => setQuantity(e.target.value)}
+                      required
+                    />
+                  </View>
+                  <br />
                   <TextField
                     fullWidth
                     id="outlined-number"
-                    label="Quantity"
+                    label="Description"
                     type="text"
                     variant="standard"
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    style={{ width: "45%", marginTop: "10px" }}
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
+                    style={{
+                      width: "100%",
+                      marginBottom: "10px",
+                      marginTop: "10px",
+                    }}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     required
                   />
-                </View>
-                <br />
-                <TextField
-                  fullWidth
-                  id="outlined-number"
-                  label="Description"
-                  type="text"
-                  variant="standard"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  style={{
-                    width: "100%",
-                    marginBottom: "10px",
-                    marginTop: "10px",
-                  }}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  required
-                />
-                <TextField
-                  fullWidth
-                  id="outlined-select-currency"
-                  select
-                  label="product Category"
-                  variant="standard"
-                  value={selectedProductCategory}
-                  onChange={(e) => setProductCategory(e.target.value)}
-                  style={{
-                    width: "100%",
-                    marginRight: "10px",
-                    textAlign: "left",
-                  }}
-                  required>
-                  {productCategory.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </TextField>
-
-                <TextField
-                  fullWidth
-                  id="outlined-number"
-                  label="Brand"
-                  type="text"
-                  variant="standard"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  style={{
-                    width: "100%",
-                    marginLeft: "5px",
-                    marginTop: "10px",
-                  }}
-                  value={brand}
-                  onChange={(e) => setBrand(e.target.value)}
-                  required
-                />
-
-                {loading ? (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: "1vh",
-                    }}>
-                    <CircularProgress />
-                  </Box>
-                ) : (
-                  <Button
-                    onPress={navigatepaymentinfo}
-                    variant="contained"
+                  <TextField
+                    fullWidth
+                    id="outlined-select-currency"
+                    select
+                    label="product Category"
+                    variant="standard"
+                    value={selectedProductCategory}
+                    onChange={(e) => setProductCategory(e.target.value)}
                     style={{
-                      width: "80%",
-                      height: "10%",
-                      margin: "20px 0px",
-                      background: "#072840",
-                      borderRadius: "30px",
+                      width: "100%",
+                      marginRight: "10px",
+                      textAlign: "left",
                     }}
-                    type="submit">
-                    continue
-                  </Button>
-                )}
+                    required>
+                    {productCategory.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+
+                  <TextField
+                    fullWidth
+                    id="outlined-number"
+                    label="Brand"
+                    type="text"
+                    variant="standard"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    style={{
+                      width: "100%",
+                      marginLeft: "5px",
+                      marginTop: "10px",
+                    }}
+                    value={brand}
+                    onChange={(e) => setBrand(e.target.value)}
+                    required
+                  />
+                </ScrollView>
+                <Button
+                  variant="contained"
+                  style={{
+                    width: "100%",
+                    height: "10%",
+                    marginTop: "5%",
+                    background: "#072840",
+                    borderRadius: "30px",
+                  }}
+                  type="submit">
+                  {loading ? (
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <CircularProgress color="inherit" />
+                    </Box>
+                  ) : (
+                    "Continue"
+                  )}
+                </Button>
               </form>
             </View>
           </View>

@@ -40,10 +40,14 @@ import {
   getDoc,
   updateDoc,
   setDoc,
+  addDoc,
+  collection,
+  serverTimestamp,
 } from "firebase/firestore";
 import firebaseConfig from "../../config";
+import firebase from "../../config";
 
-export default function ProductDetails({ route }) {
+export default function ProductDetails({ navigation, route }) {
   const { productId } = route.params;
   const [myRatings, setMyRatings] = useState(2.5);
   const [product, setProduct] = useState(null);
@@ -53,9 +57,32 @@ export default function ProductDetails({ route }) {
   const [review, setReview] = useState("");
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  // const user = firebase.auth().currentUser;
 
   const app = initializeApp(firebaseConfig);
   const firestore = getFirestore(app);
+
+  const handleAddToCart = async () => {
+    try {
+      const cartCollectionRef = collection(firestore, "Cart");
+
+      // Add a new document with user information, product ID, product price, quantity, and image
+      await addDoc(cartCollectionRef, {
+        // uid: user.id,
+        productId: productId,
+        price: product.price,
+        name: product.name,
+        quantity: quantity,
+        image: product.images[currentImage],
+        timestamp: serverTimestamp(),
+      });
+
+      console.log("Item added to the cart!");
+      navigation.navigate("DateSelectionAndCheckout");
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
+  };
 
   const fetchReviews = async () => {
     try {
@@ -85,10 +112,10 @@ export default function ProductDetails({ route }) {
     try {
       // Get the reference to the Reviews document
       const reviewsCollectionRef = doc(firestore, "Reviews", productId);
-  
+
       // Check if the document exists
       const reviewsCollectionSnapshot = await getDoc(reviewsCollectionRef);
-  
+
       if (reviewsCollectionSnapshot.exists()) {
         // If the document exists, update it
         await updateDoc(reviewsCollectionRef, {
@@ -113,10 +140,10 @@ export default function ProductDetails({ route }) {
           ],
         });
       }
-  
+
       // Fetch the updated reviews
       fetchReviews();
-  
+
       // Clear the review input
       setReview("");
     } catch (error) {
@@ -418,7 +445,7 @@ export default function ProductDetails({ route }) {
                   justifyContent: "flex-end",
                 }}>
                 <Button
-                  onClick={() => navigation.navigate("/main/dashboard")}
+                  // onClick={() => navigation.navigate("/main/dashboard")}
                   sx={{
                     border: "1px #072840 solid",
                     borderRadius: 20,
@@ -440,7 +467,9 @@ export default function ProductDetails({ route }) {
                   <Typography>{product.description}</Typography>
                 </Box>
                 <Box sx={{ mt: 2 }}>
-                  <Typography sx={{ fontWeight: "600" }}>R15OO</Typography>
+                  <Typography sx={{ fontWeight: "600" }}>
+                    R{product.price}
+                  </Typography>
                 </Box>
                 <Box sx={{ mt: 2 }}>
                   <Typography sx={{ fontWeight: "600", color: "lightgray" }}>
@@ -492,7 +521,7 @@ export default function ProductDetails({ route }) {
                     </Grid>
                   </Grid>
                   <Button
-                    onClick={() => navigation.navigate("/main/dashboard")}
+                    onClick={handleAddToCart}
                     sx={{
                       backgroundColor: "#072840",
                       borderRadius: 20,

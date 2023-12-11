@@ -104,8 +104,9 @@ const Landing = () => {
         productsData.map((item) => collection.push(item.company));
         // setProducts(productsData);
         console.log("collection", new Set(collection));
-        // alert('products fetched') 
-        setBusinesses([...new Set(collection)]);``
+        // alert('products fetched')
+        setBusinesses([...new Set(collection)]);
+        ``;
         console.log("businesses : ", businesses);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -144,6 +145,7 @@ const Landing = () => {
           <Grid
             item
             xl={12}
+            // lg={12}
             style={{
               alignItems: "right",
               justifyContent: "right",

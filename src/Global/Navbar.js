@@ -94,6 +94,7 @@ const Navbar = () => {
               About Us
             </Button>
             <Box
+            onClick={()=>{navigation.navigate('DateSelectionAndCheckout')}}
               sx={{
                 "&:hover": {
                   cursor: "pointer",

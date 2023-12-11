@@ -56,7 +56,7 @@ const Reciept = () => {
               Order Details:
             </Typography>
             <Typography>Order Number: #ABC246</Typography>
-            <Typography>Date: 23 Oct 2023</Typography>
+            <Typography>Date: 11 DEC 2023</Typography>
             <Typography>Total Amount: R4500.00</Typography>
           </View>
           <Typography

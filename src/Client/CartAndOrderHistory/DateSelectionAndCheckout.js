@@ -20,6 +20,7 @@ const DateSelectionAndCheckout = () => {
   const [cartData, setCartData] = useState([]);
 
   const url = "https://atlegile-marketing-solutions.vercel.app/";
+  // const url2 = "https://atlegile-marketing-solutions.vercel.app/Reciept";
 
   const fetchCartData = async () => {
     const userId = "52TkIacrD4ermeLEhLU6udYXnhQ2";

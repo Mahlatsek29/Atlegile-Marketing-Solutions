@@ -45,7 +45,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import firebaseConfig from "../../config";
-import firebase from "../../config";
+import { firebase, auth } from "../../config";
 
 export default function ProductDetails({ navigation, route }) {
   const { productId } = route.params;
@@ -57,7 +57,7 @@ export default function ProductDetails({ navigation, route }) {
   const [review, setReview] = useState("");
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  // const user = firebase.auth().currentUser;
+  const user = firebase.auth().currentUser;
 
   const app = initializeApp(firebaseConfig);
   const firestore = getFirestore(app);
@@ -68,7 +68,7 @@ export default function ProductDetails({ navigation, route }) {
 
       // Add a new document with user information, product ID, product price, quantity, and image
       await addDoc(cartCollectionRef, {
-        // uid: user.id,
+        uid: user.uid,
         productId: productId,
         price: product.price,
         name: product.name,

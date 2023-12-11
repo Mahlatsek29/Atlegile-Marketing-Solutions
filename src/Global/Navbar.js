@@ -141,7 +141,7 @@ const Navbar = () => {
                   AS
                 </Typography>
               </View>
-              <View style={{ marginLeft: "10px" }}>
+              <View style={{ marginLeft: "10px" }} onClick={()=>{ navigation.navigate("AccountAndBusiness");}}>
                 <Typography variant="subtitle1">
                   Welcome, {userData.name}
                 </Typography>

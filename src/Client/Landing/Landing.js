@@ -106,7 +106,6 @@ const Landing = () => {
         console.log("collection", new Set(collection));
         // alert('products fetched')
         setBusinesses([...new Set(collection)]);
-        ``;
         console.log("businesses : ", businesses);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -203,13 +202,13 @@ const Landing = () => {
           </Grid>
         </Grid>
         <View>
-          <FlatList
+          {/* <FlatList
             data={businesses}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <BusinessCard business={item} key={item.id} />
             )}
-          />
+          /> */}
         </View>
         <Grid container style={{ width: "100%", height: "40vh" }}>
           <Grid item xl={2} lg={2} sm={2} xs={2}>

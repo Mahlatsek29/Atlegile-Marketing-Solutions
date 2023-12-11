@@ -354,7 +354,7 @@ const DateSelectionAndCheckout = () => {
             <View
               style={{
                 backgroundColor: "#062338",
-                height: "790px",
+                //height: "790px",
                 width: "35%",
                 marginTop: "20px",
               }}>

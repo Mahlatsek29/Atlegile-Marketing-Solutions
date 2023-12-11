@@ -54,7 +54,7 @@ const SideNav = () => {
       display="flex"
       justifyContent="flex-start"
       alignItems="center"
-      height="145vh"
+     // height="145vh"
     >
       <Paper
         elevation={3}

@@ -95,7 +95,7 @@ const ProductCard = ({ productId }) => {
             borderRadius: "16px",
             objectFit: "cover",
             position: "relative",
-            backgroundColor: "gold",
+            backgroundColor: "whitesmoke",
             width: "270px",
             height: "270px",
             borderRadius: "50%",

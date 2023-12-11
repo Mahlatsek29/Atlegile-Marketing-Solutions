@@ -104,6 +104,7 @@ const Landing = () => {
         productsData.map((item) => collection.push(item.company));
         // setProducts(productsData);
         console.log("collection", new Set(collection));
+        alert('products fetched') 
         setBusinesses([...new Set(collection)]);
         console.log("businesses : ", businesses);
       } catch (error) {

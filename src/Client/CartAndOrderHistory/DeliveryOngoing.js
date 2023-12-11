@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  Image,
 } from "react-native";
 import { Container, Typography, Button } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
@@ -14,9 +15,15 @@ import { Footer } from "../../Global/Footer";
 import mapImage from "../../Global/images/mapImage.png";
 import hdtv from "../../Global/images/hdtv.jpg";
 
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { firestore } from "../../config";
+
 const DeliveryOngoing = () => {
   const navigation = useNavigation();
   const [orderTotal, setOrderTotal] = useState(0);
+  const [tax, setTax] = useState(0);
+  const [agentReferral, setAgentReferral] = useState(0);
+  const [deliveryAmount, setDeliveryAmount] = useState(0);
   const [chatmodelVisble, setChatmodelVisible] = useState(false);
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([
@@ -25,13 +32,44 @@ const DeliveryOngoing = () => {
     { messages: "Hi there!", dateAntTime: "12:35 PM", status: "recieved" },
   ]);
 
-  const data = [
-    { product: "HD TV", item: 1, amount: 4500.0 },
-    { product: "HD TV", item: 1, amount: 4500.0 },
-    { product: "HD TV", item: 1, amount: 4500.0 },
-    { product: "HD TV", item: 1, amount: 4500.0 },
-  ];
+  const [cartData, setCartData] = useState([]);
 
+  const fetchCartData = async () => {
+    const userId = "52TkIacrD4ermeLEhLU6udYXnhQ2";
+
+    const cartCollectionRef = collection(firestore, "Cart");
+    const q = query(cartCollectionRef, where("uid", "==", userId));
+
+    const querySnapshot = await getDocs(q);
+
+    const cartItems = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      cartItems.push({
+        id: doc.id,
+        product: data.product,
+        quantity: data.quantity,
+        amount: data.price * data.quantity,
+        image: data.image,
+        // Add other relevant fields from your Cart collection
+      });
+    });
+
+    setCartData(cartItems);
+  };
+
+  useEffect(() => {
+    fetchCartData();
+  }, []);
+
+  useEffect(() => {
+    const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
+    const calculatedReferral = totalAmount * 0.1;
+    setAgentReferral(calculatedReferral);
+
+    const finalTotal = totalAmount + calculatedReferral + tax + deliveryAmount;
+    setOrderTotal(finalTotal);
+  }, [cartData, tax, deliveryAmount]);
   const handleSend = () => {
     // Check if the message is not empty
     if (message.trim() !== "") {
@@ -59,23 +97,23 @@ const DeliveryOngoing = () => {
   };
 
   useEffect(() => {
-    // Calculate the total amount from the data
-    const totalAmount = data.reduce((acc, item) => acc + item.amount, 0);
+    const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
 
-    // Calculate the agent referral amount (10%)
-    const agentReferral = totalAmount * 0.1;
+    // Calculate agent referral
+    const calculatedReferral = totalAmount * 0.1;
+    setAgentReferral(calculatedReferral);
 
-    // Calculate the tax amount (15%)
-    const tax = totalAmount * 0.15;
+    // Calculate other amounts (tax, delivery)
+    const taxAmount = totalAmount * 0.15;
+    setTax(taxAmount);
 
-    // Add the delivery amount (R150.0)
-    const deliveryAmount = 150.0;
+    const delivery = 150.0;
+    setDeliveryAmount(delivery);
 
     // Calculate the final order total
-    const finalTotal = totalAmount + agentReferral + tax + deliveryAmount;
-
+    const finalTotal = totalAmount + calculatedReferral + taxAmount + delivery;
     setOrderTotal(finalTotal);
-  }, [data]);
+  }, [cartData]);
 
   return (
     <>
@@ -92,23 +130,20 @@ const DeliveryOngoing = () => {
             alignItems: "center",
             justifyContent: "center",
             zIndex: 999,
-          }}
-        >
+          }}>
           <View
             style={{
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
               width: "40vw",
-            }}
-          >
+            }}>
             <View
               style={{
                 height: "65%",
                 width: "80%",
                 backgroundColor: "white",
-              }}
-            >
+              }}>
               <TouchableOpacity
                 onPress={() => setChatmodelVisible(false)}
                 style={{
@@ -116,8 +151,7 @@ const DeliveryOngoing = () => {
                   top: 10,
                   right: 10,
                   zIndex: 1,
-                }}
-              >
+                }}>
                 {/* X icon button */}
                 <Text style={{ fontSize: 20, fontWeight: "bold" }}>X</Text>
               </TouchableOpacity>
@@ -128,11 +162,13 @@ const DeliveryOngoing = () => {
                   borderTopRightRadius: 20,
                   borderTopLeftRadius: 20,
                   backgroundColor: "white",
-                }}
-              >
+                }}>
                 <Text
-                  style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}
-                >
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    marginBottom: 10,
+                  }}>
                   CHAT TO DRIVER
                 </Text>
                 {chats.map((item, index) => (
@@ -143,8 +179,7 @@ const DeliveryOngoing = () => {
                         item.status === "sent" ? "flex-start" : "flex-end",
                       maxWidth: "60%",
                       flexDirection: "row",
-                    }}
-                  >
+                    }}>
                     <View
                       style={{
                         backgroundColor:
@@ -175,8 +210,7 @@ const DeliveryOngoing = () => {
                             : item.status === "recieved"
                             ? 20
                             : 0,
-                      }}
-                    >
+                      }}>
                       <Text
                         style={{
                           color:
@@ -185,8 +219,7 @@ const DeliveryOngoing = () => {
                               : item.status === "recieved"
                               ? "#FFFFFF"
                               : "black",
-                        }}
-                      >
+                        }}>
                         {item.messages}
                       </Text>
                     </View>
@@ -201,8 +234,7 @@ const DeliveryOngoing = () => {
                             : item.status === "recieved"
                             ? "flex-end"
                             : "inherit",
-                      }}
-                    >
+                      }}>
                       <Text>{item.dateAntTime}</Text>
                     </View>
                   </View>
@@ -215,8 +247,7 @@ const DeliveryOngoing = () => {
                   flexDirection: "row",
                   alignItems: "center",
                   padding: 10,
-                }}
-              >
+                }}>
                 <TextInput
                   style={{
                     flex: 1,
@@ -236,8 +267,7 @@ const DeliveryOngoing = () => {
                     borderRadius: 40,
                     padding: 10,
                     marginLeft: 10,
-                  }}
-                >
+                  }}>
                   <Text style={{ color: "white" }}>SEND</Text>
                 </TouchableOpacity>
               </View>
@@ -256,22 +286,19 @@ const DeliveryOngoing = () => {
                 width: "65%",
                 marginTop: "20px",
                 marginRight: "10px",
-              }}
-            >
+              }}>
               <View style={{ display: "flex", flexDirection: "row" }}>
                 <Typography>
                   <TouchableOpacity
                     onPress={navigateToLanding}
-                    style={{ color: "grey" }}
-                  >
+                    style={{ color: "grey" }}>
                     Acount /
                   </TouchableOpacity>
                 </Typography>
                 <Typography>
                   <TouchableOpacity
                     onPress={navigateToOrderHistory}
-                    style={{ color: "grey" }}
-                  >
+                    style={{ color: "grey" }}>
                     Order History /
                   </TouchableOpacity>
                 </Typography>
@@ -279,8 +306,7 @@ const DeliveryOngoing = () => {
               </View>
               <Typography
                 variant="h6"
-                style={{ marginTop: "50px", fontWeight: "bold" }}
-              >
+                style={{ marginTop: "50px", fontWeight: "bold" }}>
                 ORDER #ABC246
               </Typography>
               <Typography variant="h4" style={{ fontWeight: "bold" }}>
@@ -290,36 +316,43 @@ const DeliveryOngoing = () => {
                 {new Date().toLocaleDateString()}
               </Typography>
               <View>
-                {data.map((item, index) => (
+                {cartData.map((item, index) => (
                   <View
                     style={{
                       width: "100%",
-                      height: "48%",
+                      height: "100%",
                       borderBottomWidth: 2,
                       borderBottomColor: "#1D1D1D",
+                      // backgroundColor:'yellow',
                       flexDirection: "row",
                       alignItems: "center",
                       paddingTop: 2,
                     }}
-                    key={index}
-                  >
+                    key={index}>
                     <View
                       style={{
                         width: "25%",
                         height: "100%",
                         backgroundColor: "#000026",
-                        backgroundImage: `url(${hdtv})`,
-                      }}
-                    />
+                        // backgroundColor:'red'
+                      }}>
+                      <Image
+                        source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
+                        style={{
+                          width: "100%",
+                          height: "15vh",
+                          resizeMode: "cover",
+                        }}
+                      />
+                    </View>
                     <View style={{ width: "30%", paddingLeft: 10 }}>
                       <Text
                         style={{
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}
-                      >
-                        Products
+                        }}>
+                        Product
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
                         {item.product}
@@ -331,12 +364,11 @@ const DeliveryOngoing = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}
-                      >
-                        Item
+                        }}>
+                        Quantity
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                        {item.item}
+                        {item.quantity}
                       </Text>
                     </View>
                     <View style={{ width: "30%", paddingLeft: 10 }}>
@@ -345,16 +377,10 @@ const DeliveryOngoing = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}
-                      >
+                        }}>
                         Amount
                       </Text>
-                      <Text
-                        style={{
-                          fontSize: 18,
-                          fontWeight: "bold",
-                        }}
-                      >
+                      <Text style={{ fontSize: 18, fontWeight: "bold" }}>
                         {item.amount}
                       </Text>
                     </View>
@@ -367,13 +393,12 @@ const DeliveryOngoing = () => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography style={{ fontWeight: "bold" }}>
                   Order Summary
                 </Typography>
                 <Typography style={{ fontWeight: "bold" }}>
-                  R18 000.00
+                {/* {cartItems.amount} */}
                 </Typography>
               </View>
               <View
@@ -382,8 +407,7 @@ const DeliveryOngoing = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography style={{ fontWeight: "bold" }}>Delivery</Typography>
                 <Typography style={{ fontWeight: "bold" }}>R150.00</Typography>
               </View>
@@ -393,8 +417,7 @@ const DeliveryOngoing = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography style={{ fontWeight: "bold" }}>
                   {" "}
                   Agent Referal
@@ -407,8 +430,7 @@ const DeliveryOngoing = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography style={{ fontWeight: "bold" }}> Tax </Typography>
                 <Typography style={{ fontWeight: "bold" }}>15%</Typography>
               </View>
@@ -418,13 +440,12 @@ const DeliveryOngoing = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography variant="h5" style={{ fontWeight: "bold" }}>
                   Total
                 </Typography>
                 <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                  {orderTotal.toFixed(2)}
+                  R{orderTotal.toFixed(2)}
                 </Typography>
               </View>
             </View>
@@ -434,8 +455,7 @@ const DeliveryOngoing = () => {
                 height: "800px",
                 width: "35%",
                 marginTop: "20px",
-              }}
-            >
+              }}>
               <View style={{ padding: "20px" }}>
                 <Typography
                   variant="h5"
@@ -443,8 +463,7 @@ const DeliveryOngoing = () => {
                     color: "white",
                     marginBottom: "20px",
                     fontWeight: "bold",
-                  }}
-                >
+                  }}>
                   DELIVERY DETAILS
                 </Typography>
                 <Typography style={{ color: "grey" }}>
@@ -458,8 +477,7 @@ const DeliveryOngoing = () => {
                     marginTop: "10px",
                     borderBottomWidth: 1,
                     borderBottomColor: "lightgrey",
-                  }}
-                ></View>
+                  }}></View>
                 <View
                   style={{
                     backgroundColor: "grey",
@@ -467,8 +485,7 @@ const DeliveryOngoing = () => {
                     marginTop: 16,
                     borderRadius: 25,
                     backgroundImage: `url(${mapImage})`,
-                  }}
-                ></View>
+                  }}></View>
                 <Typography style={{ color: "grey", marginTop: "14px" }}>
                   Delivery Notes
                 </Typography>
@@ -482,16 +499,14 @@ const DeliveryOngoing = () => {
                     marginTop: "10px",
                     borderBottomWidth: 1,
                     borderBottomColor: "lightgrey",
-                  }}
-                ></View>
+                  }}></View>
                 <View
                   style={{
                     display: "flex",
                     flexDirection: "row",
                     display: "flex",
                     alignItems: "center",
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       backgroundColor: "grey",
@@ -499,8 +514,7 @@ const DeliveryOngoing = () => {
                       width: 14,
                       borderRadius: "50px",
                       marginRight: "8px",
-                    }}
-                  ></View>
+                    }}></View>
                   <Typography style={{ color: "lightgrey", marginTop: "6px" }}>
                     Processing...
                   </Typography>
@@ -511,8 +525,7 @@ const DeliveryOngoing = () => {
                     flexDirection: "row",
                     display: "flex",
                     alignItems: "center",
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       backgroundColor: "grey",
@@ -520,8 +533,7 @@ const DeliveryOngoing = () => {
                       width: 14,
                       borderRadius: "50px",
                       marginRight: "8px",
-                    }}
-                  ></View>
+                    }}></View>
                   <Typography style={{ color: "lightgrey", marginTop: "6px" }}>
                     On the way...
                   </Typography>
@@ -532,8 +544,7 @@ const DeliveryOngoing = () => {
                     flexDirection: "row",
                     display: "flex",
                     alignItems: "center",
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       backgroundColor: "grey",
@@ -541,8 +552,7 @@ const DeliveryOngoing = () => {
                       width: 14,
                       borderRadius: "50px",
                       marginRight: "8px",
-                    }}
-                  ></View>
+                    }}></View>
                   <Typography style={{ color: "lightgrey", marginTop: "6px" }}>
                     Delivered.
                   </Typography>
@@ -560,16 +570,14 @@ const DeliveryOngoing = () => {
                     justifyContent: "space-evenly",
                     alignItems: "center",
                   }}
-                  onPress={handleMessageButtonClick}
-                >
+                  onPress={handleMessageButtonClick}>
                   <Text
                     style={{
                       fontSize: 16,
                       color: "white",
                       margin: 0,
                       marginLeft: 5,
-                    }}
-                  >
+                    }}>
                     MESSAGE
                   </Text>
                   <View
@@ -587,15 +595,13 @@ const DeliveryOngoing = () => {
                     display: "flex",
                     alignItems: "center",
                     marginTop: "8px",
-                  }}
-                >
+                  }}>
                   <Typography style={{ color: "lightgrey" }}>
                     AUTH PIN
                   </Typography>
                   <Typography
                     variant="h5"
-                    style={{ color: "white", fontWeight: "bold" }}
-                  >
+                    style={{ color: "white", fontWeight: "bold" }}>
                     1254
                   </Typography>
                 </View>
@@ -612,16 +618,14 @@ const DeliveryOngoing = () => {
                     flexDirection: "row",
                     justifyContent: "space-evenly",
                     alignItems: "center",
-                  }}
-                >
+                  }}>
                   <Typography
                     style={{
                       fontSize: 16,
                       color: "lightgrey",
                       // margin: 0,
                       // marginLeft: 5,
-                    }}
-                  >
+                    }}>
                     ONGOING
                   </Typography>
                 </Button>

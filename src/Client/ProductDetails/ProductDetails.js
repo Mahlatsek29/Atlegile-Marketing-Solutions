@@ -40,8 +40,12 @@ import {
   getDoc,
   updateDoc,
   setDoc,
+  addDoc,
+  collection,
+  serverTimestamp,
 } from "firebase/firestore";
 import firebaseConfig from "../../config";
+import firebase from "../../config";
 
 export default function ProductDetails({ navigation, route }) {
   const { productId } = route.params;
@@ -53,9 +57,32 @@ export default function ProductDetails({ navigation, route }) {
   const [review, setReview] = useState("");
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  // const user = firebase.auth().currentUser;
 
   const app = initializeApp(firebaseConfig);
   const firestore = getFirestore(app);
+
+  const handleAddToCart = async () => {
+    try {
+      const cartCollectionRef = collection(firestore, "Cart");
+
+      // Add a new document with user information, product ID, product price, quantity, and image
+      await addDoc(cartCollectionRef, {
+        // uid: user.id,
+        productId: productId,
+        price: product.price,
+        name: product.name,
+        quantity: quantity,
+        image: product.images[currentImage],
+        timestamp: serverTimestamp(),
+      });
+
+      console.log("Item added to the cart!");
+      navigation.navigate("DateSelectionAndCheckout");
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
+  };
 
   const fetchReviews = async () => {
     try {
@@ -494,7 +521,7 @@ export default function ProductDetails({ navigation, route }) {
                     </Grid>
                   </Grid>
                   <Button
-                    onClick={() => navigation.navigate("DeliveryOngoing")}
+                    onClick={handleAddToCart}
                     sx={{
                       backgroundColor: "#072840",
                       borderRadius: 20,

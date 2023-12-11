@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Linking,  Image, } from "react-native";
+import { View, Text, TouchableOpacity, Linking, Image } from "react-native";
 import { Container, Typography, Button } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import FollowUs from "../../Global/Header";
@@ -18,6 +18,8 @@ const DateSelectionAndCheckout = () => {
   const [deliveryAmount, setDeliveryAmount] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [cartData, setCartData] = useState([]);
+
+  const url = "https://atlegile-marketing-solutions.vercel.app/";
 
   const fetchCartData = async () => {
     const userId = "52TkIacrD4ermeLEhLU6udYXnhQ2";
@@ -165,9 +167,8 @@ const DateSelectionAndCheckout = () => {
 
   const handlePayment = () => {
     // Construct the payment URL with the necessary parameters
-    const paymentUrl =
-      "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=" +
-      orderTotal.toFixed(2) + // Use the calculated orderTotal here
+    const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
+    orderTotal.toFixed(2) + // Use the calculated orderTotal here
       "&item_name=TestProduct";
 
     // Open the payment URL in the device's default browser
@@ -252,7 +253,7 @@ const DateSelectionAndCheckout = () => {
                         Product
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                      {item.name}
+                        {item.name}
                       </Text>
                     </View>
                     <View style={{ width: "30%", paddingLeft: 10 }}>
@@ -306,7 +307,9 @@ const DateSelectionAndCheckout = () => {
                   justifyContent: "space-between",
                 }}>
                 <Typography style={{ fontWeight: "bold" }}>Delivery</Typography>
-                <Typography style={{ fontWeight: "bold" }}>{deliveryAmount}</Typography>
+                <Typography style={{ fontWeight: "bold" }}>
+                  {deliveryAmount}
+                </Typography>
               </View>
               <View
                 style={{
@@ -342,7 +345,7 @@ const DateSelectionAndCheckout = () => {
                   Total
                 </Typography>
                 <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                 R {orderTotal}
+                  R {orderTotal}
                 </Typography>
               </View>
             </View>
@@ -430,8 +433,8 @@ const DateSelectionAndCheckout = () => {
                             alignItems: "center",
                             marginTop: "20px",
                           }}> */}
-                          {/* Extracting month and day from the delivery date */}
-                          {/* <Typography style={{ color: "white" }}>
+                  {/* Extracting month and day from the delivery date */}
+                  {/* <Typography style={{ color: "white" }}>
                             {new Date(
                               rate.service_level.delivery_date_to
                             ).toLocaleString("default", { month: "short" })}
@@ -441,7 +444,7 @@ const DateSelectionAndCheckout = () => {
                               rate.service_level.delivery_date_to
                             ).getDate()}
                           </Typography> */}
-                        {/* </View>
+                  {/* </View>
                       </TouchableOpacity>
                     </View>
                   ))} */}

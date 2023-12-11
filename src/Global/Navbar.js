@@ -1,151 +1,80 @@
-import React from "react";
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Button,
-  Box,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Button, Toolbar, Typography, Box } from "@mui/material";
 import { useNavigation } from '@react-navigation/native';
-
+import { View, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { View, Image, Text, TouchableOpacity } from "react-native";
-
+import { auth, firestore } from "../config";
 const Navbar = () => {
   const navigation = useNavigation();
   const imageLogo = require("../../assets/logo.png");
-  const uid = null
-  const userData = null;
-
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        try {
+          const userDocRef = firestore.collection('Users').doc(user.uid);
+          const userDoc = await userDocRef.get();
+          if (userDoc.exists) {
+            setUserData(userDoc.data());
+          } else {
+            console.error("User data not found");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      } else {
+        setUserData(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
   const navigateToSignIn = () => {
     navigation.navigate('SignIn');
   };
-
   const navigateToSignUp = () => {
     navigation.navigate('SignUp');
   };
-
-
-  const navigateaboutus = () => {
-    navigation.navigate('AboutUs')
-  }
-
-  const navigatelanding = () => {
-    navigation.navigate('Landing')
-  }
+  const navigateAboutUs = () => {
+    navigation.navigate('AboutUs');
+  };
+  const navigateLanding = () => {
+    navigation.navigate('Landing');
+  };
   return (
     <Toolbar
       sx={{
-        color: "#252b42",
+        color: "#252B42",
         display: "flex",
         flexDirection: "row",
-      }}>
+      }}
+    >
       <View>
         <Image
           source={require("../../assets/logo.png")}
           style={{ width: 120, height: 60, resizeMode: "contain" }}
         />
       </View>
-
-
       <View
-        style={{ marginLeft: "auto", display: "flex", flexDirection: "row" }}>
-        {!uid ? (
-          <View
-            style={{
-              marginLeft: "auto",
-              display: "flex",
-              flexDirection: "row",
-            }}>
-            <Button onClick={navigatelanding}
-              sx={{
-                borderRadius: "25px",
-                "&:hover": {
-                  backgroundColor: "#252b42",
-                  borderRadius: "25px",
-                  color: "white",
-                },
-              }}
-              color="inherit"
-          
-            >
-              Shop
-            </Button>
-            <Button onClick={navigateaboutus}
-              sx={{
-                borderRadius: "25px",
-                "&:hover": {
-                  backgroundColor: "#252b42",
-                  borderRadius: "25px",
-                  color: "white",
-                },
-              }}
-              color="inherit"
-         
-            >
-              About Us
-            </Button>
-
-            <TouchableOpacity>
-              <Button onClick={navigateToSignIn}
-                sx={{
-                  transition: "backgroundCcolor 0.3s, color 0.3s",
-                  border: "1px solid #252b42",
-                  borderRadius: "25px",
-                  marginLeft: "10px",
-                  "&:hover": {
-                    backgroundColor: "#252b42",
-                    borderRadius: "25px",
-                    color: "white",
-                  },
-                }}
-                color="inherit"
-             
-              >
-                Sign In
-              </Button>
-            </TouchableOpacity>
-
-            <TouchableOpacity>
-              <Button onClick={navigateToSignUp}
-                sx={{
-                  transition: "backgroundCcolor 0.3s, color 0.3s",
-                  border: "1px solid #252b42",
-                  borderRadius: "25px",
-                  marginLeft: "10px",
-
-                  "&:hover": {
-                    backgroundColor: "#252b42",
-                    borderRadius: "25px",
-                    color: "white",
-                  },
-                }}
-                color="inherit"
-          
-              >
-                Sign Up
-              </Button>
-            </TouchableOpacity>
-          </View>
-        ) : (
+        style={{ marginLeft: "auto", display: "flex", flexDirection: "row" }}
+      >
+        {userData ? (
           <View
             style={{
               display: "flex",
               alignItems: "center",
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Button
               sx={{
                 borderRadius: "25px",
                 "&:hover": {
-                  backgroundColor: "#252b42",
+                  backgroundColor: "#252B42",
                   borderRadius: "25px",
                   color: "white",
                 },
               }}
               color="inherit"
-           
             >
               Shop
             </Button>
@@ -153,26 +82,24 @@ const Navbar = () => {
               sx={{
                 borderRadius: "25px",
                 "&:hover": {
-                  backgroundColor: "#252b42",
+                  backgroundColor: "#252B42",
                   borderRadius: "25px",
                   color: "white",
                 },
               }}
               color="inherit"
-         
             >
               About Us
             </Button>
-
-         
             <Box
               sx={{
                 "&:hover": {
                   cursor: "pointer",
                 },
-              }}>
+              }}
+            >
               <Icon
-                name="shopping-cart"
+                name="shopping-cart" // Replace with the correct icon name
                 size={20}
                 style={{ paddingHorizontal: 10 }}
               />
@@ -185,7 +112,8 @@ const Navbar = () => {
                 cursor: "pointer",
                 marginLeft: "10px",
               }}
-              onClick={() => alert("Go to Profile")}>
+              onClick={() => alert("Go to Profile")}
+            >
               <View
                 style={{
                   width: "40px",
@@ -196,34 +124,110 @@ const Navbar = () => {
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "center",
-                }}>
+                }}
+              >
                 <Typography
                   style={{
                     fontSize: "1.4rem",
                     color: "white",
                     padding: "10px",
-                  }}>
-                  {}
+                  }}
+                >
                   AS
                 </Typography>
               </View>
               <View style={{ marginLeft: "10px" }}>
                 <Typography variant="subtitle1">
-                  Welcome, {userData?.name}
+                  Welcome, {userData.name}
                 </Typography>
                 <Typography
                   style={{
                     fontSize: "0.8rem",
-                  }}>
-                  Sara
+                  }}
+                >
+                  {userData.username}
                 </Typography>
               </View>
             </View>
+          </View>
+        ) : (
+          <View
+            style={{
+              marginLeft: "auto",
+              display: "flex",
+              flexDirection: "row",
+            }}
+          >
+            <Button
+              onClick={navigateLanding}
+              sx={{
+                borderRadius: "25px",
+                "&:hover": {
+                  backgroundColor: "#252B42",
+                  borderRadius: "25px",
+                  color: "white",
+                },
+              }}
+              color="inherit"
+            >
+              Shop
+            </Button>
+            <Button
+              onClick={navigateAboutUs}
+              sx={{
+                borderRadius: "25px",
+                "&:hover": {
+                  backgroundColor: "#252B42",
+                  borderRadius: "25px",
+                  color: "white",
+                },
+              }}
+              color="inherit"
+            >
+              About Us
+            </Button>
+            <TouchableOpacity>
+              <Button
+                onClick={navigateToSignIn}
+                sx={{
+                  transition: "backgroundCcolor 0.3s, color 0.3s",
+                  border: "1px solid #252B42",
+                  borderRadius: "25px",
+                  marginLeft: "10px",
+                  "&:hover": {
+                    backgroundColor: "#252B42",
+                    borderRadius: "25px",
+                    color: "white",
+                  },
+                }}
+                color="inherit"
+              >
+                Sign In
+              </Button>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Button
+                onClick={navigateToSignUp}
+                sx={{
+                  transition: "backgroundCcolor 0.3s, color 0.3s",
+                  border: "1px solid #252B42",
+                  borderRadius: "25px",
+                  marginLeft: "10px",
+                  "&:hover": {
+                    backgroundColor: "#252B42",
+                    borderRadius: "25px",
+                    color: "white",
+                  },
+                }}
+                color="inherit"
+              >
+                Sign Up
+              </Button>
+            </TouchableOpacity>
           </View>
         )}
       </View>
     </Toolbar>
   );
 };
-
 export default Navbar;

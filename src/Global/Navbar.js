@@ -8,6 +8,7 @@ const Navbar = () => {
   const navigation = useNavigation();
   const imageLogo = require("../../assets/logo.png");
   const [userData, setUserData] = useState(null);
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -28,6 +29,7 @@ const Navbar = () => {
     });
     return () => unsubscribe();
   }, []);
+  
   const navigateToSignIn = () => {
     navigation.navigate('SignIn');
   };

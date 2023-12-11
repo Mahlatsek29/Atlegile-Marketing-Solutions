@@ -38,7 +38,7 @@ jobs:
             echo "Branch does not exist."
             exit 0
           fi
-          # Deploy your application to specified Hosting Chanel
-          firebase hosting:channel:deploy "$CHANNEL" --token "$FIREBASE_TOKEN"
+          # Deploy your application to specified Hosting Channel
+          firebase hosting:channel:deploy Client --token "$FIREBASE_TOKEN"
         env:
           FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}

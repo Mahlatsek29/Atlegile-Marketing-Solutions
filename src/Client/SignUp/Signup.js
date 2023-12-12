@@ -212,14 +212,14 @@ const Signup = () => {
           <TextField
             id="outlined-number"
             label="Password"
-            type="text"
+            type="password"
             variant="standard"
             InputLabelProps={{
               shrink: true,
             }}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            secureTextEntry={true}
+            secureTextEntry
           />
         </View>
         <TouchableOpacity style={styles.button} onPress={handleSignup}>

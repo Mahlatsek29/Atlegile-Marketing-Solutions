@@ -202,13 +202,11 @@ const Landing = () => {
           </Grid>
         </Grid>
         <View>
-          {/* <FlatList
-            data={businesses}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <BusinessCard business={item} key={item.id} />
-            )}
-          /> */}
+        <FlatList
+          data={businesses}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => <BusinessCard business={item} />}
+        />
         </View>
         <Grid container style={{ width: "100%", height: "40vh" }}>
           <Grid item xl={2} lg={2} sm={2} xs={2}>

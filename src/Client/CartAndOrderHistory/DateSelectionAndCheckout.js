@@ -19,7 +19,8 @@ const DateSelectionAndCheckout = () => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [cartData, setCartData] = useState([]);
 
-  const url = "https://atlegile-marketing-solutions.vercel.app/";
+  // using local host URL for now which routes back to the initial screen but when hosted we will use the host URL
+  const url = "http://localhost:19006";
   // const url2 = "https://atlegile-marketing-solutions.vercel.app/Reciept";
 
   const fetchCartData = async () => {

@@ -347,7 +347,7 @@ export default function ProductDetails({ navigation, route }) {
 
           <Button sx={{ minWidth: "150px", mr: "20px" }}>ABOUT US</Button>
 
-          <IconButton aria-label="cart" sx={{ color: "black" }}>
+          <IconButton aria-label="cart" sx={{ color: "black" }} oncl>
             <ShoppingCartIcon />
           </IconButton>
 

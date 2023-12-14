@@ -53,10 +53,13 @@ const Navbar = () => {
       }}
     >
       <View>
-        <Image
+      <TouchableOpacity onPress={() => navigation.navigate('Landing')}>
+      <Image
           source={require("../../assets/logo.png")}
           style={{ width: 120, height: 60, resizeMode: "contain" }}
         />
+      </TouchableOpacity>
+        
       </View>
       <View
         style={{ marginLeft: "auto", display: "flex", flexDirection: "row" }}
@@ -92,6 +95,7 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
+              onClick={() => navigation.navigate('AboutUs')}
             >
               About Us
             </Button>
@@ -117,7 +121,7 @@ const Navbar = () => {
                 cursor: "pointer",
                 marginLeft: "10px",
               }}
-              onClick={() => alert("Go to Profile")}
+              onClick={() => navigation.navigate("UserProfile")}
             >
               <View
                 style={{

@@ -250,31 +250,31 @@ const DateSelectionAndCheckout = () => {
                   <View
                     style={{
                       width: "100%",
-                      height: "100%",
+                      height: "20vh",
                       borderBottomWidth: 2,
                       borderBottomColor: "#1D1D1D",
-                      // backgroundColor: "yellow",
+                      backgroundColor: "yellow",
                       flexDirection: "row",
                       alignItems: "center",
                       paddingTop: 2,
                     }}
                     key={index}>
-                    <View
+                    {/* <View
                       style={{
                         width: "25%",
-                        height: "70%",
+                        // height: "100%",
                         backgroundColor: "#000026",
                         // backgroundColor:'red'
-                      }}>
+                      }}> */}
                       <Image
                         source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
                         style={{
-                          width: "100%",
-                          height: "100%",
+                          width: "30%",
+                          height: "100%", 
                           resizeMode: "cover",
                         }}
                       />
-                    </View>
+                    {/* </View> */}
                     <View style={{ width: "30%", paddingLeft: 10 }}>
                       <Text
                         style={{

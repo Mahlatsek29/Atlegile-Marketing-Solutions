@@ -10,25 +10,28 @@ const Navbar = () => {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
       if (user) {
-        console.log("User: ", user);
-        try {
-          const userDocRef = firestore.collection("Users").doc(user.uid);
-          const userDoc = await userDocRef.get();
-          if (userDoc.exists) {
-            setUserData(userDoc.data());
+        const userDocRef = firestore.collection("Users").doc(user.uid);
+        const unsubscribeSnapshot = userDocRef.onSnapshot((doc) => {
+          if (doc.exists) {
+            setUserData(doc.data());
           } else {
             console.error("User data not found");
           }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
+        });
+
+        return () => {
+          unsubscribeSnapshot();
+        };
       } else {
         setUserData(null);
       }
     });
-    return () => unsubscribe();
+
+    return () => {
+      unsubscribeAuth();
+    };
   }, []);
 
   const navigateToSignIn = () => {

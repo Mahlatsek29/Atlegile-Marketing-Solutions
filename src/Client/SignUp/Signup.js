@@ -48,7 +48,6 @@ const Signup = () => {
 
       if (userCredential.user) {
         console.log("User signed up:", userCredential.user);
-
         await firestore
           .collection("Users")
           .doc(userCredential.user.uid)
@@ -197,7 +196,7 @@ const Signup = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={{ width: "75%" , marginTop:15}}>
+        <View style={{ width: "75%", marginTop: 15 }}>
           <TextField
             id="outlined-number"
             label="Email"

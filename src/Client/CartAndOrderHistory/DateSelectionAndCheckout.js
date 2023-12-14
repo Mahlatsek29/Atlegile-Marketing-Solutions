@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Linking, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Linking,
+  Image,
+  ScrollView,
+} from "react-native";
 import { Container, Typography, Button } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import FollowUs from "../../Global/Header";
@@ -9,7 +16,9 @@ import mapImage from "../../Global/images/mapImage.png";
 import hdtv from "../../Global/images/hdtv.jpg";
 import axios from "axios";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firestore } from "../../config";
+
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
   const [orderTotal, setOrderTotal] = useState(0);
@@ -18,39 +27,60 @@ const DateSelectionAndCheckout = () => {
   const [deliveryAmount, setDeliveryAmount] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [cartData, setCartData] = useState([]);
+  const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+
+    return () => {
+      unsubscribe(); // Unsubscribe from the auth state listener when component unmounts
+    };
+  }, []);
   // using local host URL for now which routes back to the initial screen but when hosted we will use the host URL
   const url = "http://localhost:19006";
   // const url2 = "https://atlegile-marketing-solutions.vercel.app/Reciept";
 
   const fetchCartData = async () => {
-    const userId = "52TkIacrD4ermeLEhLU6udYXnhQ2";
+    if (!user) {
+      console.error("User not authenticated.");
+      return;
+    }
 
     const cartCollectionRef = collection(firestore, "Cart");
-    const q = query(cartCollectionRef, where("uid", "==", userId));
+    const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
-    const querySnapshot = await getDocs(q);
+    try {
+      const querySnapshot = await getDocs(q);
 
-    const cartItems = [];
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      cartItems.push({
-        id: doc.id,
-        product: data.product,
-        quantity: data.quantity,
-        amount: data.price * data.quantity,
-        image: data.image,
-        name: data.name,
-        // Add other relevant fields from your Cart collection
+      const cartItems = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        cartItems.push({
+          id: doc.id,
+          product: data.product,
+          quantity: data.quantity,
+          amount: data.price * data.quantity,
+          image: data.image,
+          name: data.name,
+          // Add other relevant fields from your Cart collection
+        });
       });
-    });
 
-    setCartData(cartItems);
+      setCartData(cartItems);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+    }
   };
 
   useEffect(() => {
-    fetchCartData();
-  }, []);
+    // Fetch cart data when the user is authenticated
+    if (user) {
+      fetchCartData();
+    }
+  }, [user]); // Fetch cart data whenever the user changes
 
   useEffect(() => {
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
@@ -181,8 +211,8 @@ const DateSelectionAndCheckout = () => {
     <>
       <FollowUs />
       <Navbar />
-      <View>
-        <Container fixed sx={{ height: "90vh" }}>
+      <ScrollView style={{ flexDirection: "column" }}>
+        <Container fixed sx={{ minHeight: "90vh" }}>
           <View style={{ display: "flex", flexDirection: "row" }}>
             <View
               style={{
@@ -215,7 +245,7 @@ const DateSelectionAndCheckout = () => {
               <Typography variant="h6" style={{ fontWeight: "bold" }}>
                 ORDER #ABC246
               </Typography>
-              <View>
+              <ScrollView style={{ flex: 1 }}>
                 {cartData.map((item, index) => (
                   <View
                     style={{
@@ -223,7 +253,7 @@ const DateSelectionAndCheckout = () => {
                       height: "100%",
                       borderBottomWidth: 2,
                       borderBottomColor: "#1D1D1D",
-                      // backgroundColor:'yellow',
+                      // backgroundColor: "yellow",
                       flexDirection: "row",
                       alignItems: "center",
                       paddingTop: 2,
@@ -232,7 +262,7 @@ const DateSelectionAndCheckout = () => {
                     <View
                       style={{
                         width: "25%",
-                        height: "100%",
+                        height: "70%",
                         backgroundColor: "#000026",
                         // backgroundColor:'red'
                       }}>
@@ -240,7 +270,7 @@ const DateSelectionAndCheckout = () => {
                         source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
                         style={{
                           width: "100%",
-                          height: "15vh",
+                          height: "100%",
                           resizeMode: "cover",
                         }}
                       />
@@ -286,10 +316,13 @@ const DateSelectionAndCheckout = () => {
                     </View>
                   </View>
                 ))}
-              </View>
+              </ScrollView>
+              {/* <View>
+                <Text>Hello world</Text>
+              </View> */}
+
               <View
                 style={{
-                  marginTop: "240px",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -297,9 +330,6 @@ const DateSelectionAndCheckout = () => {
                 <Typography style={{ fontWeight: "bold" }}>
                   Order Summary
                 </Typography>
-                {/* <Typography style={{ fontWeight: "bold" }}>
-                  R18 000.00
-                </Typography> */}
               </View>
               <View
                 style={{
@@ -413,44 +443,7 @@ const DateSelectionAndCheckout = () => {
                     justifyContent: "flex-start",
                     flexWrap: "wrap", // Added flexWrap to allow wrapping
                     width: "100%",
-                  }}>
-                  {/* {rates.map((rate, index) => (
-                    <View key={index}>
-                      <TouchableOpacity
-                        onPress={() => handlePress(index)}
-                        style={{
-                          height: "100px",
-                          width: "80px",
-                          marginTop: "10px",
-                          borderWidth: 1,
-                          borderColor: "white",
-                          marginRight: 10,
-                          marginBottom: 10,
-                          backgroundColor:
-                            selectedIndex === index ? "#2E5A88" : "transparent", // Conditional background color
-                        }}>
-                        <View
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginTop: "20px",
-                          }}> */}
-                  {/* Extracting month and day from the delivery date */}
-                  {/* <Typography style={{ color: "white" }}>
-                            {new Date(
-                              rate.service_level.delivery_date_to
-                            ).toLocaleString("default", { month: "short" })}
-                          </Typography>
-                          <Typography variant="h5" style={{ color: "white" }}>
-                            {new Date(
-                              rate.service_level.delivery_date_to
-                            ).getDate()}
-                          </Typography> */}
-                  {/* </View>
-                      </TouchableOpacity>
-                    </View>
-                  ))} */}
-                </View>
+                  }}></View>
 
                 <Button
                   variant="outlined"
@@ -477,8 +470,10 @@ const DateSelectionAndCheckout = () => {
             </View>
           </View>
         </Container>
-      </View>
-      <Footer />
+
+        <Footer />
+        {/* <View style={{backgroundColor: 'blue', width: '100%', height: 200 }}></View> */}
+      </ScrollView>
     </>
   );
 };

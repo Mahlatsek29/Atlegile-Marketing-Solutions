@@ -140,6 +140,8 @@ const Landing = () => {
             justifyContent: "center",
             display: "flex",
             flexDirection: "column",
+            // backgroundColor: "red",
+            // position: "relative",
           }}>
           <Grid
             item
@@ -202,11 +204,11 @@ const Landing = () => {
           </Grid>
         </Grid>
         <View>
-        <FlatList
-          data={businesses}
-          keyExtractor={(item) => item}
-          renderItem={({ item }) => <BusinessCard business={item} />}
-        />
+          <FlatList
+            data={businesses}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => <BusinessCard business={item} />}
+          />
         </View>
         <Grid container style={{ width: "100%", height: "40vh" }}>
           <Grid item xl={2} lg={2} sm={2} xs={2}>

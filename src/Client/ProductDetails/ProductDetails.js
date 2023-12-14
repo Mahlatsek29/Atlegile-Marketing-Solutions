@@ -46,6 +46,7 @@ import {
 } from "firebase/firestore";
 import firebaseConfig from "../../config";
 import { firebase, auth } from "../../config";
+import { TouchableOpacity } from "react-native";
 
 export default function ProductDetails({ navigation, route }) {
   const { productId } = route.params;
@@ -346,10 +347,12 @@ export default function ProductDetails({ navigation, route }) {
           </Link>
 
           <Button sx={{ minWidth: "150px", mr: "20px" }}>ABOUT US</Button>
-
-          <IconButton aria-label="cart" sx={{ color: "black" }} oncl>
-            <ShoppingCartIcon />
-          </IconButton>
+          {/* <TouchableOpacity
+            onPress={navigation.navigate("DateSelectionAndCheckout")}>
+            <IconButton aria-label="cart" sx={{ color: "black" }}>
+              <ShoppingCartIcon />
+            </IconButton>
+          </TouchableOpacity> */}
 
           <Typography sx={{ mr: "20px" }}>Welcome Jane</Typography>
         </Box>

@@ -253,7 +253,7 @@ const DateSelectionAndCheckout = () => {
                       height: "20vh",
                       borderBottomWidth: 2,
                       borderBottomColor: "#1D1D1D",
-                      backgroundColor: "yellow",
+                      // backgroundColor: "yellow",
                       flexDirection: "row",
                       alignItems: "center",
                       paddingTop: 2,
@@ -266,14 +266,14 @@ const DateSelectionAndCheckout = () => {
                         backgroundColor: "#000026",
                         // backgroundColor:'red'
                       }}> */}
-                      <Image
-                        source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
-                        style={{
-                          width: "30%",
-                          height: "100%", 
-                          resizeMode: "cover",
-                        }}
-                      />
+                    <Image
+                      source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
+                      style={{
+                        width: "30%",
+                        height: "100%",
+                        resizeMode: "cover",
+                      }}
+                    />
                     {/* </View> */}
                     <View style={{ width: "30%", paddingLeft: 10 }}>
                       <Text
@@ -444,7 +444,7 @@ const DateSelectionAndCheckout = () => {
                     flexWrap: "wrap", // Added flexWrap to allow wrapping
                     width: "100%",
                   }}>
-                    {rates.map((rate, index) => (
+                  {rates.map((rate, index) => (
                     <View key={index}>
                       <TouchableOpacity
                         onPress={() => handlePress(index)}
@@ -458,15 +458,13 @@ const DateSelectionAndCheckout = () => {
                           //  marginBottom: 10,
                           backgroundColor:
                             selectedIndex === index ? "#2E5A88" : "transparent", // Conditional background color
-                        }}
-                      >
+                        }}>
                         <View
                           style={{
                             display: "flex",
                             alignItems: "center",
                             marginTop: "20px",
-                          }}
-                        >
+                          }}>
                           {/* Extracting month and day from the delivery date */}
                           <Typography style={{ color: "white" }}>
                             {new Date(
@@ -482,8 +480,7 @@ const DateSelectionAndCheckout = () => {
                       </TouchableOpacity>
                     </View>
                   ))}
-                  
-                  </View>
+                </View>
 
                 <Button
                   variant="outlined"

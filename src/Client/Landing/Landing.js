@@ -133,8 +133,7 @@ const Landing = () => {
         <FollowUs />
         <Navbar />
         <SearchBar />
-        <Grid
-          container
+        <container
           style={{
             alignItems: "center",
             justifyContent: "center",
@@ -202,7 +201,7 @@ const Landing = () => {
               <Text style={{ color: "#FFF" }}>Support</Text>
             </button>
           </Grid>
-        </Grid>
+        </container>
         <View>
           <FlatList
             data={businesses}

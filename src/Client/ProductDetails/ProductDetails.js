@@ -47,6 +47,7 @@ import {
 import firebaseConfig from "../../config";
 import { firebase, auth } from "../../config";
 import { TouchableOpacity } from "react-native";
+import Navbar from "../../Global/Navbar";
 
 export default function ProductDetails({ navigation, route }) {
   const { productId } = route.params;
@@ -64,6 +65,10 @@ export default function ProductDetails({ navigation, route }) {
   const firestore = getFirestore(app);
 
   const handleAddToCart = async () => {
+    if (!user) {
+      alert("Please login first");
+      return navigation.navigate("SignIn");
+    }
     try {
       const cartCollectionRef = collection(firestore, "Cart");
 
@@ -317,7 +322,7 @@ export default function ProductDetails({ navigation, route }) {
   return (
     <>
       {/* Navbar */}
-      <Box
+      {/* <Box
         sx={{
           bgcolor: "white",
           py: 2,
@@ -362,11 +367,11 @@ export default function ProductDetails({ navigation, route }) {
             </IconButton>
           </TouchableOpacity> */}
 
-          <Typography sx={{ mr: "20px" }}>Welcome Jane</Typography>
+      {/* <Typography sx={{ mr: "20px" }}>Welcome Jane</Typography>
         </Box>
-      </Box>
+      </Box> */}
       {/* End of Navbar */}
-
+      <Navbar />
       <Box sx={{ backgroundColor: "white", height: "100%", overflowY: "auto" }}>
         <Container maxWidth="md">
           <Box sx={{ pl: 2, pb: 2, backgroundColor: "white" }}>

@@ -47,6 +47,7 @@ import {
 import firebaseConfig from "../../config";
 import { firebase, auth } from "../../config";
 import { TouchableOpacity } from "react-native";
+import Navbar from "../../Global/Navbar";
 
 export default function ProductDetails({ navigation, route }) {
   const { productId } = route.params;
@@ -58,33 +59,10 @@ export default function ProductDetails({ navigation, route }) {
   const [review, setReview] = useState("");
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState("");
   const user = firebase.auth().currentUser;
 
   const app = initializeApp(firebaseConfig);
   const firestore = getFirestore(app);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userDocRef = doc(firestore, "Users", user.uid); // Assuming your user data is stored in a collection called "users"
-        const userDocSnapshot = await getDoc(userDocRef);
-
-        if (userDocSnapshot.exists()) {
-          const userData = userDocSnapshot.data();
-          setUsername(userData.name); // Adjust this line based on your actual user data structure
-        } else {
-          console.log("User data not found for UID:", user.uid);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    if (user) {
-      fetchUserData();
-    }
-  }, [firestore, user]);
 
   const handleAddToCart = async () => {
     if (!user) {
@@ -341,14 +319,15 @@ export default function ProductDetails({ navigation, route }) {
   return (
     <>
       {/* Navbar */}
-      <Box
+      {/* <Box
         sx={{
           bgcolor: "white",
           py: 2,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-        }}>
+        }}
+      >
         <TouchableOpacity onPress={() => navigation.navigate("Landing")}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <img
@@ -365,12 +344,14 @@ export default function ProductDetails({ navigation, route }) {
             alignItems: "center",
             flex: 1,
             justifyContent: "flex-end",
-          }}>
+          }}
+        >
           <Link to="/landingscreen">
             <Button
               sx={{ minWidth: "100px", mr: "20px", borderRadius: "40px" }}
               variant="contained"
-              color="primary">
+              color="primary"
+            >
               Shop
             </Button>
           </Link>
@@ -383,14 +364,11 @@ export default function ProductDetails({ navigation, route }) {
             </IconButton>
           </TouchableOpacity> */}
 
-          <Typography sx={{ mr: "20px" }}>
-            {" "}
-            Welcome {username ? username : "Guest"}{" "}
-          </Typography>
+      {/* <Typography sx={{ mr: "20px" }}>Welcome Jane</Typography>
         </Box>
-      </Box>
+      </Box> */}
       {/* End of Navbar */}
-
+      <Navbar />
       <Box sx={{ backgroundColor: "white", height: "100%", overflowY: "auto" }}>
         <Container maxWidth="md">
           <Box sx={{ pl: 2, pb: 2, backgroundColor: "white" }}>

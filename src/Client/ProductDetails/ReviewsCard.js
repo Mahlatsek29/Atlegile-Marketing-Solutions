@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Rating } from "@mui/material";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { firebase, auth } from "../../config";
+
 import firebaseConfig from "../../config";
 
 const ReviewsCard = ({ review }) => {
@@ -8,7 +10,7 @@ const ReviewsCard = ({ review }) => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const app = initializeApp(firebaseConfig);
+      const app = firebase.initializeApp(firebaseConfig);
       const firestore = getFirestore(app);
 
       try {

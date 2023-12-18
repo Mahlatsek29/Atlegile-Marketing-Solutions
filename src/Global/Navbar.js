@@ -1,17 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { Button, Toolbar, Typography, Box } from "@mui/material";
+import { Button, Toolbar, Typography, Box, Badge } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import { View, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { auth, firestore } from "../config";
+import { ShoppingCart } from "@mui/icons-material";
 const Navbar = () => {
   const navigation = useNavigation();
   const imageLogo = require("../../assets/logo.png");
   const [userData, setUserData] = useState(null);
-
+  const [cartCount, setCartCount] = useState(2);
   useEffect(() => {
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
       if (user) {
+        const cartCollectionRef = firestore
+          .collection("Cart")
+          .where("uid", "==", user.uid);
+
+        const unsubscribeCartSnapshot = cartCollectionRef.onSnapshot(
+          (snapshot) => {
+            const itemCount = snapshot.docs.length;
+            setCartCount(itemCount);
+          }
+        );
+
         const userDocRef = firestore.collection("Users").doc(user.uid);
         const unsubscribeSnapshot = userDocRef.onSnapshot((doc) => {
           if (doc.exists) {
@@ -22,10 +34,12 @@ const Navbar = () => {
         });
 
         return () => {
+          unsubscribeCartSnapshot();
           unsubscribeSnapshot();
         };
       } else {
         setUserData(null);
+        setCartCount(0); // Reset cart count when user is not authenticated
       }
     });
 
@@ -53,28 +67,24 @@ const Navbar = () => {
         color: "#252B42",
         display: "flex",
         flexDirection: "row",
-      }}
-    >
+      }}>
       <View>
-      <TouchableOpacity onPress={() => navigation.navigate('Landing')}>
-      <Image
-          source={require("../../assets/logo.png")}
-          style={{ width: 120, height: 60, resizeMode: "contain" }}
-        />
-      </TouchableOpacity>
-        
+        <TouchableOpacity onPress={() => navigation.navigate("Landing")}>
+          <Image
+            source={require("../../assets/logo.png")}
+            style={{ width: 120, height: 60, resizeMode: "contain" }}
+          />
+        </TouchableOpacity>
       </View>
       <View
-        style={{ marginLeft: "auto", display: "flex", flexDirection: "row" }}
-      >
+        style={{ marginLeft: "auto", display: "flex", flexDirection: "row" }}>
         {userData ? (
           <View
             style={{
               display: "flex",
               alignItems: "center",
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Button
               sx={{
                 borderRadius: "25px",
@@ -84,8 +94,7 @@ const Navbar = () => {
                   color: "white",
                 },
               }}
-              color="inherit"
-            >
+              color="inherit">
               Shop
             </Button>
             <Button
@@ -98,23 +107,24 @@ const Navbar = () => {
                 },
               }}
               color="inherit"
-              onClick={() => navigation.navigate('AboutUs')}
-            >
+              onClick={() => navigation.navigate("AboutUs")}>
               About Us
             </Button>
             <Box
-            onClick={()=>{navigation.navigate('DateSelectionAndCheckout')}}
+              onClick={() => {
+                navigation.navigate("DateSelectionAndCheckout");
+              }}
               sx={{
                 "&:hover": {
                   cursor: "pointer",
                 },
-              }}
-            >
-              <Icon
-                name="shopping-cart" // Replace with the correct icon name
-                size={20}
-                style={{ paddingHorizontal: 10 }}
-              />
+              }}>
+              <Badge
+                badgeContent={cartCount}
+                color="primary"
+                style={{ margin: "0px 15px" }}>
+                <ShoppingCart color="action" style={{ color: "black" }} />
+              </Badge>
             </Box>
             <View
               style={{
@@ -124,8 +134,7 @@ const Navbar = () => {
                 cursor: "pointer",
                 marginLeft: "10px",
               }}
-              onClick={() => navigation.navigate("UserProfile")}
-            >
+              onClick={() => navigation.navigate("UserProfile")}>
               <View
                 style={{
                   width: "40px",
@@ -136,27 +145,28 @@ const Navbar = () => {
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "center",
-                }}
-              >
+                }}>
                 <Typography
                   style={{
                     fontSize: "1.4rem",
                     color: "white",
                     padding: "10px",
-                  }}
-                >
+                  }}>
                   AS
                 </Typography>
               </View>
-              <View style={{ marginLeft: "10px" }} onClick={()=>{ navigation.navigate("AccountAndBusiness");}}>
+              <View
+                style={{ marginLeft: "10px" }}
+                onClick={() => {
+                  navigation.navigate("AccountAndBusiness");
+                }}>
                 <Typography variant="subtitle1">
                   Welcome, {userData.name}
                 </Typography>
                 <Typography
                   style={{
                     fontSize: "0.8rem",
-                  }}
-                >
+                  }}>
                   {userData.username}
                 </Typography>
               </View>
@@ -168,8 +178,7 @@ const Navbar = () => {
               marginLeft: "auto",
               display: "flex",
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Button
               onClick={navigateLanding}
               sx={{
@@ -180,8 +189,7 @@ const Navbar = () => {
                   color: "white",
                 },
               }}
-              color="inherit"
-            >
+              color="inherit">
               Shop
             </Button>
             <Button
@@ -194,8 +202,7 @@ const Navbar = () => {
                   color: "white",
                 },
               }}
-              color="inherit"
-            >
+              color="inherit">
               About Us
             </Button>
             <TouchableOpacity>
@@ -212,8 +219,7 @@ const Navbar = () => {
                     color: "white",
                   },
                 }}
-                color="inherit"
-              >
+                color="inherit">
                 Sign In
               </Button>
             </TouchableOpacity>
@@ -231,8 +237,7 @@ const Navbar = () => {
                     color: "white",
                   },
                 }}
-                color="inherit"
-              >
+                color="inherit">
                 Sign Up
               </Button>
             </TouchableOpacity>

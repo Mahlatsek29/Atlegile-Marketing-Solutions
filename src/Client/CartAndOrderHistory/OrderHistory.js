@@ -1,31 +1,134 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
 import { Container, Typography } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/Feather";
 import Icon1 from "react-native-vector-icons/FontAwesome";
 import Navbar from "../../Global/Navbar";
 import FollowUs from "../../Global/Header";
 import { Footer } from "../../Global/Footer";
 import hdtv from "../../Global/images/hdtv.jpg";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import mapImage from "../../Global/images/mapImage.png";
+import axios from "axios";
+import { firestore } from "../../config";
 
 const OrderHistory = () => {
-  const navigation = useNavigation();
+  const [cartData, setCartData] = useState([]);
+  const [user, setUser] = useState(null);
 
-  const data = [
-    { date: "27 JUL, 2023", name: "SIBUSISO", status: "ONGOING" },
-    { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
-    { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
-    { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
-  ];
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
 
-  const navigateToDeliveryAndChatSystem = (status) => {
-    if (status === "DELIVERED") {
-      navigation.navigate("DeliveryAndChatSystem");
-    } else if (status === "ONGOING") {
-      navigation.navigate("DeliveryOngoing");
+    return () => {
+      unsubscribe(); // Unsubscribe from the auth state listener when component unmounts
+    };
+  }, []);
+  // using local host URL for now which routes back to the initial screen but when hosted we will use the host URL
+  // const url = "http://localhost:19006";
+  // const url2 = "https://atlegile-marketing-solutions.vercel.app/Reciept";
+
+  // const fetchCartData = async () => {
+  //   if (!user) {
+  //     console.error("User not authenticated.");
+  //     return;
+  //   }
+
+  //   const cartCollectionRef = collection(firestore, "Cart");
+  //   const q = query(cartCollectionRef, where("uid", "==", user.uid));
+
+  //   try {
+  //     const querySnapshot = await getDocs(q);
+
+  //     const cartItems = [];
+  //     querySnapshot.forEach((doc) => {
+  //       const data = doc.data();
+  //       cartItems.push({
+  //         id: doc.id,
+  //         product: data.product,
+  //         quantity: data.quantity,
+  //         amount: data.price * data.quantity,
+  //         image: data.image,
+  //         name: data.name,
+  //         // Add other relevant fields from your Cart collection
+  //       });
+  //     });
+
+  //     setCartData(cartItems);
+  //   } catch (error) {
+  //     console.error("Error fetching cart data:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   // Fetch cart data when the user is authenticated
+  //   if (user) {
+  //     fetchCartData();
+  //   }
+  // }, [user]); // Fetch cart data whenever the user changes
+
+  const fetchCartData = async () => {
+    if (!user) {
+      console.error("User not authenticated.");
+      return;
+    }
+
+    const cartCollectionRef = collection(firestore, "Cart");
+    const q = query(cartCollectionRef, where("uid", "==", user.uid));
+
+    try {
+      const querySnapshot = await getDocs(q);
+
+      const cartItems = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        cartItems.push({
+          id: doc.id,
+          product: data.product,
+          quantity: data.quantity,
+          amount: data.price * data.quantity,
+          image: data.image,
+          name: data.name,
+          orderId: data.productId,
+          timestamp: data.timestamp.toDate(),
+          // Add other relevant fields from your Cart collection
+        });
+      });
+
+      setCartData(cartItems);
+      console.log("Cart Data : ", cartData);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
     }
   };
+
+  useEffect(() => {
+    // Fetch cart data when the user is authenticated
+    if (user) {
+      fetchCartData();
+    }
+  }, [user]); // Fetch cart data whenever the user changes
+
+  // const data = [
+  //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "ONGOING" },
+  //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
+  //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
+  //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
+  // ];
+
+  // const navigateToDeliveryAndChatSystem = (status) => {
+  //   if (status === "DELIVERED") {
+  //     navigation.navigate("DeliveryAndChatSystem");
+  //   } else if (status === "ONGOING") {
+  //     navigation.navigate("DeliveryOngoing");
+  //   }
+  // };
+  console.log("Cart Data 1 : ", cartData);
+  console.log("Cart Data timeStamp : ", cartData[0]?.timestamp.toString());
 
   return (
     <View>
@@ -113,7 +216,7 @@ const OrderHistory = () => {
         </View>
 
         <View>
-          {data.map((item, index) => (
+          {cartData.map((item, index) => (
             <TouchableOpacity
               onPress={() => navigateToDeliveryAndChatSystem(item.status)}
               key={index}
@@ -129,22 +232,24 @@ const OrderHistory = () => {
                   paddingTop: 2,
                 }}
               >
-                <View
+                <Image
+                  source={{ uri: item?.image }}
+                  alt="product-image"
                   style={{
                     width: "20%",
                     height: "100%",
-                    backgroundColor: "#000026",
-                    backgroundImage: `url(${hdtv})`,
+                    // backgroundColor: "#000026",
+                    // backgroundImage: `url(${hdtv})`,
                   }}
                 />
                 <View style={{ width: "30%", paddingLeft: 10 }}>
                   <Text
                     style={{ fontSize: 16, fontWeight: "bold", color: "gray" }}
                   >
-                    #aabbcc
+                    #{item?.orderId.slice(0, 9)}
                   </Text>
                   <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                    {item.date}
+                    {item?.timestamp.toDateString()}
                   </Text>
                 </View>
                 <View style={{ width: "30%", paddingLeft: 10 }}>
@@ -154,7 +259,7 @@ const OrderHistory = () => {
                     Delivered by
                   </Text>
                   <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                    {item.name}
+                    Dilivery Guy
                   </Text>
                 </View>
                 <View style={{ width: "30%", paddingLeft: 10 }}>
@@ -175,7 +280,8 @@ const OrderHistory = () => {
                           : "black",
                     }}
                   >
-                    {item.status}
+                    {/* {item?.status} */}
+                    Delivered
                   </Text>
                 </View>
               </View>

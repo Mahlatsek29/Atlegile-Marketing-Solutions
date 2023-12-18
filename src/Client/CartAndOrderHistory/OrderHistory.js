@@ -246,7 +246,9 @@ const OrderHistory = () => {
                   <Text
                     style={{ fontSize: 16, fontWeight: "bold", color: "gray" }}
                   >
-                    #{item?.orderId.slice(0, 9)}
+                    #
+                    {item?.orderId.slice(0, 4) +
+                      Math.floor(Math.random() * 10000)}
                   </Text>
                   <Text style={{ fontSize: 18, fontWeight: "bold" }}>
                     {item?.timestamp.toDateString()}

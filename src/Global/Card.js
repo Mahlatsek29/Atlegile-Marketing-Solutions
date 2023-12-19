@@ -23,6 +23,7 @@ const ProductCard = ({ productId }) => {
   const [loading, setLoading] = useState(true);
   const [uid, setUid] = useState(null);
   const [showSnackbar, setShowSnackbar] = useState(false);
+  const [showSnackbar1, setShowSnackbar1] = useState(false);
 
   const navigateProductDetails = () => {
     navigation.navigate("ProductDetails", { productId });
@@ -60,6 +61,31 @@ const ProductCard = ({ productId }) => {
       console.error("Error toggling heart:", error);
     }
   };
+
+  const addToCart = async () => {
+    try {
+      const cartCollectionRef = firestore.collection("Cart");
+      await cartCollectionRef.add({
+        uid: uid,
+        productId: productId,
+        description: product.description,
+        price: product.price,
+        name: product.name,
+        quantity: 1,
+        image:
+          product.images && product.images.length > 0 ? product.images[0] : "",
+        // Add other relevant fields
+      });
+      setShowSnackbar1(true);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  };
+
+  const handleSnackbarClose1 = () => {
+    setShowSnackbar1(false);
+  };
+
   const handleSnackbarClose = () => {
     setShowSnackbar(false);
   };
@@ -227,7 +253,20 @@ const ProductCard = ({ productId }) => {
                 color={isRed ? "red" : "black"}
               />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={addToCart}>
+              <Snackbar
+                open={showSnackbar1}
+                autoHideDuration={3000} // Adjust as needed
+                onClose={handleSnackbarClose1}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }} // Set position to top center
+              >
+                <MuiAlert
+                  onClose={handleSnackbarClose1}
+                  severity="success"
+                  sx={{ width: "100%" }}>
+                  Product added to Cart!
+                </MuiAlert>
+              </Snackbar>
               <Icon
                 name="shopping-cart"
                 size={20}

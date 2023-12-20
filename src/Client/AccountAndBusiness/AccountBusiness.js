@@ -36,6 +36,7 @@ import {
   MenuItem,
   Box,
 } from "@mui/material";
+import Paper from "@mui/material/Paper";
 import { AntDesign } from "@expo/vector-icons";
 //import logo from "../../Global/images/logo.png";
 import { COLORS } from "../../Global/Color";
@@ -59,6 +60,19 @@ import firebase from "firebase/compat/app";
 import { PaperTextInput } from "react-native-paper";
 import { Flag } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
+
+
+import Icon from "react-native-vector-icons/Feather";
+import Icon1 from "react-native-vector-icons/FontAwesome";
+import Navbar from "../../Global/Navbar";
+import FollowUs from "../../Global/Header";
+
+import hdtv from "../../Global/images/hdtv.jpg";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import mapImage from "../../Global/images/mapImage.png";
+import axios from "axios";
+import sara from "../../Global/images/Sara.png";
 export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
@@ -94,6 +108,9 @@ export default function BusinessAccount() {
   const [selectedProductCategory, setProductCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [showWebView, setShowWebView] = useState(false);
+  const [cartData, setCartData] = useState([]);
+  const [user, setUser] = useState(null);
+  const [checkOrder,setCheckOrder] = useState(false)
   const handlePaymentButtonPress = () => {
     const paymentUrl =
       "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
@@ -101,6 +118,100 @@ export default function BusinessAccount() {
     // Open the payment URL in the device's default browser
     Linking.openURL(paymentUrl);
   };
+  const handlePress = () => {
+    Swal.fire({
+      icon: "info",
+      title: "Contact Information",
+      html: "<b>Name:</b> Julian James<br/><b>Phone Number:</b> 0123456789",
+      confirmButtonText: "Close",
+    });
+  };
+
+  const handleSignOut = () => {
+    Swal.fire({
+      title: "Are you sure you want to sign out?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, sign me out!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/landing-page");
+      }
+    });
+  };
+
+  const handleorders = () => {
+  
+      setCheckOrder(true)
+    
+  };
+
+  const handlefavorites = () => {
+    navigate("/termsandconditions");
+  };
+
+  const handleterms = () => {
+    navigate("/termsandconditions");
+  };
+
+  const handlepolicy = () => {
+    navigate("/privacypolicy");
+  };
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+
+    return () => {
+      unsubscribe(); // Unsubscribe from the auth state listener when component unmounts
+    };
+  }, []);
+
+  const fetchCartData = async () => {
+    if (!user) {
+      console.error("User not authenticated.");
+      return;
+    }
+
+    const cartCollectionRef = collection(firestore, "Cart");
+    const q = query(cartCollectionRef, where("uid", "==", user.uid));
+
+    try {
+      const querySnapshot = await getDocs(q);
+
+      const cartItems = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        cartItems.push({
+          id: doc.id,
+          product: data.product,
+          quantity: data.quantity,
+          amount: data.price * data.quantity,
+          image: data.image,
+          name: data.name,
+          orderId: data.productId,
+          timestamp: data.timestamp.toDate(),
+          // Add other relevant fields from your Cart collection
+        });
+      });
+
+      setCartData(cartItems);
+      console.log("Cart Data : ", cartData);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch cart data when the user is authenticated
+    if (user) {
+      fetchCartData();
+    }
+  }, [user]); // Fetch cart data whenever the user changes
 
   const productCategory = [
     ...emptyOption,
@@ -336,7 +447,8 @@ export default function BusinessAccount() {
             alignItems: "flex-end",
             zIndex: 9999,
             alignSelf: "flex-end",
-          }}>
+          }}
+        >
           {/* <View
                   style={{
                     width: "33%",
@@ -354,14 +466,16 @@ export default function BusinessAccount() {
               height: "100vh",
               backgroundColor: "white",
               //   backgroundColor: "rgba(0, 0, 0, 0.5)",
-            }}>
+            }}
+          >
             <View
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 height: "40%",
-              }}>
+              }}
+            >
               <Image
                 source={require("../../Global/images/logo.svg")} // Make sure to provide the correct path to your logo
                 style={{
@@ -377,7 +491,8 @@ export default function BusinessAccount() {
                   fontWeight: "600",
                   fontSize: 30,
                   marginBottom: 5,
-                }}>
+                }}
+              >
                 EDIT PRODUCT
               </Text>
               <View>
@@ -387,7 +502,8 @@ export default function BusinessAccount() {
                     display: "flex",
                     flexDirection: "row",
                     justifyContent: "center",
-                  }}>
+                  }}
+                >
                   {images.length > 0 ? (
                     images.map((image, index) => (
                       <img
@@ -426,7 +542,8 @@ export default function BusinessAccount() {
                       width: "5%",
                       cursor: "pointer",
                       alignSelf: "center",
-                    }}>
+                    }}
+                  >
                     +
                   </label>
                   <input
@@ -459,12 +576,14 @@ export default function BusinessAccount() {
                       display: "flex",
                       flexDirection: "row",
                       justifyContent: "space-between",
-                    }}>
+                    }}
+                  >
                     <View
                       style={{
                         display: "flex",
                         flexDirection: "column",
-                      }}>
+                      }}
+                    >
                       <TextField
                         fullWidth
                         required
@@ -561,7 +680,8 @@ export default function BusinessAccount() {
                       padding: 10,
                       marginTop: 20,
                     }}
-                    type="submit">
+                    type="submit"
+                  >
                     <Text style={{ color: "white" }}>SAVE</Text>
                   </Button>
                 </form>
@@ -586,14 +706,16 @@ export default function BusinessAccount() {
             alignItems: "flex-end",
             zIndex: 9999,
             alignSelf: "flex-end",
-          }}>
+          }}
+        >
           <Grid
             container
             style={{
               width: "100%",
               marginBottom: "-10vh",
               //   border: "1px solid green",
-            }}>
+            }}
+          >
             <Grid
               item
               lg={8}
@@ -606,7 +728,8 @@ export default function BusinessAccount() {
                 flexDirection: "column",
                 justifyContent: "space-between",
                 width: "100%",
-              }}>
+              }}
+            >
               <Grid
                 Container
                 lg={6}
@@ -615,7 +738,8 @@ export default function BusinessAccount() {
                   //   backgroudColor: "blue",
                   width: "100vw",
                   //   border: "1px solid yellow",
-                }}></Grid>
+                }}
+              ></Grid>
               <Grid
                 Container
                 lg={6}
@@ -625,7 +749,8 @@ export default function BusinessAccount() {
                   width: "100vw",
                   // border: "1px solid yellow",
                   marginBottom: "-8px",
-                }}>
+                }}
+              >
                 <img
                   src={Banner}
                   style={{
@@ -654,7 +779,8 @@ export default function BusinessAccount() {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-              }}>
+              }}
+            >
               <Grid style={{ alignSelf: "center" }}>
                 <img
                   src={logo}
@@ -679,14 +805,16 @@ export default function BusinessAccount() {
                   // backgroundColor: "red",
                   marginLeft: "80px",
                   marginBottom: "30px",
-                }}>
+                }}
+              >
                 <h2
                   style={{
                     color: "#000",
                     textAlign: "left",
                     fontSize: "25px",
                     textAlign: "center",
-                  }}>
+                  }}
+                >
                   ADD PRODUCTS + SERVICES
                 </h2>
                 {/* <h6>inputs will be stored here</h6> */}
@@ -699,7 +827,8 @@ export default function BusinessAccount() {
                     alignItems: "center",
                     width: "100%",
                     height: "8vh",
-                  }}>
+                  }}
+                >
                   {images.length > 0 ? (
                     images.map((image, index) => (
                       <img
@@ -738,7 +867,8 @@ export default function BusinessAccount() {
                       width: "5%",
                       cursor: "pointer",
                       alignSelf: "center",
-                    }}>
+                    }}
+                  >
                     +
                   </label>
                   <input
@@ -850,7 +980,8 @@ export default function BusinessAccount() {
                         marginRight: "10px",
                         textAlign: "left",
                       }}
-                      required>
+                      required
+                    >
                       {productCategory.map((option) => (
                         <MenuItem key={option} value={option}>
                           {option}
@@ -888,7 +1019,8 @@ export default function BusinessAccount() {
                           justifyContent: "center",
                           alignItems: "center",
                           height: "1vh",
-                        }}>
+                        }}
+                      >
                         <CircularProgress />
                       </Box>
                     ) : (
@@ -901,7 +1033,8 @@ export default function BusinessAccount() {
                           background: "#072840",
                           borderRadius: "30px",
                         }}
-                        type="submit">
+                        type="submit"
+                      >
                         continue
                       </Button>
                     )}
@@ -928,14 +1061,16 @@ export default function BusinessAccount() {
             zIndex: 9999,
 
             flexDirection: "row",
-          }}>
+          }}
+        >
           <View style={{ height: "100vh" }}>
             <View
               style={{
                 flex: 1,
                 justifyContent: "space-between",
                 backgroundColor: "white",
-              }}>
+              }}
+            >
               <View
                 style={{
                   height: "50vh",
@@ -943,7 +1078,8 @@ export default function BusinessAccount() {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                }}>
+                }}
+              >
                 <Image
                   source={{ uri: logo }}
                   style={{
@@ -962,14 +1098,16 @@ export default function BusinessAccount() {
                   width: "75%",
                   marginLeft: 80,
                   marginBottom: 30,
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     color: "#000",
                     textAlign: "left",
                     fontSize: 30,
                     fontWeight: "bold",
-                  }}>
+                  }}
+                >
                   PAYMENT INFO
                 </Text>
 
@@ -1029,7 +1167,8 @@ export default function BusinessAccount() {
                       margin: 20,
                       borderRadius: 30,
                       backgroundColor: "#072840",
-                    }}>
+                    }}
+                  >
                     Continue
                   </Button>
                 </form>
@@ -1048,14 +1187,16 @@ export default function BusinessAccount() {
             display: "flex",
             alignItems: "center",
             zIndex: 1000, // Adjust as needed
-          }}>
+          }}
+        >
           <View
             style={{
               flex: 1,
               justifyContent: "felx-end",
               alignItems: "center",
               width: 50,
-            }}>
+            }}
+          >
             <Card
               style={{
                 position: "fixed",
@@ -1068,32 +1209,37 @@ export default function BusinessAccount() {
                 alignItems: "center",
                 justifyContent: "center",
                 zIndex: 999,
-              }}>
+              }}
+            >
               <View
                 style={{
                   height: "100%",
                   width: "33%",
                 }}
-                onTouchEnd={() => setBannerModal(false)}></View>
+                onTouchEnd={() => setBannerModal(false)}
+              ></View>
               <View
                 style={{
                   height: "100%",
                   width: "33%",
                 }}
-                onTouchEnd={() => setBannerModal(false)}></View>
+                onTouchEnd={() => setBannerModal(false)}
+              ></View>
               <View
                 style={{
                   width: "34%",
                   height: "100%",
                   backgroundColor: "white",
-                }}>
+                }}
+              >
                 <View
                   style={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     height: "40%",
-                  }}>
+                  }}
+                >
                   <Image
                     source={require("../../Global/images/logo.svg")} // Make sure to provide the correct path to your logo
                     style={{
@@ -1104,13 +1250,15 @@ export default function BusinessAccount() {
                   />
                 </View>
                 <View
-                  style={{ height: "60%", paddingRight: 40, paddingLeft: 40 }}>
+                  style={{ height: "60%", paddingRight: 40, paddingLeft: 40 }}
+                >
                   <Text
                     style={{
                       fontWeight: "600",
                       fontSize: 30,
                       marginBottom: 5,
-                    }}>
+                    }}
+                  >
                     ADD BANNER
                   </Text>
                   <View>
@@ -1120,7 +1268,8 @@ export default function BusinessAccount() {
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "center",
-                      }}>
+                      }}
+                    >
                       {images.length > 0 ? (
                         images.map((image, index) => (
                           <img
@@ -1159,7 +1308,8 @@ export default function BusinessAccount() {
                           width: "5%",
                           cursor: "pointer",
                           alignSelf: "center",
-                        }}>
+                        }}
+                      >
                         +
                       </label>
                       <input
@@ -1171,102 +1321,103 @@ export default function BusinessAccount() {
                         multiple // Allow selecting multiple files
                       />
                     </div>
-                    <View style={{display:'flex', justifyContent:'center'}}>
-
-                    <form onSubmit={handleSaveAddBanner}>
-                      <TextField
-                        fullWidth
-                        required
-                        type="text"
-                        variant="standard"
-                        id="outlined-number"
-                        value={productName}
-                        label="Product Name"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        onChange={(text) => setProductName(text)}
-                        style={{ width: "100%", marginTop: "10px" }}
-                      />
-                      <br />
-                      <View
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}>
+                    <View style={{ display: "flex", justifyContent: "center" }}>
+                      <form onSubmit={handleSaveAddBanner}>
+                        <TextField
+                          fullWidth
+                          required
+                          type="text"
+                          variant="standard"
+                          id="outlined-number"
+                          value={productName}
+                          label="Product Name"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          onChange={(text) => setProductName(text)}
+                          style={{ width: "100%", marginTop: "10px" }}
+                        />
+                        <br />
                         <View
                           style={{
                             display: "flex",
-                            flexDirection: "column",
-                          }}>
-                          <TextField
-                            fullWidth
-                            required
-                            type="text"
-                            variant="standard"
-                            value={priceDiscount}
-                            label="Discount Price"
-                            onChange={(text) => setPriceDiscount(text)}
-                            style={{ width: "100%", marginTop: "10px" }}
-                          />
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <View
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                            }}
+                          >
+                            <TextField
+                              fullWidth
+                              required
+                              type="text"
+                              variant="standard"
+                              value={priceDiscount}
+                              label="Discount Price"
+                              onChange={(text) => setPriceDiscount(text)}
+                              style={{ width: "100%", marginTop: "10px" }}
+                            />
+                          </View>
+                          <View>
+                            <TextField
+                              fullWidth
+                              required
+                              type="text"
+                              variant="standard"
+                              value={quantity}
+                              label="Quantity"
+                              onChange={(text) => setQuantity(text)}
+                              style={{ width: "100%", marginTop: "10px" }}
+                            />
+                          </View>
                         </View>
-                        <View>
-                          <TextField
-                            fullWidth
-                            required
-                            type="text"
-                            variant="standard"
-                            value={quantity}
-                            label="Quantity"
-                            onChange={(text) => setQuantity(text)}
-                            style={{ width: "100%", marginTop: "10px" }}
-                          />
-                        </View>
-                      </View>
-                      <TextField
-                        fullWidth
-                        required
-                        variant="standard"
-                        type="text"
-                        value={priceOriginal}
-                        label="Original Price"
-                        onChange={(text) => setPriceOriginal(text)}
-                        style={{ width: "100%", marginTop: "10px" }}
-                      />
+                        <TextField
+                          fullWidth
+                          required
+                          variant="standard"
+                          type="text"
+                          value={priceOriginal}
+                          label="Original Price"
+                          onChange={(text) => setPriceOriginal(text)}
+                          style={{ width: "100%", marginTop: "10px" }}
+                        />
 
-                      <TextField
-                        fullWidth
-                        required
-                        variant="standard"
-                        label="Other"
-                        type="text"
-                        value={otherBanner}
-                        onChange={(text) => setOtherBanner(text)}
-                        style={{ width: "100%", marginTop: "10px" }}
-                      />
-                      <Button
-                        variant="contained"
-                        style={{
-                          color: "white",
-                          fontWeight: "600",
-                          fontSize: 14,
-                          backgroundColor: "#072840",
-                          borderRadius: 20,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          textAlign: "center",
-                          padding: 10,
-                          marginTop: 20,
-                          alignSelf:"center",
-                          width:"100%"
-                        }}
-                        type="submit">
-                        continue
-                      </Button>
-                    </form>
+                        <TextField
+                          fullWidth
+                          required
+                          variant="standard"
+                          label="Other"
+                          type="text"
+                          value={otherBanner}
+                          onChange={(text) => setOtherBanner(text)}
+                          style={{ width: "100%", marginTop: "10px" }}
+                        />
+                        <Button
+                          variant="contained"
+                          style={{
+                            color: "white",
+                            fontWeight: "600",
+                            fontSize: 14,
+                            backgroundColor: "#072840",
+                            borderRadius: 20,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            textAlign: "center",
+                            padding: 10,
+                            marginTop: 20,
+                            alignSelf: "center",
+                            width: "100%",
+                          }}
+                          type="submit"
+                        >
+                          continue
+                        </Button>
+                      </form>
                     </View>
-                
                   </View>
                 </View>
               </View>
@@ -1286,7 +1437,8 @@ export default function BusinessAccount() {
             alignItems: "center",
             justifyContent: "center",
             zIndex: 1000,
-          }}>
+          }}
+        >
           <View
             style={{
               width: "60%",
@@ -1294,7 +1446,8 @@ export default function BusinessAccount() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-            }}>
+            }}
+          >
             <TouchableOpacity
               style={{
                 borderRadius: 50,
@@ -1304,7 +1457,8 @@ export default function BusinessAccount() {
                 // height: "7px",
                 //backgroundColor:"green"
               }}
-              onPress={handlePopUp}>
+              onPress={handlePopUp}
+            >
               <AntDesign
                 name="close"
                 size={24}
@@ -1328,7 +1482,8 @@ export default function BusinessAccount() {
                 //paddingTop: 20,
                 height: "20vh",
                 width: "100%",
-              }}>
+              }}
+            >
               <Image
                 source={logo}
                 alt="cropped AMS Shadow Queen Logo BNY-1320x772"
@@ -1342,7 +1497,8 @@ export default function BusinessAccount() {
                 fontSize: 15,
                 marginTop: "-30px",
                 textAlign: "center",
-              }}>
+              }}
+            >
               BUSINESS REGISTRATION AUTHORIZATION
             </Text>
 
@@ -1368,7 +1524,8 @@ export default function BusinessAccount() {
                 width: "80%",
                 display: "flex",
                 justifyContent: "center",
-              }}>
+              }}
+            >
               <Card
                 style={{
                   flexDirection: "column",
@@ -1377,14 +1534,16 @@ export default function BusinessAccount() {
                   width: "35%",
                   padding: 10,
                   margin: 10,
-                }}>
+                }}
+              >
                 <Typography
                   style={{
                     fontWeight: "700",
                     fontSize: 15,
                     marginBottom: 12,
                     textAlign: "center",
-                  }}>
+                  }}
+                >
                   Enhance Trust
                 </Typography>
 
@@ -1403,14 +1562,16 @@ export default function BusinessAccount() {
                   width: "35%",
                   padding: 10,
                   margin: 10,
-                }}>
+                }}
+              >
                 <Typography
                   style={{
                     fontWeight: "700",
                     fontSize: 15,
                     marginBottom: 20,
                     textAlign: "center",
-                  }}>
+                  }}
+                >
                   Review
                 </Typography>
                 <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
@@ -1428,14 +1589,16 @@ export default function BusinessAccount() {
                   width: "35%",
                   padding: 10,
                   margin: 10,
-                }}>
+                }}
+              >
                 <Typography
                   style={{
                     fontWeight: "700",
                     fontSize: 15,
                     marginBottom: 20,
                     textAlign: "center",
-                  }}>
+                  }}
+                >
                   Verification
                 </Typography>
                 <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
@@ -1453,14 +1616,16 @@ export default function BusinessAccount() {
                   width: "35%",
                   padding: 10,
                   margin: 10,
-                }}>
+                }}
+              >
                 <Typography
                   style={{
                     fontWeight: "700",
                     fontSize: 15,
                     marginBottom: 20,
                     textAlign: "center",
-                  }}>
+                  }}
+                >
                   Approval
                 </Typography>
                 <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
@@ -1480,20 +1645,23 @@ export default function BusinessAccount() {
                 paddingTop: 20,
                 paddingBottom: 20,
                 width: "60%",
-              }}>
+              }}
+            >
               <View
                 style={{
                   flexDirection: "column",
                   width: "49%",
                   marginBottom: 10,
-                }}>
+                }}
+              >
                 <Typography
                   style={{
                     fontWeight: "700",
                     fontSize: 15,
                     marginBottom: 20,
                     fontWeight: "bold",
-                  }}>
+                  }}
+                >
                   TIMEFRAME
                 </Typography>
                 <Typography sx={{ marginTop: "-20px" }}>
@@ -1508,14 +1676,16 @@ export default function BusinessAccount() {
                   flexDirection: "column",
                   width: "49%",
                   marginBottom: 10,
-                }}>
+                }}
+              >
                 <Typography
                   style={{
                     fontWeight: "700",
                     fontSize: 15,
                     marginBottom: 20,
                     fontWeight: "bold",
-                  }}>
+                  }}
+                >
                   CONTACT US
                 </Typography>
                 <Typography sx={{ marginTop: "-20px" }}>
@@ -1532,7 +1702,8 @@ export default function BusinessAccount() {
                 padding: 40,
                 height: "40vh",
                 marginBottom: 30,
-              }}>
+              }}
+            >
               <Image
                 source={BusinessAccountPlus}
                 alt="business plus logo"
@@ -1542,14 +1713,16 @@ export default function BusinessAccount() {
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Typography
                   style={{
                     color: "#252b42",
                     fontWeight: "700",
                     fontSize: 32,
                     width: "50%",
-                  }}>
+                  }}
+                >
                   BUSINESS PLUS SUBSCRIPTION
                 </Typography>
 
@@ -1560,14 +1733,16 @@ export default function BusinessAccount() {
                     justifyContent: "center",
                     flexDirection: "column",
                     width: "20%",
-                  }}>
+                  }}
+                >
                   <Typography
                     style={{
                       color: "#23a6f0",
                       fontWeight: "700",
                       fontSize: 40,
                       marginBottom: -10,
-                    }}>
+                    }}
+                  >
                     R150
                   </Typography>
                   <Typography
@@ -1575,7 +1750,8 @@ export default function BusinessAccount() {
                       color: "#b8d9f7",
                       fontWeight: "700",
                       fontSize: 20,
-                    }}>
+                    }}
+                  >
                     Per Month
                   </Typography>
                 </View>
@@ -1587,7 +1763,8 @@ export default function BusinessAccount() {
                   fontSize: 16,
                   paddingTop: 10,
                   paddingBottom: 10,
-                }}>
+                }}
+              >
                 Unlock More Opportunities with Business Plus Subscription
               </Typography>
               <View style={{ flexDirection: "column" }}>
@@ -1598,7 +1775,8 @@ export default function BusinessAccount() {
                     fontSize: 18,
                     display: "flex",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   {" "}
                   <Ionicons
                     name="checkmark-circle"
@@ -1614,7 +1792,8 @@ export default function BusinessAccount() {
                     marginTop: 12,
                     display: "flex",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   {" "}
                   <Ionicons
                     name="checkmark-circle"
@@ -1630,7 +1809,8 @@ export default function BusinessAccount() {
                     marginTop: 12,
                     display: "flex",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   {" "}
                   <Ionicons
                     name="checkmark-circle"
@@ -1649,24 +1829,141 @@ export default function BusinessAccount() {
       <View style={{ display: "flex", flexDirection: "row" }}>
         <View
           style={{
-            width: businessRegistered ? "20%" : "100%",
-            paddingLeft: 30,
-            paddingRight: 30,
+           // width:'100vw',
+             paddingLeft: 30,
+            // paddingRight: 30,
             backgroundColor: "#f5f5f5",
-            justifyContent: "center",
-          }}>
-          <SideNav />
+            alignItems: "flex-start",
+           
+          }}
+        >
+          <Box
+            display="flex"
+            justifyContent="flex-start"
+            alignItems="center"
+            // height="145vh"
+            paddingRight={2}
+          >
+            <Paper
+              elevation={3}
+              style={{
+                padding: "20px",
+                height: "100%",
+                width: "300px",
+                margin: "auto",
+              }}
+            >
+              <Box textAlign="center">
+                <img
+                  src={sara}
+                  alt="User Image"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "50%",
+                    marginTop: "80%",
+                  }}
+                />
+                <Box sx={{ marginTop: "10%" }}>
+                  <Typography variant="h6">SARAH</Typography>
+                  <Typography variant="subtitle1">0123456789</Typography>
+                  <Typography variant="subtitle2">example@gmail.com</Typography>
+                </Box>
+              </Box>
+
+              <Box>
+                <Typography sx={{ textAlign: "center" }}>
+                  123 Vilakazi Street, Orlando West Soweto, 1804, South Africa
+                </Typography>
+              </Box>
+
+              <Box style={{ marginTop: "50%" }}>
+                <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                <Button
+                  style={{ marginLeft: 5, color: "gray" }}
+                  onClick={handleorders}
+                >
+                  Order History
+                </Button>
+              </Box>
+
+              <Box>
+                <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                <Button
+                  style={{ marginLeft: 5, color: "gray" }}
+                  onClick={handlefavorites}
+                >
+                  Favorites
+                </Button>
+              </Box>
+
+              <Box>
+                <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                <Button
+                  style={{ marginLeft: 5, color: "gray" }}
+                  onClick={handleterms}
+                >
+                  Terms and Conditions
+                </Button>
+              </Box>
+
+              <Box sx={{}}>
+                <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                <Button
+                  style={{ marginLeft: 5, color: "gray" }}
+                  onClick={handlepolicy}
+                >
+                  Privacy Policy
+                </Button>
+              </Box>
+
+              <Box
+                sx={{
+                  marginTop: "40px",
+                  backgroundColor: "rgba(266, 255, 255, 0.9)",
+                  textAlign: "center",
+                  padding: {
+                    xs: "10px",
+                    sm: "20px",
+                  },
+                }}
+              >
+                <Button
+                  sx={{
+                    fontWeight: "bolder",
+                    color: "black",
+                    marginTop: "10%",
+                  }}
+                  onClick={handlePress}
+                >
+                  Julian James
+                </Button>
+
+                <Button sx={{ color: "gray", mt: 1, marginTop: "10%" }}>
+                  Alternative Contact
+                </Button>
+              </Box>
+
+              <Box textAlign="center" marginTop="10%">
+                <Button onClick={handleSignOut} style={{ color: "red" }}>
+                  SIGN OUT
+                </Button>
+              </Box>
+            </Paper>
+          </Box>
         </View>
 
         <View
-          style={{ display: businessRegistered ? "" : "none", width: "80%" }}>
+          style={{ width: "70%" }}
+        >
           <View
             style={{
               height: "150px",
               backgroundColor: "black",
               justifyContent: "center",
               alignItems: "center",
-            }}>
+            }}
+          >
             <Image
               source={BlackSilk}
               style={{
@@ -1682,19 +1979,23 @@ export default function BusinessAccount() {
               backgroundColor: "#072840",
               paddingTop: 20,
               paddingLeft: 30,
-            }}>
+            }}
+          >
             <Text
               style={{
                 display: "flex",
                 color: "white",
                 flexDirection: "column",
-              }}>
+              }}
+            >
               <Text
-                style={{ fontWeight: "600", fontSize: 18, marginBottom: -5 }}>
+                style={{ fontWeight: "600", fontSize: 18, marginBottom: -5 }}
+              >
                 BUSINESS
               </Text>
               <Text
-                style={{ fontWeight: "600", fontSize: 30, marginBottom: 5 }}>
+                style={{ fontWeight: "600", fontSize: 30, marginBottom: 5 }}
+              >
                 SECURETECH SOLUTIONS
               </Text>
               <Text style={{ fontWeight: "600", fontSize: 14 }}>
@@ -1702,8 +2003,168 @@ export default function BusinessAccount() {
               </Text>
             </Text>
           </View>
+          {checkOrder ? (<View>
+      <FollowUs />
+      <Navbar />
+      <Container fixed sx={{ height: "85vh" }}>
+        <View
+          style={{
+            marginTop: 50,
+            padding: 10,
+            height: 100,
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          <Typography
+            variant="h5"
+            style={{
+              height: 80,
+              width: 200,
+              marginRight: 12,
+              display: "flex",
+              alignItems: "center",
+              fontWeight: "bold",
+            }}
+          >
+            ORDER HISTORY
+          </Typography>
+          <Typography
+            style={{
+              height: 80,
+              width: 200,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <TextInput
+              style={{
+                borderBottomWidth: 2,
+                borderBottomColor: "lightgray",
+                color: "gray",
+              }}
+              placeholder="Search"
+              placeholderTextColor="gray"
+            />
+          </Typography>
+          <Typography
+            style={{
+              height: 80,
+              width: 200,
+              marginRight: "10px",
+            }}
+          >
+            <View
+              style={{
+                color: "gray",
+                borderBottomWidth: 2,
+                borderBottomColor: "lightgray",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text style={{ color: "gray", marginTop: 25 }}>
+                Please Select
+              </Text>
+              <Icon1
+                name="angle-down"
+                size={20}
+                style={{ marginTop: "28px" }}
+              />
+            </View>
+          </Typography>
+          <Typography
+            style={{
+              height: 50,
+              width: 50,
+              marginTop: 15,
+            }}
+          >
+            <TouchableOpacity>
+              <Icon name="search" size={20} />
+            </TouchableOpacity>
+          </Typography>
+        </View>
 
-          <View
+        <View>
+          {cartData.map((item, index) => (
+            <TouchableOpacity
+              onPress={() => navigateToDeliveryAndChatSystem(item.status)}
+              key={index}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  height: 80,
+                  borderBottomWidth: 2,
+                  borderBottomColor: "#1D1D1D",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingTop: 2,
+                }}
+              >
+                <Image
+                  source={{ uri: item?.image }}
+                  alt="product-image"
+                  style={{
+                    width: "20%",
+                    height: "100%",
+                    // backgroundColor: "#000026",
+                    // backgroundImage: `url(${hdtv})`,
+                  }}
+                />
+                <View style={{ width: "30%", paddingLeft: 10 }}>
+                  <Text
+                    style={{ fontSize: 16, fontWeight: "bold", color: "gray" }}
+                  >
+                    #
+                    {item?.orderId.slice(0, 4) +
+                      Math.floor(Math.random() * 10000)}
+                  </Text>
+                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                    {item?.timestamp.toDateString()}
+                  </Text>
+                </View>
+                <View style={{ width: "30%", paddingLeft: 10 }}>
+                  <Text
+                    style={{ fontSize: 16, fontWeight: "bold", color: "gray" }}
+                  >
+                    Delivered by
+                  </Text>
+                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                    Dilivery Guy
+                  </Text>
+                </View>
+                <View style={{ width: "30%", paddingLeft: 10 }}>
+                  <Text
+                    style={{ fontSize: 16, fontWeight: "bold", color: "gray" }}
+                  >
+                    Status
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "bold",
+                      color:
+                        item.status === "DELIVERED"
+                          ? "green"
+                          : item.status === "ONGOING"
+                          ? "orange"
+                          : "black",
+                    }}
+                  >
+                    {/* {item?.status} */}
+                    Delivered
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </Container>
+      <Footer />
+    </View>) : (<View
           // style={{backgroundColor:"white"}}
           >
             <Card
@@ -1715,7 +2176,8 @@ export default function BusinessAccount() {
                 paddingTop: 30,
                 paddingLeft: 30,
                 // height: "100px",
-              }}>
+              }}
+            >
               <View>
                 <Text style={{ fontWeight: "700", fontSize: 30 }}>
                   PRODUCTS & SERVICES
@@ -1725,7 +2187,8 @@ export default function BusinessAccount() {
                     display: businessAuthorization ? "none" : "",
                     fontWeight: 600,
                     fontSize: 14,
-                  }}>
+                  }}
+                >
                   Please add a minimum of 3 products
                 </Text>
                 <Text
@@ -1740,7 +2203,8 @@ export default function BusinessAccount() {
                     display: businessAuthorization ? "none" : "flex",
                     marginTop: 5,
                     justifyContent: "center",
-                  }}>
+                  }}
+                >
                   AUTHORIZATION PENDING
                 </Text>
               </View>
@@ -1750,7 +2214,8 @@ export default function BusinessAccount() {
                   flexDirection: "row",
                   justifyContent: "center",
                   alignItems: "center",
-                }}>
+                }}
+              >
                 <TouchableOpacity onPress={() => setAddProduct(true)}>
                   <Text
                     style={{
@@ -1765,7 +2230,8 @@ export default function BusinessAccount() {
                       borderRadius: 20,
                       display: !businessAuthorization ? "none" : "flex",
                       marginRight: 20,
-                    }}>
+                    }}
+                  >
                     ADD PRODUCT
                   </Text>
                 </TouchableOpacity>
@@ -1781,7 +2247,8 @@ export default function BusinessAccount() {
                     paddingRight: 25,
                     borderRadius: 20,
                     display: "flex",
-                  }}>
+                  }}
+                >
                   BUSINESS PLUS R150/PM
                 </Text>
               </View>
@@ -1798,7 +2265,8 @@ export default function BusinessAccount() {
                   // paddingBottom: 30,
                   // paddingTop: 30,
                   display: "flex",
-                }}>
+                }}
+              >
                 {bannerListLength > -1 ? (
                   <View
                     style={{
@@ -1810,10 +2278,12 @@ export default function BusinessAccount() {
                       alignItems: "center",
                       padding: 15,
                       flex: 1,
-                    }}>
+                    }}
+                  >
                     <TouchableOpacity
                       onPress={decrement}
-                      style={{ marginRight: 20 }}>
+                      style={{ marginRight: 20 }}
+                    >
                       <AntDesign name="left" size={24} color="white" />
                     </TouchableOpacity>
                     <View
@@ -1821,13 +2291,15 @@ export default function BusinessAccount() {
                         flex: 1,
                         flexDirection: "column",
                         alignItems: "flex-start",
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           fontSize: 15,
                           fontWeight: 600,
                           color: "white",
-                        }}>
+                        }}
+                      >
                         {bannerList[bannerListIndex].other}
                       </Text>
                       <Text
@@ -1835,7 +2307,8 @@ export default function BusinessAccount() {
                           fontSize: 25,
                           fontWeight: 700,
                           color: "white",
-                        }}>
+                        }}
+                      >
                         {bannerList[bannerListIndex].productName}
                       </Text>
                       <Text>
@@ -1844,7 +2317,8 @@ export default function BusinessAccount() {
                             fontSize: 18,
                             fontWeight: 700,
                             color: "#c29920",
-                          }}>
+                          }}
+                        >
                           R{bannerList[bannerListIndex].priceDiscount}
                         </Text>{" "}
                         <Text
@@ -1852,7 +2326,8 @@ export default function BusinessAccount() {
                             fontSize: 15,
                             fontWeight: 400,
                             color: "white",
-                          }}>
+                          }}
+                        >
                           R{bannerList[bannerListIndex].priceOriginal}
                         </Text>
                       </Text>
@@ -1877,7 +2352,8 @@ export default function BusinessAccount() {
                     fontWeight: 700,
                     marginLeft: 10,
                   }}
-                  onPress={() => setBannerModal(true)}>
+                  onPress={() => setBannerModal(true)}
+                >
                   <Text>ADD BANNER</Text>
                 </TouchableOpacity>
               </Card>
@@ -1889,14 +2365,16 @@ export default function BusinessAccount() {
                   flexDirection: "row",
                   paddingRight: 10,
                   marginBottom: 20,
-                }}>
+                }}
+              >
                 <View style={{ flex: 1 }}>
                   <View
                     style={{
                       margin: 50,
                       flexDirection: "row",
                       flexWrap: "wrap",
-                    }}>
+                    }}
+                  >
                     {list.map((item, index) => (
                       <Card2 key={index} open={() => setEditModal(true)} />
                     ))}
@@ -1920,7 +2398,8 @@ export default function BusinessAccount() {
                       alignItems: "center",
                       height: 500,
                       //   zIndex:500,
-                    }}>
+                    }}
+                  >
                     {/* <TouchableOpacity
                  // onPress={setBusinessAuthorization(true)}
                   > */}
@@ -1937,7 +2416,8 @@ export default function BusinessAccount() {
                         fontWeight: "700",
                         fontSize: 32,
                         textAlign: "center",
-                      }}>
+                      }}
+                    >
                       <TouchableOpacity onPress={() => setPaymentModal(true)}>
                         <Text>BUSINESS PLUS SUBSCRIPTION</Text>
                       </TouchableOpacity>
@@ -1950,7 +2430,8 @@ export default function BusinessAccount() {
                         textAlign: "center",
                         paddingTop: 10,
                         paddingBottom: 10,
-                      }}>
+                      }}
+                    >
                       Unlock More Opportunities with Business Plus Subscription
                     </Text>
                     <View
@@ -1958,14 +2439,16 @@ export default function BusinessAccount() {
                         flexDirection: "column",
                         alignItems: "center",
                         justifyContent: "center",
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           color: "#23a6f0",
                           fontWeight: "700",
                           fontSize: 40,
                           marginBottom: -10,
-                        }}>
+                        }}
+                      >
                         R150
                       </Text>
                       <Text
@@ -1973,7 +2456,8 @@ export default function BusinessAccount() {
                           color: "#b8d9f7",
                           fontWeight: "700",
                           fontSize: 20,
-                        }}>
+                        }}
+                      >
                         Per Month
                       </Text>
                     </View>
@@ -1985,7 +2469,8 @@ export default function BusinessAccount() {
                           fontSize: 18,
                           flexDirection: "row",
                           alignItems: "center",
-                        }}>
+                        }}
+                      >
                         {" "}
                         <Ionicons
                           name="checkmark-circle"
@@ -2001,7 +2486,8 @@ export default function BusinessAccount() {
                           marginTop: 15,
                           flexDirection: "row",
                           alignItems: "center",
-                        }}>
+                        }}
+                      >
                         {" "}
                         <Ionicons
                           name="checkmark-circle"
@@ -2017,7 +2503,8 @@ export default function BusinessAccount() {
                           marginTop: 15,
                           flexDirection: "row",
                           alignItems: "center",
-                        }}>
+                        }}
+                      >
                         {" "}
                         <Ionicons
                           name="checkmark-circle"
@@ -2031,7 +2518,9 @@ export default function BusinessAccount() {
                 )}
               </View>
             </ScrollView>
-          </View>
+          </View>)}
+
+          
         </View>
       </View>
       <Footer />

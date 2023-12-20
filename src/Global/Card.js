@@ -6,26 +6,88 @@ import {
   Typography,
   Box,
   Button,
+  Snackbar,
 } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
+
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
 import Skeleton from "@mui/material/Skeleton";
 import { Text, TouchableOpacity, View } from "react-native";
-import { firestore } from "../config";
+import { firestore, auth } from "../config";
 import { useNavigation } from "@react-navigation/native";
-
 const ProductCard = ({ productId }) => {
   const navigation = useNavigation();
-  const [isRed, setIsRed] = useState(true);
+  const [isRed, setIsRed] = useState(false);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [uid, setUid] = useState(null);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [showSnackbar1, setShowSnackbar1] = useState(false);
 
   const navigateProductDetails = () => {
     navigation.navigate("ProductDetails", { productId });
   };
 
-  const toggleHeart = () => {
-    setIsRed((prevState) => !prevState);
+  const toggleHeart = async () => {
+    try {
+      const favCollectionRef = firestore.collection("Favourites");
+      const favDocRef = favCollectionRef.doc(productId);
+
+      const favDoc = await favDocRef.get();
+
+      if (favDoc.exists) {
+        // Document exists, remove from Favourites
+        await favDocRef.delete();
+        setIsRed(false);
+      } else {
+        // Document does not exist, add to Favourites
+        await favDocRef.set({
+          productId: productId,
+          uid: uid,
+          productName: product.name,
+          description: product.description,
+          price: product.price,
+          // serverTimestamp: firestore.FieldValue.serverTimestamp(),
+          businessName: product.businessName,
+          company: product.company,
+          brand: product.brand,
+          // Add other relevant fields
+        });
+        setIsRed(true);
+        setShowSnackbar(true);
+      }
+    } catch (error) {
+      console.error("Error toggling heart:", error);
+    }
+  };
+
+  const addToCart = async () => {
+    try {
+      const cartCollectionRef = firestore.collection("Cart");
+      await cartCollectionRef.add({
+        uid: uid,
+        productId: productId,
+        description: product.description,
+        price: product.price,
+        name: product.name,
+        quantity: 1,
+        image:
+          product.images && product.images.length > 0 ? product.images[0] : "",
+        // Add other relevant fields
+      });
+      setShowSnackbar1(true);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  };
+
+  const handleSnackbarClose1 = () => {
+    setShowSnackbar1(false);
+  };
+
+  const handleSnackbarClose = () => {
+    setShowSnackbar(false);
   };
 
   useEffect(() => {
@@ -37,7 +99,6 @@ const ProductCard = ({ productId }) => {
           .get();
         const productData = productDoc.data();
         console.log("Fetched product data:", productData);
-
         setProduct(productData);
       } catch (error) {
         console.error("Error fetching product data:", error);
@@ -48,6 +109,19 @@ const ProductCard = ({ productId }) => {
 
     fetchProductData();
   }, [productId]);
+
+  useEffect(() => {
+    const authObserver = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUid(user.uid);
+      }
+    });
+
+    return () => {
+      // Unsubscribe from the auth state observer when the component unmounts
+      authObserver();
+    };
+  }, []);
 
   if (loading) {
     // Render a loading state using Skeleton
@@ -140,11 +214,26 @@ const ProductCard = ({ productId }) => {
               sale
             </Typography>
           </Box>
+          {/* <Container> */}
+          <Snackbar
+            open={showSnackbar}
+            autoHideDuration={3000} // Adjust as needed
+            onClose={handleSnackbarClose}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }} // Set position to top center
+          >
+            <MuiAlert
+              onClose={handleSnackbarClose}
+              severity="success"
+              sx={{ width: "100%" }}>
+              Product added to favorites!
+            </MuiAlert>
+          </Snackbar>
           <Box
             style={{
               paddingHorizontal: 10,
               position: "absolute",
               bottom: 30,
+              left: 80,
               width: "6vw",
               display: "flex",
               flexDirection: "row",
@@ -164,7 +253,20 @@ const ProductCard = ({ productId }) => {
                 color={isRed ? "red" : "black"}
               />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={addToCart}>
+              <Snackbar
+                open={showSnackbar1}
+                autoHideDuration={3000} // Adjust as needed
+                onClose={handleSnackbarClose1}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }} // Set position to top center
+              >
+                <MuiAlert
+                  onClose={handleSnackbarClose1}
+                  severity="success"
+                  sx={{ width: "100%" }}>
+                  Product added to Cart!
+                </MuiAlert>
+              </Snackbar>
               <Icon
                 name="shopping-cart"
                 size={20}
@@ -177,6 +279,7 @@ const ProductCard = ({ productId }) => {
               />
             </TouchableOpacity>
           </Box>
+          {/* </Container> */}
         </Box>
         <View
           style={{

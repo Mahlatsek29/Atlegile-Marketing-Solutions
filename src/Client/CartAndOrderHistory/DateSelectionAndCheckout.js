@@ -322,6 +322,12 @@ const DateSelectionAndCheckout = () => {
     };
     gettingRate();
   }, []);
+  // const data = [
+  //   { product: "HD TV", item: 1, amount: 4500.0 },
+  //   { product: "HD TV", item: 1, amount: 4500.0 },
+  //   { product: "HD TV", item: 1, amount: 4500.0 },
+  //   { product: "HD TV", item: 1, amount: 4500.0 },
+  // ];
 
   const navigateToLanding = () => {
     navigation.navigate("Landing");
@@ -568,12 +574,6 @@ const DateSelectionAndCheckout = () => {
                 >
                   DELIVERY DETAILS
                 </Typography>
-                <Typography style={{ color: "#B7B9BC" }}>
-                  Delivery Address
-                </Typography>
-                <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                  564 Zamakulungisa St, Emdeni South, Soweto, 1861
-                </Typography>
                 <View
                   style={{
                     marginTop: "10px",
@@ -581,15 +581,15 @@ const DateSelectionAndCheckout = () => {
                     borderBottomColor: "lightgrey",
                   }}
                 ></View>
-                {/* <View
+                <View
                   style={{
                     // backgroundColor: "grey",
                     height: 150,
                     marginTop: 16,
                     borderRadius: 25,
                     backgroundImage: `url(${mapImage})`,
-                  }}></View> */}
-
+                  }}
+                ></View>
                 <Typography style={{ color: "#B7B9BC", marginTop: "14px" }}>
                   Delivery Notes
                 </Typography>

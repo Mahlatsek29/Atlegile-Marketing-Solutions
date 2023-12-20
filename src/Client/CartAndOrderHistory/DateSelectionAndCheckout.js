@@ -15,7 +15,14 @@ import { Footer } from "../../Global/Footer";
 import mapImage from "../../Global/images/mapImage.png";
 import hdtv from "../../Global/images/hdtv.jpg";
 import axios from "axios";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import {
+  collection,
+  query,
+  onSnapshot,
+  where,
+  getDocs,
+} from "firebase/firestore";
+// import { auth, firestore } from "../config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firestore } from "../../config";
 import { initializeApp } from "firebase/app";
@@ -29,8 +36,9 @@ import {
   // collection,
   serverTimestamp,
 } from "firebase/firestore";
-import firebaseConfig from "../../config";
-import { firebase, auth } from "../../config";
+// import firebaseConfig from "../../config";
+// export { firebase, auth, firestore, storage, db };
+import { firebase, auth, db } from "../../config";
 
 /*
 import React, { Component } from 'react';
@@ -137,11 +145,28 @@ const DateSelectionAndCheckout = () => {
   const [deliveryAmount, setDeliveryAmount] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [cartData, setCartData] = useState([]);
+  //  const [userData, setUserData] = useState(null);
+  const [cartCount, setCartCount] = useState(2);
+  const [data, setData] = useState([
+    "Ben",
+    "Paul",
+    "Sibusiso",
+    "Mpho",
+    "Ristar",
+    "David",
+    "Tshepo",
+    "Linda",
+    "Thobile",
+  ]);
   const [newArr, setNewArr] = useState([]);
   const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState(null);
+
   const [rates, setRates] = useState([]);
+  const [userData, setUserData] = useState(null);
   useEffect(() => {
     const auth = getAuth();
+    setUserId(auth.currentUser.uid);
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
     });
@@ -159,6 +184,9 @@ const DateSelectionAndCheckout = () => {
     //   return navigation.navigate("SignIn");
     // }
     // setNewArr(cartData);
+    console.log("deliveryGuy : ", data[Math.floor(Math.random() * 10)]);
+    console.log("name : ", userData?.name);
+
     try {
       const cartCollectionRef = collection(firestore, "Orders");
 
@@ -168,14 +196,13 @@ const DateSelectionAndCheckout = () => {
         deliveryAddress: "123 Sade Street, Johannesburg Gauteng 1658",
         deliveryDate: "November 28, 2023 at 3:16:31 PM UTC+2",
         deliveryFee: 150,
-        deliveryGuy: "Ben",
-        name: "Mandy",
-        // orderNumber: `#${
-        //   cartData[0]?.productId?.slice(0, 4) +
-        //   Math.floor(Math.random() * 10000)
-        // }`,
-        orderSummary: 3000,
-        // totalAmount: orderTotal,
+        deliveryGuy: data[Math.floor(Math.random() * 10)],
+        name: userData?.name,
+        orderNumber: `#${
+          newArr[0]?.productId?.slice(0, 4) + Math.floor(Math.random() * 10000)
+        }`,
+        // orderSummary: 3000,
+        totalAmount: orderTotal,
         items: [...newArr],
       });
 
@@ -186,8 +213,8 @@ const DateSelectionAndCheckout = () => {
     }
   };
 
-  const app = initializeApp(firebaseConfig);
-  const firestore = getFirestore(app);
+  // const app = initializeApp(firebaseConfig);
+  // const firestore = getFirestore(app);
 
   const fetchCartData = async () => {
     if (!user) {
@@ -195,7 +222,7 @@ const DateSelectionAndCheckout = () => {
       return;
     }
 
-    const cartCollectionRef = collection(firestore, "Cart");
+    const cartCollectionRef = collection(db, "Cart");
     const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
     try {
@@ -254,6 +281,97 @@ const DateSelectionAndCheckout = () => {
     setSelectedIndex(index);
   };
   const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
+  // useEffect(() => {
+  //   const fetchUsers = () => {
+  //     // const userDocRef = firestore.collection("Users").doc(userId);
+  //     console.log("Hi here");
+  //     const userDocRef = collection(firestore, "Users");
+  //     const q = query(userDocRef, where("userid", "==", userId));
+
+  //     onSnapshot(
+  //       q,
+  //       (querySnapshot) => {
+  //         // querySnapshot?.docs.forEach((doc)
+  //         querySnapshot?.docs.forEach((doc) => {
+  //           // console.log("see the data : ", doc.data());
+  //           // let dataCol = [];
+  //           // dataCol.push(doc.data());
+  //           const data = doc.data();
+  //           // console.log("see the data : ", doc.data());
+  //           // let dataCol = [];
+  //           // dataCol.push(doc.data());
+  //           // setData(dataCol);
+  //           console.log("data", data);
+  //           setUserData(data);
+  //           console.log("Hi here 2");
+  //           // setName(data?.artistName);
+  //           // setImage({ uri: data?.photoUrl });
+  //           // setDateOfBirth(data?.dateofbirth);
+  //           // setBio(data?.biography);
+  //           // setSignature({ uri: data?.signature });
+  //         });
+  //       },
+  //       (error) => {
+  //         console.log("error : ", error);
+  //       }
+  //     );
+
+  //     // const unsubscribeSnapshot = q.onSnapshot((doc) => {
+  //     //   if (doc.exists) {
+  //     //     setUserData(doc.data());
+  //     //     console.log("Hi here");
+  //     //     console.log("Users Data col : ", userData);
+  //     //   } else {
+  //     //     console.error("User data not found");
+  //     //   }
+  //     // });
+  //     // unsubscribeSnapshot();
+  //   };
+
+  //   fetchUsers();
+  //   console.log("Users Data : ", userData);
+  //   console.log("one user : ", userId);
+  // }, []);
+  useEffect(() => {
+    const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const cartCollectionRef = firestore
+          .collection("Cart")
+          .where("uid", "==", user.uid);
+
+        const unsubscribeCartSnapshot = cartCollectionRef.onSnapshot(
+          (snapshot) => {
+            const itemCount = snapshot.docs.length;
+            setCartCount(itemCount);
+          }
+        );
+
+        const userDocRef = firestore.collection("Users").doc(user.uid);
+        const unsubscribeSnapshot = userDocRef.onSnapshot((doc) => {
+          if (doc.exists) {
+            setUserData(doc.data());
+            console.log("data from users : ", doc.data());
+          } else {
+            console.error("User data not found");
+          }
+        });
+
+        return () => {
+          unsubscribeCartSnapshot();
+          unsubscribeSnapshot();
+        };
+      } else {
+        setUserData(null);
+        setCartCount(0); // Reset cart count when user is not authenticated
+      }
+    });
+
+    return () => {
+      unsubscribeAuth();
+    };
+  }, []);
+  console.log("UserData : ", userData);
+
   useEffect(() => {
     const gettingRate = async () => {
       const theRates = {
@@ -322,12 +440,6 @@ const DateSelectionAndCheckout = () => {
     };
     gettingRate();
   }, []);
-  // const data = [
-  //   { product: "HD TV", item: 1, amount: 4500.0 },
-  //   { product: "HD TV", item: 1, amount: 4500.0 },
-  //   { product: "HD TV", item: 1, amount: 4500.0 },
-  //   { product: "HD TV", item: 1, amount: 4500.0 },
-  // ];
 
   const navigateToLanding = () => {
     navigation.navigate("Landing");

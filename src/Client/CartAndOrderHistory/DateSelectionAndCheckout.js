@@ -15,127 +15,9 @@ import { Footer } from "../../Global/Footer";
 import mapImage from "../../Global/images/mapImage.png";
 import hdtv from "../../Global/images/hdtv.jpg";
 import axios from "axios";
-import {
-  collection,
-  query,
-  onSnapshot,
-  where,
-  getDocs,
-} from "firebase/firestore";
-// import { auth, firestore } from "../config";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firestore } from "../../config";
-import { initializeApp } from "firebase/app";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  updateDoc,
-  setDoc,
-  addDoc,
-  // collection,
-  serverTimestamp,
-} from "firebase/firestore";
-// import firebaseConfig from "../../config";
-// export { firebase, auth, firestore, storage, db };
-import { firebase, auth, db } from "../../config";
-
-/*
-import React, { Component } from 'react';
-import { Platform } from 'react-native';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-
-export default class Search extends Component {
-  state = {
-    searchFocused: false,
-  };
-
-  render() {
-    const { searchFocused } = this.state;
-    const { onLocationSelected } = this.props;
-
-    return (
-      <GooglePlacesAutocomplete
-        placeholder="Para onde?"
-        placeholderTextColor="#333"
-        onPress={onLocationSelected}
-        query={{
-          key: 'AIzaSyAGs6J8iZJ7mZeP6de9SyenOcA6MwFrwJc',
-          language: 'pt',
-        }}
-        textInputProps={{
-          onFocus: () => {
-            this.setState({ searchFocused: true });
-          },
-          onBlur: () => {
-            this.setState({ searchFocused: false });
-          },
-          autoCapitalize: 'none',
-          autoCorrect: false,
-        }}
-        listViewDisplayed={searchFocused}
-        fetchDetails
-        enablePoweredByContainer={false}
-        styles={{
-          container: {
-            position: 'absolute',
-            top: Platform.select({ ios: 60, android: 40 }),
-            width: '100%',
-          },
-          textInputContainer: {
-            flex: 1,
-            backgroundColor: 'transparent',
-            height: 54,
-            marginHorizontal: 20,
-            borderTopWidth: 0,
-            borderBottomWidth: 0,
-          },
-          textInput: {
-            height: 54,
-            margin: 0,
-            borderRadius: 0,
-            paddingTop: 0,
-            paddingBottom: 0,
-            paddingLeft: 20,
-            paddingRight: 20,
-            marginTop: 0,
-            marginLeft: 0,
-            marginRight: 0,
-            elevation: 5,
-            shadowColor: '#000',
-            shadowOpacity: 0.1,
-            shadowOffset: { x: 0, y: 0 },
-            shadowRadius: 15,
-            borderWidth: 1,
-            borderColor: '#DDD',
-            fontSize: 18,
-          },
-          listView: {
-            borderWidth: 1,
-            borderColor: '#DDD',
-            backgroundColor: '#FFF',
-            marginHorizontal: 20,
-            elevation: 5,
-            shadowColor: '#000',
-            shadowOpacity: 0.1,
-            shadowOffset: { x: 0, y: 0 },
-            shadowRadius: 15,
-            marginTop: 10,
-          },
-          description: {
-            fontSize: 16,
-          },
-          row: {
-            padding: 17,
-            height: 58,
-          },
-        }}
-      />
-    );
-  }
-}
-
-*/
 
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
@@ -145,28 +27,10 @@ const DateSelectionAndCheckout = () => {
   const [deliveryAmount, setDeliveryAmount] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [cartData, setCartData] = useState([]);
-  //  const [userData, setUserData] = useState(null);
-  const [cartCount, setCartCount] = useState(2);
-  const [data, setData] = useState([
-    "Ben",
-    "Paul",
-    "Sibusiso",
-    "Mpho",
-    "Ristar",
-    "David",
-    "Tshepo",
-    "Linda",
-    "Thobile",
-  ]);
-  const [newArr, setNewArr] = useState([]);
   const [user, setUser] = useState(null);
-  const [userId, setUserId] = useState(null);
-
   const [rates, setRates] = useState([]);
-  const [userData, setUserData] = useState(null);
   useEffect(() => {
     const auth = getAuth();
-    setUserId(auth.currentUser.uid);
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
     });
@@ -178,43 +42,6 @@ const DateSelectionAndCheckout = () => {
   // using local host URL for now which routes back to the initial screen but when hosted we will use the host URL
   const url = "http://localhost:19006";
   // const url2 = "https://atlegile-marketing-solutions.vercel.app/Reciept";
-  const handleAddToCart = async () => {
-    // if (!user) {
-    //   alert("Please login first");
-    //   return navigation.navigate("SignIn");
-    // }
-    // setNewArr(cartData);
-    console.log("deliveryGuy : ", data[Math.floor(Math.random() * 10)]);
-    console.log("name : ", userData?.name);
-
-    try {
-      const cartCollectionRef = collection(firestore, "Orders");
-
-      // Add a new document with user information, product ID, product price, quantity, and image
-      await addDoc(cartCollectionRef, {
-        createdAt: "November 28, 2023 at 3:16:31 PM UTC+2",
-        deliveryAddress: "123 Sade Street, Johannesburg Gauteng 1658",
-        deliveryDate: "November 28, 2023 at 3:16:31 PM UTC+2",
-        deliveryFee: 150,
-        deliveryGuy: data[Math.floor(Math.random() * 10)],
-        name: userData?.name,
-        orderNumber: `#${
-          newArr[0]?.productId?.slice(0, 4) + Math.floor(Math.random() * 10000)
-        }`,
-        // orderSummary: 3000,
-        totalAmount: orderTotal,
-        items: [...newArr],
-      });
-
-      console.log("Item added to the cart!");
-      // navigation.navigate("DateSelectionAndCheckout");
-    } catch (error) {
-      console.error("Error adding item to cart:", error);
-    }
-  };
-
-  // const app = initializeApp(firebaseConfig);
-  // const firestore = getFirestore(app);
 
   const fetchCartData = async () => {
     if (!user) {
@@ -222,15 +49,13 @@ const DateSelectionAndCheckout = () => {
       return;
     }
 
-    const cartCollectionRef = collection(db, "Cart");
+    const cartCollectionRef = collection(firestore, "Cart");
     const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
     try {
       const querySnapshot = await getDocs(q);
 
       const cartItems = [];
-      const cartProducts = [];
-
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         cartItems.push({
@@ -242,20 +67,9 @@ const DateSelectionAndCheckout = () => {
           name: data.name,
           // Add other relevant fields from your Cart collection
         });
-        cartProducts.push({
-          id: doc.id,
-          productId: data.productId,
-          timestamp: data.timestamp,
-          quantity: data.quantity,
-          amount: data.price * data.quantity,
-          image: data.image,
-          name: data.name,
-          // Add other relevant fields from your Cart collection
-        });
       });
 
       setCartData(cartItems);
-      setNewArr(cartProducts);
     } catch (error) {
       console.error("Error fetching cart data:", error);
     }
@@ -281,97 +95,6 @@ const DateSelectionAndCheckout = () => {
     setSelectedIndex(index);
   };
   const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
-  // useEffect(() => {
-  //   const fetchUsers = () => {
-  //     // const userDocRef = firestore.collection("Users").doc(userId);
-  //     console.log("Hi here");
-  //     const userDocRef = collection(firestore, "Users");
-  //     const q = query(userDocRef, where("userid", "==", userId));
-
-  //     onSnapshot(
-  //       q,
-  //       (querySnapshot) => {
-  //         // querySnapshot?.docs.forEach((doc)
-  //         querySnapshot?.docs.forEach((doc) => {
-  //           // console.log("see the data : ", doc.data());
-  //           // let dataCol = [];
-  //           // dataCol.push(doc.data());
-  //           const data = doc.data();
-  //           // console.log("see the data : ", doc.data());
-  //           // let dataCol = [];
-  //           // dataCol.push(doc.data());
-  //           // setData(dataCol);
-  //           console.log("data", data);
-  //           setUserData(data);
-  //           console.log("Hi here 2");
-  //           // setName(data?.artistName);
-  //           // setImage({ uri: data?.photoUrl });
-  //           // setDateOfBirth(data?.dateofbirth);
-  //           // setBio(data?.biography);
-  //           // setSignature({ uri: data?.signature });
-  //         });
-  //       },
-  //       (error) => {
-  //         console.log("error : ", error);
-  //       }
-  //     );
-
-  //     // const unsubscribeSnapshot = q.onSnapshot((doc) => {
-  //     //   if (doc.exists) {
-  //     //     setUserData(doc.data());
-  //     //     console.log("Hi here");
-  //     //     console.log("Users Data col : ", userData);
-  //     //   } else {
-  //     //     console.error("User data not found");
-  //     //   }
-  //     // });
-  //     // unsubscribeSnapshot();
-  //   };
-
-  //   fetchUsers();
-  //   console.log("Users Data : ", userData);
-  //   console.log("one user : ", userId);
-  // }, []);
-  useEffect(() => {
-    const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        const cartCollectionRef = firestore
-          .collection("Cart")
-          .where("uid", "==", user.uid);
-
-        const unsubscribeCartSnapshot = cartCollectionRef.onSnapshot(
-          (snapshot) => {
-            const itemCount = snapshot.docs.length;
-            setCartCount(itemCount);
-          }
-        );
-
-        const userDocRef = firestore.collection("Users").doc(user.uid);
-        const unsubscribeSnapshot = userDocRef.onSnapshot((doc) => {
-          if (doc.exists) {
-            setUserData(doc.data());
-            console.log("data from users : ", doc.data());
-          } else {
-            console.error("User data not found");
-          }
-        });
-
-        return () => {
-          unsubscribeCartSnapshot();
-          unsubscribeSnapshot();
-        };
-      } else {
-        setUserData(null);
-        setCartCount(0); // Reset cart count when user is not authenticated
-      }
-    });
-
-    return () => {
-      unsubscribeAuth();
-    };
-  }, []);
-  console.log("UserData : ", userData);
-
   useEffect(() => {
     const gettingRate = async () => {
       const theRates = {
@@ -440,7 +163,78 @@ const DateSelectionAndCheckout = () => {
     };
     gettingRate();
   }, []);
+  const AddressData = [
+    {
+      address: " 564 Zamakulungisa St, Emdeni South ",
+      Township: "Soweto",
+      PoBox: 1861,
+    },
+    {
+      address: " 564 Zamakulungisa St, South ",
+      Township: "Soweto",
+      PoBox: 1861,
+    },
+    {
+      address: " 564 Zamakulungisa St, Emdeni ",
+      Township: "Soweto",
+      PoBox: 1861,
+    },
+    {
+      address: " 564 Zamakulungisa St, Emdeni South ",
+      Township: "Soweto",
+      PoBox: 1861,
+    },
+    {
+      address: " 564 Zamakulungisa St, Emdeni South ",
+      Township: "Soweto",
+      PoBox: 1861,
+    },
+    {
+      address: " 564 Zamakulungisa St, Emdeni South ",
+      Township: "Soweto",
+      PoBox: 1861,
+    },
+    {
+      address: " 564 Zamakulungisa St, Emdeni South ",
+      Township: "Soweto",
+      PoBox: 1861,
+    },
+  ];
+  const AddressComponent = ({ address, township, poBox, onPress }) => (
+    <TouchableOpacity onPress={onPress}>
+      <View
+        style={{
+          width: "100%",
+          borderBottomWidth: 2,
+          borderBottomColor: "#1D1D1D",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent:"flex-start",
+          paddingTop: 2,
+          flexWrap: "wrap",
+        }}
+      >
+        <Text style={{ fontSize: 18, fontWeight: "bold",color:'white' }}>{address},</Text>
+        <Text style={{ fontSize: 18, fontWeight: "bold",color:'white' }}>{township},</Text>
+        <Text style={{ fontSize: 18, fontWeight: "bold",color:'white' }}>{poBox}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+  const AddressList = ({ data, onAddressPress }) => (
+  <ScrollView style={{ height: 250,padding:10, }} showsVerticalScrollIndicator={false}>
+    {data.map((item, index) => (
+      <AddressComponent
+        key={index}
+        address={item.address}
+        township={item.Township}
+        poBox={item.PoBox}
+        onPress={() => onAddressPress(item)}
+      />
+    ))}
+  </ScrollView>
+);
 
+  const [selectedAddress, setSelectedAddress] = useState(AddressData[0]);
   const navigateToLanding = () => {
     navigation.navigate("Landing");
   };
@@ -469,7 +263,6 @@ const DateSelectionAndCheckout = () => {
   }, [cartData]);
 
   const handlePayment = () => {
-    handleAddToCart();
     // Construct the payment URL with the necessary parameters
     const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
     orderTotal.toFixed(2) + // Use the calculated orderTotal here
@@ -688,35 +481,47 @@ const DateSelectionAndCheckout = () => {
                 </Typography>
                 <View
                   style={{
-                    marginTop: "10px",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "lightgrey",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
-                ></View>
-                <View
-                  style={{
-                    // backgroundColor: "grey",
-                    height: 150,
-                    marginTop: 16,
-                    borderRadius: 25,
-                    backgroundImage: `url(${mapImage})`,
-                  }}
-                ></View>
-                <Typography style={{ color: "#B7B9BC", marginTop: "14px" }}>
-                  Delivery Notes
-                </Typography>
-                <Typography style={{ color: "#FFFFFF" }}>
-                  In essence, AMS aims to not only help businesses grow but also
-                  make a positive image on society by nurturing local talent and
-                  fostering sustainable busibess growth.
-                </Typography>
-                <View
-                  style={{
-                    marginTop: "10px",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "lightgrey",
-                  }}
-                ></View>
+                >
+                  <Typography style={{ color: "#B7B9BC" }}>
+                    Delivery Address
+                  </Typography>
+                  <TouchableOpacity
+                    style={{
+                      color: "#B7B9BC",
+                      border: "1px white solid",
+                      padding: 10,
+                      borderRadius: 5,
+                    }}
+                  >
+                    +
+                  </TouchableOpacity>
+                </View>
+
+                <View>
+                  <Typography variant="h6" style={{ color: "#FFFFFF" }}>
+                    {`${selectedAddress.address}, ${selectedAddress.Township}, ${selectedAddress.PoBox}`}
+                  </Typography>
+
+                  <View
+                    style={{
+                      marginTop: "10px",
+                      borderBottomWidth: 1,
+                      borderBottomColor: "lightgrey",
+                    }}
+                  ></View>
+
+                  <AddressList
+                    data={AddressData}
+                    onAddressPress={(selectedItem) =>
+                      setSelectedAddress(selectedItem)
+                    }
+                  />
+                </View>
                 <Typography style={{ color: "#FFFFFF", marginTop: "14px" }}>
                   Select Delivery date
                 </Typography>

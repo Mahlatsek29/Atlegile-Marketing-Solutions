@@ -61,7 +61,6 @@ import { PaperTextInput } from "react-native-paper";
 import { Flag } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
 
-
 import Icon from "react-native-vector-icons/Feather";
 import Icon1 from "react-native-vector-icons/FontAwesome";
 import Navbar from "../../Global/Navbar";
@@ -110,7 +109,7 @@ export default function BusinessAccount() {
   const [showWebView, setShowWebView] = useState(false);
   const [cartData, setCartData] = useState([]);
   const [user, setUser] = useState(null);
-  const [checkOrder,setCheckOrder] = useState(false)
+  const [checkOrder, setCheckOrder] = useState(false);
   const handlePaymentButtonPress = () => {
     const paymentUrl =
       "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
@@ -143,9 +142,7 @@ export default function BusinessAccount() {
   };
 
   const handleorders = () => {
-  
-      setCheckOrder(true)
-    
+    setCheckOrder(true);
   };
 
   const handlefavorites = () => {
@@ -1829,12 +1826,11 @@ export default function BusinessAccount() {
       <View style={{ display: "flex", flexDirection: "row" }}>
         <View
           style={{
-           // width:'100vw',
-             paddingLeft: 30,
+            // width:'100vw',
+            paddingLeft: 30,
             // paddingRight: 30,
             backgroundColor: "#f5f5f5",
             alignItems: "flex-start",
-           
           }}
         >
           <Box
@@ -1883,7 +1879,7 @@ export default function BusinessAccount() {
                   style={{ marginLeft: 5, color: "gray" }}
                   onClick={handleorders}
                 >
-                  Order History
+                  Orders
                 </Button>
               </Box>
 
@@ -1953,9 +1949,7 @@ export default function BusinessAccount() {
           </Box>
         </View>
 
-        <View
-          style={{ width: "70%" }}
-        >
+        <View style={{ width: "70%" }}>
           <View
             style={{
               height: "150px",
@@ -2003,220 +1997,252 @@ export default function BusinessAccount() {
               </Text>
             </Text>
           </View>
-          {checkOrder ? (<View>
-      <FollowUs />
-      <Navbar />
-      <Container fixed sx={{ height: "85vh" }}>
-        <View
-          style={{
-            marginTop: 50,
-            padding: 10,
-            height: 100,
-            display: "flex",
-            flexDirection: "row",
-          }}
-        >
-          <Typography
-            variant="h5"
-            style={{
-              height: 80,
-              width: 200,
-              marginRight: 12,
-              display: "flex",
-              alignItems: "center",
-              fontWeight: "bold",
-            }}
-          >
-            ORDER HISTORY
-          </Typography>
-          <Typography
-            style={{
-              height: 80,
-              width: 200,
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <TextInput
-              style={{
-                borderBottomWidth: 2,
-                borderBottomColor: "lightgray",
-                color: "gray",
-              }}
-              placeholder="Search"
-              placeholderTextColor="gray"
-            />
-          </Typography>
-          <Typography
-            style={{
-              height: 80,
-              width: 200,
-              marginRight: "10px",
-            }}
-          >
-            <View
-              style={{
-                color: "gray",
-                borderBottomWidth: 2,
-                borderBottomColor: "lightgray",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text style={{ color: "gray", marginTop: 25 }}>
-                Please Select
-              </Text>
-              <Icon1
-                name="angle-down"
-                size={20}
-                style={{ marginTop: "28px" }}
-              />
-            </View>
-          </Typography>
-          <Typography
-            style={{
-              height: 50,
-              width: 50,
-              marginTop: 15,
-            }}
-          >
-            <TouchableOpacity>
-              <Icon name="search" size={20} />
-            </TouchableOpacity>
-          </Typography>
-        </View>
+          {checkOrder ? (
+            <View>
+              <Container fixed sx={{ height: "85vh" }}>
+                <View
+                  style={{
+                    marginTop: 50,
+                    padding: 10,
+                    height: 100,
+                    display: "flex",
+                    flexDirection: "row",
+                  }}
+                >
+                  <Typography
+                    variant="h5"
+                    style={{
+                      height: 80,
+                      width: 200,
+                      marginRight: 12,
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    ORDERS
+                  </Typography>
+                  <Typography
+                    style={{
+                      height: 80,
+                      width: 200,
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <TextInput
+                      style={{
+                        borderBottomWidth: 2,
+                        borderBottomColor: "lightgray",
+                        color: "gray",
+                      }}
+                      placeholder="Search"
+                      placeholderTextColor="gray"
+                    />
+                  </Typography>
+                  <Typography
+                    style={{
+                      height: 80,
+                      width: 200,
+                      marginRight: "10px",
+                    }}
+                  >
+                    <View
+                      style={{
+                        color: "gray",
+                        borderBottomWidth: 2,
+                        borderBottomColor: "lightgray",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text style={{ color: "gray", marginTop: 25 }}>
+                        Please Select
+                      </Text>
+                      <Icon1
+                        name="angle-down"
+                        size={20}
+                        style={{ marginTop: "28px" }}
+                      />
+                    </View>
+                  </Typography>
+                  <Typography
+                    style={{
+                      height: 50,
+                      width: 50,
+                      marginTop: 15,
+                    }}
+                  >
+                    <TouchableOpacity>
+                      <Icon name="search" size={20} />
+                    </TouchableOpacity>
+                  </Typography>
+                </View>
 
-        <View>
-          {cartData.map((item, index) => (
-            <TouchableOpacity
-              onPress={() => navigateToDeliveryAndChatSystem(item.status)}
-              key={index}
+                <View>
+                  {cartData.map((item, index) => (
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigateToDeliveryAndChatSystem(item.status)
+                      }
+                      key={index}
+                    >
+                      <View
+                        style={{
+                          width: "100%",
+                          height: 80,
+                          borderBottomWidth: 2,
+                          borderBottomColor: "#1D1D1D",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          paddingTop: 2,
+                        }}
+                      >
+                        <Image
+                          source={{ uri: item?.image }}
+                          alt="product-image"
+                          style={{
+                            width: "20%",
+                            height: "100%",
+                            // backgroundColor: "#000026",
+                            // backgroundImage: `url(${hdtv})`,
+                          }}
+                        />
+                        <View style={{ width: "30%", paddingLeft: 10 }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: "gray",
+                            }}
+                          >
+                            #
+                            {item?.orderId.slice(0, 4) +
+                              Math.floor(Math.random() * 10000)}
+                          </Text>
+                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                            {item?.timestamp.toDateString()}
+                          </Text>
+                        </View>
+                        <View style={{ width: "30%", paddingLeft: 10 }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: "gray",
+                            }}
+                          >
+                            Delivered by
+                          </Text>
+                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                            Dilivery Guy
+                          </Text>
+                        </View>
+                        <View style={{ width: "30%", paddingLeft: 10 }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: "gray",
+                            }}
+                          >
+                            Status
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: "bold",
+                              color:
+                                item.status === "DELIVERED"
+                                  ? "green"
+                                  : item.status === "ONGOING"
+                                  ? "orange"
+                                  : "black",
+                            }}
+                          >
+                            {/* {item?.status} */}
+                            Delivered
+                          </Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </Container>
+            </View>
+          ) : (
+            <View
+            // style={{backgroundColor:"white"}}
             >
-              <View
+              <Card
                 style={{
-                  width: "100%",
-                  height: 80,
-                  borderBottomWidth: 2,
-                  borderBottomColor: "#1D1D1D",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  paddingTop: 2,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  paddingRight: 30,
+                  paddingBottom: 30,
+                  paddingTop: 30,
+                  paddingLeft: 30,
+                  // height: "100px",
                 }}
               >
-                <Image
-                  source={{ uri: item?.image }}
-                  alt="product-image"
-                  style={{
-                    width: "20%",
-                    height: "100%",
-                    // backgroundColor: "#000026",
-                    // backgroundImage: `url(${hdtv})`,
-                  }}
-                />
-                <View style={{ width: "30%", paddingLeft: 10 }}>
-                  <Text
-                    style={{ fontSize: 16, fontWeight: "bold", color: "gray" }}
-                  >
-                    #
-                    {item?.orderId.slice(0, 4) +
-                      Math.floor(Math.random() * 10000)}
-                  </Text>
-                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                    {item?.timestamp.toDateString()}
-                  </Text>
-                </View>
-                <View style={{ width: "30%", paddingLeft: 10 }}>
-                  <Text
-                    style={{ fontSize: 16, fontWeight: "bold", color: "gray" }}
-                  >
-                    Delivered by
-                  </Text>
-                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                    Dilivery Guy
-                  </Text>
-                </View>
-                <View style={{ width: "30%", paddingLeft: 10 }}>
-                  <Text
-                    style={{ fontSize: 16, fontWeight: "bold", color: "gray" }}
-                  >
-                    Status
+                <View>
+                  <Text style={{ fontWeight: "700", fontSize: 30 }}>
+                    PRODUCTS & SERVICES
                   </Text>
                   <Text
                     style={{
-                      fontSize: 18,
-                      fontWeight: "bold",
-                      color:
-                        item.status === "DELIVERED"
-                          ? "green"
-                          : item.status === "ONGOING"
-                          ? "orange"
-                          : "black",
+                      display: businessAuthorization ? "none" : "",
+                      fontWeight: 600,
+                      fontSize: 14,
                     }}
                   >
-                    {/* {item?.status} */}
-                    Delivered
+                    Please add a minimum of 3 products
+                  </Text>
+                  <Text
+                    style={{
+                      color: "white",
+                      fontWeight: 600,
+                      fontSize: 14,
+                      backgroundColor: "#fe951c",
+                      paddingTop: 10,
+                      paddingBottom: 10,
+                      borderRadius: 20,
+                      display: businessAuthorization ? "none" : "flex",
+                      marginTop: 5,
+                      justifyContent: "center",
+                    }}
+                  >
+                    AUTHORIZATION PENDING
                   </Text>
                 </View>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </Container>
-      <Footer />
-    </View>) : (<View
-          // style={{backgroundColor:"white"}}
-          >
-            <Card
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                paddingRight: 30,
-                paddingBottom: 30,
-                paddingTop: 30,
-                paddingLeft: 30,
-                // height: "100px",
-              }}
-            >
-              <View>
-                <Text style={{ fontWeight: "700", fontSize: 30 }}>
-                  PRODUCTS & SERVICES
-                </Text>
-                <Text
+                <View
                   style={{
-                    display: businessAuthorization ? "none" : "",
-                    fontWeight: 600,
-                    fontSize: 14,
-                  }}
-                >
-                  Please add a minimum of 3 products
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    backgroundColor: "#fe951c",
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                    borderRadius: 20,
-                    display: businessAuthorization ? "none" : "flex",
-                    marginTop: 5,
+                    display: "flex",
+                    flexDirection: "row",
                     justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  AUTHORIZATION PENDING
-                </Text>
-              </View>
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <TouchableOpacity onPress={() => setAddProduct(true)}>
+                  <TouchableOpacity onPress={() => setAddProduct(true)}>
+                    <Text
+                      style={{
+                        color: "white",
+                        fontWeight: 600,
+                        fontSize: 14,
+                        backgroundColor: "#072840",
+                        paddingTop: 10,
+                        paddingBottom: 10,
+                        paddingLeft: 25,
+                        paddingRight: 25,
+                        borderRadius: 20,
+                        display: !businessAuthorization ? "none" : "flex",
+                        marginRight: 20,
+                      }}
+                    >
+                      ADD PRODUCT
+                    </Text>
+                  </TouchableOpacity>
                   <Text
                     style={{
                       color: "white",
@@ -2228,299 +2254,281 @@ export default function BusinessAccount() {
                       paddingLeft: 25,
                       paddingRight: 25,
                       borderRadius: 20,
-                      display: !businessAuthorization ? "none" : "flex",
-                      marginRight: 20,
+                      display: "flex",
                     }}
                   >
-                    ADD PRODUCT
+                    BUSINESS PLUS R150/PM
                   </Text>
-                </TouchableOpacity>
-                <Text
+                </View>
+              </Card>
+
+              {businessAuthorization ? (
+                <Card
                   style={{
-                    color: "white",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    backgroundColor: "#072840",
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                    paddingLeft: 25,
-                    paddingRight: 25,
-                    borderRadius: 20,
+                    width: "100%",
+                    // height: "80px",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    // paddingLeft: 10,
+                    // paddingBottom: 30,
+                    // paddingTop: 30,
                     display: "flex",
                   }}
                 >
-                  BUSINESS PLUS R150/PM
-                </Text>
-              </View>
-            </Card>
-
-            {businessAuthorization ? (
-              <Card
-                style={{
-                  width: "100%",
-                  // height: "80px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  // paddingLeft: 10,
-                  // paddingBottom: 30,
-                  // paddingTop: 30,
-                  display: "flex",
-                }}
-              >
-                {bannerListLength > -1 ? (
-                  <View
-                    style={{
-                      backgroundImage: `url(${bannerList[bannerListIndex].backgroundImage})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: 15,
-                      flex: 1,
-                    }}
-                  >
-                    <TouchableOpacity
-                      onPress={decrement}
-                      style={{ marginRight: 20 }}
-                    >
-                      <AntDesign name="left" size={24} color="white" />
-                    </TouchableOpacity>
+                  {bannerListLength > -1 ? (
                     <View
                       style={{
+                        backgroundImage: `url(${bannerList[bannerListIndex].backgroundImage})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: 15,
                         flex: 1,
-                        flexDirection: "column",
-                        alignItems: "flex-start",
                       }}
                     >
-                      <Text
+                      <TouchableOpacity
+                        onPress={decrement}
+                        style={{ marginRight: 20 }}
+                      >
+                        <AntDesign name="left" size={24} color="white" />
+                      </TouchableOpacity>
+                      <View
                         style={{
-                          fontSize: 15,
-                          fontWeight: 600,
-                          color: "white",
+                          flex: 1,
+                          flexDirection: "column",
+                          alignItems: "flex-start",
                         }}
                       >
-                        {bannerList[bannerListIndex].other}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 25,
-                          fontWeight: 700,
-                          color: "white",
-                        }}
-                      >
-                        {bannerList[bannerListIndex].productName}
-                      </Text>
-                      <Text>
-                        <Text
-                          style={{
-                            fontSize: 18,
-                            fontWeight: 700,
-                            color: "#c29920",
-                          }}
-                        >
-                          R{bannerList[bannerListIndex].priceDiscount}
-                        </Text>{" "}
                         <Text
                           style={{
                             fontSize: 15,
-                            fontWeight: 400,
+                            fontWeight: 600,
                             color: "white",
                           }}
                         >
-                          R{bannerList[bannerListIndex].priceOriginal}
+                          {bannerList[bannerListIndex].other}
                         </Text>
-                      </Text>
+                        <Text
+                          style={{
+                            fontSize: 25,
+                            fontWeight: 700,
+                            color: "white",
+                          }}
+                        >
+                          {bannerList[bannerListIndex].productName}
+                        </Text>
+                        <Text>
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: 700,
+                              color: "#c29920",
+                            }}
+                          >
+                            R{bannerList[bannerListIndex].priceDiscount}
+                          </Text>{" "}
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              fontWeight: 400,
+                              color: "white",
+                            }}
+                          >
+                            R{bannerList[bannerListIndex].priceOriginal}
+                          </Text>
+                        </Text>
+                      </View>
+                      <TouchableOpacity onPress={increment}>
+                        <AntDesign name="right" size={24} color="white" />
+                      </TouchableOpacity>
                     </View>
-                    <TouchableOpacity onPress={increment}>
-                      <AntDesign name="right" size={24} color="white" />
-                    </TouchableOpacity>
-                  </View>
-                ) : null}
+                  ) : null}
 
-                <TouchableOpacity
-                  style={{
-                    display: "flex",
-                    cursor: "pointer",
-                    width: "15%",
-                    borderRadius: 20,
-                    border: "1px gray dashed",
-                    height: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 20,
-                    fontWeight: 700,
-                    marginLeft: 10,
-                  }}
-                  onPress={() => setBannerModal(true)}
-                >
-                  <Text>ADD BANNER</Text>
-                </TouchableOpacity>
-              </Card>
-            ) : null}
-
-            <ScrollView style={{ width: "100%" }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  paddingRight: 10,
-                  marginBottom: 20,
-                }}
-              >
-                <View style={{ flex: 1 }}>
-                  <View
+                  <TouchableOpacity
                     style={{
-                      margin: 50,
-                      flexDirection: "row",
-                      flexWrap: "wrap",
+                      display: "flex",
+                      cursor: "pointer",
+                      width: "15%",
+                      borderRadius: 20,
+                      border: "1px gray dashed",
+                      height: "100%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 20,
+                      fontWeight: 700,
+                      marginLeft: 10,
                     }}
+                    onPress={() => setBannerModal(true)}
                   >
-                    {list.map((item, index) => (
-                      <Card2 key={index} open={() => setEditModal(true)} />
-                    ))}
+                    <Text>ADD BANNER</Text>
+                  </TouchableOpacity>
+                </Card>
+              ) : null}
 
-                    {/* {list.map((item, index) => (
+              <ScrollView style={{ width: "100%" }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    paddingRight: 10,
+                    marginBottom: 20,
+                  }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <View
+                      style={{
+                        margin: 50,
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {list.map((item, index) => (
+                        <Card2 key={index} open={() => setEditModal(true)} />
+                      ))}
+
+                      {/* {list.map((item, index) => (
                       <ProductCard
                         key={index}
                         open={() => setEditModal(true)}
                       />
                     ))} */}
+                    </View>
                   </View>
-                </View>
 
-                {businessAuthorization ? null : (
-                  <View
-                    style={{
-                      width: 350,
-                      flexDirection: "column",
-                      border: "1px lightgray solid",
-                      padding: 40,
-                      alignItems: "center",
-                      height: 500,
-                      //   zIndex:500,
-                    }}
-                  >
-                    {/* <TouchableOpacity
-                 // onPress={setBusinessAuthorization(true)}
-                  > */}
-                    <Image
-                      source={require("../../Global/images/BusinessPlus+.jpg")}
-                      alt="business plus logo"
-                      style={{ width: "85%", height: "20%", marginBottom: 5 }}
-                    />
-                    {/* </TouchableOpacity> */}
-
-                    <Text
-                      style={{
-                        color: "#252b42",
-                        fontWeight: "700",
-                        fontSize: 32,
-                        textAlign: "center",
-                      }}
-                    >
-                      <TouchableOpacity onPress={() => setPaymentModal(true)}>
-                        <Text>BUSINESS PLUS SUBSCRIPTION</Text>
-                      </TouchableOpacity>
-                    </Text>
-                    <Text
-                      style={{
-                        color: "#9e9e9e",
-                        fontWeight: "700",
-                        fontSize: 16,
-                        textAlign: "center",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                      }}
-                    >
-                      Unlock More Opportunities with Business Plus Subscription
-                    </Text>
+                  {businessAuthorization ? null : (
                     <View
                       style={{
+                        width: 350,
                         flexDirection: "column",
+                        border: "1px lightgray solid",
+                        padding: 40,
                         alignItems: "center",
-                        justifyContent: "center",
+                        height: 500,
+                        //   zIndex:500,
                       }}
                     >
-                      <Text
-                        style={{
-                          color: "#23a6f0",
-                          fontWeight: "700",
-                          fontSize: 40,
-                          marginBottom: -10,
-                        }}
-                      >
-                        R150
-                      </Text>
-                      <Text
-                        style={{
-                          color: "#b8d9f7",
-                          fontWeight: "700",
-                          fontSize: 20,
-                        }}
-                      >
-                        Per Month
-                      </Text>
-                    </View>
-                    <View style={{ flexDirection: "column" }}>
-                      <Text
-                        style={{
-                          marginTop: 15,
-                          fontWeight: "700",
-                          fontSize: 18,
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        {" "}
-                        <Ionicons
-                          name="checkmark-circle"
-                          size={30}
-                          color="#2dc071"
-                        />{" "}
-                        List Unlimited Products
-                      </Text>
-                      <Text
-                        style={{
-                          fontWeight: "700",
-                          fontSize: 18,
-                          marginTop: 15,
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        {" "}
-                        <Ionicons
-                          name="checkmark-circle"
-                          size={30}
-                          color="#2dc071"
-                        />{" "}
-                        Priority Support
-                      </Text>
-                      <Text
-                        style={{
-                          fontWeight: "700",
-                          fontSize: 18,
-                          marginTop: 15,
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        {" "}
-                        <Ionicons
-                          name="checkmark-circle"
-                          size={30}
-                          color="#2dc071"
-                        />{" "}
-                        Exclusive Promotions
-                      </Text>
-                    </View>
-                  </View>
-                )}
-              </View>
-            </ScrollView>
-          </View>)}
+                      {/* <TouchableOpacity
+                 // onPress={setBusinessAuthorization(true)}
+                  > */}
+                      <Image
+                        source={require("../../Global/images/BusinessPlus+.jpg")}
+                        alt="business plus logo"
+                        style={{ width: "85%", height: "20%", marginBottom: 5 }}
+                      />
+                      {/* </TouchableOpacity> */}
 
-          
+                      <Text
+                        style={{
+                          color: "#252b42",
+                          fontWeight: "700",
+                          fontSize: 32,
+                          textAlign: "center",
+                        }}
+                      >
+                        <TouchableOpacity onPress={() => setPaymentModal(true)}>
+                          <Text>BUSINESS PLUS SUBSCRIPTION</Text>
+                        </TouchableOpacity>
+                      </Text>
+                      <Text
+                        style={{
+                          color: "#9e9e9e",
+                          fontWeight: "700",
+                          fontSize: 16,
+                          textAlign: "center",
+                          paddingTop: 10,
+                          paddingBottom: 10,
+                        }}
+                      >
+                        Unlock More Opportunities with Business Plus
+                        Subscription
+                      </Text>
+                      <View
+                        style={{
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: "#23a6f0",
+                            fontWeight: "700",
+                            fontSize: 40,
+                            marginBottom: -10,
+                          }}
+                        >
+                          R150
+                        </Text>
+                        <Text
+                          style={{
+                            color: "#b8d9f7",
+                            fontWeight: "700",
+                            fontSize: 20,
+                          }}
+                        >
+                          Per Month
+                        </Text>
+                      </View>
+                      <View style={{ flexDirection: "column" }}>
+                        <Text
+                          style={{
+                            marginTop: 15,
+                            fontWeight: "700",
+                            fontSize: 18,
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          {" "}
+                          <Ionicons
+                            name="checkmark-circle"
+                            size={30}
+                            color="#2dc071"
+                          />{" "}
+                          List Unlimited Products
+                        </Text>
+                        <Text
+                          style={{
+                            fontWeight: "700",
+                            fontSize: 18,
+                            marginTop: 15,
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          {" "}
+                          <Ionicons
+                            name="checkmark-circle"
+                            size={30}
+                            color="#2dc071"
+                          />{" "}
+                          Priority Support
+                        </Text>
+                        <Text
+                          style={{
+                            fontWeight: "700",
+                            fontSize: 18,
+                            marginTop: 15,
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          {" "}
+                          <Ionicons
+                            name="checkmark-circle"
+                            size={30}
+                            color="#2dc071"
+                          />{" "}
+                          Exclusive Promotions
+                        </Text>
+                      </View>
+                    </View>
+                  )}
+                </View>
+              </ScrollView>
+            </View>
+          )}
         </View>
       </View>
       <Footer />

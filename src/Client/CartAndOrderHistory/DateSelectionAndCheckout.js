@@ -18,6 +18,116 @@ import axios from "axios";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firestore } from "../../config";
+import { initializeApp } from "firebase/app";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+  addDoc,
+  // collection,
+  serverTimestamp,
+} from "firebase/firestore";
+import firebaseConfig from "../../config";
+import { firebase, auth } from "../../config";
+
+/*
+import React, { Component } from 'react';
+import { Platform } from 'react-native';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
+export default class Search extends Component {
+  state = {
+    searchFocused: false,
+  };
+
+  render() {
+    const { searchFocused } = this.state;
+    const { onLocationSelected } = this.props;
+
+    return (
+      <GooglePlacesAutocomplete
+        placeholder="Para onde?"
+        placeholderTextColor="#333"
+        onPress={onLocationSelected}
+        query={{
+          key: 'AIzaSyAGs6J8iZJ7mZeP6de9SyenOcA6MwFrwJc',
+          language: 'pt',
+        }}
+        textInputProps={{
+          onFocus: () => {
+            this.setState({ searchFocused: true });
+          },
+          onBlur: () => {
+            this.setState({ searchFocused: false });
+          },
+          autoCapitalize: 'none',
+          autoCorrect: false,
+        }}
+        listViewDisplayed={searchFocused}
+        fetchDetails
+        enablePoweredByContainer={false}
+        styles={{
+          container: {
+            position: 'absolute',
+            top: Platform.select({ ios: 60, android: 40 }),
+            width: '100%',
+          },
+          textInputContainer: {
+            flex: 1,
+            backgroundColor: 'transparent',
+            height: 54,
+            marginHorizontal: 20,
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+          },
+          textInput: {
+            height: 54,
+            margin: 0,
+            borderRadius: 0,
+            paddingTop: 0,
+            paddingBottom: 0,
+            paddingLeft: 20,
+            paddingRight: 20,
+            marginTop: 0,
+            marginLeft: 0,
+            marginRight: 0,
+            elevation: 5,
+            shadowColor: '#000',
+            shadowOpacity: 0.1,
+            shadowOffset: { x: 0, y: 0 },
+            shadowRadius: 15,
+            borderWidth: 1,
+            borderColor: '#DDD',
+            fontSize: 18,
+          },
+          listView: {
+            borderWidth: 1,
+            borderColor: '#DDD',
+            backgroundColor: '#FFF',
+            marginHorizontal: 20,
+            elevation: 5,
+            shadowColor: '#000',
+            shadowOpacity: 0.1,
+            shadowOffset: { x: 0, y: 0 },
+            shadowRadius: 15,
+            marginTop: 10,
+          },
+          description: {
+            fontSize: 16,
+          },
+          row: {
+            padding: 17,
+            height: 58,
+          },
+        }}
+      />
+    );
+  }
+}
+
+*/
 
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
@@ -27,6 +137,7 @@ const DateSelectionAndCheckout = () => {
   const [deliveryAmount, setDeliveryAmount] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [cartData, setCartData] = useState([]);
+  const [newArr, setNewArr] = useState([]);
   const [user, setUser] = useState(null);
   const [rates, setRates] = useState([]);
   useEffect(() => {
@@ -42,6 +153,41 @@ const DateSelectionAndCheckout = () => {
   // using local host URL for now which routes back to the initial screen but when hosted we will use the host URL
   const url = "http://localhost:19006";
   // const url2 = "https://atlegile-marketing-solutions.vercel.app/Reciept";
+  const handleAddToCart = async () => {
+    // if (!user) {
+    //   alert("Please login first");
+    //   return navigation.navigate("SignIn");
+    // }
+    // setNewArr(cartData);
+    try {
+      const cartCollectionRef = collection(firestore, "Orders");
+
+      // Add a new document with user information, product ID, product price, quantity, and image
+      await addDoc(cartCollectionRef, {
+        createdAt: "November 28, 2023 at 3:16:31 PM UTC+2",
+        deliveryAddress: "123 Sade Street, Johannesburg Gauteng 1658",
+        deliveryDate: "November 28, 2023 at 3:16:31 PM UTC+2",
+        deliveryFee: 150,
+        deliveryGuy: "Ben",
+        name: "Mandy",
+        // orderNumber: `#${
+        //   cartData[0]?.productId?.slice(0, 4) +
+        //   Math.floor(Math.random() * 10000)
+        // }`,
+        orderSummary: 3000,
+        // totalAmount: orderTotal,
+        items: [...newArr],
+      });
+
+      console.log("Item added to the cart!");
+      // navigation.navigate("DateSelectionAndCheckout");
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const firestore = getFirestore(app);
 
   const fetchCartData = async () => {
     if (!user) {
@@ -56,6 +202,8 @@ const DateSelectionAndCheckout = () => {
       const querySnapshot = await getDocs(q);
 
       const cartItems = [];
+      const cartProducts = [];
+
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         cartItems.push({
@@ -67,9 +215,20 @@ const DateSelectionAndCheckout = () => {
           name: data.name,
           // Add other relevant fields from your Cart collection
         });
+        cartProducts.push({
+          id: doc.id,
+          productId: data.productId,
+          timestamp: data.timestamp,
+          quantity: data.quantity,
+          amount: data.price * data.quantity,
+          image: data.image,
+          name: data.name,
+          // Add other relevant fields from your Cart collection
+        });
       });
 
       setCartData(cartItems);
+      setNewArr(cartProducts);
     } catch (error) {
       console.error("Error fetching cart data:", error);
     }
@@ -163,12 +322,6 @@ const DateSelectionAndCheckout = () => {
     };
     gettingRate();
   }, []);
-  // const data = [
-  //   { product: "HD TV", item: 1, amount: 4500.0 },
-  //   { product: "HD TV", item: 1, amount: 4500.0 },
-  //   { product: "HD TV", item: 1, amount: 4500.0 },
-  //   { product: "HD TV", item: 1, amount: 4500.0 },
-  // ];
 
   const navigateToLanding = () => {
     navigation.navigate("Landing");
@@ -198,6 +351,7 @@ const DateSelectionAndCheckout = () => {
   }, [cartData]);
 
   const handlePayment = () => {
+    handleAddToCart();
     // Construct the payment URL with the necessary parameters
     const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
     orderTotal.toFixed(2) + // Use the calculated orderTotal here
@@ -220,26 +374,30 @@ const DateSelectionAndCheckout = () => {
                 width: "65%",
                 marginTop: "20px",
                 marginRight: "10px",
-              }}>
+              }}
+            >
               <View style={{ display: "flex", flexDirection: "row" }}>
                 <Typography>
                   <TouchableOpacity
                     onPress={navigateToLanding}
-                    style={{ color: "grey" }}>
+                    style={{ color: "grey" }}
+                  >
                     Acount /
                   </TouchableOpacity>
                 </Typography>
                 <Typography>
                   <TouchableOpacity
                     onPress={navigateToOrderHistory}
-                    style={{ color: "grey" }}>
+                    style={{ color: "grey" }}
+                  >
                     Cart
                   </TouchableOpacity>
                 </Typography>
               </View>
               <Typography
                 variant="h4"
-                style={{ marginTop: "50px", fontWeight: "bold" }}>
+                style={{ marginTop: "50px", fontWeight: "bold" }}
+              >
                 CART
               </Typography>
               <Typography variant="h6" style={{ fontWeight: "bold" }}>
@@ -258,7 +416,8 @@ const DateSelectionAndCheckout = () => {
                       alignItems: "center",
                       paddingTop: 2,
                     }}
-                    key={index}>
+                    key={index}
+                  >
                     {/* <View
                       style={{
                         width: "25%",
@@ -281,7 +440,8 @@ const DateSelectionAndCheckout = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}>
+                        }}
+                      >
                         Product
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -294,7 +454,8 @@ const DateSelectionAndCheckout = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}>
+                        }}
+                      >
                         Quantity
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -307,7 +468,8 @@ const DateSelectionAndCheckout = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}>
+                        }}
+                      >
                         Amount
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -326,7 +488,8 @@ const DateSelectionAndCheckout = () => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Typography style={{ fontWeight: "bold" }}>
                   Order Summary
                 </Typography>
@@ -337,7 +500,8 @@ const DateSelectionAndCheckout = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Typography style={{ fontWeight: "bold" }}>Delivery</Typography>
                 <Typography style={{ fontWeight: "bold" }}>
                   {deliveryAmount}
@@ -349,7 +513,8 @@ const DateSelectionAndCheckout = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Typography style={{ fontWeight: "bold" }}>
                   {" "}
                   Agent Referal
@@ -362,7 +527,8 @@ const DateSelectionAndCheckout = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Typography style={{ fontWeight: "bold" }}> Tax </Typography>
                 <Typography style={{ fontWeight: "bold" }}>15%</Typography>
               </View>
@@ -372,7 +538,8 @@ const DateSelectionAndCheckout = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Typography variant="h5" style={{ fontWeight: "bold" }}>
                   Total
                 </Typography>
@@ -388,7 +555,8 @@ const DateSelectionAndCheckout = () => {
                 //height: "790px",
                 width: "35%",
                 marginTop: "20px",
-              }}>
+              }}
+            >
               <View style={{ padding: "20px" }}>
                 <Typography
                   variant="h5"
@@ -396,7 +564,8 @@ const DateSelectionAndCheckout = () => {
                     color: "#FFFFFF",
                     marginBottom: "20px",
                     fontWeight: "bold",
-                  }}>
+                  }}
+                >
                   DELIVERY DETAILS
                 </Typography>
                 <Typography style={{ color: "#B7B9BC" }}>
@@ -410,15 +579,17 @@ const DateSelectionAndCheckout = () => {
                     marginTop: "10px",
                     borderBottomWidth: 1,
                     borderBottomColor: "lightgrey",
-                  }}></View>
-                <View
+                  }}
+                ></View>
+                {/* <View
                   style={{
                     // backgroundColor: "grey",
                     height: 150,
                     marginTop: 16,
                     borderRadius: 25,
                     backgroundImage: `url(${mapImage})`,
-                  }}></View>
+                  }}></View> */}
+
                 <Typography style={{ color: "#B7B9BC", marginTop: "14px" }}>
                   Delivery Notes
                 </Typography>
@@ -432,7 +603,8 @@ const DateSelectionAndCheckout = () => {
                     marginTop: "10px",
                     borderBottomWidth: 1,
                     borderBottomColor: "lightgrey",
-                  }}></View>
+                  }}
+                ></View>
                 <Typography style={{ color: "#FFFFFF", marginTop: "14px" }}>
                   Select Delivery date
                 </Typography>
@@ -443,7 +615,8 @@ const DateSelectionAndCheckout = () => {
                     justifyContent: "flex-start",
                     flexWrap: "wrap", // Added flexWrap to allow wrapping
                     width: "100%",
-                  }}>
+                  }}
+                >
                   {rates.map((rate, index) => (
                     <View key={index}>
                       <TouchableOpacity
@@ -458,13 +631,15 @@ const DateSelectionAndCheckout = () => {
                           //  marginBottom: 10,
                           backgroundColor:
                             selectedIndex === index ? "#2E5A88" : "transparent", // Conditional background color
-                        }}>
+                        }}
+                      >
                         <View
                           style={{
                             display: "flex",
                             alignItems: "center",
                             marginTop: "20px",
-                          }}>
+                          }}
+                        >
                           {/* Extracting month and day from the delivery date */}
                           <Typography style={{ color: "white" }}>
                             {new Date(
@@ -494,12 +669,14 @@ const DateSelectionAndCheckout = () => {
                     justifyContent: "space-evenly",
                     alignItems: "center",
                   }}
-                  onClick={handlePayment}>
+                  onClick={handlePayment}
+                >
                   <Typography
                     style={{
                       fontSize: 16,
                       color: "#FFFFFF",
-                    }}>
+                    }}
+                  >
                     CHECKOUT
                   </Typography>
                 </Button>

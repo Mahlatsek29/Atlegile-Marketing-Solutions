@@ -22,13 +22,14 @@ import { firestore } from "../../config";
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
   const [orderTotal, setOrderTotal] = useState(0);
-  const [tax, setTax] = useState(0);
+  const [tax, setTax] = useState(null);
   const [agentReferral, setAgentReferral] = useState(0);
   const [deliveryAmount, setDeliveryAmount] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [cartData, setCartData] = useState([]);
   const [user, setUser] = useState(null);
   const [rates, setRates] = useState([]);
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -254,22 +255,19 @@ const DateSelectionAndCheckout = () => {
 
   useEffect(() => {
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
-  
-   
+
     const calculatedReferral = totalAmount * 0.1;
     setAgentReferral(calculatedReferral);
-  
-    
+
     const taxAmount = totalAmount * 0.15;
-  
-   
-    const delivery = selectedIndex !== null ? rates[selectedIndex].base_rate.charge : 0;
-  
-    
+    setTax(taxAmount);
+
+    const delivery =
+      selectedIndex !== null ? rates[selectedIndex].base_rate.charge : 0;
+
     const finalTotal = totalAmount + calculatedReferral + taxAmount + delivery;
     setOrderTotal(finalTotal);
   }, [cartData, selectedIndex, rates]);
-  
 
   const handlePayment = () => {
     // Construct the payment URL with the necessary parameters
@@ -425,7 +423,7 @@ const DateSelectionAndCheckout = () => {
                 <Typography style={{ fontWeight: "bold" }}>Delivery</Typography>
                 {selectedIndex !== null && (
                   <Typography style={{ fontWeight: "bold" }}>
-                    {rates[selectedIndex].base_rate.charge}
+                    R{rates[selectedIndex].base_rate.charge}
                   </Typography>
                 )}
               </View>
@@ -440,9 +438,13 @@ const DateSelectionAndCheckout = () => {
               >
                 <Typography style={{ fontWeight: "bold" }}>
                   {" "}
-                  Agent Referal
+                  Agent Referral
                 </Typography>
-                <Typography style={{ fontWeight: "bold" }}>10%</Typography>
+                <Typography style={{ fontWeight: "bold" }}>
+                  {selectedIndex !== null
+                    ? `R${agentReferral.toFixed(2)}`
+                    : "10%"}
+                </Typography>
               </View>
               <View
                 style={{
@@ -453,8 +455,11 @@ const DateSelectionAndCheckout = () => {
                 }}
               >
                 <Typography style={{ fontWeight: "bold" }}> Tax </Typography>
-                <Typography style={{ fontWeight: "bold" }}>15%</Typography>
+                <Typography style={{ fontWeight: "bold" }}>
+                  {selectedIndex !== null ? `R${tax.toFixed(2)}` : "15%"}
+                </Typography>
               </View>
+
               <View
                 style={{
                   display: "flex",

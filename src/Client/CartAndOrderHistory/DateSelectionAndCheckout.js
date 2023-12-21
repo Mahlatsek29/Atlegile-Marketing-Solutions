@@ -125,13 +125,13 @@ const DateSelectionAndCheckout = () => {
         },
         parcels: [
           {
-            submitted_length_cm: 42.5,
-            submitted_width_cm: 38.5,
-            submitted_height_cm: 5.5,
-            submitted_weight_kg: 3,
+            submitted_length_cm: 20,
+            submitted_width_cm: 20,
+            submitted_height_cm: 10,
+            submitted_weight_kg: 2,
           },
         ],
-        declared_value: 1500,
+        declared_value: 1100,
         collection_min_date: "2021-05-21",
         delivery_min_date: "2021-05-21",
       };
@@ -201,6 +201,98 @@ const DateSelectionAndCheckout = () => {
       PoBox: 1861,
     },
   ];
+
+  const creattingShipment = async () => {
+    const shipment = {
+      collection_address: {
+        type: "business",
+        company: "uAfrica.com",
+        street_address: "1188 Lois Avenue",
+        local_area: "Menlyn",
+        city: "Pretoria",
+        zone: "Gauteng",
+        country: "ZA",
+        code: "0181",
+        lat: -25.7863272,
+        lng: 28.277583,
+      },
+      collection_contact: {
+        name: "Cornel Rautenbach",
+        mobile_number: "",
+        email: "cornel+sandy@uafrica.com",
+      },
+      delivery_address: {
+        type: "residential",
+        company: "",
+        street_address: "10 Midas Avenue",
+        local_area: "Olympus AH",
+        city: "Pretoria",
+        zone: "Gauteng",
+        country: "ZA",
+        code: "0081",
+        lat: -25.80665579999999,
+        lng: 28.334732,
+      },
+      delivery_contact: {
+        name: "Boiketlo Mochochoko",
+        mobile_number: "0734157351",
+        email: "mochochokoboiketlo@gmail.com",
+      },
+      parcels: [
+        {
+          parcel_description: "Standard flyer",
+          submitted_length_cm: 20,
+          submitted_width_cm: 20,
+          submitted_height_cm: 10,
+          submitted_weight_kg: 2,
+        },
+      ],
+      opt_in_rates: [],
+      opt_in_time_based_rates: [76],
+      special_instructions_collection:
+        "This is a test shipment - DO NOT COLLECT",
+      special_instructions_delivery: "This is a test shipment - DO NOT DELIVER",
+      declared_value: 1100,
+      collection_min_date: "2021-05-21T00:00:00.000Z",
+      collection_after: "08:00",
+      collection_before: "16:00",
+      delivery_min_date: "2021-05-21T00:00:00.000Z",
+      delivery_after: "10:00",
+      delivery_before: "17:00",
+      custom_tracking_reference: "",
+      customer_reference: "ORDERNO123",
+      service_level_code: "ECO",
+      mute_notifications: false,
+    };
+    const config = {
+      headers: {
+        Authorization: `Bearer ${CourierAPIKey}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const response = await axios.post(
+        "https://api.shiplogic.com/v2/shipments",
+        shipment,
+        config
+      );
+      console.log("Courier API creating shpment response:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error getting shipment details", error);
+
+      if (error.response) {
+        console.log("Response status:", error.response.status);
+        console.log("Response data:", error.response.data);
+      } else if (error.request) {
+        console.log("No response received. Request made but no response.");
+      } else {
+        console.log("Error in making the request:", error.message);
+      }
+    }
+  };
+
   const AddressComponent = ({ address, township, poBox, onPress }) => (
     <TouchableOpacity onPress={onPress}>
       <View
@@ -270,6 +362,7 @@ const DateSelectionAndCheckout = () => {
   }, [cartData, selectedIndex, rates]);
 
   const handlePayment = () => {
+    creattingShipment(); //create a shipment before goignt to pay fast
     // Construct the payment URL with the necessary parameters
     const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
     orderTotal.toFixed(2) + // Use the calculated orderTotal here

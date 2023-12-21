@@ -209,30 +209,39 @@ const DateSelectionAndCheckout = () => {
           borderBottomColor: "#1D1D1D",
           flexDirection: "row",
           alignItems: "center",
-          justifyContent:"flex-start",
+          justifyContent: "flex-start",
           paddingTop: 2,
           flexWrap: "wrap",
         }}
       >
-        <Text style={{ fontSize: 18, fontWeight: "bold",color:'white' }}>{address},</Text>
-        <Text style={{ fontSize: 18, fontWeight: "bold",color:'white' }}>{township},</Text>
-        <Text style={{ fontSize: 18, fontWeight: "bold",color:'white' }}>{poBox}</Text>
+        <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+          {address},
+        </Text>
+        <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+          {township},
+        </Text>
+        <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+          {poBox}
+        </Text>
       </View>
     </TouchableOpacity>
   );
   const AddressList = ({ data, onAddressPress }) => (
-  <ScrollView style={{ height: 250,padding:10, }} showsVerticalScrollIndicator={false}>
-    {data.map((item, index) => (
-      <AddressComponent
-        key={index}
-        address={item.address}
-        township={item.Township}
-        poBox={item.PoBox}
-        onPress={() => onAddressPress(item)}
-      />
-    ))}
-  </ScrollView>
-);
+    <ScrollView
+      style={{ height: 250, padding: 10 }}
+      showsVerticalScrollIndicator={false}
+    >
+      {data.map((item, index) => (
+        <AddressComponent
+          key={index}
+          address={item.address}
+          township={item.Township}
+          poBox={item.PoBox}
+          onPress={() => onAddressPress(item)}
+        />
+      ))}
+    </ScrollView>
+  );
 
   const [selectedAddress, setSelectedAddress] = useState(AddressData[0]);
   const navigateToLanding = () => {
@@ -245,22 +254,22 @@ const DateSelectionAndCheckout = () => {
 
   useEffect(() => {
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
-
-    // Calculate agent referral
+  
+   
     const calculatedReferral = totalAmount * 0.1;
     setAgentReferral(calculatedReferral);
-
-    // Calculate other amounts (tax, delivery)
+  
+    
     const taxAmount = totalAmount * 0.15;
-    setTax(taxAmount);
-
-    const delivery = 150.0;
-    setDeliveryAmount(delivery);
-
-    // Calculate the final order total
+  
+   
+    const delivery = selectedIndex !== null ? rates[selectedIndex].base_rate.charge : 0;
+  
+    
     const finalTotal = totalAmount + calculatedReferral + taxAmount + delivery;
     setOrderTotal(finalTotal);
-  }, [cartData]);
+  }, [cartData, selectedIndex, rates]);
+  
 
   const handlePayment = () => {
     // Construct the payment URL with the necessary parameters
@@ -414,10 +423,13 @@ const DateSelectionAndCheckout = () => {
                 }}
               >
                 <Typography style={{ fontWeight: "bold" }}>Delivery</Typography>
-                <Typography style={{ fontWeight: "bold" }}>
-                  {deliveryAmount}
-                </Typography>
+                {selectedIndex !== null && (
+                  <Typography style={{ fontWeight: "bold" }}>
+                    {rates[selectedIndex].base_rate.charge}
+                  </Typography>
+                )}
               </View>
+
               <View
                 style={{
                   display: "flex",
@@ -545,9 +557,8 @@ const DateSelectionAndCheckout = () => {
                           borderWidth: 1,
                           borderColor: "white",
                           marginRight: 10,
-                          //  marginBottom: 10,
                           backgroundColor:
-                            selectedIndex === index ? "#2E5A88" : "transparent", // Conditional background color
+                            selectedIndex === index ? "#2E5A88" : "transparent",
                         }}
                       >
                         <View
@@ -557,7 +568,6 @@ const DateSelectionAndCheckout = () => {
                             marginTop: "20px",
                           }}
                         >
-                          {/* Extracting month and day from the delivery date */}
                           <Typography style={{ color: "white" }}>
                             {new Date(
                               rate.service_level.delivery_date_to

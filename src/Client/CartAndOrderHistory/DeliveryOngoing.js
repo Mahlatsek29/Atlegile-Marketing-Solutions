@@ -17,7 +17,7 @@ import hdtv from "../../Global/images/hdtv.jpg";
 
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { firestore } from "../../config";
-
+import axios from "axios";
 const DeliveryOngoing = () => {
   const navigation = useNavigation();
   const [orderTotal, setOrderTotal] = useState(0);
@@ -33,7 +33,8 @@ const DeliveryOngoing = () => {
   ]);
 
   const [cartData, setCartData] = useState([]);
-
+  const [shipmentTrack, setShipmentTrack] = useState([]);
+  const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
   const fetchCartData = async () => {
     const userId = "52TkIacrD4ermeLEhLU6udYXnhQ2";
 
@@ -115,6 +116,60 @@ const DeliveryOngoing = () => {
     setOrderTotal(finalTotal);
   }, [cartData]);
 
+  const getShipment = async () => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${CourierAPIKey}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const response = await axios.get(
+        "https://api.shiplogic.com/v2/shipments?tracking_reference=TN7PRG",
+        config
+      );
+      console.log("Courier API shipment No response:", response.data);
+      return response.data.shipments;
+    } catch (error) {
+      console.error("Error getting shipments", error);
+      if (error.response) {
+        console.log("Response data:", error.response.data);
+      }
+      return [];
+    }
+  };
+  useEffect(() => {
+    const tackingShipment = async () => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${CourierAPIKey}`,
+          "Content-Type": "application/json",
+        },
+      };
+
+      try {
+        const response = await axios.get(
+          "https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=TN7PRG",
+          config
+        );
+        console.log("Courier API traking shipment response:", response.data);
+
+        setShipmentTrack(response.data);
+      } catch (error) {
+        console.error("Error getting shipments", error);
+        if (error.response) {
+          console.log("Response data:", error.response.data);
+        }
+        return [];
+      }
+    };
+
+    tackingShipment();
+    console.log("shipmentTrack:", shipmentTrack.shipments);
+    //console.log("tracking_events:", shipmentTrack.shipments[0].tracking_events);
+    //console.log("status:", shipmentTrack.shipments[0].tracking_events[0].status);
+  }, []);
   return (
     <>
       {chatmodelVisble && (
@@ -130,20 +185,23 @@ const DeliveryOngoing = () => {
             alignItems: "center",
             justifyContent: "center",
             zIndex: 999,
-          }}>
+          }}
+        >
           <View
             style={{
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
               width: "40vw",
-            }}>
+            }}
+          >
             <View
               style={{
                 height: "65%",
                 width: "80%",
                 backgroundColor: "white",
-              }}>
+              }}
+            >
               <TouchableOpacity
                 onPress={() => setChatmodelVisible(false)}
                 style={{
@@ -151,7 +209,8 @@ const DeliveryOngoing = () => {
                   top: 10,
                   right: 10,
                   zIndex: 1,
-                }}>
+                }}
+              >
                 {/* X icon button */}
                 <Text style={{ fontSize: 20, fontWeight: "bold" }}>X</Text>
               </TouchableOpacity>
@@ -162,13 +221,15 @@ const DeliveryOngoing = () => {
                   borderTopRightRadius: 20,
                   borderTopLeftRadius: 20,
                   backgroundColor: "white",
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     fontSize: 20,
                     fontWeight: "bold",
                     marginBottom: 10,
-                  }}>
+                  }}
+                >
                   CHAT TO DRIVER
                 </Text>
                 {chats.map((item, index) => (
@@ -179,7 +240,8 @@ const DeliveryOngoing = () => {
                         item.status === "sent" ? "flex-start" : "flex-end",
                       maxWidth: "60%",
                       flexDirection: "row",
-                    }}>
+                    }}
+                  >
                     <View
                       style={{
                         backgroundColor:
@@ -210,7 +272,8 @@ const DeliveryOngoing = () => {
                             : item.status === "recieved"
                             ? 20
                             : 0,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           color:
@@ -219,7 +282,8 @@ const DeliveryOngoing = () => {
                               : item.status === "recieved"
                               ? "#FFFFFF"
                               : "black",
-                        }}>
+                        }}
+                      >
                         {item.messages}
                       </Text>
                     </View>
@@ -234,7 +298,8 @@ const DeliveryOngoing = () => {
                             : item.status === "recieved"
                             ? "flex-end"
                             : "inherit",
-                      }}>
+                      }}
+                    >
                       <Text>{item.dateAntTime}</Text>
                     </View>
                   </View>
@@ -247,7 +312,8 @@ const DeliveryOngoing = () => {
                   flexDirection: "row",
                   alignItems: "center",
                   padding: 10,
-                }}>
+                }}
+              >
                 <TextInput
                   style={{
                     flex: 1,
@@ -267,7 +333,8 @@ const DeliveryOngoing = () => {
                     borderRadius: 40,
                     padding: 10,
                     marginLeft: 10,
-                  }}>
+                  }}
+                >
                   <Text style={{ color: "white" }}>SEND</Text>
                 </TouchableOpacity>
               </View>
@@ -286,19 +353,22 @@ const DeliveryOngoing = () => {
                 width: "65%",
                 marginTop: "20px",
                 marginRight: "10px",
-              }}>
+              }}
+            >
               <View style={{ display: "flex", flexDirection: "row" }}>
                 <Typography>
                   <TouchableOpacity
                     onPress={navigateToLanding}
-                    style={{ color: "grey" }}>
+                    style={{ color: "grey" }}
+                  >
                     Acount /
                   </TouchableOpacity>
                 </Typography>
                 <Typography>
                   <TouchableOpacity
                     onPress={navigateToOrderHistory}
-                    style={{ color: "grey" }}>
+                    style={{ color: "grey" }}
+                  >
                     Order History /
                   </TouchableOpacity>
                 </Typography>
@@ -306,7 +376,8 @@ const DeliveryOngoing = () => {
               </View>
               <Typography
                 variant="h6"
-                style={{ marginTop: "50px", fontWeight: "bold" }}>
+                style={{ marginTop: "50px", fontWeight: "bold" }}
+              >
                 ORDER #ABC246
               </Typography>
               <Typography variant="h4" style={{ fontWeight: "bold" }}>
@@ -328,14 +399,16 @@ const DeliveryOngoing = () => {
                       alignItems: "center",
                       paddingTop: 2,
                     }}
-                    key={index}>
+                    key={index}
+                  >
                     <View
                       style={{
                         width: "25%",
                         height: "100%",
                         backgroundColor: "#000026",
                         // backgroundColor:'red'
-                      }}>
+                      }}
+                    >
                       <Image
                         source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
                         style={{
@@ -351,7 +424,8 @@ const DeliveryOngoing = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}>
+                        }}
+                      >
                         Product
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -364,7 +438,8 @@ const DeliveryOngoing = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}>
+                        }}
+                      >
                         Quantity
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -377,7 +452,8 @@ const DeliveryOngoing = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}>
+                        }}
+                      >
                         Amount
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -393,12 +469,13 @@ const DeliveryOngoing = () => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Typography style={{ fontWeight: "bold" }}>
                   Order Summary
                 </Typography>
                 <Typography style={{ fontWeight: "bold" }}>
-                {/* {cartItems.amount} */}
+                  {/* {cartItems.amount} */}
                 </Typography>
               </View>
               <View
@@ -407,7 +484,8 @@ const DeliveryOngoing = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Typography style={{ fontWeight: "bold" }}>Delivery</Typography>
                 <Typography style={{ fontWeight: "bold" }}>R150.00</Typography>
               </View>
@@ -417,7 +495,8 @@ const DeliveryOngoing = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Typography style={{ fontWeight: "bold" }}>
                   {" "}
                   Agent Referal
@@ -430,7 +509,8 @@ const DeliveryOngoing = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Typography style={{ fontWeight: "bold" }}> Tax </Typography>
                 <Typography style={{ fontWeight: "bold" }}>15%</Typography>
               </View>
@@ -440,7 +520,8 @@ const DeliveryOngoing = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Typography variant="h5" style={{ fontWeight: "bold" }}>
                   Total
                 </Typography>
@@ -455,7 +536,8 @@ const DeliveryOngoing = () => {
                 height: "800px",
                 width: "35%",
                 marginTop: "20px",
-              }}>
+              }}
+            >
               <View style={{ padding: "20px" }}>
                 <Typography
                   variant="h5"
@@ -463,7 +545,8 @@ const DeliveryOngoing = () => {
                     color: "white",
                     marginBottom: "20px",
                     fontWeight: "bold",
-                  }}>
+                  }}
+                >
                   DELIVERY DETAILS
                 </Typography>
                 <Typography style={{ color: "grey" }}>
@@ -477,7 +560,8 @@ const DeliveryOngoing = () => {
                     marginTop: "10px",
                     borderBottomWidth: 1,
                     borderBottomColor: "lightgrey",
-                  }}></View>
+                  }}
+                ></View>
                 <View
                   style={{
                     backgroundColor: "grey",
@@ -485,7 +569,8 @@ const DeliveryOngoing = () => {
                     marginTop: 16,
                     borderRadius: 25,
                     backgroundImage: `url(${mapImage})`,
-                  }}></View>
+                  }}
+                ></View>
                 <Typography style={{ color: "grey", marginTop: "14px" }}>
                   Delivery Notes
                 </Typography>
@@ -499,14 +584,39 @@ const DeliveryOngoing = () => {
                     marginTop: "10px",
                     borderBottomWidth: 1,
                     borderBottomColor: "lightgrey",
-                  }}></View>
+                  }}
+                ></View>
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: "grey",
+                      height: 14,
+                      width: 14,
+                      borderRadius: 7, // Adjusted the borderRadius to a number
+                      marginRight: 8,
+                    }}
+                  ></View>
+                  {shipmentTrack.shipments && (
+                      <Typography style={{ color: "lightgrey", marginTop: 6 }}>
+                        {shipmentTrack.shipments[0].status}
+                      </Typography>
+                    )}
+                </View>
+
                 <View
                   style={{
                     display: "flex",
                     flexDirection: "row",
                     display: "flex",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       backgroundColor: "grey",
@@ -514,7 +624,8 @@ const DeliveryOngoing = () => {
                       width: 14,
                       borderRadius: "50px",
                       marginRight: "8px",
-                    }}></View>
+                    }}
+                  ></View>
                   <Typography style={{ color: "lightgrey", marginTop: "6px" }}>
                     Processing...
                   </Typography>
@@ -525,7 +636,8 @@ const DeliveryOngoing = () => {
                     flexDirection: "row",
                     display: "flex",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       backgroundColor: "grey",
@@ -533,7 +645,8 @@ const DeliveryOngoing = () => {
                       width: 14,
                       borderRadius: "50px",
                       marginRight: "8px",
-                    }}></View>
+                    }}
+                  ></View>
                   <Typography style={{ color: "lightgrey", marginTop: "6px" }}>
                     On the way...
                   </Typography>
@@ -544,7 +657,8 @@ const DeliveryOngoing = () => {
                     flexDirection: "row",
                     display: "flex",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       backgroundColor: "grey",
@@ -552,7 +666,8 @@ const DeliveryOngoing = () => {
                       width: 14,
                       borderRadius: "50px",
                       marginRight: "8px",
-                    }}></View>
+                    }}
+                  ></View>
                   <Typography style={{ color: "lightgrey", marginTop: "6px" }}>
                     Delivered.
                   </Typography>
@@ -570,14 +685,16 @@ const DeliveryOngoing = () => {
                     justifyContent: "space-evenly",
                     alignItems: "center",
                   }}
-                  onPress={handleMessageButtonClick}>
+                  onPress={handleMessageButtonClick}
+                >
                   <Text
                     style={{
                       fontSize: 16,
                       color: "white",
                       margin: 0,
                       marginLeft: 5,
-                    }}>
+                    }}
+                  >
                     MESSAGE
                   </Text>
                   <View
@@ -595,13 +712,15 @@ const DeliveryOngoing = () => {
                     display: "flex",
                     alignItems: "center",
                     marginTop: "8px",
-                  }}>
+                  }}
+                >
                   <Typography style={{ color: "lightgrey" }}>
                     AUTH PIN
                   </Typography>
                   <Typography
                     variant="h5"
-                    style={{ color: "white", fontWeight: "bold" }}>
+                    style={{ color: "white", fontWeight: "bold" }}
+                  >
                     1254
                   </Typography>
                 </View>
@@ -618,14 +737,16 @@ const DeliveryOngoing = () => {
                     flexDirection: "row",
                     justifyContent: "space-evenly",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   <Typography
                     style={{
                       fontSize: 16,
                       color: "lightgrey",
                       // margin: 0,
                       // marginLeft: 5,
-                    }}>
+                    }}
+                  >
                     ONGOING
                   </Typography>
                 </Button>

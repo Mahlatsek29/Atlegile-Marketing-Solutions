@@ -516,7 +516,7 @@ const DateSelectionAndCheckout = () => {
                 <Typography style={{ fontWeight: "bold" }}>Delivery</Typography>
                 {selectedIndex !== null && (
                   <Typography style={{ fontWeight: "bold" }}>
-                    R{rates[selectedIndex].base_rate.charge}
+                    R{rates[selectedIndex].rate}
                   </Typography>
                 )}
               </View>

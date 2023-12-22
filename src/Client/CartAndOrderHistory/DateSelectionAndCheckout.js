@@ -185,21 +185,6 @@ const DateSelectionAndCheckout = () => {
       Township: "Soweto",
       PoBox: 1861,
     },
-    {
-      address: " 564 Zamakulungisa St, Emdeni South ",
-      Township: "Soweto",
-      PoBox: 1861,
-    },
-    {
-      address: " 564 Zamakulungisa St, Emdeni South ",
-      Township: "Soweto",
-      PoBox: 1861,
-    },
-    {
-      address: " 564 Zamakulungisa St, Emdeni South ",
-      Township: "Soweto",
-      PoBox: 1861,
-    },
   ];
 
   const creattingShipment = async () => {
@@ -305,8 +290,8 @@ const DateSelectionAndCheckout = () => {
           justifyContent: "flex-start",
           paddingTop: 2,
           flexWrap: "wrap",
-        }}
-      >
+          marginBottom: 15,
+        }}>
         <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
           {address},
         </Text>
@@ -322,8 +307,7 @@ const DateSelectionAndCheckout = () => {
   const AddressList = ({ data, onAddressPress }) => (
     <ScrollView
       style={{ height: 250, padding: 10 }}
-      showsVerticalScrollIndicator={false}
-    >
+      showsVerticalScrollIndicator={false}>
       {data.map((item, index) => (
         <AddressComponent
           key={index}
@@ -385,30 +369,26 @@ const DateSelectionAndCheckout = () => {
                 width: "65%",
                 marginTop: "20px",
                 marginRight: "10px",
-              }}
-            >
+              }}>
               <View style={{ display: "flex", flexDirection: "row" }}>
                 <Typography>
                   <TouchableOpacity
                     onPress={navigateToLanding}
-                    style={{ color: "grey" }}
-                  >
+                    style={{ color: "grey" }}>
                     Acount /
                   </TouchableOpacity>
                 </Typography>
                 <Typography>
                   <TouchableOpacity
                     onPress={navigateToOrderHistory}
-                    style={{ color: "grey" }}
-                  >
+                    style={{ color: "grey" }}>
                     Cart
                   </TouchableOpacity>
                 </Typography>
               </View>
               <Typography
                 variant="h4"
-                style={{ marginTop: "50px", fontWeight: "bold" }}
-              >
+                style={{ marginTop: "50px", fontWeight: "bold" }}>
                 CART
               </Typography>
               <Typography variant="h6" style={{ fontWeight: "bold" }}>
@@ -427,8 +407,7 @@ const DateSelectionAndCheckout = () => {
                       alignItems: "center",
                       paddingTop: 2,
                     }}
-                    key={index}
-                  >
+                    key={index}>
                     {/* <View
                       style={{
                         width: "25%",
@@ -451,8 +430,7 @@ const DateSelectionAndCheckout = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}
-                      >
+                        }}>
                         Product
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -465,8 +443,7 @@ const DateSelectionAndCheckout = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}
-                      >
+                        }}>
                         Quantity
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -479,8 +456,7 @@ const DateSelectionAndCheckout = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}
-                      >
+                        }}>
                         Amount
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -499,8 +475,7 @@ const DateSelectionAndCheckout = () => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography style={{ fontWeight: "bold" }}>
                   Order Summary
                 </Typography>
@@ -511,8 +486,7 @@ const DateSelectionAndCheckout = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography style={{ fontWeight: "bold" }}>Delivery</Typography>
                 {selectedIndex !== null && (
                   <Typography style={{ fontWeight: "bold" }}>
@@ -527,8 +501,7 @@ const DateSelectionAndCheckout = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography style={{ fontWeight: "bold" }}>
                   {" "}
                   Agent Referral
@@ -545,8 +518,7 @@ const DateSelectionAndCheckout = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography style={{ fontWeight: "bold" }}> Tax </Typography>
                 <Typography style={{ fontWeight: "bold" }}>
                   {selectedIndex !== null ? `R${tax.toFixed(2)}` : "15%"}
@@ -559,8 +531,7 @@ const DateSelectionAndCheckout = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography variant="h5" style={{ fontWeight: "bold" }}>
                   Total
                 </Typography>
@@ -576,8 +547,7 @@ const DateSelectionAndCheckout = () => {
                 //height: "790px",
                 width: "35%",
                 marginTop: "20px",
-              }}
-            >
+              }}>
               <View style={{ padding: "20px" }}>
                 <Typography
                   variant="h5"
@@ -585,8 +555,7 @@ const DateSelectionAndCheckout = () => {
                     color: "#FFFFFF",
                     marginBottom: "20px",
                     fontWeight: "bold",
-                  }}
-                >
+                  }}>
                   DELIVERY DETAILS
                 </Typography>
                 <View
@@ -595,8 +564,7 @@ const DateSelectionAndCheckout = () => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
-                  }}
-                >
+                  }}>
                   <Typography style={{ color: "#B7B9BC" }}>
                     Delivery Address
                   </Typography>
@@ -606,8 +574,7 @@ const DateSelectionAndCheckout = () => {
                       border: "1px white solid",
                       padding: 10,
                       borderRadius: 5,
-                    }}
-                  >
+                    }}>
                     +
                   </TouchableOpacity>
                 </View>
@@ -622,9 +589,12 @@ const DateSelectionAndCheckout = () => {
                       marginTop: "10px",
                       borderBottomWidth: 1,
                       borderBottomColor: "lightgrey",
-                    }}
-                  ></View>
-
+                    }}></View>
+                  <Typography
+                    variant="h5"
+                    sx={{ color: "#B7B9BC", fontSize: 20, marginTop: 1 }}>
+                    Recent Addresess
+                  </Typography>
                   <AddressList
                     data={AddressData}
                     onAddressPress={(selectedItem) =>
@@ -642,8 +612,7 @@ const DateSelectionAndCheckout = () => {
                     justifyContent: "flex-start",
                     flexWrap: "wrap", // Added flexWrap to allow wrapping
                     width: "100%",
-                  }}
-                >
+                  }}>
                   {rates.map((rate, index) => (
                     <View key={index}>
                       <TouchableOpacity
@@ -657,15 +626,13 @@ const DateSelectionAndCheckout = () => {
                           marginRight: 10,
                           backgroundColor:
                             selectedIndex === index ? "#2E5A88" : "transparent",
-                        }}
-                      >
+                        }}>
                         <View
                           style={{
                             display: "flex",
                             alignItems: "center",
                             marginTop: "20px",
-                          }}
-                        >
+                          }}>
                           <Typography style={{ color: "white" }}>
                             {new Date(
                               rate.service_level.delivery_date_to
@@ -694,14 +661,12 @@ const DateSelectionAndCheckout = () => {
                     justifyContent: "space-evenly",
                     alignItems: "center",
                   }}
-                  onClick={handlePayment}
-                >
+                  onClick={handlePayment}>
                   <Typography
                     style={{
                       fontSize: 16,
                       color: "#FFFFFF",
-                    }}
-                  >
+                    }}>
                     CHECKOUT
                   </Typography>
                 </Button>

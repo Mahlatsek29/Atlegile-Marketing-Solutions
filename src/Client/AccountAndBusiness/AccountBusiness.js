@@ -72,6 +72,8 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import mapImage from "../../Global/images/mapImage.png";
 import axios from "axios";
 import sara from "../../Global/images/Sara.png";
+
+
 export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
@@ -110,6 +112,67 @@ export default function BusinessAccount() {
   const [cartData, setCartData] = useState([]);
   const [user, setUser] = useState(null);
   const [checkOrder, setCheckOrder] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [banner, setBanner] = useState([]);
+
+  
+ useEffect(() => {
+  const fetchBanner = async () => {
+    try {
+      const bannerCollection = firestore.collection('Banner');
+      const snapshot = await bannerCollection.get();
+
+      const bannerData = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          bannerImage: data.bannerImage,
+          discountPrice: data.discountPrice,
+          originalPrice: data.originalPrice,
+          other: data.other,
+          productName: data.productName,
+          quantity: data.quantity,
+        };
+      });
+      console.log("bannerData is ",bannerData)
+      setBanner(bannerData);
+    } catch (error) {
+      console.error('Error fetching banner images:', error);
+    }
+  };
+ 
+  fetchBanner();
+}, []);
+
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    console.log("banner is ", banner[0].bannerImage.length);
+
+    if (banner[0].bannerImage.length > 0) {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === banner[0].bannerImage.length - 1 ? 0 : prevIndex + 1
+      );
+    }
+  }, 10000);
+
+  return () => {
+    clearInterval(interval);
+  };
+}, [banner]);
+
+
+  const handlePrevClick = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? banner[0].bannerImage.length - 1 : prevIndex - 1
+    );
+  };
+
+  const handleNextClick = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === banner[0].bannerImage.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
   const handlePaymentButtonPress = () => {
     const paymentUrl =
       "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
@@ -233,18 +296,18 @@ export default function BusinessAccount() {
     "Baby and Maternity",
     "Electrical and Lighting",
   ];
-  const list = [1, 2];
-  let bannerListIndex = 0;
-  let bannerList = [
-    {
-      backgroundImage: bg,
-      productName: "Cell Phone",
-      priceDiscount: 2,
-      quantity: 3,
-      priceOriginal: 24,
-      other: "Product Banner",
-    },
-  ];
+  // const list = [1, 2];
+  // let bannerListIndex = 0;
+  // let bannerList = [
+  //   {
+  //     backgroundImage: bg,
+  //     productName: "Cell Phone",
+  //     priceDiscount: 2,
+  //     quantity: 3,
+  //     priceOriginal: 24,
+  //     other: "Product Banner",
+  //   },
+  // ];
 
   const increment = () => {
     if (bannerListIndex === bannerList.length - 1) {
@@ -309,24 +372,50 @@ export default function BusinessAccount() {
     setEditModal(false);
   };
 
-  const handleSaveAddBanner = (e) => {
-    e.preventDefault();
-    console.log("productName: ", productName);
-    console.log("priceOriginal: ", priceOriginal);
-    console.log("priceDiscount: ", priceDiscount);
-    console.log("otherBanner: ", otherBanner);
-    console.log("bannerList: ", bannerList);
-    bannerList.push({
-      backgroundImage: image,
-      productName: productName,
-      priceDiscount: priceDiscount,
-      quantity: quantity,
-      priceOriginal: priceOriginal,
-      other: otherBanner,
-    });
-    setBannerListLength(bannerList.length);
-    setBannerModal(false);
+
+
+const handleSaveAddBanner = async (e) => {
+  e.preventDefault();
+
+  const bannerCollection = firestore.collection('Banner');
+  const bannerId = bannerCollection.id;
+  // Create a document with the specified fields
+  const bannerData = {
+    bannerImage: [], // Initialize an empty array to store image URLs
+    discountPrice: parseFloat(priceDiscount), // Convert to number
+    originalPrice: parseFloat(priceOriginal), // Convert to number
+    other: otherBanner,
+    productName: productName,
+    quantity: parseInt(quantity), // Convert to number
   };
+
+  try {
+    // Upload images to Firebase Storage
+    const uploadTasks = images.map((image, index) => {
+      const imageRef = storage.ref(`banner_images/${bannerId}/image${index}`);
+      return imageRef.put(image.file);
+    });
+
+    await Promise.all(uploadTasks); // Wait for all images to be uploaded
+
+    // Get download URLs of the images
+    const downloadURLs = await Promise.all(
+      uploadTasks.map((task) => task.snapshot.ref.getDownloadURL())
+    );
+
+    // Update the bannerData with image URLs
+    bannerData.bannerImage = downloadURLs;
+
+    // Add the document to the 'Banner' collection
+    await bannerCollection.add(bannerData);
+
+    console.log('Banner data added successfully!');
+    setBannerModal(false);
+  } catch (error) {
+    console.error('Error adding banner data: ', error);
+  }
+};
+
 
   const handleSavePaymentInfo = (e) => {
     e.preventDefault();
@@ -1046,28 +1135,46 @@ export default function BusinessAccount() {
       ) : null}
       {paymentModal ? (
         <View
-          // visible={true}
-          // onDismiss={() => setPaymentModal(false)}
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
+          display: "flex",
+          alignItems: "center",
+          zIndex: 1000, // Adjust as needed
+        }}
+      >
+        <View
           style={{
-            position: "absolute",
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            justifyContent: "flex-end", // Align to the end
-            zIndex: 9999,
-
-            flexDirection: "row",
+            flex: 1,
+            justifyContent: "felx-end",
+            alignItems: "center",
+            width: 50,
           }}
         >
-          <View style={{ height: "100vh" }}>
+          <Card
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              display: "flex",
+              //alignItems: "center",
+              justifyContent: "flex-end",
+              zIndex: 999,
+            }}
+          >
             <View
-              style={{
-                flex: 1,
-                justifyContent: "space-between",
-                backgroundColor: "white",
-              }}
-            >
+                style={{
+                  width: "34%",
+                  height: "100%",
+                  backgroundColor: "white",
+                  justifyContent:"space-between"
+                }}
+              >
               <View
                 style={{
                   height: "50vh",
@@ -1087,7 +1194,7 @@ export default function BusinessAccount() {
                   }}
                 />
               </View>
-
+               
               <View
                 style={{
                   justifyContent: "center",
@@ -1170,7 +1277,8 @@ export default function BusinessAccount() {
                   </Button>
                 </form>
               </View>
-            </View>
+              </View>
+            </Card>
           </View>
         </View>
       ) : null}
@@ -1331,7 +1439,7 @@ export default function BusinessAccount() {
                           InputLabelProps={{
                             shrink: true,
                           }}
-                          onChange={(text) => setProductName(text)}
+                          onChange={(e) => setProductName(e.target.value)}
                           style={{ width: "100%", marginTop: "10px" }}
                         />
                         <br />
@@ -1355,7 +1463,7 @@ export default function BusinessAccount() {
                               variant="standard"
                               value={priceDiscount}
                               label="Discount Price"
-                              onChange={(text) => setPriceDiscount(text)}
+                              onChange={(e) => setPriceDiscount(e.target.value)}
                               style={{ width: "100%", marginTop: "10px" }}
                             />
                           </View>
@@ -1367,7 +1475,7 @@ export default function BusinessAccount() {
                               variant="standard"
                               value={quantity}
                               label="Quantity"
-                              onChange={(text) => setQuantity(text)}
+                              onChange={(e) => setQuantity(e.target.value)}
                               style={{ width: "100%", marginTop: "10px" }}
                             />
                           </View>
@@ -1379,7 +1487,7 @@ export default function BusinessAccount() {
                           type="text"
                           value={priceOriginal}
                           label="Original Price"
-                          onChange={(text) => setPriceOriginal(text)}
+                          onChange={(e) => setPriceOriginal(e.target.value)}
                           style={{ width: "100%", marginTop: "10px" }}
                         />
 
@@ -1390,7 +1498,7 @@ export default function BusinessAccount() {
                           label="Other"
                           type="text"
                           value={otherBanner}
-                          onChange={(text) => setOtherBanner(text)}
+                          onChange={(e) => setOtherBanner(e.target.value)}
                           style={{ width: "100%", marginTop: "10px" }}
                         />
                         <Button
@@ -1422,7 +1530,6 @@ export default function BusinessAccount() {
           </View>
         </View>
       ) : null}
-
       {landing ? (
         <View
           style={{
@@ -1823,13 +1930,11 @@ export default function BusinessAccount() {
       ) : null}
       <Header />
       <NavBar />
-      <View style={{ display: "flex", flexDirection: "row" }}>
+      <View style={{ display: "flex", flexDirection: "row" ,backgroundColor:"#FFFFFF" }}>
         <View
           style={{
-            // width:'100vw',
             paddingLeft: 30,
-            // paddingRight: 30,
-            backgroundColor: "#f5f5f5",
+            backgroundColor:"#FFFFFF",
             alignItems: "flex-start",
           }}
         >
@@ -1837,7 +1942,6 @@ export default function BusinessAccount() {
             display="flex"
             justifyContent="flex-start"
             alignItems="center"
-            // height="145vh"
             paddingRight={2}
           >
             <Paper
@@ -1953,7 +2057,7 @@ export default function BusinessAccount() {
           <View
             style={{
               height: "150px",
-              backgroundColor: "black",
+             // backgroundColor: "black",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -2275,76 +2379,77 @@ export default function BusinessAccount() {
                     display: "flex",
                   }}
                 >
-                  {bannerListLength > -1 ? (
-                    <View
-                      style={{
-                        backgroundImage: `url(${bannerList[bannerListIndex].backgroundImage})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: 15,
-                        flex: 1,
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={decrement}
-                        style={{ marginRight: 20 }}
-                      >
-                        <AntDesign name="left" size={24} color="white" />
-                      </TouchableOpacity>
-                      <View
-                        style={{
-                          flex: 1,
-                          flexDirection: "column",
-                          alignItems: "flex-start",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            fontWeight: 600,
-                            color: "white",
-                          }}
-                        >
-                          {bannerList[bannerListIndex].other}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 25,
-                            fontWeight: 700,
-                            color: "white",
-                          }}
-                        >
-                          {bannerList[bannerListIndex].productName}
-                        </Text>
-                        <Text>
-                          <Text
-                            style={{
-                              fontSize: 18,
-                              fontWeight: 700,
-                              color: "#c29920",
-                            }}
-                          >
-                            R{bannerList[bannerListIndex].priceDiscount}
-                          </Text>{" "}
-                          <Text
-                            style={{
-                              fontSize: 15,
-                              fontWeight: 400,
-                              color: "white",
-                            }}
-                          >
-                            R{bannerList[bannerListIndex].priceOriginal}
-                          </Text>
-                        </Text>
-                      </View>
-                      <TouchableOpacity onPress={increment}>
-                        <AntDesign name="right" size={24} color="white" />
-                      </TouchableOpacity>
-                    </View>
-                  ) : null}
+                  {banner.length > 0 ? (
+  <View
+    style={{
+      backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
+      backgroundColor: "gray",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: 15,
+      flex: 1,
+      transition: "0.5s ease-in-out",
+    }}
+  >
+    <TouchableOpacity onPress={handlePrevClick} style={{ marginRight: 20 }}>
+      <AntDesign name="left" size={24} color="white" />
+    </TouchableOpacity>
+    <View
+      style={{
+        flex: 1,
+        flexDirection: "column",
+        alignItems: "flex-start",
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 15,
+          fontWeight: 600,
+          color: "white",
+        }}
+      >
+        {banner[0].other}
+      </Text>
+      <Text
+        style={{
+          fontSize: 25,
+          fontWeight: 700,
+          color: "white",
+        }}
+      >
+        {banner[0].productName}
+      </Text>
+      <Text>
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: 700,
+            color: "#c29920",
+          }}
+        >
+          R{banner[0].discountPrice}
+        </Text>{" "}
+        <Text
+          style={{
+            fontSize: 15,
+            fontWeight: 400,
+            color: "white",
+          }}
+        >
+          R{banner[0].originalPrice}
+        </Text>
+      </Text>
+    </View>
+
+    <TouchableOpacity onPress={handleNextClick}>
+      <AntDesign name="right" size={24} color="white" />
+    </TouchableOpacity>
+  </View>
+) : null}
+
 
                   <TouchableOpacity
                     style={{
@@ -2383,9 +2488,9 @@ export default function BusinessAccount() {
                         flexWrap: "wrap",
                       }}
                     >
-                      {list.map((item, index) => (
-                        <Card2 key={index} open={() => setEditModal(true)} />
-                      ))}
+                     {banner.map((item, index) => (
+  <Card2 key={index} open={() => setEditModal(true)} />
+))}
 
                       {/* {list.map((item, index) => (
                       <ProductCard

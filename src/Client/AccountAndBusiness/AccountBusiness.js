@@ -11,13 +11,10 @@ import NavBar from "../../Global/Navbar";
 import {
   View,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Image,
   Text,
   TextInput,
   ScrollView,
-  Portal,
-  Modal,
 } from "react-native";
 // import { Modal, Title } from "react-native-paper";
 import { Footer } from "../../Global/Footer";
@@ -31,8 +28,6 @@ import {
   TextField,
   Button,
   Card,
-  CardContent,
-  CardMedia,
   MenuItem,
   Box,
 } from "@mui/material";
@@ -72,7 +67,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import mapImage from "../../Global/images/mapImage.png";
 import axios from "axios";
 import sara from "../../Global/images/Sara.png";
-
+import Swal from "sweetalert2";
 
 export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
@@ -114,8 +109,40 @@ export default function BusinessAccount() {
   const [checkOrder, setCheckOrder] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [banner, setBanner] = useState([]);
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
 
-  
+    return () => {
+      unsubscribe(); // Unsubscribe from the auth state listener when component unmounts
+    };
+  }, []);
+  useEffect(() => {
+    const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const userDocRef = firestore.collection("Users").doc(user.uid);
+
+        // Fetch user details from Firestore
+        try {
+          const userDoc = await userDocRef.get();
+          if (userDoc.exists) {
+            setUserData(userDoc.data());
+          } else {
+            console.error("User document does not exist");
+          }
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        }
+      }
+    });
+
+    return () => {
+      unsubscribeAuth();
+    };
+  }, []);
  useEffect(() => {
   const fetchBanner = async () => {
     try {
@@ -1965,15 +1992,17 @@ const handleSaveAddBanner = async (e) => {
                   }}
                 />
                 <Box sx={{ marginTop: "10%" }}>
-                  <Typography variant="h6">SARAH</Typography>
-                  <Typography variant="subtitle1">0123456789</Typography>
-                  <Typography variant="subtitle2">example@gmail.com</Typography>
+                  <Typography variant="h6">
+                    {userData?.name} {userData?.surname}
+                  </Typography>
+                  <Typography variant="subtitle1">{userData?.phone}</Typography>
+                  <Typography variant="subtitle2">{userData?.email}</Typography>
                 </Box>
               </Box>
 
               <Box>
                 <Typography sx={{ textAlign: "center" }}>
-                  123 Vilakazi Street, Orlando West Soweto, 1804, South Africa
+                  {userData?.location}
                 </Typography>
               </Box>
 

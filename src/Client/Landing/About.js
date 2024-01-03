@@ -9,10 +9,12 @@ import { Footer } from "../../Global/Footer";
 import { yellow } from "@mui/material/colors";
 import { COLORS } from "../../Global/Color";
 import { useNavigation } from "@react-navigation/native";
+import { Video } from "expo-av";
 
 export default function AboutUs() {
   const amsArr = [];
-
+  const video = React.useRef(null);
+  const [status, setStatus] = React.useState({});
   return (
     <View style={{ Width: "100vw" }}>
       {/* <StatusBar style="auto" /> */}
@@ -20,7 +22,7 @@ export default function AboutUs() {
       <Navbar />
       <View
         style={{
-          width: "100%",
+          width: "100vw",
           alignItems: "center",
           justifyContent: "center",
           display: "flex",
@@ -172,17 +174,42 @@ export default function AboutUs() {
             </View>
           </View>
 
-          <Image
+          <View
+            style={{
+              height: "50vh",
+              width: "80%",
+              // backgroundColor: "red",
+              display: "flex",
+              justifyContent:"center"
+            }}
+          >
+            <Video
+              ref={video}
+              style={{
+                height: "50vh",
+                width: "100%",
+                alignSelf: "center"
+              }}
+              source={{
+                uri: "http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
+              }}
+              useNativeControls
+              resizeMode="contain"
+              isLooping
+              onPlaybackStatusUpdate={setStatus}
+            />
+            {/* <Image
             source={require("../../Global/images/plane.svg")}
             style={{
               minHeight: "70vh",
               minWidth: "100%",
               resizeMode: "contain",
             }}
-          />
-          <Text style={{ display: "flex", alignSelf: "flex-start" }}>
-            Business Research and Youth Development Project
-          </Text>
+          /> */}
+            <Text style={{  alignSelf: "flex-start" }}>
+              Business Research and Youth Development Project
+            </Text>
+          </View>
 
           <View style={styles.amsContainer}>
             <Text
@@ -325,19 +352,17 @@ export default function AboutUs() {
           </View>
         </View>
       </View>
-   
-     <Image
+
+      <Image
         source={require("../../Global/images/big-lion.svg")}
         style={{
           minHeight: "99vh",
-           minWidth: "100%",
+          minWidth: "100%",
           resizeMode: "contain",
-         // backgroundColor: "red",
+          // backgroundColor: "red",
         }}
       />
 
-   
-      
       <Footer />
     </View>
   );

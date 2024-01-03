@@ -22,7 +22,7 @@ export default function AboutUs() {
       <Navbar />
       <View
         style={{
-          width: "100vw",
+          //width: "100vw",
           alignItems: "center",
           justifyContent: "center",
           display: "flex",

@@ -8,22 +8,34 @@ import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
 import { yellow } from "@mui/material/colors";
 import { COLORS } from "../../Global/Color";
-import { useNavigation } from '@react-navigation/native';
-
+import { useNavigation } from "@react-navigation/native";
 
 export default function AboutUs() {
-
-  
-
   const amsArr = [];
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
+    <View style={{ Width: "100vw" }}>
+      {/* <StatusBar style="auto" /> */}
       <FollowUs />
       <Navbar />
-      <View style={styles.aboutContainer}>
-        <View style={styles.aboutHeaderContainer}>
+      <View
+        style={{
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+          display: "flex",
+        }}
+      >
+        <View
+          style={{
+            width: "66%",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            display: "flex",
+            //backgroundColor: "red",
+          }}
+        >
           <View>
             <Image
               source={require("../../Global/images/logo.svg")}
@@ -59,14 +71,19 @@ export default function AboutUs() {
               aim to drive sales, increase revenue, and create a lasting impact.
             </Text>
           </View>
-         
+
           <View
-            style={{ display: "flex", flexDirection: "row", paddingTop: 30 }}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              paddingTop: 30,
+              paddingBottom: 30,
+            }}
           >
             <View
               style={{
-                height: 200,
-                width: 330,
+                height: "auto",
+                width: "33%",
                 border: "1px solid grey",
                 margin: 1,
               }}
@@ -92,8 +109,8 @@ export default function AboutUs() {
             </View>
             <View
               style={{
-                height: 200,
-                width: 330,
+                height: "auto",
+                width: "33%",
                 border: "1px solid grey",
                 margin: 1,
               }}
@@ -118,8 +135,8 @@ export default function AboutUs() {
             </View>
             <View
               style={{
-                height: 200,
-                width: 330,
+                height: "auto",
+                width: "33.5%",
                 border: "1px solid grey",
                 margin: 1,
               }}
@@ -155,23 +172,17 @@ export default function AboutUs() {
             </View>
           </View>
 
-          <View
+          <Image
+            source={require("../../Global/images/plane.svg")}
             style={{
-              Height: 590,
-              Width: 1020,
-              display: "flex",
-              margin: 0,
-              flexDirection: "column",
-              // backgroundColor:"red"
-              paddingTop:40
+              minHeight: "70vh",
+              minWidth: "100%",
+              resizeMode: "contain",
             }}
-          >
-            <Image
-              source={require("../../Global/images/plane.svg")}
-              style={{ minHeight: 520, minWidth: 1020, resizeMode: "contain" }}
-            />
-            <Text>Business Research and Youth Development Project</Text>
-          </View>
+          />
+          <Text style={{ display: "flex", alignSelf: "flex-start" }}>
+            Business Research and Youth Development Project
+          </Text>
 
           <View style={styles.amsContainer}>
             <Text
@@ -186,16 +197,27 @@ export default function AboutUs() {
               AMS IS GUIDED BY SEVERAL CORE VALURES
             </Text>
             <View
-              style={{ display: "flex", flexDirection: "colunm", width: 1020 , paddingTop:10}}
+              style={{
+                display: "flex",
+                flexDirection: "colunm",
+                width: 1020,
+                paddingTop: 10,
+              }}
             >
-              <View style={{display:"flex", flexDirection:"row", justifyContent:"center"}}>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                }}
+              >
                 <Text
                   style={{
                     color: "white",
                     alignItems: "cernter",
                     paddingTop: 5,
                     paddingHorizontal: 20,
-                    paddingBottom:5,
+                    paddingBottom: 5,
                     margin: 5,
                     backgroundColor: COLORS.darkBlue,
                     fontSize: "1.2rem",
@@ -210,7 +232,7 @@ export default function AboutUs() {
                     paddingTop: 5,
                     paddingHorizontal: 20,
                     margin: 5,
-                    paddingBottom:5,
+                    paddingBottom: 5,
                     backgroundColor: COLORS.darkBlue,
                     fontSize: "1.2rem",
                   }}
@@ -224,7 +246,7 @@ export default function AboutUs() {
                     paddingTop: 5,
                     paddingHorizontal: 20,
                     margin: 5,
-                    paddingBottom:5,
+                    paddingBottom: 5,
                     backgroundColor: COLORS.darkBlue,
                     fontSize: "1.2rem",
                   }}
@@ -236,7 +258,7 @@ export default function AboutUs() {
                     color: "white",
                     alignItems: "cernter",
                     paddingTop: 5,
-                    paddingBottom:5,
+                    paddingBottom: 5,
                     paddingHorizontal: 20,
                     margin: 5,
                     backgroundColor: COLORS.darkBlue,
@@ -247,13 +269,19 @@ export default function AboutUs() {
                 </Text>
               </View>
 
-              <View style={{display:"flex", flexDirection:"row", justifyContent:"center",}} >
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                }}
+              >
                 <Text
                   style={{
                     color: "white",
                     alignItems: "cernter",
                     paddingTop: 5,
-                    paddingBottom:5,
+                    paddingBottom: 5,
                     paddingHorizontal: 20,
                     margin: 5,
                     backgroundColor: COLORS.darkBlue,
@@ -269,7 +297,7 @@ export default function AboutUs() {
                     paddingTop: 5,
                     paddingHorizontal: 20,
                     margin: 5,
-                    paddingBottom:5,
+                    paddingBottom: 5,
                     backgroundColor: COLORS.darkBlue,
                     fontSize: "1.2rem",
                   }}
@@ -295,23 +323,21 @@ export default function AboutUs() {
               SUSTAINABLE BUSINESSES GROWTH.
             </Text>
           </View>
-
-          <View
-            style={{
-              Height: 800,
-              Width: 2000,
-              display: "flex",
-              margin: 0,
-              flexDirection: "column",
-            }}
-          >
-            <Image
-              source={require("../../Global/images/big-lion.svg")}
-              style={{ minHeight: 800, minWidth: 2000, resizeMode: "contain" }}
-            />
-          </View>
         </View>
       </View>
+   
+     <Image
+        source={require("../../Global/images/big-lion.svg")}
+        style={{
+          minHeight: "99vh",
+           minWidth: "100%",
+          resizeMode: "contain",
+         // backgroundColor: "red",
+        }}
+      />
+
+   
+      
       <Footer />
     </View>
   );
@@ -324,7 +350,6 @@ const styles = StyleSheet.create({
   logo: {
     minWidth: 250,
     maxWidth: 400,
-
   },
   aboutLogo: {
     marginTop: 100,
@@ -348,13 +373,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     justifyContent: "center",
-  
   },
   aboutPlane: {
     marginTop: 50,
   },
-  plane: {
-  },
+  plane: {},
   amsContainer: {
     marginTop: 20,
   },
@@ -379,8 +402,7 @@ const styles = StyleSheet.create({
   lionImagesContainer: {
     position: "relative",
   },
-  bigLion: {
-  },
+  bigLion: {},
   lion: {
     width: "100%",
   },

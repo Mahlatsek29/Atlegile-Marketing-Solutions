@@ -25,10 +25,12 @@ import {
   onSnapshot,
   where,
   getDocs,
+  serverTimestamp,
   addDoc,
 } from "firebase/firestore";
 
 import { firebase, auth, db } from "../../config";
+// import { timeStamp } from "console";
 
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
@@ -86,6 +88,8 @@ const DateSelectionAndCheckout = () => {
       const querySnapshot = await getDocs(q);
 
       const cartItems = [];
+      const cartProducts = [];
+
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         cartItems.push({
@@ -97,9 +101,22 @@ const DateSelectionAndCheckout = () => {
           name: data.name,
           // Add other relevant fields from your Cart collection
         });
+        cartProducts.push({
+          id: doc.id,
+          productId: data.productId,
+          timestamp: data.timestamp,
+          quantity: data.quantity,
+          amount: data.price * data.quantity,
+          image: data.image,
+          name: data.name,
+          // Add other relevant fields from your Cart collection
+        });
       });
 
       setCartData(cartItems);
+      setNewArr(cartProducts);
+      // setNewArr([...cartItems]);
+      console.log("cartData : ", cartData);
     } catch (error) {
       console.error("Error fetching cart data:", error);
     }
@@ -131,6 +148,11 @@ const DateSelectionAndCheckout = () => {
     //   return navigation.navigate("SignIn");
     // }
     // setNewArr(cartData);
+    // if (cartData) {
+    //   setNewArr(cartData);
+    // } else {
+    //   fetchCartData();
+    // }
     console.log("deliveryGuy : ", data[Math.floor(Math.random() * 10)]);
     console.log("name : ", userData);
 
@@ -139,20 +161,20 @@ const DateSelectionAndCheckout = () => {
 
       // Add a new document with user information, product ID, product price, quantity, and image
       await addDoc(cartCollectionRef, {
-        createdAt: "November 28, 2023 at 3:16:31 PM UTC+2",
+        createdAt: serverTimestamp(),
         deliveryAddress: "123 Sade Street, Johannesburg Gauteng 1658",
-        deliveryDate: "November 28, 2023 at 3:16:31 PM UTC+2",
+        deliveryDate: serverTimestamp(),
         deliveryFee: 150,
         deliveryGuy: data[Math.floor(Math.random() * 10)],
         name: userData?.name,
         userName: userData?.name,
-        invoiceNumber: `#${
-          newArr[0]?.productId?.slice(2, 8) + Math.floor(Math.random() * 10000)
-        }`,
+        invoiceNumber: `#${Math.floor(Math.random() * 10000000)}555${Math.floor(
+          Math.random() * 100000000
+        )}`,
         DeliveryStatus: "Delivered",
         userId: userData?.uid,
         orderNumber: `#${
-          newArr[0]?.productId?.slice(0, 4) + Math.floor(Math.random() * 10000)
+          userData?.uid?.slice(5, 15) + Math.floor(Math.random() * 10000)
         }`,
         // orderSummary: 3000,
         totalAmount: orderTotal,
@@ -296,6 +318,7 @@ const DateSelectionAndCheckout = () => {
       PoBox: 1861,
     },
   ];
+  // console.log("cartData 2 : ", cartData);
 
   const creattingShipment = async () => {
     const shipment = {
@@ -465,7 +488,7 @@ const DateSelectionAndCheckout = () => {
     orderTotal.toFixed(2) + // Use the calculated orderTotal here
       "&item_name=TestProduct";
 
-    // Open the payment URL in the device's default browser
+    // Open the payment URcartDatanL in the device's default browser
     Linking.openURL(paymentUrl);
   };
 

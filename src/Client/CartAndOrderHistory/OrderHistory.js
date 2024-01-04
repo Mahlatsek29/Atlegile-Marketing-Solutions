@@ -17,6 +17,17 @@ import { firestore } from "../../config";
 const OrderHistory = () => {
   const [cartData, setCartData] = useState([]);
   const [user, setUser] = useState(null);
+  const [data, setData] = useState([
+    "Ben",
+    "Paul",
+    "Sibusiso",
+    "Mpho",
+    "Ristar",
+    "David",
+    "Tshepo",
+    "Linda",
+    "Thobile",
+  ]);
 
   useEffect(() => {
     const auth = getAuth();
@@ -261,7 +272,7 @@ const OrderHistory = () => {
                     Delivered by
                   </Text>
                   <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                    Dilivery Guy
+                    {data[Math.floor(Math.random() * 10)]}
                   </Text>
                 </View>
                 <View style={{ width: "30%", paddingLeft: 10 }}>

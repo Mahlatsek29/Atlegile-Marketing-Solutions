@@ -143,16 +143,6 @@ const DateSelectionAndCheckout = () => {
   };
 
   const handleAddToCart = async () => {
-    // if (!user) {
-    //   alert("Please login first");
-    //   return navigation.navigate("SignIn");
-    // }
-    // setNewArr(cartData);
-    // if (cartData) {
-    //   setNewArr(cartData);
-    // } else {
-    //   fetchCartData();
-    // }
     console.log("deliveryGuy : ", data[Math.floor(Math.random() * 10)]);
     console.log("name : ", userData);
 

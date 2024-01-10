@@ -6,6 +6,8 @@ import {
   Linking,
   Image,
   ScrollView,
+  TextInput,
+  FlatList
 } from "react-native";
 import { Container, Typography, Button } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
@@ -31,6 +33,7 @@ import {
 
 import { firebase, auth, db } from "../../config";
 // import { timeStamp } from "console";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
@@ -60,6 +63,8 @@ const DateSelectionAndCheckout = () => {
 
   // const [rates, setRates] = useState([]);
   const [userData, setUserData] = useState(null);
+  const [inputValue, setInputValue] = useState('');
+  const [predictions, setPredictions] = useState([]);
 
   useEffect(() => {
     const auth = getAuth();
@@ -482,6 +487,29 @@ const DateSelectionAndCheckout = () => {
     Linking.openURL(paymentUrl);
   };
 
+  const handleSearch = async () => {
+    const apiKey = "AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs";
+    const apiUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json`;
+
+    try {
+      const response = await axios.get(apiUrl, {
+        params: {
+          input: inputValue,
+          key: apiKey,
+          language: "en", // Add other required parameters here
+        },
+      });
+
+      setPredictions(response.data.predictions);
+    } catch (error) {
+      console.error("Error fetching predictions:", error);
+    }
+  };
+
+  const handleInputChange = (text) => {
+    setInputValue(text);
+    handleSearch();
+  };
   return (
     <>
       <FollowUs />
@@ -707,6 +735,58 @@ const DateSelectionAndCheckout = () => {
                     alignItems: "center",
                   }}
                 >
+                  <TextInput
+                    value={inputValue}
+                    onChangeText={handleInputChange}
+                    placeholder="Enter location"
+                  />
+                  <FlatList
+                    data={predictions}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                      <Text>{item.description}</Text> // Assuming 'description' is the property containing place names
+                    )}
+                  />
+                  {/* <GooglePlacesAutocomplete
+                    placeholder="Enter location"
+                    onPress={(data, details = null) => {
+                      // 'data' contains the place details, 'details' contains additional information
+                      console.log(data, details);
+                    }}
+                    query={{
+                      key: "AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs",
+                      language: "en", // optional: language of the results
+                    }}
+                    requestUrl={{
+                      useOnPlatform: "web", // or "all"
+                      url: "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api", // or any proxy server that hits https://maps.googleapis.com/maps/api
+                      headers: {
+                        Authorization: `AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs`, // if required for your proxy
+                      },
+                    }}
+                  /> */}
+                  {/* <GooglePlacesAutocomplete
+                    placeholder="Enter location"
+                    onPress={(data, details = null) => {
+                      // 'data' contains the place details, 'details' contains additional information
+                      console.log(data, details);
+                    }}
+                    query={{
+                      key: "a3a0edc29229a4ba86910dc4b05a37757393c996", // Replace with your actual API key
+                      language: "en",
+                    }}
+                    requestUrl={{
+                      useOnPlatform: "web", // or "all"
+                      url: "https://maps.googleapis.com/maps/api",
+                    }}
+                  /> */}
+
+                  {/* <Button onPress={handleSearch}>Search</Button>
+                  {predictions.map((prediction) => (
+                    <View key={prediction.place_id}>
+                      <Text>{prediction.description}</Text>
+                    </View>
+                  ))} */}
                   <Typography style={{ color: "#B7B9BC" }}>
                     Delivery Address
                   </Typography>

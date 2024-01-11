@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 import { COLORS } from "../../Global/Color";
 import { FontAwesome } from "@expo/vector-icons";
+import CircularProgress from "@mui/material/CircularProgress";
 import { firebase, firestore } from "../../config";
 
 const Signin = () => {
@@ -20,9 +21,12 @@ const Signin = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   const handleSignin = async () => {
     try {
+      setLoading(true); // Set loading to true before initiating the sign-in process
       if (email.trim() === "" || password.trim() === "") {
         alert("Please fill in all fields before signing in.");
         return;
@@ -31,7 +35,7 @@ const Signin = () => {
       console.log("Email:", email);
       console.log("Password:", password);
 
-      // Use signInWithEmailAndPassword for signing in
+      // // Use signInWithEmailAndPassword for signing in
       const userCredential = await firebase
         .auth()
         .signInWithEmailAndPassword(email, password);
@@ -47,6 +51,8 @@ const Signin = () => {
     } catch (error) {
       console.error("Error signing in:", error.message);
       alert("Error signing in. Please try again.");
+    }finally {
+      setLoading(false); // Set loading back to false after the sign-in process completes
     }
   };
 
@@ -132,8 +138,13 @@ const Signin = () => {
           </Text>
         </View>
         <TouchableOpacity style={styles.button} onPress={handleSignin}>
-          <Text style={styles.buttonText}>SIGN IN</Text>
-        </TouchableOpacity>
+  {loading ? (
+    <CircularProgress size={25} />
+  ) : (
+    <Text style={styles.buttonText}>SIGN IN</Text>
+  )}
+</TouchableOpacity>
+
 
         {/* <TouchableOpacity>
           <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>
@@ -192,6 +203,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: 10,
     width: "75%",
+    display:'flex',
+    alignItems:'center',
   },
   buttonText: {
     color: "white",

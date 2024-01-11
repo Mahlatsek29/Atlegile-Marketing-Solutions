@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import TextField from "@mui/material/TextField";
 import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Signup = () => {
   const navigation = useNavigation();
@@ -20,6 +21,8 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [nameAlternative, setNameAlternative] = useState(null);
   const [phoneAlternative, setPhoneAlternative] = useState(null);
+  const [loading, setLoading] = useState(false);
+
 
   const navigateSignUpBussiness = () => {
     navigation.navigate("BusinessRegistration");
@@ -42,6 +45,7 @@ const Signup = () => {
     }
 
     try {
+      setLoading(true);
       const userCredential = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
@@ -64,6 +68,9 @@ const Signup = () => {
     } catch (error) {
       console.error("Error signing up:", error.message);
       alert("Error signing up. Please try again.");
+    }
+    finally {
+      setLoading(false); // Set loading back to false after the sign-up process completes
     }
   };
 
@@ -222,8 +229,12 @@ const Signup = () => {
           />
         </View>
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
-          <Text style={styles.buttonText}>SIGN UP</Text>
-        </TouchableOpacity>
+  {loading ? (
+    <CircularProgress size={25} />
+  ) : (
+    <Text style={styles.buttonText}>SIGN UP</Text>
+  )}
+</TouchableOpacity>
         <TouchableOpacity onPress={navigatealreadyhaveaccount}>
           <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>
         </TouchableOpacity>
@@ -294,6 +305,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: 10,
     width: "75%",
+    display:'flex',
+    alignItems:"center"
   },
   buttonText: {
     color: "white",

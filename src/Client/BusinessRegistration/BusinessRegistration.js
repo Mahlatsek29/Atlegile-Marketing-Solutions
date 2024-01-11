@@ -73,7 +73,7 @@ const BusinessRegistration = () => {
         cardHolder,
         cardNumber,
         cvv,
-        userID: currentUserUID,
+        // userID: currentUserUID,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       });
 

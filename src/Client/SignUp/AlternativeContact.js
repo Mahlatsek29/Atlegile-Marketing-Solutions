@@ -11,6 +11,8 @@ import {
 import { firebase, firestore } from "../../config";
 import TextField from "@mui/material/TextField";
 import { useNavigation } from "@react-navigation/native";
+import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
+
 
 const AlternativeContact = () => {
   const user = firebase.auth().currentUser;
@@ -18,6 +20,8 @@ const AlternativeContact = () => {
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false); // New state for loading
+
 
   const handleContinue = async (e) => {
     e.preventDefault();
@@ -28,6 +32,8 @@ const AlternativeContact = () => {
     }
 
     try {
+      setLoading(true); // Set loading to true when the request starts
+
       const userRef = firestore.collection("Users").doc(user.uid);
 
       // Get the existing user data
@@ -53,9 +59,12 @@ const AlternativeContact = () => {
       console.error(
         "Error submitting alternative contact information:",
         error.message
-      );
+      )
+    }finally {
+      setLoading(false); // Set loading to false when the request completes
     }
   };
+
 
   const handleNotNow = () => {
     console.log("Not Now button clicked");
@@ -102,7 +111,11 @@ const AlternativeContact = () => {
 
           <View>
             <TouchableOpacity style={styles.button} onPress={handleContinue}>
-              <Text style={styles.buttonText}>CONTINUE</Text>
+              {loading ? (
+                <CircularProgress size={25} />
+              ) : (
+                <Text style={styles.buttonText}>CONTINUE</Text>
+              )}
             </TouchableOpacity>
           </View>
 
@@ -152,6 +165,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: 10,
     width: "120%",
+    display:'flex',
+    alignItems:'center'
   },
   buttonText: {
     color: "white",

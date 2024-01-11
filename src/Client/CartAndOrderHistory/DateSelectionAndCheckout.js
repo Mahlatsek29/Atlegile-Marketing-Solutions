@@ -531,7 +531,7 @@ const DateSelectionAndCheckout = () => {
                     onPress={navigateToLanding}
                     style={{ color: "grey" }}
                   >
-                    Acount /
+                   <Text>Acount /</Text> 
                   </TouchableOpacity>
                 </Typography>
                 <Typography>

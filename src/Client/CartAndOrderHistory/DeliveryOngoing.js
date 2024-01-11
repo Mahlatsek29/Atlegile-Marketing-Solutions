@@ -361,7 +361,7 @@ const DeliveryOngoing = () => {
                     onPress={navigateToLanding}
                     style={{ color: "grey" }}
                   >
-                    Acount /
+                  <Text>Acount /</Text>  
                   </TouchableOpacity>
                 </Typography>
                 <Typography>
@@ -369,7 +369,7 @@ const DeliveryOngoing = () => {
                     onPress={navigateToOrderHistory}
                     style={{ color: "grey" }}
                   >
-                    Order History /
+                   <Text>Order History /</Text> 
                   </TouchableOpacity>
                 </Typography>
                 <Typography>#ABC246</Typography>

@@ -264,7 +264,7 @@ const DeliveryAndChatSystem = () => {
                     onPress={navigateToLanding}
                     style={{ color: "grey" }}
                   >
-                    Acount /
+                  <Text>Acount /</Text>  
                   </TouchableOpacity>
                 </Typography>
                 <Typography>
@@ -272,7 +272,7 @@ const DeliveryAndChatSystem = () => {
                     onPress={navigateToOrderHistory}
                     style={{ color: "grey" }}
                   >
-                    Order History /
+                   <Text>Order History /</Text> 
                   </TouchableOpacity>
                 </Typography>
                 <Typography>#AABBCC</Typography>

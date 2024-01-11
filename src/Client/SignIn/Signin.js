@@ -52,7 +52,7 @@ const Signin = () => {
       console.error("Error signing in:", error.message);
       alert("Error signing in. Please try again.");
     }finally {
-      setLoading(true); // Set loading back to false after the sign-in process completes
+      setLoading(false); // Set loading back to false after the sign-in process completes
     }
   };
 

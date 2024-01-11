@@ -72,11 +72,11 @@ const AddProductsAndServices = () => {
 
   const url = "https://atlegile-marketing-solutions.vercel.app/";
 
-  // const handlePaymentButtonPress = () => {
-  //   const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct`;
+  const handlePaymentButtonPress = () => {
+    const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct`;
 
-  //   Linking.openURL(paymentUrl);
-  // };
+    Linking.openURL(paymentUrl);
+  };
 
   const handleImageChange = (e) => {
     const files = e.target.files;
@@ -97,6 +97,8 @@ const AddProductsAndServices = () => {
     }
 
     try {
+      setLoading(true);
+
       const productRef = firestore.collection("Products").doc();
 
       const productId = productRef.id;
@@ -127,10 +129,10 @@ const AddProductsAndServices = () => {
 
       await productRef.update({ images: downloadURLs });
 
-      setLoading(true);
+ 
 
       setTimeout(() => {
-        setLoading(false);
+        setLoading(true);
       }, 3000);
       const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=270.00&item_name=subscription`;
       Linking.openURL(paymentUrl);
@@ -460,8 +462,8 @@ const AddProductsAndServices = () => {
                   }}
                   type="submit">
                   {loading ? (
-                    <Box sx={{ display: "flex", justifyContent: "center" }}>
-                      <CircularProgress color="inherit" />
+                    <Box sx={{ display: "flex", justifyContent: "center", alignItems:"center" }}>
+                      <CircularProgress color="inherit"  size={25}/>
                     </Box>
                   ) : (
                     "Continue"

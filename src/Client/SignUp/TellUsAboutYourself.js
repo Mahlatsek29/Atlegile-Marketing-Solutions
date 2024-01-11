@@ -11,6 +11,7 @@ import {
 import { firebase, firestore } from "../../config";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
+import CircularProgress from "@mui/material/CircularProgress";
 
 
 const TellUsAboutYourself = ({ navigation }) => {
@@ -20,6 +21,8 @@ const TellUsAboutYourself = ({ navigation }) => {
   const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const user = firebase.auth().currentUser;
 
   const handleContinue =  async (e) => {
@@ -33,6 +36,7 @@ const TellUsAboutYourself = ({ navigation }) => {
     localStorage.setItem("user", user.uid);
 
     try {
+      setLoading(true);
       const userRef = firestore.collection("Users").doc(user.uid);
 
       await userRef.set({
@@ -52,7 +56,8 @@ const TellUsAboutYourself = ({ navigation }) => {
     } catch (error) {
       console.error("Error submitting user information:", error.message);
       alert("Error submitting user information. Please try again.");
-    }
+    }finally {
+      setLoading(true)}
   };
   const emptyOption = [""];
   const genderOptions = ["Male", "Female", "Other"];
@@ -189,9 +194,14 @@ const TellUsAboutYourself = ({ navigation }) => {
           }}
           />
 
-        <TouchableOpacity style={styles.button} onPress={handleContinue}>
-          <Text style={styles.buttonText}>CONTINUE</Text>
-        </TouchableOpacity>
+<TouchableOpacity style={styles.button} onPress={handleContinue}>
+  {loading ? (
+    <CircularProgress size={25} />
+  ) : (
+    <Text style={styles.buttonText}>CONTINUE</Text>
+  )}
+</TouchableOpacity>
+
       </View>
     </ImageBackground>
   );
@@ -250,6 +260,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: 10,
     width: "75%",
+    display:'flex',
+    alignItems:'center'
   },
   buttonText: {
     color: "white",

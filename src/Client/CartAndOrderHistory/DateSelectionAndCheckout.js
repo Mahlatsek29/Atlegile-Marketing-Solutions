@@ -578,163 +578,173 @@ const DateSelectionAndCheckout = () => {
               >
                 CART
               </Typography>
-              <Typography variant="h6" style={{ fontWeight: "bold" }}>
-                ORDER #ABC246
-              </Typography>
-              <ScrollView style={{ flex: 1 }}>
-                {cartData.map((item, index) => (
-                  <View
-                    style={{
-                      width: "100%",
-                      height: "20vh",
-                      borderBottomWidth: 2,
-                      borderBottomColor: "#1D1D1D",
-                      // backgroundColor: "yellow",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      paddingTop: 2,
-                    }}
-                    key={index}
-                  >
-                    {/* <View
+              {cartData.length < 1 ? (
+                <h2>Your Cart Is Currently Empty</h2>
+              ) : (
+                <>
+                  {" "}
+                  <Typography variant="h6" style={{ fontWeight: "bold" }}>
+                    ORDER #ABC246
+                  </Typography>
+                  <ScrollView style={{ flex: 1 }}>
+                    {cartData.map((item, index) => (
+                      <View
+                        style={{
+                          width: "100%",
+                          height: "20vh",
+                          borderBottomWidth: 2,
+                          borderBottomColor: "#1D1D1D",
+                          // backgroundColor: "yellow",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          paddingTop: 2,
+                        }}
+                        key={index}
+                      >
+                        {/* <View
                       style={{
                         width: "25%",
                         // height: "100%",
                         backgroundColor: "#000026",
                         // backgroundColor:'red'
                       }}> */}
-                    <Image
-                      source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
-                      style={{
-                        width: "30%",
-                        height: "100%",
-                        resizeMode: "cover",
-                      }}
-                    />
-                    {/* </View> */}
-                    <View style={{ width: "30%", paddingLeft: 10 }}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: "bold",
-                          color: "gray",
-                        }}
-                      >
-                        Product
-                      </Text>
-                      <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                        {item.name}
-                      </Text>
-                    </View>
-                    <View style={{ width: "30%", paddingLeft: 10 }}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: "bold",
-                          color: "gray",
-                        }}
-                      >
-                        Quantity
-                      </Text>
-                      <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                        {item.quantity}
-                      </Text>
-                    </View>
-                    <View style={{ width: "30%", paddingLeft: 10 }}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: "bold",
-                          color: "gray",
-                        }}
-                      >
-                        Amount
-                      </Text>
-                      <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                        {item.amount}
-                      </Text>
-                    </View>
+                        <Image
+                          source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
+                          style={{
+                            width: "30%",
+                            height: "100%",
+                            resizeMode: "cover",
+                          }}
+                        />
+                        {/* </View> */}
+                        <View style={{ width: "30%", paddingLeft: 10 }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: "gray",
+                            }}
+                          >
+                            Product
+                          </Text>
+                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                            {item.name}
+                          </Text>
+                        </View>
+                        <View style={{ width: "30%", paddingLeft: 10 }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: "gray",
+                            }}
+                          >
+                            Quantity
+                          </Text>
+                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                            {item.quantity}
+                          </Text>
+                        </View>
+                        <View style={{ width: "30%", paddingLeft: 10 }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: "gray",
+                            }}
+                          >
+                            Amount
+                          </Text>
+                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                            {item.amount}
+                          </Text>
+                        </View>
+                      </View>
+                    ))}
+                  </ScrollView>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography style={{ fontWeight: "bold" }}>
+                      Order Summary
+                    </Typography>
                   </View>
-                ))}
-              </ScrollView>
+                  <View
+                    style={{
+                      display: "flex",
+                      marginTop: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography style={{ fontWeight: "bold" }}>
+                      Delivery
+                    </Typography>
+                    {selectedIndex !== null && (
+                      <Typography style={{ fontWeight: "bold" }}>
+                        R{rates[selectedIndex].rate}
+                      </Typography>
+                    )}
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      marginTop: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography style={{ fontWeight: "bold" }}>
+                      {" "}
+                      Agent Referral
+                    </Typography>
+                    <Typography style={{ fontWeight: "bold" }}>
+                      {selectedIndex !== null
+                        ? `R${agentReferral.toFixed(2)}`
+                        : "10%"}
+                    </Typography>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      marginTop: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography style={{ fontWeight: "bold" }}>
+                      {" "}
+                      Tax{" "}
+                    </Typography>
+                    <Typography style={{ fontWeight: "bold" }}>
+                      {selectedIndex !== null ? `R${tax.toFixed(2)}` : "15%"}
+                    </Typography>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      marginTop: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography variant="h5" style={{ fontWeight: "bold" }}>
+                      Total
+                    </Typography>
+                    <Typography variant="h5" style={{ fontWeight: "bold" }}>
+                      R {orderTotal}
+                    </Typography>
+                  </View>
+                </>
+              )}
+
               {/* <View>
                 <Text>Hello world</Text>
               </View> */}
-
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography style={{ fontWeight: "bold" }}>
-                  Order Summary
-                </Typography>
-              </View>
-              <View
-                style={{
-                  display: "flex",
-                  marginTop: "8px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography style={{ fontWeight: "bold" }}>Delivery</Typography>
-                {selectedIndex !== null && (
-                  <Typography style={{ fontWeight: "bold" }}>
-                    R{rates[selectedIndex].rate}
-                  </Typography>
-                )}
-              </View>
-
-              <View
-                style={{
-                  display: "flex",
-                  marginTop: "8px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography style={{ fontWeight: "bold" }}>
-                  {" "}
-                  Agent Referral
-                </Typography>
-                <Typography style={{ fontWeight: "bold" }}>
-                  {selectedIndex !== null
-                    ? `R${agentReferral.toFixed(2)}`
-                    : "10%"}
-                </Typography>
-              </View>
-              <View
-                style={{
-                  display: "flex",
-                  marginTop: "8px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography style={{ fontWeight: "bold" }}> Tax </Typography>
-                <Typography style={{ fontWeight: "bold" }}>
-                  {selectedIndex !== null ? `R${tax.toFixed(2)}` : "15%"}
-                </Typography>
-              </View>
-
-              <View
-                style={{
-                  display: "flex",
-                  marginTop: "8px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                  Total
-                </Typography>
-                <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                  R {orderTotal}
-                </Typography>
-              </View>
             </View>
 
             <View

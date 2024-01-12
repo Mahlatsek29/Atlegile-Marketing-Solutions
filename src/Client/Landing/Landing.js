@@ -145,7 +145,7 @@ const Landing = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log("banner is ", banner[0].bannerImage.length);
+      
 
       if (banner[0].bannerImage.length > 0) {
         setCurrentIndex((prevIndex) =>

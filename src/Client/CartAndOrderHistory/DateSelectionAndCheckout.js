@@ -33,8 +33,9 @@ import {
 
 import { firebase, auth, db } from "../../config";
 // import { timeStamp } from "console";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-
+import ReactDOM from 'react-dom';
+import App from "../../../App";
+import  PlaceAutocomplete from "../../Global/PlaceAutocomplete"
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
   const [orderTotal, setOrderTotal] = useState(0);
@@ -65,7 +66,9 @@ const DateSelectionAndCheckout = () => {
   const [userData, setUserData] = useState(null);
   const [inputValue, setInputValue] = useState('');
   const [predictions, setPredictions] = useState([]);
-
+  const [addressInput, setAddessInput] = useState(false);
+  const [address,setAddress]=useState({})
+  const [coordinates,setCoordinates]=useState({})
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -487,28 +490,40 @@ const DateSelectionAndCheckout = () => {
     Linking.openURL(paymentUrl);
   };
 
-  const handleSearch = async () => {
-    const apiKey = "AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs";
-    const apiUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json`;
-
-    try {
-      const response = await axios.get(apiUrl, {
-        params: {
-          input: inputValue,
-          key: apiKey,
-          language: "en", // Add other required parameters here
-        },
-      });
-
-      setPredictions(response.data.predictions);
-    } catch (error) {
-      console.error("Error fetching predictions:", error);
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs&libraries=places';
+    script.defer = true;
+  
+    const handleScriptLoad = () => {
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    };
+  
+    script.onload = handleScriptLoad;
+  
+    // Check if the script is already present to avoid re-adding it
+    if (!document.querySelector(`script[src="${script.src}"]`)) {
+      document.head.appendChild(script);
     }
-  };
+  
+    return () => {
+      // Clean up if needed
+      document.head.removeChild(script);
+    };
+  }, []); 
 
   const handleInputChange = (text) => {
     setInputValue(text);
     handleSearch();
+  };
+
+  const handlePlaceSelect = ({ place, latLng }) => {
+    // Do something with the selected place details and latitude/longitude
+    console.log('Selected place:', place);
+    console.log('Latitude and Longitude:', latLng);
+    setAddress(place);
+    setCoordinates(latLng)
   };
   return (
     <>
@@ -727,106 +742,63 @@ const DateSelectionAndCheckout = () => {
                 >
                   DELIVERY DETAILS
                 </Typography>
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <TextInput
-                    value={inputValue}
-                    onChangeText={handleInputChange}
-                    placeholder="Enter location"
-                  />
-                  <FlatList
-                    data={predictions}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                      <Text>{item.description}</Text> // Assuming 'description' is the property containing place names
-                    )}
-                  />
-                  {/* <GooglePlacesAutocomplete
-                    placeholder="Enter location"
-                    onPress={(data, details = null) => {
-                      // 'data' contains the place details, 'details' contains additional information
-                      console.log(data, details);
-                    }}
-                    query={{
-                      key: "AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs",
-                      language: "en", // optional: language of the results
-                    }}
-                    requestUrl={{
-                      useOnPlatform: "web", // or "all"
-                      url: "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api", // or any proxy server that hits https://maps.googleapis.com/maps/api
-                      headers: {
-                        Authorization: `AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs`, // if required for your proxy
-                      },
-                    }}
-                  /> */}
-                  {/* <GooglePlacesAutocomplete
-                    placeholder="Enter location"
-                    onPress={(data, details = null) => {
-                      // 'data' contains the place details, 'details' contains additional information
-                      console.log(data, details);
-                    }}
-                    query={{
-                      key: "a3a0edc29229a4ba86910dc4b05a37757393c996", // Replace with your actual API key
-                      language: "en",
-                    }}
-                    requestUrl={{
-                      useOnPlatform: "web", // or "all"
-                      url: "https://maps.googleapis.com/maps/api",
-                    }}
-                  /> */}
-
-                  {/* <Button onPress={handleSearch}>Search</Button>
-                  {predictions.map((prediction) => (
-                    <View key={prediction.place_id}>
-                      <Text>{prediction.description}</Text>
+                 {addressInput ? (
+                  <View>
+                    <PlaceAutocomplete onPlaceSelect={handlePlaceSelect} />
+                  </View>
+                ) : (
+                  <>
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography style={{ color: "#B7B9BC" }}>
+                        Delivery Address
+                      </Typography>
+                      <TouchableOpacity
+                        style={{
+                          color: "#B7B9BC",
+                          border: "1px white solid",
+                          padding: 10,
+                          borderRadius: 5,
+                        }}
+                        onPress={() => setAddessInput(true)} // Assuming setAddessInput is a function
+                      >
+                       <Text>+</Text> 
+                      </TouchableOpacity>
                     </View>
-                  ))} */}
-                  <Typography style={{ color: "#B7B9BC" }}>
-                    Delivery Address
-                  </Typography>
-                  <TouchableOpacity
-                    style={{
-                      color: "#B7B9BC",
-                      border: "1px white solid",
-                      padding: 10,
-                      borderRadius: 5,
-                    }}
-                  >
-                    +
-                  </TouchableOpacity>
-                </View>
+                    <View>
+                      <Typography variant="h6" style={{ color: "#FFFFFF" }}>
+                        {`${selectedAddress.address}, ${selectedAddress.Township}, ${selectedAddress.PoBox}`}
+                      </Typography>
 
-                <View>
-                  <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                    {`${selectedAddress.address}, ${selectedAddress.Township}, ${selectedAddress.PoBox}`}
-                  </Typography>
+                      <View
+                        style={{
+                          marginTop: "10px",
+                          borderBottomWidth: 1,
+                          borderBottomColor: "lightgrey",
+                        }}
+                      ></View>
+                      <Typography
+                        variant="h5"
+                        sx={{ color: "#B7B9BC", fontSize: 20, marginTop: 1 }}
+                      >
+                        Recent Addresses
+                      </Typography>
+                      <AddressList
+                        data={AddressData}
+                        onAddressPress={(selectedItem) =>
+                          setSelectedAddress(selectedItem)
+                        }
+                      />
+                    </View>
+                  </>
+                )}
 
-                  <View
-                    style={{
-                      marginTop: "10px",
-                      borderBottomWidth: 1,
-                      borderBottomColor: "lightgrey",
-                    }}
-                  ></View>
-                  <Typography
-                    variant="h5"
-                    sx={{ color: "#B7B9BC", fontSize: 20, marginTop: 1 }}
-                  >
-                    Recent Addresess
-                  </Typography>
-                  <AddressList
-                    data={AddressData}
-                    onAddressPress={(selectedItem) =>
-                      setSelectedAddress(selectedItem)
-                    }
-                  />
-                </View>
                 <Typography style={{ color: "#FFFFFF", marginTop: "14px" }}>
                   Select Delivery date
                 </Typography>

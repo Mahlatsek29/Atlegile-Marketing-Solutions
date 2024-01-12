@@ -173,8 +173,7 @@ export default function BusinessAccount() {
 
 useEffect(() => {
   const interval = setInterval(() => {
-    console.log("banner is ", banner[0].bannerImage.length);
-
+   
     if (banner[0].bannerImage.length > 0) {
       setCurrentIndex((prevIndex) =>
         prevIndex === banner[0].bannerImage.length - 1 ? 0 : prevIndex + 1

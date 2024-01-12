@@ -748,10 +748,10 @@ const DateSelectionAndCheckout = () => {
                         flexDirection: "row",
                         justifyContent: "center",
                         alignItems: "flex-star",
-                  
+                        width:"100%",
                         height:"62vh"
                       }}>
-                    <PlaceAutocomplete onPlaceSelect={handlePlaceSelect} />
+                    <PlaceAutocomplete style={{width:"25vw"}} onPlaceSelect={handlePlaceSelect} />
                   </View>
                 ) : (
                   <>

@@ -25,6 +25,9 @@ import {
   collection,
   query,
   onSnapshot,
+  updateDoc,
+  doc,
+  deleteDoc,
   where,
   getDocs,
   serverTimestamp,
@@ -51,7 +54,7 @@ const DateSelectionAndCheckout = () => {
     "Ben",
     "Paul",
     "Sibusiso",
-    "Mpho",
+    "Duduzile",
     "Ristar",
     "David",
     "Tshepo",
@@ -61,6 +64,9 @@ const DateSelectionAndCheckout = () => {
   const [newArr, setNewArr] = useState([]);
   // const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [randomGuy, setRandomGuy] = useState(
+    data[Math.floor(Math.random() * 10)]
+  );
 
   // const [rates, setRates] = useState([]);
   const [userData, setUserData] = useState(null);
@@ -111,12 +117,14 @@ const DateSelectionAndCheckout = () => {
         });
         cartProducts.push({
           id: doc.id,
+          uid: user.uid,
           productId: data.productId,
           timestamp: data.timestamp,
           quantity: data.quantity,
           amount: data.price * data.quantity,
           image: data.image,
           name: data.name,
+          deliveryGuy: randomGuy,
           // Add other relevant fields from your Cart collection
         });
       });
@@ -150,20 +158,64 @@ const DateSelectionAndCheckout = () => {
     setSelectedIndex(index);
   };
 
-  const handleAddToCart = async () => {
+  const handleAddToCartHistory = async () => {
+    if (!user) {
+      alert("Please login first");
+      return navigation.navigate("SignIn");
+    }
+
+    try {
+      const cartCollectionRef = collection(firestore, "CartHistory");
+
+      // Iterate through each object in the array and add it as a separate document
+      for (const item of newArr) {
+        await addDoc(cartCollectionRef, item);
+      }
+
+      console.log("All items added to the cart history!");
+      navigation.navigate("DateSelectionAndCheckout");
+    } catch (error) {
+      console.error("Error adding items to cart:", error);
+    }
+  };
+
+  // const updateCart = async () => {
+  //   try {
+  //     const docRef = doc(firestore, "Cart", user.uid);
+
+  //     // Use an empty object to overwrite all existing fields with null values
+  //     await updateDoc(docRef, {});
+
+  //     console.log("Cart successfully emptied!");
+  //     alert("Cart is now empty");
+  //   } catch (error) {
+  //     console.error("Error emptying cart:", error);
+  //     alert("Error occurred while emptying cart");
+  //   }
+  // };
+  const deleteCart = async () => {
+    const cartCollectionRef = collection(firestore, "Cart");
+    const querySnapshot = await getDocs(cartCollectionRef);
+
+    querySnapshot.forEach((doc) => {
+      deleteDoc(doc.ref);
+    });
+  };
+
+  const handleAddToOrders = async () => {
     console.log("deliveryGuy : ", data[Math.floor(Math.random() * 10)]);
     console.log("name : ", userData);
 
     try {
-      const cartCollectionRef = collection(firestore, "Orders");
+      const ordersCollectionRef = collection(firestore, "Orders");
 
       // Add a new document with user information, product ID, product price, quantity, and image
-      await addDoc(cartCollectionRef, {
+      await addDoc(ordersCollectionRef, {
         createdAt: serverTimestamp(),
         deliveryAddress: "123 Sade Street, Johannesburg Gauteng 1658",
         deliveryDate: serverTimestamp(),
         deliveryFee: 150,
-        deliveryGuy: data[Math.floor(Math.random() * 10)],
+        deliveryGuy: randomGuy,
         name: userData?.name,
         userName: userData?.name,
         invoiceNumber: `#${Math.floor(Math.random() * 10000000)}555${Math.floor(
@@ -184,6 +236,10 @@ const DateSelectionAndCheckout = () => {
     } catch (error) {
       console.error("Error adding item to cart:", error);
     }
+
+    handleAddToCartHistory();
+    // updateCart();
+    deleteCart();
   };
   const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
 
@@ -479,7 +535,7 @@ const DateSelectionAndCheckout = () => {
   }, [cartData, selectedIndex, rates]);
 
   const handlePayment = () => {
-    handleAddToCart();
+    handleAddToOrders();
     creattingShipment(); //create a shipment before goignt to pay fast
     // Construct the payment URL with the necessary parameters
     const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
@@ -546,7 +602,7 @@ const DateSelectionAndCheckout = () => {
                     onPress={navigateToLanding}
                     style={{ color: "grey" }}
                   >
-                   <Text>Acount /</Text> 
+                    <Text>Acount /</Text>
                   </TouchableOpacity>
                 </Typography>
                 <Typography>

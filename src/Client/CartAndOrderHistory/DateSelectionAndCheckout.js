@@ -7,7 +7,7 @@ import {
   Image,
   ScrollView,
   TextInput,
-  FlatList
+  FlatList,
 } from "react-native";
 import { Container, Typography, Button } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
@@ -33,9 +33,9 @@ import {
 
 import { firebase, auth, db } from "../../config";
 // import { timeStamp } from "console";
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 import App from "../../../App";
-import  PlaceAutocomplete from '../../Global/PlaceAutocomplete'
+import PlaceAutocomplete from "../../Global/PlaceAutocomplete";
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
   const [orderTotal, setOrderTotal] = useState(0);
@@ -64,11 +64,17 @@ const DateSelectionAndCheckout = () => {
 
   // const [rates, setRates] = useState([]);
   const [userData, setUserData] = useState(null);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [predictions, setPredictions] = useState([]);
   const [addressInput, setAddessInput] = useState(false);
-  const [address,setAddress]=useState({})
-  const [coordinates,setCoordinates]=useState({})
+  const [address, setAddress] = useState({});
+  const [coordinates, setCoordinates] = useState({});
+  const [preciseLocation, setPreciseLocation] = useState({
+    location: {},
+    pastLocations: [],
+  });
+  const [initialAddress,setInitialAddress]= useState('')
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -225,6 +231,75 @@ const DateSelectionAndCheckout = () => {
       unsubscribeAuth();
     };
   }, []);
+
+  useEffect(() => {
+    const fetchLocationDetails = async () => {
+      if (!user) {
+        console.error("User not authenticated.");
+        return;
+      }
+
+      const cartCollectionRef = collection(firestore, "Users");
+      const q = query(cartCollectionRef, where("uid", "==", user.uid));
+
+      try {
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          // Assuming your inner object and array are inside the data.locationDetails
+          const location = data.locationDetails
+            ? data.locationDetails.location
+            : {};
+          const pastLocations = data.locationDetails
+            ? data.locationDetails.pastLocations
+            : [];
+
+          setPreciseLocation({
+            location,
+            pastLocations,
+          });
+        });
+      } catch (error) {
+        console.error("Error fetching location details:", error);
+      }
+    };
+
+    fetchLocationDetails();
+  }, [user]);
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      if (!user) {
+        console.error("User not authenticated.");
+        return;
+      }
+
+      const cartCollectionRef = collection(firestore, "Users");
+      const q = query(cartCollectionRef, where("uid", "==", user.uid));
+
+      try {
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          // Assuming your inner object and array are inside the data.locationDetails
+          const location = data.location;
+          console.log('location is ',location)
+          // Check if location is defined before setting the address
+          if (location) {
+            setInitialAddress(location);
+          } else {
+            console.error("Location not found in user data.");
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching location details:", error);
+      }
+    };
+
+    fetchLocation();
+  }, [user]); // Include setAddress in the dependency array if it's defined outside the useEffect
 
   useEffect(() => {
     const gettingRate = async () => {
@@ -454,6 +529,43 @@ const DateSelectionAndCheckout = () => {
   );
 
   const [selectedAddress, setSelectedAddress] = useState(AddressData[0]);
+
+  const LocationComponent = ({ address, onPress }) => (
+    <TouchableOpacity onPress={onPress}>
+      <View
+        style={{
+          width: "100%",
+          borderBottomWidth: 2,
+          borderBottomColor: "whitesmoke",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          paddingTop: 2,
+          flexWrap: "wrap",
+          marginBottom: 15,
+        }}
+      >
+        <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+          {address}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const LocationList = ({ data, onLocationPress }) => (
+    <ScrollView
+      style={{ height: 250, padding: 10 }}
+      showsVerticalScrollIndicator={false}
+    >
+      {data.map((item, index) => (
+        <LocationComponent
+          key={index}
+          address={item}
+          onPress={() => onLocationPress(item)}
+        />
+      ))}
+    </ScrollView>
+  );
   const navigateToLanding = () => {
     navigation.navigate("Landing");
   };
@@ -491,27 +603,28 @@ const DateSelectionAndCheckout = () => {
   };
 
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs&libraries=places';
+    const script = document.createElement("script");
+    script.src =
+      "https://maps.googleapis.com/maps/api/js?key=AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs&libraries=places";
     script.defer = true;
-  
+
     const handleScriptLoad = () => {
-      const root = ReactDOM.createRoot(document.getElementById('root'));
+      const root = ReactDOM.createRoot(document.getElementById("root"));
       root.render(<App />);
     };
-  
+
     script.onload = handleScriptLoad;
-  
+
     // Check if the script is already present to avoid re-adding it
     if (!document.querySelector(`script[src="${script.src}"]`)) {
       document.head.appendChild(script);
     }
-  
+
     return () => {
       // Clean up if needed
       document.head.removeChild(script);
     };
-  }, []); 
+  }, []);
 
   const handleInputChange = (text) => {
     setInputValue(text);
@@ -520,10 +633,10 @@ const DateSelectionAndCheckout = () => {
 
   const handlePlaceSelect = ({ place, latLng }) => {
     // Do something with the selected place details and latitude/longitude
-    console.log('Selected place:', place);
-    console.log('Latitude and Longitude:', latLng);
+    console.log("Selected place:", place);
+    console.log("Latitude and Longitude:", latLng);
     setAddress(place);
-    setCoordinates(latLng)
+    setCoordinates(latLng);
   };
   return (
     <>
@@ -546,7 +659,7 @@ const DateSelectionAndCheckout = () => {
                     onPress={navigateToLanding}
                     style={{ color: "grey" }}
                   >
-                   <Text>Acount /</Text> 
+                    <Text>Acount /</Text>
                   </TouchableOpacity>
                 </Typography>
                 <Typography>
@@ -742,16 +855,21 @@ const DateSelectionAndCheckout = () => {
                 >
                   DELIVERY DETAILS
                 </Typography>
-                 {addressInput ? (
-                  <View  style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "flex-star",
-                        width:"100%",
-                        height:"62vh"
-                      }}>
-                    <PlaceAutocomplete style={{width:"25vw"}} onPlaceSelect={handlePlaceSelect} />
+                {addressInput ? (
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "flex-star",
+                      width: "100%",
+                      height: "62vh",
+                    }}
+                  >
+                    <PlaceAutocomplete
+                      style={{ width: "25vw" }}
+                      onPlaceSelect={handlePlaceSelect}
+                    />
                   </View>
                 ) : (
                   <>
@@ -775,10 +893,10 @@ const DateSelectionAndCheckout = () => {
                         }}
                         onPress={() => setAddessInput(true)} // Assuming setAddessInput is a function
                       >
-                       <Text>+</Text> 
+                        <Text style={{ color: "white" }}>+</Text>
                       </TouchableOpacity>
                     </View>
-                    <View>
+                    {/* <View>
                       <Typography variant="h6" style={{ color: "#FFFFFF" }}>
                         {`${selectedAddress.address}, ${selectedAddress.Township}, ${selectedAddress.PoBox}`}
                       </Typography>
@@ -800,6 +918,34 @@ const DateSelectionAndCheckout = () => {
                         data={AddressData}
                         onAddressPress={(selectedItem) =>
                           setSelectedAddress(selectedItem)
+                        }
+                      />
+                    </View> */}
+                    <View style={{ border: "1px white solid" }}>
+                      <Typography variant="h6" style={{ color: "#FFFFFF" }}>
+                        {preciseLocation.location.address || initialAddress}
+                      </Typography>
+
+                      <View
+                        style={{
+                          marginTop: "10px",
+                          borderBottomWidth: 1,
+                          borderBottomColor: "lightgrey",
+                        }}
+                      ></View>
+                      <Typography
+                        variant="h5"
+                        sx={{ color: "#B7B9BC", fontSize: 20, marginTop: 1 }}
+                      >
+                        Recent Addresses
+                      </Typography>
+                      <LocationList
+                        data={preciseLocation.pastLocations}
+                        onLocationPress={(selectedItem) =>
+                          setPreciseLocation({
+                            ...preciseLocation,
+                            location: { address: selectedItem },
+                          })
                         }
                       />
                     </View>

@@ -263,7 +263,7 @@ const Landing = () => {
             keyExtractor={(item) => item}
             renderItem={({ item }) => <BusinessCard business={item} />}
           />
-            {banner.length > 0 ? (
+            {/* {banner.length > 0 ? (
                     <View
                       style={{
                         backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
@@ -336,7 +336,7 @@ const Landing = () => {
                         <AntDesign name="right" size={24} color="white" />
                       </TouchableOpacity>
                     </View>
-                  ) : null}
+                  ) : null} */}
         </View>
         <Grid container style={{ width: "100%", height: "40vh" }}>
           <Grid item xl={2} lg={2} sm={2} xs={2}>

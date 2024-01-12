@@ -333,7 +333,7 @@ const DateSelectionAndCheckout = () => {
 
   //   fetchCollectionAddress();
   // }, [user]); 
-  
+
   useEffect(() => {
     const gettingRate = async () => {
       const theRates = {
@@ -445,18 +445,18 @@ const DateSelectionAndCheckout = () => {
         mobile_number: "",
         email: "cornel+sandy@uafrica.com",
       },
-      delivery_address: {
-        type: "residential",
-        company: "",
-        street_address: "10 Midas Avenue",
-        local_area: "Olympus AH",
-        city: "Pretoria",
-        zone: "Gauteng",
-        country: "ZA",
-        code: "0081",
-        lat: -25.80665579999999,
-        lng: 28.334732,
-      },
+     delivery_address: {
+          type: preciseLocation.location.type,
+          company: preciseLocation.location.company,
+          street_address: preciseLocation.location.street_address,
+          local_area: preciseLocation.location.local_area,
+          city: preciseLocation.location.city,
+          zone: preciseLocation.location.zone,
+          country: preciseLocation.location.country,
+          code: preciseLocation.location.code,
+          lat: preciseLocation.location.lat,
+          lng: preciseLocation.location.lng,
+        },
       delivery_contact: {
         name: "Boiketlo Mochochoko",
         mobile_number: "0734157351",

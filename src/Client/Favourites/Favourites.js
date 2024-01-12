@@ -28,6 +28,8 @@ const Favourites = ({ item }) => {
   const [userData, setUserData] = useState(null);
   const [cartData, setCartData] = useState([]);
   const [user, setUser] = useState(null);
+  const [favouritesData, setFavouritesData] = useState([]);
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -38,7 +40,7 @@ const Favourites = ({ item }) => {
       unsubscribe(); // Unsubscribe from the auth state listener when component unmounts
     };
   }, []);
-  
+
   useEffect(() => {
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -63,46 +65,44 @@ const Favourites = ({ item }) => {
     };
   }, []);
 
-  const fetchCartData = async () => {
-    if (!user) {
-      console.error("User not authenticated.");
-      return;
-    }
-
-    const cartCollectionRef = collection(firestore, "Cart");
-    const q = query(cartCollectionRef, where("uid", "==", user.uid));
-
-    try {
-      const querySnapshot = await getDocs(q);
-
-      const cartItems = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        cartItems.push({
-          id: doc.id,
-          product: data.product,
-          quantity: data.quantity,
-          amount: data.price * data.quantity,
-          image: data.image,
-          name: data.name,
-          orderId: data.productId,
-          timestamp: data.timestamp.toDate(),
-          // Add other relevant fields from your Cart collection
-        });
-      });
-
-      setCartData(cartItems);
-      console.log("Cart Data : ", cartData);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
-
   useEffect(() => {
-    // Fetch cart data when the user is authenticated
-    if (user) {
-      fetchCartData();
-    }
+    const fetchFavouritesData = async () => {
+      if (!user) {
+        console.error("User not authenticated.");
+        return;
+      }
+
+      const favouritesCollectionRef = collection(firestore, "Favourites");
+      const q = query(favouritesCollectionRef, where("uid", "==", user.uid));
+
+      try {
+        const querySnapshot = await getDocs(q);
+
+        const favouritesItems = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          favouritesItems.push({
+            id: doc.id,
+            productName: data.productName,
+            price: data.price,
+            description: data.description,
+            company: data.company,
+            businessName: data.businessName,
+            images: data.images,
+            selectedProductCategory: data.selectedProductCategory,
+            // Add other fields from your Favourites collection
+            // For example: product, quantity, price, image, etc.
+            // Modify the fields as per your actual data structure
+          });
+        });
+        console.log(favouritesItems);
+        setFavouritesData(favouritesItems);
+      } catch (error) {
+        console.error("Error fetching favourites data:", error);
+      }
+    };
+
+    fetchFavouritesData();
   }, [user]);
 
   const handlePress = () => {
@@ -154,14 +154,12 @@ const Favourites = ({ item }) => {
             paddingLeft: 30,
             // backgroundColor:"#FFFFFF",
             alignItems: "flex-start",
-          }}
-        >
+          }}>
           <Box
             display="flex"
             justifyContent="flex-start"
             alignItems="center"
-            paddingRight={2}
-          >
+            paddingRight={2}>
             <Paper
               elevation={3}
               style={{
@@ -169,8 +167,7 @@ const Favourites = ({ item }) => {
                 height: "100%",
                 width: "300px",
                 margin: "auto",
-              }}
-            >
+              }}>
               <Box textAlign="center">
                 <img
                   src={sara}
@@ -201,8 +198,7 @@ const Favourites = ({ item }) => {
                 <Ionicons name="ios-timer-outline" size={15} color="gray" />
                 <Button
                   style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handleorders}
-                >
+                  onClick={handleorders}>
                   Orders
                 </Button>
               </Box>
@@ -211,8 +207,7 @@ const Favourites = ({ item }) => {
                 <Ionicons name="ios-timer-outline" size={15} color="gray" />
                 <Button
                   style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handlefavorites}
-                >
+                  onClick={handlefavorites}>
                   Favorites
                 </Button>
               </Box>
@@ -221,8 +216,7 @@ const Favourites = ({ item }) => {
                 <Ionicons name="ios-timer-outline" size={15} color="gray" />
                 <Button
                   style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handleterms}
-                >
+                  onClick={handleterms}>
                   Terms and Conditions
                 </Button>
               </Box>
@@ -231,8 +225,7 @@ const Favourites = ({ item }) => {
                 <Ionicons name="ios-timer-outline" size={15} color="gray" />
                 <Button
                   style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handlepolicy}
-                >
+                  onClick={handlepolicy}>
                   Privacy Policy
                 </Button>
               </Box>
@@ -246,16 +239,14 @@ const Favourites = ({ item }) => {
                     xs: "10px",
                     sm: "20px",
                   },
-                }}
-              >
+                }}>
                 <Button
                   sx={{
                     fontWeight: "bolder",
                     color: "black",
                     marginTop: "10%",
                   }}
-                  onClick={handlePress}
-                >
+                  onClick={handlePress}>
                   Julian James
                 </Button>
 
@@ -282,8 +273,7 @@ const Favourites = ({ item }) => {
                   height: 100,
                   display: "flex",
                   flexDirection: "row",
-                }}
-              >
+                }}>
                 <Typography
                   variant="h5"
                   style={{
@@ -293,8 +283,7 @@ const Favourites = ({ item }) => {
                     display: "flex",
                     alignItems: "center",
                     fontWeight: "bold",
-                  }}
-                >
+                  }}>
                   ORDERS
                 </Typography>
                 <Typography
@@ -303,8 +292,7 @@ const Favourites = ({ item }) => {
                     width: 200,
                     display: "flex",
                     alignItems: "center",
-                  }}
-                >
+                  }}>
                   <TextInput
                     style={{
                       borderBottomWidth: 2,
@@ -320,8 +308,7 @@ const Favourites = ({ item }) => {
                     height: 80,
                     width: 200,
                     marginRight: "10px",
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       color: "gray",
@@ -330,8 +317,7 @@ const Favourites = ({ item }) => {
                       display: "flex",
                       flexDirection: "row",
                       justifyContent: "space-between",
-                    }}
-                  >
+                    }}>
                     <Text style={{ color: "gray", marginTop: 25 }}>
                       Please Select
                     </Text>
@@ -347,8 +333,7 @@ const Favourites = ({ item }) => {
                     height: 50,
                     width: 50,
                     marginTop: 15,
-                  }}
-                >
+                  }}>
                   <TouchableOpacity>
                     <Icon name="search" size={20} />
                   </TouchableOpacity>
@@ -359,8 +344,7 @@ const Favourites = ({ item }) => {
                 {cartData.map((item, index) => (
                   <TouchableOpacity
                     onPress={() => navigateToDeliveryAndChatSystem(item.status)}
-                    key={index}
-                  >
+                    key={index}>
                     <View
                       style={{
                         width: "100%",
@@ -370,8 +354,7 @@ const Favourites = ({ item }) => {
                         flexDirection: "row",
                         alignItems: "center",
                         paddingTop: 2,
-                      }}
-                    >
+                      }}>
                       <Image
                         source={{ uri: item?.image }}
                         alt="product-image"
@@ -388,8 +371,7 @@ const Favourites = ({ item }) => {
                             fontSize: 16,
                             fontWeight: "bold",
                             color: "gray",
-                          }}
-                        >
+                          }}>
                           #
                           {item?.orderId.slice(0, 4) +
                             Math.floor(Math.random() * 10000)}
@@ -404,8 +386,7 @@ const Favourites = ({ item }) => {
                             fontSize: 16,
                             fontWeight: "bold",
                             color: "gray",
-                          }}
-                        >
+                          }}>
                           Delivered by
                         </Text>
                         <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -418,8 +399,7 @@ const Favourites = ({ item }) => {
                             fontSize: 16,
                             fontWeight: "bold",
                             color: "gray",
-                          }}
-                        >
+                          }}>
                           Status
                         </Text>
                         <Text
@@ -432,8 +412,7 @@ const Favourites = ({ item }) => {
                                 : item.status === "ONGOING"
                                 ? "orange"
                                 : "black",
-                          }}
-                        >
+                          }}>
                           {/* {item?.status} */}
                           Delivered
                         </Text>
@@ -453,8 +432,7 @@ const Favourites = ({ item }) => {
                 marginTop: "20px",
                 marginBottom: "40px",
                 padding: "10px",
-              }}
-            >
+              }}>
               FAVOURITES
             </Typography>
             <View
@@ -462,17 +440,14 @@ const Favourites = ({ item }) => {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-evenly",
-              }}
-            >
+              }}>
               <ScrollView horizontal={true}>
-                <Card2 />
-                <Card2 />
-                <Card2 />
-                <Card2 />
-                <Card2 />
+                {favouritesData.map((item) => (
+                  <Card2 key={item.id} item={item} />
+                ))}
               </ScrollView>
             </View>
-            <View
+            {/* <View
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -486,7 +461,7 @@ const Favourites = ({ item }) => {
                 <Card2 />
                 <Card2 />
               </ScrollView>
-            </View>
+            </View> */}
           </ScrollView>
         )}
       </View>

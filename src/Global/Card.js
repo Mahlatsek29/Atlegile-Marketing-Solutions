@@ -14,7 +14,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
 import Skeleton from "@mui/material/Skeleton";
 import { Text, TouchableOpacity, View } from "react-native";
-import { firestore, auth } from "../config";
+import { firestore, auth, firebase } from "../config";
 import { useNavigation } from "@react-navigation/native";
 const ProductCard = ({ productId }) => {
   const navigation = useNavigation();
@@ -48,10 +48,13 @@ const ProductCard = ({ productId }) => {
           productName: product.name,
           description: product.description,
           price: product.price,
-          // serverTimestamp: firestore.FieldValue.serverTimestamp(),
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           businessName: product.businessName,
           company: product.company,
           brand: product.brand,
+          images: product.images,
+          selectedProductCategory: product.selectedProductCategory,
+
           // Add other relevant fields
         });
         setIsRed(true);

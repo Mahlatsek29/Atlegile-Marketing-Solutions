@@ -28,6 +28,8 @@ const Favourites = ({ item }) => {
   const [userData, setUserData] = useState(null);
   const [cartData, setCartData] = useState([]);
   const [user, setUser] = useState(null);
+  const [favouritesData, setFavouritesData] = useState([]);
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -63,46 +65,39 @@ const Favourites = ({ item }) => {
     };
   }, []);
 
-  const fetchCartData = async () => {
-    if (!user) {
-      console.error("User not authenticated.");
-      return;
-    }
-
-    const cartCollectionRef = collection(firestore, "Cart");
-    const q = query(cartCollectionRef, where("uid", "==", user.uid));
-
-    try {
-      const querySnapshot = await getDocs(q);
-
-      const cartItems = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        cartItems.push({
-          id: doc.id,
-          product: data.product,
-          quantity: data.quantity,
-          amount: data.price * data.quantity,
-          image: data.image,
-          name: data.name,
-          orderId: data.productId,
-          timestamp: data.timestamp.toDate(),
-          // Add other relevant fields from your Cart collection
-        });
-      });
-
-      setCartData(cartItems);
-      console.log("Cart Data : ", cartData);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
-
   useEffect(() => {
-    // Fetch cart data when the user is authenticated
-    if (user) {
-      fetchCartData();
-    }
+    const fetchFavouritesData = async () => {
+      if (!user) {
+        console.error("User not authenticated.");
+        return;
+      }
+
+      const favouritesCollectionRef = collection(firestore, "Favourites");
+      const q = query(favouritesCollectionRef, where("uid", "==", user.uid));
+
+      try {
+        const querySnapshot = await getDocs(q);
+
+        const favouritesItems = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          favouritesItems.push({
+            id: doc.id,
+            productName:data.productName,
+            price:data.price
+            // Add other fields from your Favourites collection
+            // For example: product, quantity, price, image, etc.
+            // Modify the fields as per your actual data structure
+          });
+        });
+        console.log(favouritesItems)
+        setFavouritesData(favouritesItems);
+      } catch (error) {
+        console.error("Error fetching favourites data:", error);
+      }
+    };
+
+    fetchFavouritesData();
   }, [user]);
 
   const handlePress = () => {
@@ -464,15 +459,13 @@ const Favourites = ({ item }) => {
                 justifyContent: "space-evenly",
               }}
             >
-              <ScrollView horizontal={true}>
-                <Card2 />
-                <Card2 />
-                <Card2 />
-                <Card2 />
-                <Card2 />
-              </ScrollView>
+                 <ScrollView horizontal={true}>
+            {favouritesData.map((item) => (
+              <Card2 key={item.id} {...item} />
+            ))}
+          </ScrollView>
             </View>
-            <View
+            {/* <View
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -486,7 +479,7 @@ const Favourites = ({ item }) => {
                 <Card2 />
                 <Card2 />
               </ScrollView>
-            </View>
+            </View> */}
           </ScrollView>
         )}
       </View>

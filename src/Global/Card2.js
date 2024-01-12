@@ -53,7 +53,7 @@ const ProductCard = ({ item }) => {
           <CardMedia
             component="img"
             height="140"
-            image={require("../../assets/image/headsets.png")}
+            image={item?.images}
             alt="shop 2"
             style={{
               borderRadius: "100px",
@@ -92,7 +92,7 @@ const ProductCard = ({ item }) => {
               justifyContent: "space-between",
               alignSelf: "center",
             }}>
-            <TouchableOpacity>
+            {/* <TouchableOpacity>
               <Icon
                 name={isRed ? "heart" : "heart-o"}
                 size={20}
@@ -104,8 +104,8 @@ const ProductCard = ({ item }) => {
                 onClick={toggleHeart}
                 color={isRed ? "red" : "black"}
               />
-            </TouchableOpacity>
-            <TouchableOpacity>
+            </TouchableOpacity> */}
+            {/* <TouchableOpacity>
               <Icon
                 name="shopping-cart"
                 size={20}
@@ -116,7 +116,7 @@ const ProductCard = ({ item }) => {
                 }}
                 color="black"
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </Box>
         </Box>
         <CardContent sx={{ paddingInline: 2, paddingRight: 8 }}>
@@ -130,8 +130,8 @@ const ProductCard = ({ item }) => {
               variant="h6"
               component="h6"
               style={{ fontSize: "16px", color: "#0074cc" }}>
-              {item?.selectedCategory}
-              English Department
+              {item?.selectedProductCategory}
+              {/* English Department */}
             </Typography>
             <Typography
               style={{
@@ -145,16 +145,16 @@ const ProductCard = ({ item }) => {
           </Box>
           <Typography variant="h5" component="h5">
             {item?.productName}
-            Graphic Design
+            {/* Graphic Design */}
           </Typography>
           <Typography
             variant="subtitle2"
             component="p"
             style={{ color: "gray" }}>
-            {item?.description.slice(0, 110)}
-            {item?.description.length < 110 ? "" : "..."}
-            We focus on ergonomics and meeting you where you work. It's only a
-            keystroke away.
+            {item?.description}
+            {/* {item?.description.length < 110 ? "" : "..."} */}
+            {/* We focus on ergonomics and meeting you where you work. It's only a
+            keystroke away. */}
           </Typography>
           <Box
             display="flex"
@@ -165,7 +165,7 @@ const ProductCard = ({ item }) => {
               <Icon2 name="download" size={20} /> 15 Sales
             </Typography>
             <Box display="flex" flexDirection="row">
-              <Typography
+              {/* <Typography
                 variant="subtitle2"
                 component="p"
                 style={{
@@ -174,8 +174,8 @@ const ProductCard = ({ item }) => {
                   fontWeight: "700",
                   marginRight: "10px",
                 }}>
-                R{item?.price}700
-              </Typography>
+                R{item?.price}
+              </Typography> */}
 
               <Typography
                 variant="subtitle2"
@@ -185,7 +185,7 @@ const ProductCard = ({ item }) => {
                   fontSize: "18px",
                   fontWeight: "700",
                 }}>
-                R{item?.price}500
+                R{item?.price}
               </Typography>
             </Box>
           </Box>

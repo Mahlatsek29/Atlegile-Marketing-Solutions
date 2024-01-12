@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
-import { View, TextInput, Text } from 'react-native-web';
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-
+import React, { useState } from "react";
+import { View, TextInput, Text } from "react-native-web";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
+import {
+  Container,
+  Typography,
+  Grid,
+  TextField,
+  Button,
+  Card,
+  MenuItem,
+  Box,
+} from "@mui/material";
 const PlaceAutocomplete = ({ onPlaceSelect }) => {
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState("");
   const [error, setError] = useState(null);
 
   const handleSelect = async (value) => {
@@ -20,25 +32,47 @@ const PlaceAutocomplete = ({ onPlaceSelect }) => {
         latLng: latLng,
       });
     } catch (error) {
-      console.error('Geocoding error:', error);
-      setError('Geocoding error. Please try again.'); // Set error state
+      console.error("Geocoding error:", error);
+      setError("Geocoding error. Please try again."); // Set error state
     }
   };
 
   return (
-    <PlacesAutocomplete value={address} onChange={setAddress} onSelect={handleSelect}>
+    <PlacesAutocomplete
+      value={address}
+      onChange={setAddress}
+      onSelect={handleSelect}
+    >
       {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
         <View>
-          <TextInput style={{ width: '25vw' }} {...getInputProps({ placeholder: 'Type address' })} />
+          <TextField
+            variant="standard"
+            fullWidth
+            style={{ height: "5vh", width: "25vw" }}
+            {...getInputProps({ placeholder: "Type address" })}
+          />
           <View>
             {loading && <Text>Loading...</Text>}
             {suggestions.map((suggestion) => (
-              <View {...getSuggestionItemProps(suggestion)} key={suggestion.placeId}>
-                <Text>{suggestion.description}</Text>
+              <View
+                style={{ width: "25vw" }}
+                {...getSuggestionItemProps(suggestion)}
+                key={suggestion.placeId}
+              >
+                <Text
+                  style={{
+                    width: "25vw",
+                    display: "flex",
+                    flexWrap: "wrap",
+                    color: "white",
+                  }}
+                >
+                  {suggestion.description}
+                </Text>
               </View>
             ))}
           </View>
-          {error && <Text style={{ color: 'red' }}>{error}</Text>}
+          {error && <Text style={{ color: "red" }}>{error}</Text>}
         </View>
       )}
     </PlacesAutocomplete>

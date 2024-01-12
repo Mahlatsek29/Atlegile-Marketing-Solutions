@@ -35,7 +35,7 @@ import { firebase, auth, db } from "../../config";
 // import { timeStamp } from "console";
 import ReactDOM from 'react-dom';
 import App from "../../../App";
-import  PlaceAutocomplete from "../../Global/PlaceAutocomplete"
+import  PlaceAutocomplete from '../../Global/PlaceAutocomplete'
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
   const [orderTotal, setOrderTotal] = useState(0);
@@ -743,7 +743,14 @@ const DateSelectionAndCheckout = () => {
                   DELIVERY DETAILS
                 </Typography>
                  {addressInput ? (
-                  <View>
+                  <View  style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "flex-star",
+                  
+                        height:"62vh"
+                      }}>
                     <PlaceAutocomplete onPlaceSelect={handlePlaceSelect} />
                   </View>
                 ) : (

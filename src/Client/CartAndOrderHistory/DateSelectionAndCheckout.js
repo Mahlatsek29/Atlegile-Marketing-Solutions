@@ -66,7 +66,7 @@ const DateSelectionAndCheckout = () => {
 
   // const [rates, setRates] = useState([]);
   const [userData, setUserData] = useState(null);
-
+  const [shouldFetchCart, setShouldFetchCart] = useState(true);
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -131,11 +131,11 @@ const DateSelectionAndCheckout = () => {
   };
 
   useEffect(() => {
-    // Fetch cart data when the user is authenticated
-    if (user) {
+    if (user && shouldFetchCart) {
       fetchCartData();
+      setShouldFetchCart(false);
     }
-  }, [user]); // Fetch cart data whenever the user changes
+  }, [user, shouldFetchCart]);
 
   useEffect(() => {
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
@@ -528,6 +528,7 @@ const DateSelectionAndCheckout = () => {
 
   const handlePayment = () => {
     handleAddToOrders();
+    setShouldFetchCart(true);
     creattingShipment(); //create a shipment before goignt to pay fast
     // Construct the payment URL with the necessary parameters
     const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;

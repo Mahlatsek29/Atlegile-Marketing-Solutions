@@ -88,7 +88,7 @@ const OrderHistory = () => {
       return;
     }
 
-    const cartCollectionRef = collection(firestore, "Cart");
+    const cartCollectionRef = collection(firestore, "CartHistory");
     const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
     try {

@@ -301,6 +301,39 @@ const DateSelectionAndCheckout = () => {
     fetchLocation();
   }, [user]); // Include setAddress in the dependency array if it's defined outside the useEffect
 
+  // useEffect(() => {
+  //   const fetchCollectionAddress = async () => {
+  //     if (!user) {
+  //       console.error("User not authenticated.");
+  //       return;
+  //     }
+
+  //     const cartCollectionRef = collection(firestore, "Users");
+  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
+
+  //     try {
+  //       const querySnapshot = await getDocs(q);
+
+  //       querySnapshot.forEach((doc) => {
+  //         const data = doc.data();
+  //         // Assuming your inner object and array are inside the data.locationDetails
+  //         const location = data.location;
+  //         console.log('location is ',location)
+  //         // Check if location is defined before setting the address
+  //         if (location) {
+  //           setInitialAddress(location);
+  //         } else {
+  //           console.error("Location not found in user data.");
+  //         }
+  //       });
+  //     } catch (error) {
+  //       console.error("Error fetching location details:", error);
+  //     }
+  //   };
+
+  //   fetchCollectionAddress();
+  // }, [user]); 
+  
   useEffect(() => {
     const gettingRate = async () => {
       const theRates = {

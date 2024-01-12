@@ -16,6 +16,12 @@ import { auth, firestore, firebase } from "../../config";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { Typography } from "@mui/material";
+import ReactDOM from "react-dom";
+import App from "../../../App";
+import PlaceAutocomplete from "../../Global/PlaceAutocomplete";
+//import { Head } from 'react-native-web';
+
+const AppDiscreiption = "Atlegile Markwting Solutions"; // Add your actual description here
 
 const BusinessRegistration = () => {
   const navigation = useNavigation();
@@ -34,7 +40,8 @@ const BusinessRegistration = () => {
   const [loading, setLoading] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
-
+  const [address, setAddress] = useState({});
+  const [coordinates, setCoordinates] = useState({});
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
@@ -162,8 +169,57 @@ const BusinessRegistration = () => {
     "Fashion",
   ];
 
+  // useEffect(() => {
+  //   const script = document.createElement("script");
+  //   script.src =
+  //     "https://maps.googleapis.com/maps/api/js?key=AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs&libraries=places";
+  //   script.defer = true;
+
+  //   const handleScriptLoad = () => {
+  //     const root = ReactDOM.createRoot(document.getElementById("root"));
+  //     root.render(<App />);
+  //   };
+
+  //   script.onload = handleScriptLoad;
+
+  //   // Check if the script is already present to avoid re-adding it
+  //   if (!document.querySelector(`script[src="${script.src}"]`)) {
+  //     document.head.appendChild(script);
+  //   }
+
+  //   return () => {
+  //     // Clean up if needed
+  //     document.head.removeChild(script);
+  //   };
+  // }, []);
+  const script = document.createElement("script");
+script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs&libraries=places";
+script.defer = true;
+
+const handleScriptLoad = () => {
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(<App />);
+};
+
+script.onload = handleScriptLoad;
+
+// Check if the script is already present to avoid re-adding it
+if (!document.querySelector(`script[src="${script.src}"]`)) {
+  document.head.appendChild(script);
+}
+  const handlePlaceSelect = ({ place, latLng }) => {
+    // Do something with the selected place details and latitude/longitude
+    console.log("Selected place:", place);
+    console.log("Latitude and Longitude:", latLng);
+    setAddress(place);
+    setCoordinates(latLng);
+    setLocation(palce)
+
+  };
   return (
-    <View
+   
+    <> 
+     <View
       style={{
         flex: 1,
         height: "100%",
@@ -288,18 +344,10 @@ const BusinessRegistration = () => {
                   value={website}
                   onChange={(e) => setWebsite(e.target.value)}
                 />
-                <TextField
-                  id="outlined-number"
-                  label="Location"
-                  type="text"
-                  variant="standard"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  style={{ width: "100%", marginTop: "10px" }}
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  required
+                <PlaceAutocomplete 
+               
+                style={{ width: "25vw" }}
+                onPlaceSelect={handlePlaceSelect}
                 />
 
                 <View
@@ -399,7 +447,15 @@ const BusinessRegistration = () => {
           </div>
         </div>
       </View>
+
     </View>
+
+    <head>
+        <meta name="description" content={`Business registration for ${AppDiscreiption}`} />
+        <title>Your App Title</title>
+      </head>
+      
+      </>
   );
 };
 

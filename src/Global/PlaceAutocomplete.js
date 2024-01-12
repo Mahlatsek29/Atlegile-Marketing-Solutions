@@ -49,7 +49,7 @@ const PlaceAutocomplete = ({ onPlaceSelect }) => {
             variant="standard"
             fullWidth
             style={{ height: "auto", width: "20vw" , backgroundColor:'white'}}
-            {...getInputProps({ placeholder: "Type address" })}
+            {...getInputProps({ placeholder: "Type location" })}
           />
           <View>
             {loading && <Typography>Loading...</Typography>}
@@ -64,7 +64,7 @@ const PlaceAutocomplete = ({ onPlaceSelect }) => {
                     width: "20vw",
                     display: "flex",
                     flexWrap: "wrap",
-                    color: "white",
+                    color: "gray",
                   }}
                 >
                   {suggestion.description}

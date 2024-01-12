@@ -94,7 +94,7 @@ const Navbar = () => {
                   color: "white",
                 },
               }}
-              color="inherit">
+              color="inherit" onClick={()=>{navigation.navigate("Landing")}}>
               Shop
             </Button>
             <Button

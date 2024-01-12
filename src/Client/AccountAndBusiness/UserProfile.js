@@ -332,6 +332,7 @@ const UserProfile = () => {
                 color: "#072840",
                 borderRadius: "20px",
                 outlineColor: "#072840",
+                marginRight: "5px",
               }}
               variant="outlined"
             >
@@ -342,11 +343,28 @@ const UserProfile = () => {
                 color: "#072840",
                 borderRadius: "20px",
                 outlineColor: "#072840",
+                marginRight: "5px",
               }}
               variant="outlined"
+              
               onClick={() => signOut(firebase.auth())}
-            >
+              >
+            
               Sign Out
+            </Button>
+            <Button
+              style={{
+                color: "#072840",
+                borderRadius: "20px",
+                outlineColor: "#072840",
+                marginRight: "5px",
+              }}
+              variant="outlined"
+              onClick={() => {
+                navigation.navigate("AccountAndBusiness");
+              }}
+            >
+              Manage Business
             </Button>
           </View>
         </View>

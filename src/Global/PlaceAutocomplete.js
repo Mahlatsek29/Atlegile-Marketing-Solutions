@@ -52,14 +52,14 @@ const PlaceAutocomplete = ({ onPlaceSelect }) => {
             {...getInputProps({ placeholder: "Type address" })}
           />
           <View>
-            {loading && <Text>Loading...</Text>}
+            {loading && <Typography>Loading...</Typography>}
             {suggestions.map((suggestion) => (
               <View
                 style={{ width: "25vw" }}
                 {...getSuggestionItemProps(suggestion)}
                 key={suggestion.placeId}
               >
-                <Text
+                <Typography
                   style={{
                     width: "25vw",
                     display: "flex",
@@ -68,7 +68,7 @@ const PlaceAutocomplete = ({ onPlaceSelect }) => {
                   }}
                 >
                   {suggestion.description}
-                </Text>
+                </Typography>
               </View>
             ))}
           </View>

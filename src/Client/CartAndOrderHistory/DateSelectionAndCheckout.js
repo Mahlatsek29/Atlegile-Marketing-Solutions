@@ -25,6 +25,9 @@ import {
   collection,
   query,
   onSnapshot,
+  exists,
+  doc,
+  getDoc,
   where,
   getDocs,
   serverTimestamp,
@@ -73,8 +76,11 @@ const DateSelectionAndCheckout = () => {
     location: {},
     pastLocations: [],
   });
-  const [initialAddress,setInitialAddress]= useState('')
-
+  const [initialAddress, setInitialAddress] = useState("");
+  const [company, setCompany] = useState([]);
+  const [theBusinessName, setTheBusinessName] = useState("");
+  const [collectionAdress, setCollecionadress] = useState({});
+  const [collectioPhoneNUmber, setCollectioPhoneNUmber] = useState();
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -113,6 +119,7 @@ const DateSelectionAndCheckout = () => {
           amount: data.price * data.quantity,
           image: data.image,
           name: data.name,
+
           // Add other relevant fields from your Cart collection
         });
         cartProducts.push({
@@ -123,10 +130,11 @@ const DateSelectionAndCheckout = () => {
           amount: data.price * data.quantity,
           image: data.image,
           name: data.name,
+
           // Add other relevant fields from your Cart collection
         });
       });
-
+      console.log("cartProducts is ", cartProducts);
       setCartData(cartItems);
       setNewArr(cartProducts);
       // setNewArr([...cartItems]);
@@ -142,6 +150,68 @@ const DateSelectionAndCheckout = () => {
       fetchCartData();
     }
   }, [user]); // Fetch cart data whenever the user changes
+
+  // ... Other imports and code ...
+
+  useEffect(() => {
+    const fetchCompanyData = async () => {
+      const cartCollectionRef = collection(firestore, "Products");
+      const docId = newArr[0]?.productId;
+
+      // Get a reference to the document
+      const docRef = doc(cartCollectionRef, docId);
+
+      // Fetch the document
+      const docSnapshot = await getDoc(docRef);
+
+      // Check if the document exists
+      if (docSnapshot.data()) {
+        // Access the businessName field
+        const businessName = docSnapshot.data().businessName;
+
+        // Now you can use the businessName variable as needed
+        console.log("Business Name:", businessName);
+        setTheBusinessName(businessName);
+      } else {
+        console.log("Document not found.");
+      }
+    };
+
+    // Ensure that cartData is defined before invoking fetchCompanyData
+    if (cartData) {
+      fetchCompanyData();
+    }
+  }, [cartData, newArr, firestore, setCompany, user]);
+
+  useEffect(() => {
+    const findBusinessByName = async () => {
+      console.log("theBusinessName is ", theBusinessName);
+
+      // Replace 'yourCollection' with the actual reference to your "Business" collection
+      const businessCollection = firebase.firestore().collection("Business");
+
+      try {
+        // Constructing the query
+        const querySnapshot = await businessCollection
+          .where("businessName", "==", theBusinessName)
+          .get();
+
+        querySnapshot.forEach((doc) => {
+          // Access the locationDetails field
+          const locationDetails = doc.data().locationDetails;
+          const collectionContacts = doc.data().phoneNumber;
+          console.log("Location Details:", locationDetails);
+          setCollecionadress(locationDetails);
+          setCollectioPhoneNUmber(collectionContacts);
+        });
+      } catch (error) {
+        console.error("Error getting documents: ", error);
+      }
+    };
+
+    // Call findBusinessByName whenever theBusinessName changes
+    findBusinessByName();
+  }, [theBusinessName, user]);
 
   useEffect(() => {
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
@@ -285,7 +355,7 @@ const DateSelectionAndCheckout = () => {
           const data = doc.data();
           // Assuming your inner object and array are inside the data.locationDetails
           const location = data.location;
-          console.log('location is ',location)
+          console.log("location is ", location);
           // Check if location is defined before setting the address
           if (location) {
             setInitialAddress(location);
@@ -332,23 +402,16 @@ const DateSelectionAndCheckout = () => {
   //   };
 
   //   fetchCollectionAddress();
-  // }, [user]); 
+  // }, [user]);
 
   useEffect(() => {
+    console.log('local_area is ',preciseLocation.location.local_area)
     const gettingRate = async () => {
+      const today = new Date();
+      const formattedDate = today.toISOString().split("T")[0];
+
       const theRates = {
-        collection_address: {
-          type: "business",
-          company: "uAfrica.com",
-          street_address: "1188 Lois Avenue",
-          local_area: "Menlyn",
-          city: "Pretoria",
-          zone: "Gauteng",
-          country: "ZA",
-          code: "0181",
-          lat: -25.7863272,
-          lng: 28.277583,
-        },
+        collection_address: collectionAdress,
         delivery_address: {
           type: preciseLocation.location.type,
           company: preciseLocation.location.company,
@@ -370,10 +433,11 @@ const DateSelectionAndCheckout = () => {
           },
         ],
         declared_value: 1100,
-        collection_min_date: "2021-05-21",
-        delivery_min_date: "2021-05-21",
+        collection_min_date: formattedDate,
+        delivery_min_date: formattedDate,
       };
-
+      console.log('theRatesCollectionAdress ' ,theRates.collection_address)
+     console.log('theRatesDeliverAdress ',theRates.delivery_address)
       const config = {
         headers: {
           Authorization: `Bearer ${CourierAPIKey}`,
@@ -401,7 +465,7 @@ const DateSelectionAndCheckout = () => {
       }
     };
     gettingRate();
-  }, []);
+  }, [preciseLocation.location.local_area,collectionAdress]);
   const AddressData = [
     {
       address: " 564 Zamakulungisa St, Emdeni South ",
@@ -428,35 +492,24 @@ const DateSelectionAndCheckout = () => {
 
   const creattingShipment = async () => {
     const shipment = {
-      collection_address: {
-        type: "business",
-        company: "uAfrica.com",
-        street_address: "1188 Lois Avenue",
-        local_area: "Menlyn",
-        city: "Pretoria",
-        zone: "Gauteng",
-        country: "ZA",
-        code: "0181",
-        lat: -25.7863272,
-        lng: 28.277583,
-      },
+      collection_address: collectionAdress,
       collection_contact: {
-        name: "Cornel Rautenbach",
-        mobile_number: "",
+        name: theBusinessName,
+        mobile_number: collectioPhoneNUmber,
         email: "cornel+sandy@uafrica.com",
       },
-     delivery_address: {
-          type: preciseLocation.location.type,
-          company: preciseLocation.location.company,
-          street_address: preciseLocation.location.street_address,
-          local_area: preciseLocation.location.local_area,
-          city: preciseLocation.location.city,
-          zone: preciseLocation.location.zone,
-          country: preciseLocation.location.country,
-          code: preciseLocation.location.code,
-          lat: preciseLocation.location.lat,
-          lng: preciseLocation.location.lng,
-        },
+      delivery_address: {
+        type: preciseLocation.location.type,
+        company: preciseLocation.location.company,
+        street_address: preciseLocation.location.street_address,
+        local_area: preciseLocation.location.local_area,
+        city: preciseLocation.location.city,
+        zone: preciseLocation.location.zone,
+        country: preciseLocation.location.country,
+        code: preciseLocation.location.code,
+        lat: preciseLocation.location.lat,
+        lng: preciseLocation.location.lng,
+      },
       delivery_contact: {
         name: "Boiketlo Mochochoko",
         mobile_number: "0734157351",

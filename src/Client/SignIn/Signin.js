@@ -14,7 +14,8 @@ import { AntDesign } from "@expo/vector-icons";
 import { COLORS } from "../../Global/Color";
 import { FontAwesome } from "@expo/vector-icons";
 import CircularProgress from "@mui/material/CircularProgress";
-import { firebase, firestore } from "../../config";
+import { firebase, authG, provider } from "../../config";
+import { signInWithPopup } from 'firebase/auth';
 
 const Signin = () => {
   const navigation = useNavigation();
@@ -23,6 +24,7 @@ const Signin = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  
 
   const handleSignin = async () => {
     try {
@@ -56,20 +58,19 @@ const Signin = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const googleSignIn = async () => {
     try {
-      const { idToken } = await GoogleSignin.signIn();
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      const result = await signInWithPopup(authG, provider);
+      console.log(result.user);
 
-      await firebase.auth().signInWithCredential(googleCredential);
-
-      // Navigate or perform additional logic after successful Google sign-in
-      navigation.navigate("TellUsAboutYourself");
+      if (result.user.displayName) {
+        console.log('User Name:', result.user.displayName);
+      }
+      navigation.navigate("Landing");
     } catch (error) {
-      console.error("Error signing in with Google:", error.message);
-      alert("Error signing in with Google. Please try again.");
+      console.error(error.message);
     }
-  };
+  }
 
   const handleShop = () => {
     navigation.navigate("Landing");
@@ -80,6 +81,7 @@ const Signin = () => {
       source={require("../../Global/images/Reed.jpg")}
       style={styles.background}>
       <View style={styles.container}>
+      
         {/* Logo image container */}
         <View style={{}}>
           <Image
@@ -145,16 +147,10 @@ const Signin = () => {
   )}
 </TouchableOpacity>
 
-
-        {/* <TouchableOpacity>
-          <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>
-        </TouchableOpacity> */}
-
-        <TouchableOpacity onPress={{ handleGoogleSignIn }}>
-          <Text style={styles.linkText1}>
-            {" "}
+        <TouchableOpacity onPress={googleSignIn}>
+          <Text style={styles.linkText1}>  
             <AntDesign name="google" size={15} color="red" />
-            SIGN UP WITH GOOGLE
+            SIGN IN WITH GOOGLE
           </Text>
         </TouchableOpacity>
       </View>

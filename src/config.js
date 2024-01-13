@@ -6,6 +6,7 @@ import "firebase/compat/storage";
 import "firebase/compat/firestore";
 import { getFirestore, doc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import {getAuth,GoogleAuthProvider} from "firebase/auth";
 
 // import firebase from 'firebase/app';
 import "firebase/storage";
@@ -22,7 +23,7 @@ const firebaseConfig = {
   storageBucket: "atlegile-marketing-solutions.appspot.com",
   messagingSenderId: "184474823085",
   appId: "1:184474823085:web:a3bef82b0ea4218b445924",
-  measurementId: "G-M4DZHH66ZS",
+  measurementId: "G-M4DZHH66ZS"
 };
 
 if (!firebase.apps.length) {
@@ -33,6 +34,7 @@ const auth = firebase.auth();
 const firestore = firebase.firestore();
 // const storage = firebase.storage();
 
+
 export const db = getFirestore();
 const storage = firebase.storage();
 
@@ -40,6 +42,12 @@ const storage = firebase.storage();
 export { doc };
 
 export { firebase, auth, firestore, storage };
+
+//for google authentication
+
+const authG = getAuth()
+const provider = new GoogleAuthProvider();
+export {authG,provider};
 
 // export default app;
 export default firebaseConfig;

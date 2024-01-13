@@ -23,6 +23,7 @@ import {
 import { auth, firestore, storage } from "../../config";
 import firebase from "firebase/compat/app";
 import ImageCompressor from "image-compressor";
+import BackBtn from "../../Global/BackBtn";
 
 const AddProductsAndServices = () => {
   const navigation = useNavigation();
@@ -152,6 +153,9 @@ const AddProductsAndServices = () => {
         backgroundSize: "cover",
         height: "100vh",
       }}>
+        <View style={{marginLeft: '-92%',}} >
+        <BackBtn/>
+      </View>
       <Grid
         container
         style={{

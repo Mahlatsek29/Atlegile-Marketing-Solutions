@@ -8,13 +8,19 @@ import {
   Image,
   TextInput
 } from "react-native";
-import { firebase, firestore } from "../../config";
+import { firebase, firestore, authG, provider } from "../../config";
 import { COLORS } from "../../Global/Color";
 import { useNavigation } from "@react-navigation/native";
 import TextField from "@mui/material/TextField";
 import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import CircularProgress from "@mui/material/CircularProgress";
+import BackBtn from '../../Global/BackBtn'
+import * as WebBrowser from 'expo-web-browser'
+import { signInWithPopup } from 'firebase/auth';
+
+
+WebBrowser.maybeCompleteAuthSession()
 
 const Signup = () => {
   const navigation = useNavigation();
@@ -24,6 +30,12 @@ const Signup = () => {
   const [nameAlternative, setNameAlternative] = useState(null);
   const [phoneAlternative, setPhoneAlternative] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // const [request, response, promptAsync] = Google.useAuthRequest({
+  //  webClientId: "184474823085-418vvmk20snlfnsjobm9cclmg33rl0co.apps.googleusercontent.com",
+  //  iosClientId: "184474823085-7l43l8ldfoomntckfhe2fa664sldttea.apps.googleusercontent.com"
+  // })
+
 
 
   const navigateSignUpBussiness = () => {
@@ -76,10 +88,22 @@ const Signup = () => {
     }
   };
 
+  const googleSignUp = async () => {
+    try {
+      const result = await signInWithPopup(authG, provider);
+      console.log(result.user);
+      navigation.navigate("TellUsAboutYourself");
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+
   return (
     <ImageBackground
     source={require("../../Global/images/Reed.jpg")}
     style={styles.background}>
+
     <View style={styles.container}>
       {/* Logo image container */}
       <View style={{}}>
@@ -134,13 +158,11 @@ const Signup = () => {
   <Text style={styles.buttonText}>SIGN UP</Text>
 )}
 </TouchableOpacity>
-
-
       <TouchableOpacity>
         <Text style={styles.linkText}> ALREADY HAVE AN ACCOUNT?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity >
+      <TouchableOpacity onPress={googleSignUp}>
         <Text style={styles.linkText1}>
           {" "}
           <AntDesign name="google" size={15} color="red" />

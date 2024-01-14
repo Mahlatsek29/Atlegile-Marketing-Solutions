@@ -32,7 +32,8 @@ import {
   getDocs,
   serverTimestamp,
   addDoc,
-  arrayUnion, updateDoc
+  arrayUnion,
+  updateDoc,
 } from "firebase/firestore";
 
 import { firebase, auth, db } from "../../config";
@@ -80,8 +81,8 @@ const DateSelectionAndCheckout = () => {
   const [collectionAdress, setCollecionadress] = useState({});
   const [collectioPhoneNUmber, setCollectioPhoneNUmber] = useState();
   const [loading, setLoading] = useState(false);
-  const [trackingRef,setTrackingRef] = useState('')
-  const [ shipmentStatus, setShipmentStatus]=useState('')
+  const [trackingRef, setTrackingRef] = useState("");
+  const [shipmentStatus, setShipmentStatus] = useState("");
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -274,13 +275,13 @@ const DateSelectionAndCheckout = () => {
         console.error("User not authenticated.");
         return;
       }
-  
+
       const cartCollectionRef = collection(firestore, "Users");
       const q = query(cartCollectionRef, where("uid", "==", user.uid));
-  
+
       try {
         const querySnapshot = await getDocs(q);
-  
+
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           // Assuming your inner object and array are inside the data.locationDetails
@@ -293,13 +294,10 @@ const DateSelectionAndCheckout = () => {
         console.error("Error fetching location details:", error);
       }
     };
-  
+
     fetchLocationDetails();
   }, [user]);
-  
-  
 
- 
   const AddressData = [
     {
       address: " 564 Zamakulungisa St, Emdeni South ",
@@ -430,8 +428,6 @@ const DateSelectionAndCheckout = () => {
     setOrderTotal(finalTotal);
   }, [cartData, selectedIndex, rates]);
 
- 
-
   //  useEffect(() => {
   //   const tackingShipment = async () => {
   //     const config = {
@@ -516,9 +512,8 @@ const DateSelectionAndCheckout = () => {
   }, [preciseLocation, collectionAdress]);
 
   const creattingShipment = async () => {
-
-    console.log("collectionAdress is ",collectionAdress)
-    console.log(' preciseLocation is ', preciseLocation)
+    console.log("collectionAdress is ", collectionAdress);
+    console.log(" preciseLocation is ", preciseLocation);
     const shipment = {
       collection_address: collectionAdress,
       collection_contact: {
@@ -526,7 +521,7 @@ const DateSelectionAndCheckout = () => {
         mobile_number: collectioPhoneNUmber,
         email: "cornel+sandy@uafrica.com",
       },
-      delivery_address: preciseLocation ,
+      delivery_address: preciseLocation,
       delivery_contact: {
         name: "Boiketlo Mochochoko",
         mobile_number: "0734157351",
@@ -571,8 +566,11 @@ const DateSelectionAndCheckout = () => {
         shipment,
         config
       );
-      console.log("Courier API creating shpment response:", response.data.short_tracking_reference);
-      setTrackingRef(response.data.short_tracking_reference)
+      console.log(
+        "Courier API creating shpment response:",
+        response.data.short_tracking_reference
+      );
+      setTrackingRef(response.data.short_tracking_reference);
       return response.data;
     } catch (error) {
       console.error("Error getting shipment details", error);
@@ -588,7 +586,7 @@ const DateSelectionAndCheckout = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     const tackingShipment = async () => {
       const config = {
         headers: {
@@ -596,14 +594,17 @@ const DateSelectionAndCheckout = () => {
           "Content-Type": "application/json",
         },
       };
-  
+
       try {
         const response = await axios.get(
           `https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=${trackingRef}`,
           config
         );
-        console.log("Courier API traking shipment response:", response.data.shipments[0].status);
-  
+        console.log(
+          "Courier API traking shipment response:",
+          response.data.shipments[0].status
+        );
+
         setShipmentStatus(response.data.shipments[0].status);
       } catch (error) {
         console.error("Error getting shipments", error);
@@ -613,18 +614,17 @@ const DateSelectionAndCheckout = () => {
         return [];
       }
     };
-    tackingShipment()
-  
-  },[trackingRef])
-  
-  useEffect(()=>{
+    tackingShipment();
+  }, [trackingRef]);
+
+  useEffect(() => {
     const handleAddToCart = async () => {
       console.log("deliveryGuy : ", data[Math.floor(Math.random() * 10)]);
       console.log("name : ", userData);
-  
+
       try {
         const cartCollectionRef = collection(firestore, "Orders");
-  
+
         // Add a new document with user information, product ID, product price, quantity, and image
         await addDoc(cartCollectionRef, {
           createdAt: serverTimestamp(),
@@ -634,9 +634,9 @@ const DateSelectionAndCheckout = () => {
           deliveryGuy: data[Math.floor(Math.random() * 10)],
           name: userData?.name,
           userName: userData?.name,
-          invoiceNumber: `#${Math.floor(Math.random() * 10000000)}555${Math.floor(
-            Math.random() * 100000000
-          )}`,
+          invoiceNumber: `#${Math.floor(
+            Math.random() * 10000000
+          )}555${Math.floor(Math.random() * 100000000)}`,
           DeliveryStatus: shipmentStatus,
           userId: userData?.uid,
           orderNumber: `#${
@@ -646,35 +646,29 @@ const DateSelectionAndCheckout = () => {
           totalAmount: orderTotal,
           items: [...newArr],
         });
-  
+
         console.log("Item added to the cart!");
-        handlePayment()
+        handlePayment();
         // navigation.navigate("DateSelectionAndCheckout");
       } catch (error) {
         console.error("Error adding item to cart:", error);
       }
     };
-    handleAddToCart()
-  },[shipmentStatus])
- 
+    handleAddToCart();
+  }, [shipmentStatus]);
 
-
-    const handlePayment = () => {
+  const handlePayment = () => {
     // console.log(shipmentStatus)
-      //handleAddToCart();
-     // creattingShipment(); //create a shipment before goignt to pay fast
-      // Construct the payment URL with the necessary parameters
-      const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
-      orderTotal.toFixed(2) + // Use the calculated orderTotal here
-        "&item_name=TestProduct";
-  
-      // Open the payment URcartDatanL in the device's default browser
-      Linking.openURL(paymentUrl);
-    };
-  
-  
+    //handleAddToCart();
+    // creattingShipment(); //create a shipment before goignt to pay fast
+    // Construct the payment URL with the necessary parameters
+    const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
+    orderTotal.toFixed(2) + // Use the calculated orderTotal here
+      "&item_name=TestProduct";
 
- 
+    // Open the payment URcartDatanL in the device's default browser
+    Linking.openURL(paymentUrl);
+  };
 
   const handleInputChange = (text) => {
     setInputValue(text);
@@ -691,8 +685,7 @@ const DateSelectionAndCheckout = () => {
 
   // useEffect(async () => {
   //   try {
-      
-  
+
   //     let streetAddress;
   //     let localArea;
   //     let localCity;
@@ -722,11 +715,11 @@ const DateSelectionAndCheckout = () => {
   //     console.error("Address components not available.");
   //     return;
   //   }
-  
+
   //     const cartCollectionRef = collection(firestore, "Users");
   //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
   //     const querySnapshot = await getDocs(q);
-  
+
   //     querySnapshot.forEach(async (doc) => {
   //       try {
   //         await updateDoc(doc.ref, {
@@ -755,19 +748,16 @@ const DateSelectionAndCheckout = () => {
   //     setLoading(false);
   //   }
   // }, [ coordinates]);
-  
-  
-  
 
   // useEffect(async () => {
   //   try {
   //     const cartCollectionRef = collection(firestore, "Users");
-  
+
   //     // Check if user is defined before querying
   //     if (user) {
   //       const q = query(cartCollectionRef, where("uid", "==", user.uid));
   //       const querySnapshot = await getDocs(q);
-  
+
   //       querySnapshot.forEach(async (doc) => {
   //         try {
   //           if (address.formatted_address) {
@@ -787,7 +777,7 @@ const DateSelectionAndCheckout = () => {
   //     setLoading(false);
   //   }
   // }, [address, user]);
-  
+
   return (
     <>
       <FollowUs />
@@ -831,175 +821,174 @@ const DateSelectionAndCheckout = () => {
                 <h2>Your Cart Is Currently Empty</h2>
               ) : (
                 <>
-                 <Typography variant="h6" style={{ fontWeight: "bold" }}>
-                ORDER #ABC246
-              </Typography>
-              <ScrollView style={{ flex: 1 }}>
-                {cartData.map((item, index) => (
-                  <View
-                    style={{
-                      width: "100%",
-                      height: "20vh",
-                      borderBottomWidth: 2,
-                      borderBottomColor: "#1D1D1D",
-                      // backgroundColor: "yellow",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      paddingTop: 2,
-                    }}
-                    key={index}
-                  >
-                    {/* <View
+                  <Typography variant="h6" style={{ fontWeight: "bold" }}>
+                    ORDER #ABC246
+                  </Typography>
+                  <ScrollView style={{ flex: 1 }}>
+                    {cartData.map((item, index) => (
+                      <View
+                        style={{
+                          width: "100%",
+                          height: "20vh",
+                          borderBottomWidth: 2,
+                          borderBottomColor: "#1D1D1D",
+                          // backgroundColor: "yellow",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          paddingTop: 2,
+                        }}
+                        key={index}
+                      >
+                        {/* <View
                       style={{
                         width: "25%",
                         // height: "100%",
                         backgroundColor: "#000026",
                         // backgroundColor:'red'
                       }}> */}
-                    <Image
-                      source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
-                      style={{
-                        width: "30%",
-                        height: "100%",
-                        resizeMode: "cover",
-                      }}
-                    />
-                    {/* </View> */}
-                    <View style={{ width: "30%", paddingLeft: 10 }}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: "bold",
-                          color: "gray",
-                        }}
-                      >
-                        Product
-                      </Text>
-                      <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                        {item.name}
-                      </Text>
-                    </View>
-                    <View style={{ width: "30%", paddingLeft: 10 }}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: "bold",
-                          color: "gray",
-                        }}
-                      >
-                        Quantity
-                      </Text>
-                      <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                        {item.quantity}
-                      </Text>
-                    </View>
-                    <View style={{ width: "30%", paddingLeft: 10 }}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: "bold",
-                          color: "gray",
-                        }}
-                      >
-                        Amount
-                      </Text>
-                      <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                        {item.amount}
-                      </Text>
-                    </View>
-                  </View>
-                ))}
-              </ScrollView>
+                        <Image
+                          source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
+                          style={{
+                            width: "30%",
+                            height: "100%",
+                            resizeMode: "cover",
+                          }}
+                        />
+                        {/* </View> */}
+                        <View style={{ width: "30%", paddingLeft: 10 }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: "gray",
+                            }}
+                          >
+                            Product
+                          </Text>
+                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                            {item.name}
+                          </Text>
+                        </View>
+                        <View style={{ width: "30%", paddingLeft: 10 }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: "gray",
+                            }}
+                          >
+                            Quantity
+                          </Text>
+                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                            {item.quantity}
+                          </Text>
+                        </View>
+                        <View style={{ width: "30%", paddingLeft: 10 }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: "gray",
+                            }}
+                          >
+                            Amount
+                          </Text>
+                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                            {item.amount}
+                          </Text>
+                        </View>
+                      </View>
+                    ))}
+                  </ScrollView>
                 </>
               )}
-             
-              
 
               {/* <View>
                 <Text>Hello world</Text>
               </View> */}
- {cartData.length > 1 || cartData.length === 1  ? (
-  <>
-  <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography style={{ fontWeight: "bold" }}>
-                  Order Summary
-                </Typography>
-              </View>
-              <View
-                style={{
-                  display: "flex",
-                  marginTop: "8px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography style={{ fontWeight: "bold" }}>Delivery</Typography>
-                {selectedIndex !== null && (
-                  <Typography style={{ fontWeight: "bold" }}>
-                    R{rates[selectedIndex].rate}
-                  </Typography>
-                )}
-              </View>
+              {cartData.length > 1 || cartData.length === 1 ? (
+                <>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography style={{ fontWeight: "bold" }}>
+                      Order Summary
+                    </Typography>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      marginTop: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography style={{ fontWeight: "bold" }}>
+                      Delivery
+                    </Typography>
+                    {selectedIndex !== null && (
+                      <Typography style={{ fontWeight: "bold" }}>
+                        R{rates[selectedIndex].rate}
+                      </Typography>
+                    )}
+                  </View>
 
-              <View
-                style={{
-                  display: "flex",
-                  marginTop: "8px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography style={{ fontWeight: "bold" }}>
-                  {" "}
-                  Agent Referral
-                </Typography>
-                <Typography style={{ fontWeight: "bold" }}>
-                  {selectedIndex !== null
-                    ? `R${agentReferral.toFixed(2)}`
-                    : null}
-                </Typography>
-              </View>
-              <View
-                style={{
-                  display: "flex",
-                  marginTop: "8px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography style={{ fontWeight: "bold" }}> Tax </Typography>
-                <Typography style={{ fontWeight: "bold" }}>
-                  {selectedIndex !== null ? `R${tax.toFixed(2)}` : null}
-                </Typography>
-              </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      marginTop: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography style={{ fontWeight: "bold" }}>
+                      {" "}
+                      Agent Referral
+                    </Typography>
+                    <Typography style={{ fontWeight: "bold" }}>
+                      {selectedIndex !== null
+                        ? `R${agentReferral.toFixed(2)}`
+                        : null}
+                    </Typography>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      marginTop: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography style={{ fontWeight: "bold" }}>
+                      {" "}
+                      Tax{" "}
+                    </Typography>
+                    <Typography style={{ fontWeight: "bold" }}>
+                      {selectedIndex !== null ? `R${tax.toFixed(2)}` : null}
+                    </Typography>
+                  </View>
 
-              <View
-                style={{
-                  display: "flex",
-                  marginTop: "8px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                  Total
-                </Typography>
-                <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                  R {orderTotal}
-                </Typography>
-              </View>
-  </>
-
-
- ):null}
-              
-              
+                  <View
+                    style={{
+                      display: "flex",
+                      marginTop: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography variant="h5" style={{ fontWeight: "bold" }}>
+                      Total
+                    </Typography>
+                    <Typography variant="h5" style={{ fontWeight: "bold" }}>
+                      R {orderTotal}
+                    </Typography>
+                  </View>
+                </>
+              ) : null}
             </View>
 
             <View
@@ -1064,11 +1053,9 @@ const DateSelectionAndCheckout = () => {
                     </View>
 
                     <View style={{ border: "1px white solid" }}>
-                     
-                        <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                          {pastLocations || initialAddress}
-                        </Typography>
-                      
+                      <Typography variant="h6" style={{ color: "#FFFFFF" }}>
+                        {pastLocations || initialAddress}
+                      </Typography>
 
                       <View
                         style={{
@@ -1093,82 +1080,88 @@ const DateSelectionAndCheckout = () => {
                   </>
                 )}
 
-{cartData.length > 1 || cartData.length === 1 ? ( <>
-  <Typography style={{ color: "#FFFFFF", marginTop: "14px" }}>
-                  Select Delivery date
-                </Typography>
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "flex-start",
-                    flexWrap: "wrap", // Added flexWrap to allow wrapping
-                    width: "100%",
-                  }}
-                >
-                  {rates.map((rate, index) => (
-                    <View key={index}>
-                      <TouchableOpacity
-                        onPress={() => handlePress(index)}
+                {cartData.length > 1 || cartData.length === 1 ? (
+                  <>
+                    <Typography style={{ color: "#FFFFFF", marginTop: "14px" }}>
+                      Select Delivery date
+                    </Typography>
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                        flexWrap: "wrap", // Added flexWrap to allow wrapping
+                        width: "100%",
+                      }}
+                    >
+                      {rates.map((rate, index) => (
+                        <View key={index}>
+                          <TouchableOpacity
+                            onPress={() => handlePress(index)}
+                            style={{
+                              height: "100px",
+                              width: "80px",
+                              marginTop: "10px",
+                              borderWidth: 1,
+                              borderColor: "white",
+                              marginRight: 10,
+                              backgroundColor:
+                                selectedIndex === index
+                                  ? "#2E5A88"
+                                  : "transparent",
+                            }}
+                          >
+                            <View
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                marginTop: "20px",
+                              }}
+                            >
+                              <Typography style={{ color: "white" }}>
+                                {new Date(
+                                  rate.service_level.delivery_date_to
+                                ).toLocaleString("default", { month: "short" })}
+                              </Typography>
+                              <Typography
+                                variant="h5"
+                                style={{ color: "white" }}
+                              >
+                                {new Date(
+                                  rate.service_level.delivery_date_to
+                                ).getDate()}
+                              </Typography>
+                            </View>
+                          </TouchableOpacity>
+                        </View>
+                      ))}
+                    </View>
+
+                    <Button
+                      variant="outlined"
+                      style={{
+                        marginTop: 90,
+                        borderWidth: 1,
+                        borderColor: "lightgrey",
+                        borderRadius: 15,
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-evenly",
+                        alignItems: "center",
+                      }}
+                      onClick={creattingShipment}
+                    >
+                      <Typography
                         style={{
-                          height: "100px",
-                          width: "80px",
-                          marginTop: "10px",
-                          borderWidth: 1,
-                          borderColor: "white",
-                          marginRight: 10,
-                          backgroundColor:
-                            selectedIndex === index ? "#2E5A88" : "transparent",
+                          fontSize: 16,
+                          color: "#FFFFFF",
                         }}
                       >
-                        <View
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginTop: "20px",
-                          }}
-                        >
-                          <Typography style={{ color: "white" }}>
-                            {new Date(
-                              rate.service_level.delivery_date_to
-                            ).toLocaleString("default", { month: "short" })}
-                          </Typography>
-                          <Typography variant="h5" style={{ color: "white" }}>
-                            {new Date(
-                              rate.service_level.delivery_date_to
-                            ).getDate()}
-                          </Typography>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  ))}
-                </View>
-
-                <Button
-                  variant="outlined"
-                  style={{
-                    marginTop: 90,
-                    borderWidth: 1,
-                    borderColor: "lightgrey",
-                    borderRadius: 15,
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-evenly",
-                    alignItems: "center",
-                  }}
-                  onClick={creattingShipment}
-                >
-                  <Typography
-                    style={{
-                      fontSize: 16,
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    CHECKOUT
-                  </Typography>
-                </Button>
-</>):null}
-                
+                        CHECKOUT
+                      </Typography>
+                    </Button>
+                  </>
+                ) : null}
               </View>
             </View>
           </View>

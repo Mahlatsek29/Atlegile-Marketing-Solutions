@@ -125,22 +125,7 @@ const TellUsAboutYourself = ({ navigation }) => {
   };
   const emptyOption = [""];
   const genderOptions = ["Male", "Female", "Other"];
-  const script = document.createElement("script");
-  script.src =
-    "https://maps.googleapis.com/maps/api/js?key=AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs&libraries=places";
-  script.defer = true;
-
-  const handleScriptLoad = () => {
-    const root = ReactDOM.createRoot(document.getElementById("root"));
-    root.render(<App />);
-  };
-
-  script.onload = handleScriptLoad;
-
-  // Check if the script is already present to avoid re-adding it
-  if (!document.querySelector(`script[src="${script.src}"]`)) {
-    document.head.appendChild(script);
-  }
+  
   const handlePlaceSelect = ({ place, latLng }) => {
     // Do something with the selected place details and latitude/longitude
     console.log("Selected place:", place.address_components);
@@ -151,12 +136,6 @@ const TellUsAboutYourself = ({ navigation }) => {
 
   useEffect(() => {
     setLocation(address.formatted_address);
-    console.log(name)
-    console.log(surname)
-    console.log(phone)
-    console.log(gender)
-    console.log(email)
-    console.log(location)
   }, [address]);
 
   return (

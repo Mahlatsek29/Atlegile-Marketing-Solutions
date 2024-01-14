@@ -32,7 +32,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import ReviewsCard from "./ReviewsCard";
-import Card from "../../Global/Card2";
+import Card3 from "../../Global/Card3";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -650,8 +650,8 @@ export default function ProductDetails({ navigation, route }) {
                   alignItems: "center",
                   overflowX: "auto",
                 }}>
-                <Card />
-                <Card />
+                <Card3 />
+                <Card3 />
               </Box>
             </Box>
           </Box>

@@ -7,7 +7,7 @@ import {
   Image,
   ScrollView,
   TextInput,
-  FlatList
+  FlatList,
 } from "react-native";
 import { Container, Typography, Button } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
@@ -36,9 +36,9 @@ import {
 
 import { firebase, auth, db } from "../../config";
 // import { timeStamp } from "console";
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 import App from "../../../App";
-import  PlaceAutocomplete from '../../Global/PlaceAutocomplete'
+import PlaceAutocomplete from "../../Global/PlaceAutocomplete";
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
   const [orderTotal, setOrderTotal] = useState(0);
@@ -70,11 +70,11 @@ const DateSelectionAndCheckout = () => {
 
   // const [rates, setRates] = useState([]);
   const [userData, setUserData] = useState(null);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [predictions, setPredictions] = useState([]);
   const [addressInput, setAddessInput] = useState(false);
-  const [address,setAddress]=useState({})
-  const [coordinates,setCoordinates]=useState({})
+  const [address, setAddress] = useState({});
+  const [coordinates, setCoordinates] = useState({});
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -86,7 +86,7 @@ const DateSelectionAndCheckout = () => {
     };
   }, []);
   // using local host URL for now which routes back to the initial screen but when hosted we will use the host URL
-  const url = "http://localhost:19006";
+  const url = "https://atlegile-marketing-solutions.vercel.app/";
   // const url2 = "https://atlegile-marketing-solutions.vercel.app/Reciept";
 
   const fetchCartData = async () => {
@@ -478,8 +478,7 @@ const DateSelectionAndCheckout = () => {
           paddingTop: 2,
           flexWrap: "wrap",
           marginBottom: 15,
-        }}
-      >
+        }}>
         <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
           {address},
         </Text>
@@ -495,8 +494,7 @@ const DateSelectionAndCheckout = () => {
   const AddressList = ({ data, onAddressPress }) => (
     <ScrollView
       style={{ height: 250, padding: 10 }}
-      showsVerticalScrollIndicator={false}
-    >
+      showsVerticalScrollIndicator={false}>
       {data.map((item, index) => (
         <AddressComponent
           key={index}
@@ -547,27 +545,28 @@ const DateSelectionAndCheckout = () => {
   };
 
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs&libraries=places';
+    const script = document.createElement("script");
+    script.src =
+      "https://maps.googleapis.com/maps/api/js?key=AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs&libraries=places";
     script.defer = true;
-  
+
     const handleScriptLoad = () => {
-      const root = ReactDOM.createRoot(document.getElementById('root'));
+      const root = ReactDOM.createRoot(document.getElementById("root"));
       root.render(<App />);
     };
-  
+
     script.onload = handleScriptLoad;
-  
+
     // Check if the script is already present to avoid re-adding it
     if (!document.querySelector(`script[src="${script.src}"]`)) {
       document.head.appendChild(script);
     }
-  
+
     return () => {
       // Clean up if needed
       document.head.removeChild(script);
     };
-  }, []); 
+  }, []);
 
   const handleInputChange = (text) => {
     setInputValue(text);
@@ -576,10 +575,10 @@ const DateSelectionAndCheckout = () => {
 
   const handlePlaceSelect = ({ place, latLng }) => {
     // Do something with the selected place details and latitude/longitude
-    console.log('Selected place:', place);
-    console.log('Latitude and Longitude:', latLng);
+    console.log("Selected place:", place);
+    console.log("Latitude and Longitude:", latLng);
     setAddress(place);
-    setCoordinates(latLng)
+    setCoordinates(latLng);
   };
   return (
     <>
@@ -594,30 +593,26 @@ const DateSelectionAndCheckout = () => {
                 width: "65%",
                 marginTop: "20px",
                 marginRight: "10px",
-              }}
-            >
+              }}>
               <View style={{ display: "flex", flexDirection: "row" }}>
                 <Typography>
                   <TouchableOpacity
                     onPress={navigateToLanding}
-                    style={{ color: "grey" }}
-                  >
+                    style={{ color: "grey" }}>
                     <Text>Acount /</Text>
                   </TouchableOpacity>
                 </Typography>
                 <Typography>
                   <TouchableOpacity
                     onPress={navigateToOrderHistory}
-                    style={{ color: "grey" }}
-                  >
+                    style={{ color: "grey" }}>
                     Cart
                   </TouchableOpacity>
                 </Typography>
               </View>
               <Typography
                 variant="h4"
-                style={{ marginTop: "50px", fontWeight: "bold" }}
-              >
+                style={{ marginTop: "50px", fontWeight: "bold" }}>
                 CART
               </Typography>
               <Typography variant="h6" style={{ fontWeight: "bold" }}>
@@ -636,8 +631,7 @@ const DateSelectionAndCheckout = () => {
                       alignItems: "center",
                       paddingTop: 2,
                     }}
-                    key={index}
-                  >
+                    key={index}>
                     {/* <View
                       style={{
                         width: "25%",
@@ -660,8 +654,7 @@ const DateSelectionAndCheckout = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}
-                      >
+                        }}>
                         Product
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -674,8 +667,7 @@ const DateSelectionAndCheckout = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}
-                      >
+                        }}>
                         Quantity
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -688,8 +680,7 @@ const DateSelectionAndCheckout = () => {
                           fontSize: 16,
                           fontWeight: "bold",
                           color: "gray",
-                        }}
-                      >
+                        }}>
                         Amount
                       </Text>
                       <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -708,8 +699,7 @@ const DateSelectionAndCheckout = () => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography style={{ fontWeight: "bold" }}>
                   Order Summary
                 </Typography>
@@ -720,8 +710,7 @@ const DateSelectionAndCheckout = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography style={{ fontWeight: "bold" }}>Delivery</Typography>
                 {selectedIndex !== null && (
                   <Typography style={{ fontWeight: "bold" }}>
@@ -736,8 +725,7 @@ const DateSelectionAndCheckout = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography style={{ fontWeight: "bold" }}>
                   {" "}
                   Agent Referral
@@ -754,8 +742,7 @@ const DateSelectionAndCheckout = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography style={{ fontWeight: "bold" }}> Tax </Typography>
                 <Typography style={{ fontWeight: "bold" }}>
                   {selectedIndex !== null ? `R${tax.toFixed(2)}` : "15%"}
@@ -768,8 +755,7 @@ const DateSelectionAndCheckout = () => {
                   marginTop: "8px",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography variant="h5" style={{ fontWeight: "bold" }}>
                   Total
                 </Typography>
@@ -785,8 +771,7 @@ const DateSelectionAndCheckout = () => {
                 //height: "790px",
                 width: "35%",
                 marginTop: "20px",
-              }}
-            >
+              }}>
               <View style={{ padding: "20px" }}>
                 <Typography
                   variant="h5"
@@ -794,19 +779,19 @@ const DateSelectionAndCheckout = () => {
                     color: "#FFFFFF",
                     marginBottom: "20px",
                     fontWeight: "bold",
-                  }}
-                >
+                  }}>
                   DELIVERY DETAILS
                 </Typography>
-                 {addressInput ? (
-                  <View  style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "flex-star",
-                  
-                        height:"62vh"
-                      }}>
+                {addressInput ? (
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "flex-star",
+
+                      height: "62vh",
+                    }}>
                     <PlaceAutocomplete onPlaceSelect={handlePlaceSelect} />
                   </View>
                 ) : (
@@ -817,8 +802,7 @@ const DateSelectionAndCheckout = () => {
                         flexDirection: "row",
                         justifyContent: "space-between",
                         alignItems: "center",
-                      }}
-                    >
+                      }}>
                       <Typography style={{ color: "#B7B9BC" }}>
                         Delivery Address
                       </Typography>
@@ -831,7 +815,7 @@ const DateSelectionAndCheckout = () => {
                         }}
                         onPress={() => setAddessInput(true)} // Assuming setAddessInput is a function
                       >
-                       <Text>+</Text> 
+                        <Text>+</Text>
                       </TouchableOpacity>
                     </View>
                     <View>
@@ -844,12 +828,10 @@ const DateSelectionAndCheckout = () => {
                           marginTop: "10px",
                           borderBottomWidth: 1,
                           borderBottomColor: "lightgrey",
-                        }}
-                      ></View>
+                        }}></View>
                       <Typography
                         variant="h5"
-                        sx={{ color: "#B7B9BC", fontSize: 20, marginTop: 1 }}
-                      >
+                        sx={{ color: "#B7B9BC", fontSize: 20, marginTop: 1 }}>
                         Recent Addresses
                       </Typography>
                       <AddressList
@@ -872,8 +854,7 @@ const DateSelectionAndCheckout = () => {
                     justifyContent: "flex-start",
                     flexWrap: "wrap", // Added flexWrap to allow wrapping
                     width: "100%",
-                  }}
-                >
+                  }}>
                   {rates.map((rate, index) => (
                     <View key={index}>
                       <TouchableOpacity
@@ -887,15 +868,13 @@ const DateSelectionAndCheckout = () => {
                           marginRight: 10,
                           backgroundColor:
                             selectedIndex === index ? "#2E5A88" : "transparent",
-                        }}
-                      >
+                        }}>
                         <View
                           style={{
                             display: "flex",
                             alignItems: "center",
                             marginTop: "20px",
-                          }}
-                        >
+                          }}>
                           <Typography style={{ color: "white" }}>
                             {new Date(
                               rate.service_level.delivery_date_to
@@ -924,14 +903,12 @@ const DateSelectionAndCheckout = () => {
                     justifyContent: "space-evenly",
                     alignItems: "center",
                   }}
-                  onClick={handlePayment}
-                >
+                  onClick={handlePayment}>
                   <Typography
                     style={{
                       fontSize: 16,
                       color: "#FFFFFF",
-                    }}
-                  >
+                    }}>
                     CHECKOUT
                   </Typography>
                 </Button>

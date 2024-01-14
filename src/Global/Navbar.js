@@ -61,6 +61,10 @@ const Navbar = () => {
     navigation.navigate("Landing");
   };
 
+  const navigateCart = () => {
+    navigation.navigate("DateSelectionAndCheckout");
+  };
+
   return (
     <Toolbar
       sx={{
@@ -114,14 +118,12 @@ const Navbar = () => {
               About Us
             </Button>
             <Box
-              onClick={() => {
-                navigation.navigate("DateSelectionAndCheckout");
-              }}
               sx={{
                 "&:hover": {
                   cursor: "pointer",
                 },
-              }}>
+              }}
+              onClick={navigateCart}>
               <Badge
                 badgeContent={cartCount}
                 color="primary"

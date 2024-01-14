@@ -281,6 +281,12 @@ const BusinessRegistration = () => {
   if (!document.querySelector(`script[src="${script.src}"]`)) {
     document.head.appendChild(script);
   }
+  
+
+  useEffect(() => {
+    setLocation(address.formatted_address);
+  }, [address]);
+
   const handlePlaceSelect = ({ place, latLng }) => {
     // Do something with the selected place details and latitude/longitude
     console.log("Selected place:", place.address_components);
@@ -288,10 +294,6 @@ const BusinessRegistration = () => {
     setAddress(place);
     setCoordinates(latLng);
   };
-
-  useEffect(() => {
-    setLocation(address.formatted_address);
-  }, [address]);
   return (
     <>
       <View

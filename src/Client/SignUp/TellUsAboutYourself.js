@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   View,
   Text,
@@ -6,13 +6,15 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-
 } from "react-native";
 import { firebase, firestore } from "../../config";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
-
+import ReactDOM from "react-dom";
+import App from "../../../App";
+import PlaceAutocomplete from "../../Global/PlaceAutocomplete";
+const AppDiscreiption = "Atlegile Markwting Solutions"; // Add your actual description here
 
 const TellUsAboutYourself = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -24,9 +26,58 @@ const TellUsAboutYourself = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const user = firebase.auth().currentUser;
+  const [address, setAddress] = useState({});
+  const [coordinates, setCoordinates] = useState({});
 
-  const handleContinue =  async (e) => {
+  const handleContinue = async (e) => {
     e.preventDefault();
+    
+    let streetAddress;
+
+    if (address.address_components.length === 8) {
+      streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+    } else if (address.address_components.length === 9) {
+      streetAddress = ` ${address.address_components[1].long_name} ${address.address_components[2].long_name} `;
+    }
+
+    let localArea;
+
+    if (address.address_components.length === 8) {
+      localArea = `${address.address_components[2].long_name} `;
+    } else if (address.address_components.length === 9) {
+      localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
+    }
+    let localCity;
+
+    if (address.address_components.length === 8) {
+      localCity = `${address.address_components[4].long_name}`;
+    } else if (address.address_components.length === 9) {
+      localCity = `${address.address_components[5].long_name} `;
+    }
+
+    let zoneCity;
+
+    if (address.address_components.length === 8) {
+      zoneCity = `${address.address_components[5].long_name}`;
+    } else if (address.address_components.length === 9) {
+      zoneCity = `${address.address_components[6].long_name} `;
+    }
+
+    let countryOfCity;
+
+    if (address.address_components.length === 8) {
+      countryOfCity = `${address.address_components[6].long_name}`;
+    } else if (address.address_components.length === 9) {
+      countryOfCity = `${address.address_components[7].short_name} `;
+    }
+
+    let postalCode;
+
+    if (address.address_components.length === 8) {
+      postalCode = `${address.address_components[7].long_name}`;
+    } else if (address.address_components.length === 9) {
+      postalCode = `${address.address_components[8].long_name} `;
+    }
 
     if (!name || !surname || !phone || !gender || !email || !location) {
       alert("Please fill in all fields before continuing.");
@@ -48,6 +99,18 @@ const TellUsAboutYourself = ({ navigation }) => {
         location,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         uid: user.uid,
+        locationDetails: {
+          type: "",
+          company: "",
+          street_address: streetAddress,
+          local_area: localArea,
+          city: localCity,
+          zone: zoneCity,
+          country: countryOfCity,
+          code: postalCode,
+          lat: coordinates.lat,
+          lng: coordinates.lng,
+        },
       });
 
       console.log("User information successfully submitted to Firestore.");
@@ -56,11 +119,45 @@ const TellUsAboutYourself = ({ navigation }) => {
     } catch (error) {
       console.error("Error submitting user information:", error.message);
       alert("Error submitting user information. Please try again.");
-    }finally {
-      setLoading(true)}
+    } finally {
+      setLoading(true);
+    }
   };
   const emptyOption = [""];
   const genderOptions = ["Male", "Female", "Other"];
+  const script = document.createElement("script");
+  script.src =
+    "https://maps.googleapis.com/maps/api/js?key=AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs&libraries=places";
+  script.defer = true;
+
+  const handleScriptLoad = () => {
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  };
+
+  script.onload = handleScriptLoad;
+
+  // Check if the script is already present to avoid re-adding it
+  if (!document.querySelector(`script[src="${script.src}"]`)) {
+    document.head.appendChild(script);
+  }
+  const handlePlaceSelect = ({ place, latLng }) => {
+    // Do something with the selected place details and latitude/longitude
+    console.log("Selected place:", place.address_components);
+    console.log("Latitude and Longitude:", latLng);
+    setAddress(place);
+    setCoordinates(latLng);
+  };
+
+  useEffect(() => {
+    setLocation(address.formatted_address);
+    console.log(name)
+    console.log(surname)
+    console.log(phone)
+    console.log(gender)
+    console.log(email)
+    console.log(location)
+  }, [address]);
 
   return (
     <ImageBackground
@@ -76,132 +173,114 @@ const TellUsAboutYourself = ({ navigation }) => {
         <Text style={styles.subtitle}>TELL US ABOUT YOURSELF</Text>
 
         <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      width: "75%",
-                    }}>
-        <TextField
-           id="outlined-number"
-           label="Name"
-           type="text"
-           variant="standard"
-           InputLabelProps={{
-             shrink: true,
-           }}
-          
-           value={name}
-           onChange={(e) => setName(e.target.value)}
-           style={{
-            width: "48%",
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            width: "75%",
+          }}
+        >
+          <TextField
+            id="outlined-number"
+            label="Name"
+            type="text"
+            variant="standard"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            style={{
+              width: "48%",
 
-            marginRight: "5px",
-           
-          }}
+              marginRight: "5px",
+            }}
           />
-        
-              <TextField
-              id="outlined-number"
-              label="Surname"
-              type="text"
-              variant="standard"
-              InputLabelProps={{
-                shrink: true,
-              }}
-             
-              value={surname}
-              onChange={(e) => setSurname(e.target.value)}
-               style={{
-            width: "48%",
-            // marginTop: "5px",
-            // marginRight: "10px",
-            // textAlign: "left",
-          }}
-             />
+
+          <TextField
+            id="outlined-number"
+            label="Surname"
+            type="text"
+            variant="standard"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={surname}
+            onChange={(e) => setSurname(e.target.value)}
+            style={{
+              width: "48%",
+              // marginTop: "5px",
+              // marginRight: "10px",
+              // textAlign: "left",
+            }}
+          />
         </View>
 
         <TextField
-           id="outlined-number"
-           label="Phone"
-           type="text"
-           variant="standard"
-           InputLabelProps={{
-             shrink: true,
-           }}
-          
-           value={phone}
-           onChange={(e) => setPhone(e.target.value)}
-           style={{
+          id="outlined-number"
+          label="Phone"
+          type="text"
+          variant="standard"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          style={{
             width: "75%",
             marginTop: "5px",
             textAlign: "left",
           }}
-          />
-            <br />
-     <TextField
-                    id="outlined"
-                    select
-                    label="Gender"
-                    variant="standard"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                    style={{
-                      width: "75%",
-                      textAlign: "left",
-                      marginTop: "10px",
-                    }}>
-                    {genderOptions.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                  <br />
+        />
+        <br />
         <TextField
-           id="outlined-number"
-           label="Email"
-           type="text"
-           variant="standard"
-           InputLabelProps={{
-             shrink: true,
-           }}
-          
-           value={email}
-           onChange={(e) => setEmail(e.target.value)}
-            style={{
+          id="outlined"
+          select
+          label="Gender"
+          variant="standard"
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}
+          style={{
+            width: "75%",
+            textAlign: "left",
+            marginTop: "10px",
+          }}
+        >
+          {genderOptions.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </TextField>
+        <br />
+        <TextField
+          id="outlined-number"
+          label="Email"
+          type="text"
+          variant="standard"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{
             width: "75%",
             marginTop: "5px",
             textAlign: "left",
           }}
-          />
+        />
 
-       
-           <TextField
-           id="outlined-number"
-           label="Location"
-           type="text"
-           variant="standard"
-           InputLabelProps={{
-             shrink: true,
-           }}
-          
-           value={location}
-           onChange={(e) => setLocation(e.target.value)}
-           style={{
-            width: "75%",
-            marginTop: "5px",
-            textAlign: "left",
-          }}
-          />
+        <PlaceAutocomplete
+          style={{ width: "25vw" }}
+          onPlaceSelect={handlePlaceSelect}
+        />
 
-<TouchableOpacity style={styles.button} onPress={handleContinue}>
-  {loading ? (
-    <CircularProgress size={25} />
-  ) : (
-    <Text style={styles.buttonText}>CONTINUE</Text>
-  )}
-</TouchableOpacity>
-
+        <TouchableOpacity style={styles.button} onPress={handleContinue}>
+          {loading ? (
+            <CircularProgress size={25} />
+          ) : (
+            <Text style={styles.buttonText}>CONTINUE</Text>
+          )}
+        </TouchableOpacity>
       </View>
     </ImageBackground>
   );
@@ -222,7 +301,7 @@ const styles = StyleSheet.create({
     height: "95%",
     alignItems: "center",
     justifyContent: "center",
-  
+
     // alignItems: "center",
   },
   logo: {
@@ -252,7 +331,6 @@ const styles = StyleSheet.create({
   },
   pickerItem: {
     color: "#072840",
-
   },
   button: {
     backgroundColor: "#072840",
@@ -260,8 +338,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: 10,
     width: "75%",
-    display:'flex',
-    alignItems:'center'
+    display: "flex",
+    alignItems: "center",
   },
   buttonText: {
     color: "white",

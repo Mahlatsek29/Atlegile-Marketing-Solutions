@@ -32,6 +32,7 @@ import {
   getDocs,
   serverTimestamp,
   addDoc,
+  arrayUnion, updateDoc
 } from "firebase/firestore";
 
 import { firebase, auth, db } from "../../config";
@@ -72,15 +73,16 @@ const DateSelectionAndCheckout = () => {
   const [addressInput, setAddessInput] = useState(false);
   const [address, setAddress] = useState({});
   const [coordinates, setCoordinates] = useState({});
-  const [preciseLocation, setPreciseLocation] = useState({
-    location: {},
-    pastLocations: [],
-  });
+  const [preciseLocation, setPreciseLocation] = useState({});
+  const [pastLocations, setPastLocations] = useState([]);
   const [initialAddress, setInitialAddress] = useState("");
   const [company, setCompany] = useState([]);
   const [theBusinessName, setTheBusinessName] = useState("");
   const [collectionAdress, setCollecionadress] = useState({});
   const [collectioPhoneNUmber, setCollectioPhoneNUmber] = useState();
+  const [loading, setLoading] = useState(false);
+  const [trackingRef,setTrackingRef] = useState('')
+  const [ shipmentStatus, setShipmentStatus]=useState('')
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -226,41 +228,6 @@ const DateSelectionAndCheckout = () => {
     setSelectedIndex(index);
   };
 
-  const handleAddToCart = async () => {
-    console.log("deliveryGuy : ", data[Math.floor(Math.random() * 10)]);
-    console.log("name : ", userData);
-
-    try {
-      const cartCollectionRef = collection(firestore, "Orders");
-
-      // Add a new document with user information, product ID, product price, quantity, and image
-      await addDoc(cartCollectionRef, {
-        createdAt: serverTimestamp(),
-        deliveryAddress: "123 Sade Street, Johannesburg Gauteng 1658",
-        deliveryDate: serverTimestamp(),
-        deliveryFee: 150,
-        deliveryGuy: data[Math.floor(Math.random() * 10)],
-        name: userData?.name,
-        userName: userData?.name,
-        invoiceNumber: `#${Math.floor(Math.random() * 10000000)}555${Math.floor(
-          Math.random() * 100000000
-        )}`,
-        DeliveryStatus: "Delivered",
-        userId: userData?.uid,
-        orderNumber: `#${
-          userData?.uid?.slice(5, 15) + Math.floor(Math.random() * 10000)
-        }`,
-        // orderSummary: 3000,
-        totalAmount: orderTotal,
-        items: [...newArr],
-      });
-
-      console.log("Item added to the cart!");
-      // navigation.navigate("DateSelectionAndCheckout");
-    } catch (error) {
-      console.error("Error adding item to cart:", error);
-    }
-  };
   const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
 
   useEffect(() => {
@@ -304,168 +271,36 @@ const DateSelectionAndCheckout = () => {
 
   useEffect(() => {
     const fetchLocationDetails = async () => {
-      if (!user) {
+      if (!user || !user.uid) {
         console.error("User not authenticated.");
         return;
       }
-
+  
       const cartCollectionRef = collection(firestore, "Users");
       const q = query(cartCollectionRef, where("uid", "==", user.uid));
-
+  
       try {
         const querySnapshot = await getDocs(q);
-
+  
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           // Assuming your inner object and array are inside the data.locationDetails
-          const location = data.locationDetails
-            ? data.locationDetails.location
-            : {};
-          const pastLocations = data.locationDetails
-            ? data.locationDetails.pastLocations
-            : [];
-
-          setPreciseLocation({
-            location,
-            pastLocations,
-          });
+          const location = data.locationDetails;
+          const pastLocations = data.pastLocations;
+          setPreciseLocation(location);
+          setPastLocations(pastLocations);
         });
       } catch (error) {
         console.error("Error fetching location details:", error);
       }
     };
-
+  
     fetchLocationDetails();
   }, [user]);
+  
+  
 
-  useEffect(() => {
-    const fetchLocation = async () => {
-      if (!user) {
-        console.error("User not authenticated.");
-        return;
-      }
-
-      const cartCollectionRef = collection(firestore, "Users");
-      const q = query(cartCollectionRef, where("uid", "==", user.uid));
-
-      try {
-        const querySnapshot = await getDocs(q);
-
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          // Assuming your inner object and array are inside the data.locationDetails
-          const location = data.location;
-          console.log("location is ", location);
-          // Check if location is defined before setting the address
-          if (location) {
-            setInitialAddress(location);
-          } else {
-            console.error("Location not found in user data.");
-          }
-        });
-      } catch (error) {
-        console.error("Error fetching location details:", error);
-      }
-    };
-
-    fetchLocation();
-  }, [user]); // Include setAddress in the dependency array if it's defined outside the useEffect
-
-  // useEffect(() => {
-  //   const fetchCollectionAddress = async () => {
-  //     if (!user) {
-  //       console.error("User not authenticated.");
-  //       return;
-  //     }
-
-  //     const cartCollectionRef = collection(firestore, "Users");
-  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
-
-  //     try {
-  //       const querySnapshot = await getDocs(q);
-
-  //       querySnapshot.forEach((doc) => {
-  //         const data = doc.data();
-  //         // Assuming your inner object and array are inside the data.locationDetails
-  //         const location = data.location;
-  //         console.log('location is ',location)
-  //         // Check if location is defined before setting the address
-  //         if (location) {
-  //           setInitialAddress(location);
-  //         } else {
-  //           console.error("Location not found in user data.");
-  //         }
-  //       });
-  //     } catch (error) {
-  //       console.error("Error fetching location details:", error);
-  //     }
-  //   };
-
-  //   fetchCollectionAddress();
-  // }, [user]);
-
-  useEffect(() => {
-    console.log('local_area is ',preciseLocation.location.local_area)
-    const gettingRate = async () => {
-      const today = new Date();
-      const formattedDate = today.toISOString().split("T")[0];
-
-      const theRates = {
-        collection_address: collectionAdress,
-        delivery_address: {
-          type: preciseLocation.location.type,
-          company: preciseLocation.location.company,
-          street_address: preciseLocation.location.street_address,
-          local_area: preciseLocation.location.local_area,
-          city: preciseLocation.location.city,
-          zone: preciseLocation.location.zone,
-          country: preciseLocation.location.country,
-          code: preciseLocation.location.code,
-          lat: preciseLocation.location.lat,
-          lng: preciseLocation.location.lng,
-        },
-        parcels: [
-          {
-            submitted_length_cm: 20,
-            submitted_width_cm: 20,
-            submitted_height_cm: 10,
-            submitted_weight_kg: 2,
-          },
-        ],
-        declared_value: 1100,
-        collection_min_date: formattedDate,
-        delivery_min_date: formattedDate,
-      };
-      console.log('theRatesCollectionAdress ' ,theRates.collection_address)
-     console.log('theRatesDeliverAdress ',theRates.delivery_address)
-      const config = {
-        headers: {
-          Authorization: `Bearer ${CourierAPIKey}`,
-          "Content-Type": "application/json",
-        },
-      };
-
-      try {
-        const response = await axios.post(
-          "https://api.shiplogic.com/v2/rates",
-          theRates,
-          config
-        );
-        console.log("Courier API rates response:", response.data);
-        if (response.data.rates) {
-          setRates(response.data.rates);
-        } else {
-          console.log("Rates not found in the response");
-        }
-      } catch (error) {
-        console.error("Error getting rates", error);
-        if (error.response) {
-          console.log("Response data:", error.response.data);
-        }
-      }
-    };
-    gettingRate();
-  }, [preciseLocation.location.local_area,collectionAdress]);
+ 
   const AddressData = [
     {
       address: " 564 Zamakulungisa St, Emdeni South ",
@@ -489,86 +324,6 @@ const DateSelectionAndCheckout = () => {
     },
   ];
   // console.log("cartData 2 : ", cartData);
-
-  const creattingShipment = async () => {
-    const shipment = {
-      collection_address: collectionAdress,
-      collection_contact: {
-        name: theBusinessName,
-        mobile_number: collectioPhoneNUmber,
-        email: "cornel+sandy@uafrica.com",
-      },
-      delivery_address: {
-        type: preciseLocation.location.type,
-        company: preciseLocation.location.company,
-        street_address: preciseLocation.location.street_address,
-        local_area: preciseLocation.location.local_area,
-        city: preciseLocation.location.city,
-        zone: preciseLocation.location.zone,
-        country: preciseLocation.location.country,
-        code: preciseLocation.location.code,
-        lat: preciseLocation.location.lat,
-        lng: preciseLocation.location.lng,
-      },
-      delivery_contact: {
-        name: "Boiketlo Mochochoko",
-        mobile_number: "0734157351",
-        email: "mochochokoboiketlo@gmail.com",
-      },
-      parcels: [
-        {
-          parcel_description: "Standard flyer",
-          submitted_length_cm: 20,
-          submitted_width_cm: 20,
-          submitted_height_cm: 10,
-          submitted_weight_kg: 2,
-        },
-      ],
-      opt_in_rates: [],
-      opt_in_time_based_rates: [76],
-      special_instructions_collection:
-        "This is a test shipment - DO NOT COLLECT",
-      special_instructions_delivery: "This is a test shipment - DO NOT DELIVER",
-      declared_value: 1100,
-      collection_min_date: "2021-05-21T00:00:00.000Z",
-      collection_after: "08:00",
-      collection_before: "16:00",
-      delivery_min_date: "2021-05-21T00:00:00.000Z",
-      delivery_after: "10:00",
-      delivery_before: "17:00",
-      custom_tracking_reference: "",
-      customer_reference: "ORDERNO123",
-      service_level_code: "ECO",
-      mute_notifications: false,
-    };
-    const config = {
-      headers: {
-        Authorization: `Bearer ${CourierAPIKey}`,
-        "Content-Type": "application/json",
-      },
-    };
-
-    try {
-      const response = await axios.post(
-        "https://api.shiplogic.com/v2/shipments",
-        shipment,
-        config
-      );
-      console.log("Courier API creating shpment response:", response.data);
-      return response.data;
-    } catch (error) {
-      console.error("Error getting shipment details", error);
-
-      if (error.response) {
-        console.log("Response status:", error.response.status);
-        console.log("Response data:", error.response.data);
-      } else if (error.request) {
-        console.log("No response received. Request made but no response.");
-      } else {
-        console.log("Error in making the request:", error.message);
-      }
-    }
-  };
 
   const AddressComponent = ({ address, township, poBox, onPress }) => (
     <TouchableOpacity onPress={onPress}>
@@ -676,17 +431,249 @@ const DateSelectionAndCheckout = () => {
     setOrderTotal(finalTotal);
   }, [cartData, selectedIndex, rates]);
 
-  const handlePayment = () => {
-    handleAddToCart();
-    creattingShipment(); //create a shipment before goignt to pay fast
-    // Construct the payment URL with the necessary parameters
-    const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
-    orderTotal.toFixed(2) + // Use the calculated orderTotal here
-      "&item_name=TestProduct";
+ 
 
-    // Open the payment URcartDatanL in the device's default browser
-    Linking.openURL(paymentUrl);
+  //  useEffect(() => {
+  //   const tackingShipment = async () => {
+  //     const config = {
+  //       headers: {
+  //         Authorization: `Bearer ${CourierAPIKey}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     };
+
+  //     try {
+  //       const response = await axios.get(
+  //         "https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=TN7PRG",
+  //         config
+  //       );
+  //       console.log("Courier API traking shipment response:", response.data);
+
+  //       setShipmentTrack(response.data);
+  //     } catch (error) {
+  //       console.error("Error getting shipments", error);
+  //       if (error.response) {
+  //         console.log("Response data:", error.response.data);
+  //       }
+  //       return [];
+  //     }
+  //   };
+
+  //   tackingShipment();
+  //   console.log("shipmentTrack:", shipmentTrack.shipments);
+  //   //console.log("tracking_events:", shipmentTrack.shipments[0].tracking_events);
+  //   //console.log("status:", shipmentTrack.shipments[0].tracking_events[0].status);
+  // }, []);
+  useEffect(() => {
+    console.log("local_area is ", preciseLocation);
+    const gettingRate = async () => {
+      const today = new Date();
+      const formattedDate = today.toISOString().split("T")[0];
+
+      const theRates = {
+        collection_address: collectionAdress,
+        delivery_address: preciseLocation,
+        parcels: [
+          {
+            submitted_length_cm: 20,
+            submitted_width_cm: 20,
+            submitted_height_cm: 10,
+            submitted_weight_kg: 2,
+          },
+        ],
+        declared_value: 1100,
+        collection_min_date: formattedDate,
+        delivery_min_date: formattedDate,
+      };
+      console.log("theRatesCollectionAdress ", theRates.collection_address);
+      console.log("theRatesDeliverAdress ", theRates.delivery_address);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${CourierAPIKey}`,
+          "Content-Type": "application/json",
+        },
+      };
+
+      try {
+        const response = await axios.post(
+          "https://api.shiplogic.com/v2/rates",
+          theRates,
+          config
+        );
+        console.log("Courier API rates response:", response.data);
+        if (response.data.rates) {
+          setRates(response.data.rates);
+        } else {
+          console.log("Rates not found in the response");
+        }
+      } catch (error) {
+        console.error("Error getting rates", error);
+        if (error.response) {
+          console.log("Response data:", error.response.data);
+        }
+      }
+    };
+    gettingRate();
+  }, [preciseLocation, collectionAdress]);
+
+  const creattingShipment = async () => {
+
+    console.log("collectionAdress is ",collectionAdress)
+    console.log(' preciseLocation is ', preciseLocation)
+    const shipment = {
+      collection_address: collectionAdress,
+      collection_contact: {
+        name: theBusinessName,
+        mobile_number: collectioPhoneNUmber,
+        email: "cornel+sandy@uafrica.com",
+      },
+      delivery_address: preciseLocation ,
+      delivery_contact: {
+        name: "Boiketlo Mochochoko",
+        mobile_number: "0734157351",
+        email: "mochochokoboiketlo@gmail.com",
+      },
+      parcels: [
+        {
+          parcel_description: "Standard flyer",
+          submitted_length_cm: 20,
+          submitted_width_cm: 20,
+          submitted_height_cm: 10,
+          submitted_weight_kg: 2,
+        },
+      ],
+      opt_in_rates: [],
+      opt_in_time_based_rates: [76],
+      special_instructions_collection:
+        "This is a test shipment - DO NOT COLLECT",
+      special_instructions_delivery: "This is a test shipment - DO NOT DELIVER",
+      declared_value: 1100,
+      collection_min_date: "2021-05-21T00:00:00.000Z",
+      collection_after: "08:00",
+      collection_before: "16:00",
+      delivery_min_date: "2021-05-21T00:00:00.000Z",
+      delivery_after: "10:00",
+      delivery_before: "17:00",
+      custom_tracking_reference: "",
+      customer_reference: "ORDERNO123",
+      service_level_code: "ECO",
+      mute_notifications: false,
+    };
+    const config = {
+      headers: {
+        Authorization: `Bearer ${CourierAPIKey}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const response = await axios.post(
+        "https://api.shiplogic.com/v2/shipments",
+        shipment,
+        config
+      );
+      console.log("Courier API creating shpment response:", response.data.short_tracking_reference);
+      setTrackingRef(response.data.short_tracking_reference)
+      return response.data;
+    } catch (error) {
+      console.error("Error getting shipment details", error);
+
+      if (error.response) {
+        console.log("Response status:", error.response.status);
+        console.log("Response data:", error.response.data);
+      } else if (error.request) {
+        console.log("No response received. Request made but no response.");
+      } else {
+        console.log("Error in making the request:", error.message);
+      }
+    }
   };
+
+  useEffect(()=>{
+    const tackingShipment = async () => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${CourierAPIKey}`,
+          "Content-Type": "application/json",
+        },
+      };
+  
+      try {
+        const response = await axios.get(
+          `https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=${trackingRef}`,
+          config
+        );
+        console.log("Courier API traking shipment response:", response.data.shipments[0].status);
+  
+        setShipmentStatus(response.data.shipments[0].status);
+      } catch (error) {
+        console.error("Error getting shipments", error);
+        if (error.response) {
+          console.log("Response data:", error.response.data);
+        }
+        return [];
+      }
+    };
+    tackingShipment()
+  
+  },[trackingRef])
+  
+  useEffect(()=>{
+    const handleAddToCart = async () => {
+      console.log("deliveryGuy : ", data[Math.floor(Math.random() * 10)]);
+      console.log("name : ", userData);
+  
+      try {
+        const cartCollectionRef = collection(firestore, "Orders");
+  
+        // Add a new document with user information, product ID, product price, quantity, and image
+        await addDoc(cartCollectionRef, {
+          createdAt: serverTimestamp(),
+          deliveryAddress: pastLocations,
+          deliveryDate: serverTimestamp(),
+          deliveryFee: rates[selectedIndex].rate,
+          deliveryGuy: data[Math.floor(Math.random() * 10)],
+          name: userData?.name,
+          userName: userData?.name,
+          invoiceNumber: `#${Math.floor(Math.random() * 10000000)}555${Math.floor(
+            Math.random() * 100000000
+          )}`,
+          DeliveryStatus: shipmentStatus,
+          userId: userData?.uid,
+          orderNumber: `#${
+            userData?.uid?.slice(5, 15) + Math.floor(Math.random() * 10000)
+          }`,
+          // orderSummary: 3000,
+          totalAmount: orderTotal,
+          items: [...newArr],
+        });
+  
+        console.log("Item added to the cart!");
+        handlePayment()
+        // navigation.navigate("DateSelectionAndCheckout");
+      } catch (error) {
+        console.error("Error adding item to cart:", error);
+      }
+    };
+    handleAddToCart()
+  },[shipmentStatus])
+ 
+
+
+    const handlePayment = () => {
+    // console.log(shipmentStatus)
+      //handleAddToCart();
+     // creattingShipment(); //create a shipment before goignt to pay fast
+      // Construct the payment URL with the necessary parameters
+      const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
+      orderTotal.toFixed(2) + // Use the calculated orderTotal here
+        "&item_name=TestProduct";
+  
+      // Open the payment URcartDatanL in the device's default browser
+      Linking.openURL(paymentUrl);
+    };
+  
+  
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -724,6 +711,106 @@ const DateSelectionAndCheckout = () => {
     setAddress(place);
     setCoordinates(latLng);
   };
+
+  // useEffect(async () => {
+  //   try {
+      
+  
+  //     let streetAddress;
+  //     let localArea;
+  //     let localCity;
+  //     let zoneCity;
+  //     let countryOfCity;
+  //     let postalCode;
+  //     if (address.address_components) {
+  //     if (address.address_components && address.address_components.length === 8) {
+  //       streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+  //       localArea = `${address.address_components[2].long_name}`;
+  //       localCity = `${address.address_components[4].long_name}`;
+  //       zoneCity = `${address.address_components[5].long_name}`;
+  //       countryOfCity = `${address.address_components[6].long_name}`;
+  //       postalCode = `${address.address_components[7].long_name}`;
+  //     } else if (address.address_components && address.address_components.length === 9) {
+  //       streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+  //       localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
+  //       localCity = `${address.address_components[5].long_name}`;
+  //       zoneCity = `${address.address_components[6].long_name}`;
+  //       countryOfCity = `${address.address_components[7].short_name}`;
+  //       postalCode = `${address.address_components[8].long_name}`;
+  //     } else {
+  //       console.error("Invalid length of address components.");
+  //       return;
+  //     }
+  //   } else {
+  //     console.error("Address components not available.");
+  //     return;
+  //   }
+  
+  //     const cartCollectionRef = collection(firestore, "Users");
+  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
+  //     const querySnapshot = await getDocs(q);
+  
+  //     querySnapshot.forEach(async (doc) => {
+  //       try {
+  //         await updateDoc(doc.ref, {
+  //           location: address.formatted_address,
+  //           locationDetails: {
+  //             type: "",
+  //             company: "",
+  //             street_address: streetAddress,
+  //             local_area: localArea,
+  //             city: localCity,
+  //             zone: zoneCity,
+  //             country: countryOfCity,
+  //             code: postalCode,
+  //             lat: coordinates.lat, // Assuming coordinates is defined somewhere
+  //             lng: coordinates.lng,
+  //           },
+  //         });
+  //       } catch (error) {
+  //         console.error("Error updating document in Users collection:", error);
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.error("Error in useEffect:", error);
+  //     setLoading(false);
+  //   }
+  // }, [ coordinates]);
+  
+  
+  
+
+  // useEffect(async () => {
+  //   try {
+  //     const cartCollectionRef = collection(firestore, "Users");
+  
+  //     // Check if user is defined before querying
+  //     if (user) {
+  //       const q = query(cartCollectionRef, where("uid", "==", user.uid));
+  //       const querySnapshot = await getDocs(q);
+  
+  //       querySnapshot.forEach(async (doc) => {
+  //         try {
+  //           if (address.formatted_address) {
+  //             await updateDoc(doc.ref, {
+  //               pastLocations: arrayUnion(address.formatted_address),
+  //             });
+  //           }
+  //         } catch (error) {
+  //           console.error("Error updating document in Users collection:", error);
+  //         } finally {
+  //           setLoading(false);
+  //         }
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error querying Users collection:", error);
+  //     setLoading(false);
+  //   }
+  // }, [address, user]);
+  
   return (
     <>
       <FollowUs />
@@ -982,35 +1069,13 @@ const DateSelectionAndCheckout = () => {
                         <Text style={{ color: "white" }}>+</Text>
                       </TouchableOpacity>
                     </View>
-                    {/* <View>
-                      <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                        {`${selectedAddress.address}, ${selectedAddress.Township}, ${selectedAddress.PoBox}`}
-                      </Typography>
 
-                      <View
-                        style={{
-                          marginTop: "10px",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "lightgrey",
-                        }}
-                      ></View>
-                      <Typography
-                        variant="h5"
-                        sx={{ color: "#B7B9BC", fontSize: 20, marginTop: 1 }}
-                      >
-                        Recent Addresses
-                      </Typography>
-                      <AddressList
-                        data={AddressData}
-                        onAddressPress={(selectedItem) =>
-                          setSelectedAddress(selectedItem)
-                        }
-                      />
-                    </View> */}
                     <View style={{ border: "1px white solid" }}>
-                      <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                        {preciseLocation.location.address || initialAddress}
-                      </Typography>
+                     
+                        <Typography variant="h6" style={{ color: "#FFFFFF" }}>
+                          {pastLocations || initialAddress}
+                        </Typography>
+                      
 
                       <View
                         style={{
@@ -1026,12 +1091,9 @@ const DateSelectionAndCheckout = () => {
                         Recent Addresses
                       </Typography>
                       <LocationList
-                        data={preciseLocation.pastLocations}
+                        data={pastLocations}
                         onLocationPress={(selectedItem) =>
-                          setPreciseLocation({
-                            ...preciseLocation,
-                            location: { address: selectedItem },
-                          })
+                          setPastLocations([selectedItem])
                         }
                       />
                     </View>
@@ -1100,7 +1162,7 @@ const DateSelectionAndCheckout = () => {
                     justifyContent: "space-evenly",
                     alignItems: "center",
                   }}
-                  onClick={handlePayment}
+                  onClick={creattingShipment}
                 >
                   <Typography
                     style={{

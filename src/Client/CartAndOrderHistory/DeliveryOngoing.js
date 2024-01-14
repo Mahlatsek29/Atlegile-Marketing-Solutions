@@ -139,7 +139,7 @@ const DeliveryOngoing = () => {
       return [];
     }
   };
-  useEffect(() => {
+ 
     const tackingShipment = async () => {
       const config = {
         headers: {
@@ -169,7 +169,7 @@ const DeliveryOngoing = () => {
     console.log("shipmentTrack:", shipmentTrack.shipments);
     //console.log("tracking_events:", shipmentTrack.shipments[0].tracking_events);
     //console.log("status:", shipmentTrack.shipments[0].tracking_events[0].status);
-  }, []);
+
   return (
     <>
       {chatmodelVisble && (

@@ -112,6 +112,16 @@ const UserProfile = () => {
     // alert('button clicked!')
   };
 
+  const handleSignOut = () => {
+    try {
+      signOut(firebase.auth());
+      navigation.navigate("Landing");
+      console.log("hello there, i am also beig run by the code");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <View>
       <FollowUs />
@@ -124,8 +134,7 @@ const UserProfile = () => {
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
-        }}
-      >
+        }}>
         <View>
           <View
             style={{
@@ -134,8 +143,7 @@ const UserProfile = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-            }}
-          >
+            }}>
             <Image
               source={sara}
               style={{
@@ -171,8 +179,7 @@ const UserProfile = () => {
             style={{
               marginTop: 30,
               textAlign: "center",
-            }}
-          >
+            }}>
             {/* {userData && (
               <View
                 style={{
@@ -192,16 +199,15 @@ const UserProfile = () => {
               marginBottom: "5px",
               alignItems: "center",
               flexDirection: "column",
-            }}
-          >
+            }}>
             <Typography
               style={{ color: "#072840", fontWeight: 600 }}
-              variant="h6"
-            >
-             {userData?.name} {userData?.surname}
+              variant="h6">
+              {userData?.name} {userData?.surname}
             </Typography>
             <Typography style={{ color: "gray", fontWeight: 600 }} variant="h7">
-          {userData?.alternativeContact.name}  {userData?.alternativeContact.phone}
+              {userData?.alternativeContact.name}{" "}
+              {userData?.alternativeContact.phone}
             </Typography>
           </View>
           <View>
@@ -210,8 +216,7 @@ const UserProfile = () => {
                 border: "none",
                 paddingBottom: 10,
                 flexDirection: "row",
-              }}
-            >
+              }}>
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
@@ -220,8 +225,7 @@ const UserProfile = () => {
                   fontWeight: "bold",
                   textDecoration: "none",
                 }}
-                onPress={handleOrderHistoryNav}
-              >
+                onPress={handleOrderHistoryNav}>
                 <Text>ORDER HISTORY</Text>
               </TouchableOpacity>
             </View>
@@ -247,8 +251,7 @@ const UserProfile = () => {
                 paddingBottom: 10,
                 alignItems: "center",
                 flexDirection: "row",
-              }}
-            >
+              }}>
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
@@ -257,8 +260,7 @@ const UserProfile = () => {
                   fontWeight: "bold",
                   textDecoration: "none",
                 }}
-                onPress={handleFavourites}
-              >
+                onPress={handleFavourites}>
                 <Text>FAVOURITES </Text>
               </TouchableOpacity>
             </View>
@@ -270,8 +272,7 @@ const UserProfile = () => {
                 paddingBottom: 10,
                 alignItems: "center",
                 flexDirection: "row",
-              }}
-            >
+              }}>
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
@@ -279,8 +280,7 @@ const UserProfile = () => {
                   color: "gray",
                   fontWeight: "bold",
                   textDecoration: "none",
-                }}
-              >
+                }}>
                 <Text>TERMS & CONDITIONS </Text>
               </TouchableOpacity>
             </View>
@@ -293,8 +293,7 @@ const UserProfile = () => {
                 marginBottom: "5px",
                 alignItems: "center",
                 flexDirection: "row",
-              }}
-            >
+              }}>
               <Icon name="stopwatch" size={18} style={{ marginRight: "5px" }} />
               <TouchableOpacity
                 style={{
@@ -302,8 +301,7 @@ const UserProfile = () => {
                   color: "gray",
                   fontWeight: "bold",
                   textDecoration: "none",
-                }}
-              >
+                }}>
                 <Text>PRIVACY POLICY </Text>
               </TouchableOpacity>
             </View>
@@ -314,8 +312,7 @@ const UserProfile = () => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "center",
-            }}
-          >
+            }}>
             <Button
               style={{
                 color: "#072840",
@@ -323,8 +320,7 @@ const UserProfile = () => {
                 borderRadius: "20px",
               }}
               variant="outlined"
-              onClick={handleBusiness}
-            >
+              onClick={handleBusiness}>
               REGISTER BUSINESS
             </Button>
             <Button
@@ -334,8 +330,7 @@ const UserProfile = () => {
                 outlineColor: "#072840",
                 marginRight: "5px",
               }}
-              variant="outlined"
-            >
+              variant="outlined">
               REGISTER AS A FREELANCER
             </Button>
             <Button
@@ -346,10 +341,7 @@ const UserProfile = () => {
                 marginRight: "5px",
               }}
               variant="outlined"
-              
-              onClick={() => signOut(firebase.auth())}
-              >
-            
+              onClick={() => handleSignOut()}>
               Sign Out
             </Button>
             <Button
@@ -362,8 +354,7 @@ const UserProfile = () => {
               variant="outlined"
               onClick={() => {
                 navigation.navigate("AccountAndBusiness");
-              }}
-            >
+              }}>
               Manage Business
             </Button>
           </View>

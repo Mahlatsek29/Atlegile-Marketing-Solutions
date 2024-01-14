@@ -1074,6 +1074,7 @@ const DateSelectionAndCheckout = () => {
                         data={pastLocations}
                         onLocationPress={(selectedItem) =>
                           setPastLocations([selectedItem])
+                    
                         }
                       />
                     </View>

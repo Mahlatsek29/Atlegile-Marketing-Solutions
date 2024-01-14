@@ -827,7 +827,11 @@ const DateSelectionAndCheckout = () => {
               >
                 CART
               </Typography>
-              <Typography variant="h6" style={{ fontWeight: "bold" }}>
+              {cartData.length < 1 ? (
+                <h2>Your Cart Is Currently Empty</h2>
+              ) : (
+                <>
+                 <Typography variant="h6" style={{ fontWeight: "bold" }}>
                 ORDER #ABC246
               </Typography>
               <ScrollView style={{ flex: 1 }}>
@@ -906,11 +910,17 @@ const DateSelectionAndCheckout = () => {
                   </View>
                 ))}
               </ScrollView>
+                </>
+              )}
+             
+              
+
               {/* <View>
                 <Text>Hello world</Text>
               </View> */}
-
-              <View
+ {cartData.length > 1 || cartData.length === 1  ? (
+  <>
+  <View
                 style={{
                   display: "flex",
                   flexDirection: "row",
@@ -952,7 +962,7 @@ const DateSelectionAndCheckout = () => {
                 <Typography style={{ fontWeight: "bold" }}>
                   {selectedIndex !== null
                     ? `R${agentReferral.toFixed(2)}`
-                    : "10%"}
+                    : null}
                 </Typography>
               </View>
               <View
@@ -965,7 +975,7 @@ const DateSelectionAndCheckout = () => {
               >
                 <Typography style={{ fontWeight: "bold" }}> Tax </Typography>
                 <Typography style={{ fontWeight: "bold" }}>
-                  {selectedIndex !== null ? `R${tax.toFixed(2)}` : "15%"}
+                  {selectedIndex !== null ? `R${tax.toFixed(2)}` : null}
                 </Typography>
               </View>
 
@@ -984,6 +994,12 @@ const DateSelectionAndCheckout = () => {
                   R {orderTotal}
                 </Typography>
               </View>
+  </>
+
+
+ ):null}
+              
+              
             </View>
 
             <View
@@ -1077,7 +1093,8 @@ const DateSelectionAndCheckout = () => {
                   </>
                 )}
 
-                <Typography style={{ color: "#FFFFFF", marginTop: "14px" }}>
+{cartData.length > 1 || cartData.length === 1 ? ( <>
+  <Typography style={{ color: "#FFFFFF", marginTop: "14px" }}>
                   Select Delivery date
                 </Typography>
                 <View
@@ -1150,6 +1167,8 @@ const DateSelectionAndCheckout = () => {
                     CHECKOUT
                   </Typography>
                 </Button>
+</>):null}
+                
               </View>
             </View>
           </View>

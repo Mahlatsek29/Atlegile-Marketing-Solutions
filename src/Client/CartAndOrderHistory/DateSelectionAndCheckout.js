@@ -803,6 +803,7 @@ const DateSelectionAndCheckout = () => {
                     data={AddressData}
                     onAddressPress={(selectedItem) =>
                       setSelectedAddress(selectedItem)
+                    
                     }
                   />
                 </View>

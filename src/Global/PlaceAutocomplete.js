@@ -48,23 +48,23 @@ const PlaceAutocomplete = ({ onPlaceSelect }) => {
           <TextField
             variant="standard"
             fullWidth
-            style={{ height: "5vh", width: "25vw" }}
-            {...getInputProps({ placeholder: "Type address" })}
+            style={{ height: "auto", width: "20vw" , backgroundColor:'white'}}
+            {...getInputProps({ placeholder: "Type location" })}
           />
           <View>
             {loading && <Typography>Loading...</Typography>}
             {suggestions.map((suggestion) => (
               <View
-                style={{ width: "25vw" }}
+                style={{ width: "20vw" }}
                 {...getSuggestionItemProps(suggestion)}
                 key={suggestion.placeId}
               >
                 <Typography
                   style={{
-                    width: "25vw",
+                    width: "20vw",
                     display: "flex",
                     flexWrap: "wrap",
-                    color: "white",
+                    color: "gray",
                   }}
                 >
                   {suggestion.description}

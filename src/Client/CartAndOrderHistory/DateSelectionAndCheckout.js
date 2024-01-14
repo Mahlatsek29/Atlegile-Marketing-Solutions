@@ -37,8 +37,7 @@ import {
 
 import { firebase, auth, db } from "../../config";
 // import { timeStamp } from "console";
-import ReactDOM from "react-dom";
-import App from "../../../App";
+
 import PlaceAutocomplete from "../../Global/PlaceAutocomplete";
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
@@ -675,29 +674,7 @@ const DateSelectionAndCheckout = () => {
   
   
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src =
-      "https://maps.googleapis.com/maps/api/js?key=AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs&libraries=places";
-    script.defer = true;
-
-    const handleScriptLoad = () => {
-      const root = ReactDOM.createRoot(document.getElementById("root"));
-      root.render(<App />);
-    };
-
-    script.onload = handleScriptLoad;
-
-    // Check if the script is already present to avoid re-adding it
-    if (!document.querySelector(`script[src="${script.src}"]`)) {
-      document.head.appendChild(script);
-    }
-
-    return () => {
-      // Clean up if needed
-      document.head.removeChild(script);
-    };
-  }, []);
+ 
 
   const handleInputChange = (text) => {
     setInputValue(text);

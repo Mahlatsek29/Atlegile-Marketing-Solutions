@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Landing from "./src/Client/Landing/Landing";
@@ -27,7 +27,33 @@ import BusinessCard from "./src/Client/Landing/BusinessCard";
 
 const Stack = createStackNavigator();
 
+
+
+
 function App() {
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs&libraries=places";
+    script.defer = true;
+  
+    const handleScriptLoad = () => {
+      // Render your component or any other actions after the script is loaded
+    };
+  
+    script.onload = handleScriptLoad;
+  
+    // Check if the script is already present to avoid re-adding it
+    if (!document.querySelector(`script[src="${script.src}"]`)) {
+      document.head.appendChild(script);
+    }
+  
+    return () => {
+      // Clean up if needed
+      document.head.removeChild(script);
+    };
+  }, []);
+  
   return (
     <NavigationContainer>
       <Stack.Navigator

@@ -6,8 +6,6 @@ import {
   Linking,
   Image,
   ScrollView,
-  TextInput,
-  FlatList,
 } from "react-native";
 import { Container, Typography, Button } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
@@ -36,10 +34,11 @@ import {
 
 import { firebase, auth, db } from "../../config";
 // import { timeStamp } from "console";
-import ReactDOM from "react-dom";
-import App from "../../../App";
-import PlaceAutocomplete from "../../Global/PlaceAutocomplete";
+
 const DateSelectionAndCheckout = () => {
+  const [isAddingLocation, setIsAddingLocation] = useState(false);
+  const [newLocation, setNewLocation] = useState("");
+
   const navigation = useNavigation();
   const [orderTotal, setOrderTotal] = useState(0);
   const [tax, setTax] = useState(null);
@@ -70,11 +69,7 @@ const DateSelectionAndCheckout = () => {
 
   // const [rates, setRates] = useState([]);
   const [userData, setUserData] = useState(null);
-  const [inputValue, setInputValue] = useState("");
-  const [predictions, setPredictions] = useState([]);
-  const [addressInput, setAddessInput] = useState(false);
-  const [address, setAddress] = useState({});
-  const [coordinates, setCoordinates] = useState({});
+  const [shouldFetchCart, setShouldFetchCart] = useState(true);
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -86,7 +81,7 @@ const DateSelectionAndCheckout = () => {
     };
   }, []);
   // using local host URL for now which routes back to the initial screen but when hosted we will use the host URL
-  const url = "https://atlegile-marketing-solutions.vercel.app/";
+  const url = "http://localhost:19006";
   // const url2 = "https://atlegile-marketing-solutions.vercel.app/Reciept";
 
   const fetchCartData = async () => {
@@ -139,11 +134,11 @@ const DateSelectionAndCheckout = () => {
   };
 
   useEffect(() => {
-    // Fetch cart data when the user is authenticated
-    if (user) {
+    if (user && shouldFetchCart) {
       fetchCartData();
+      setShouldFetchCart(false);
     }
-  }, [user]); // Fetch cart data whenever the user changes
+  }, [user, shouldFetchCart]);
 
   useEffect(() => {
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
@@ -256,6 +251,16 @@ const DateSelectionAndCheckout = () => {
             setCartCount(itemCount);
           }
         );
+
+        const handleAddLocation = () => {
+          // Add the logic to add the new location to your data source
+          // For now, let's just console.log the new location
+          console.log("New Location:", newLocation);
+
+          // Reset the state variables
+          setIsAddingLocation(false);
+          setNewLocation("");
+        };
 
         const userDocRef = firestore.collection("Users").doc(user.uid);
         const unsubscribeSnapshot = userDocRef.onSnapshot((doc) => {
@@ -534,6 +539,7 @@ const DateSelectionAndCheckout = () => {
 
   const handlePayment = () => {
     handleAddToOrders();
+    setShouldFetchCart(true);
     creattingShipment(); //create a shipment before goignt to pay fast
     // Construct the payment URL with the necessary parameters
     const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
@@ -544,42 +550,6 @@ const DateSelectionAndCheckout = () => {
     Linking.openURL(paymentUrl);
   };
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src =
-      "https://maps.googleapis.com/maps/api/js?key=AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs&libraries=places";
-    script.defer = true;
-
-    const handleScriptLoad = () => {
-      const root = ReactDOM.createRoot(document.getElementById("root"));
-      root.render(<App />);
-    };
-
-    script.onload = handleScriptLoad;
-
-    // Check if the script is already present to avoid re-adding it
-    if (!document.querySelector(`script[src="${script.src}"]`)) {
-      document.head.appendChild(script);
-    }
-
-    return () => {
-      // Clean up if needed
-      document.head.removeChild(script);
-    };
-  }, []);
-
-  const handleInputChange = (text) => {
-    setInputValue(text);
-    handleSearch();
-  };
-
-  const handlePlaceSelect = ({ place, latLng }) => {
-    // Do something with the selected place details and latitude/longitude
-    console.log("Selected place:", place);
-    console.log("Latitude and Longitude:", latLng);
-    setAddress(place);
-    setCoordinates(latLng);
-  };
   return (
     <>
       <FollowUs />
@@ -615,154 +585,164 @@ const DateSelectionAndCheckout = () => {
                 style={{ marginTop: "50px", fontWeight: "bold" }}>
                 CART
               </Typography>
-              <Typography variant="h6" style={{ fontWeight: "bold" }}>
-                ORDER #ABC246
-              </Typography>
-              <ScrollView style={{ flex: 1 }}>
-                {cartData.map((item, index) => (
-                  <View
-                    style={{
-                      width: "100%",
-                      height: "20vh",
-                      borderBottomWidth: 2,
-                      borderBottomColor: "#1D1D1D",
-                      // backgroundColor: "yellow",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      paddingTop: 2,
-                    }}
-                    key={index}>
-                    {/* <View
+              {cartData.length < 1 ? (
+                <h2>Your Cart Is Currently Empty</h2>
+              ) : (
+                <>
+                  {" "}
+                  <Typography variant="h6" style={{ fontWeight: "bold" }}>
+                    ORDER #ABC246
+                  </Typography>
+                  <ScrollView style={{ flex: 1 }}>
+                    {cartData.map((item, index) => (
+                      <View
+                        style={{
+                          width: "100%",
+                          height: "20vh",
+                          borderBottomWidth: 2,
+                          borderBottomColor: "#1D1D1D",
+                          // backgroundColor: "yellow",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          paddingTop: 2,
+                        }}
+                        key={index}>
+                        {/* <View
                       style={{
                         width: "25%",
                         // height: "100%",
                         backgroundColor: "#000026",
                         // backgroundColor:'red'
                       }}> */}
-                    <Image
-                      source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
-                      style={{
-                        width: "30%",
-                        height: "100%",
-                        resizeMode: "cover",
-                      }}
-                    />
-                    {/* </View> */}
-                    <View style={{ width: "30%", paddingLeft: 10 }}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: "bold",
-                          color: "gray",
-                        }}>
-                        Product
-                      </Text>
-                      <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                        {item.name}
-                      </Text>
-                    </View>
-                    <View style={{ width: "30%", paddingLeft: 10 }}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: "bold",
-                          color: "gray",
-                        }}>
-                        Quantity
-                      </Text>
-                      <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                        {item.quantity}
-                      </Text>
-                    </View>
-                    <View style={{ width: "30%", paddingLeft: 10 }}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: "bold",
-                          color: "gray",
-                        }}>
-                        Amount
-                      </Text>
-                      <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                        {item.amount}
-                      </Text>
-                    </View>
+                        <Image
+                          source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
+                          style={{
+                            width: "30%",
+                            height: "100%",
+                            resizeMode: "cover",
+                          }}
+                        />
+                        {/* </View> */}
+                        <View style={{ width: "30%", paddingLeft: 10 }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: "gray",
+                            }}>
+                            Product
+                          </Text>
+                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                            {item.name}
+                          </Text>
+                        </View>
+                        <View style={{ width: "30%", paddingLeft: 10 }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: "gray",
+                            }}>
+                            Quantity
+                          </Text>
+                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                            {item.quantity}
+                          </Text>
+                        </View>
+                        <View style={{ width: "30%", paddingLeft: 10 }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "bold",
+                              color: "gray",
+                            }}>
+                            Amount
+                          </Text>
+                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                            {item.amount}
+                          </Text>
+                        </View>
+                      </View>
+                    ))}
+                  </ScrollView>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}>
+                    <Typography style={{ fontWeight: "bold" }}>
+                      Order Summary
+                    </Typography>
                   </View>
-                ))}
-              </ScrollView>
+                  <View
+                    style={{
+                      display: "flex",
+                      marginTop: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}>
+                    <Typography style={{ fontWeight: "bold" }}>
+                      Delivery
+                    </Typography>
+                    {selectedIndex !== null && (
+                      <Typography style={{ fontWeight: "bold" }}>
+                        R{rates[selectedIndex].rate}
+                      </Typography>
+                    )}
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      marginTop: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}>
+                    <Typography style={{ fontWeight: "bold" }}>
+                      {" "}
+                      Agent Referral
+                    </Typography>
+                    <Typography style={{ fontWeight: "bold" }}>
+                      {selectedIndex !== null
+                        ? `R${agentReferral.toFixed(2)}`
+                        : "10%"}
+                    </Typography>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      marginTop: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}>
+                    <Typography style={{ fontWeight: "bold" }}>
+                      {" "}
+                      Tax{" "}
+                    </Typography>
+                    <Typography style={{ fontWeight: "bold" }}>
+                      {selectedIndex !== null ? `R${tax.toFixed(2)}` : "15%"}
+                    </Typography>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      marginTop: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}>
+                    <Typography variant="h5" style={{ fontWeight: "bold" }}>
+                      Total
+                    </Typography>
+                    <Typography variant="h5" style={{ fontWeight: "bold" }}>
+                      R {orderTotal}
+                    </Typography>
+                  </View>
+                </>
+              )}
+
               {/* <View>
                 <Text>Hello world</Text>
               </View> */}
-
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}>
-                <Typography style={{ fontWeight: "bold" }}>
-                  Order Summary
-                </Typography>
-              </View>
-              <View
-                style={{
-                  display: "flex",
-                  marginTop: "8px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}>
-                <Typography style={{ fontWeight: "bold" }}>Delivery</Typography>
-                {selectedIndex !== null && (
-                  <Typography style={{ fontWeight: "bold" }}>
-                    R{rates[selectedIndex].rate}
-                  </Typography>
-                )}
-              </View>
-
-              <View
-                style={{
-                  display: "flex",
-                  marginTop: "8px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}>
-                <Typography style={{ fontWeight: "bold" }}>
-                  {" "}
-                  Agent Referral
-                </Typography>
-                <Typography style={{ fontWeight: "bold" }}>
-                  {selectedIndex !== null
-                    ? `R${agentReferral.toFixed(2)}`
-                    : "10%"}
-                </Typography>
-              </View>
-              <View
-                style={{
-                  display: "flex",
-                  marginTop: "8px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}>
-                <Typography style={{ fontWeight: "bold" }}> Tax </Typography>
-                <Typography style={{ fontWeight: "bold" }}>
-                  {selectedIndex !== null ? `R${tax.toFixed(2)}` : "15%"}
-                </Typography>
-              </View>
-
-              <View
-                style={{
-                  display: "flex",
-                  marginTop: "8px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}>
-                <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                  Total
-                </Typography>
-                <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                  R {orderTotal}
-                </Typography>
-              </View>
             </View>
 
             <View
@@ -782,68 +762,50 @@ const DateSelectionAndCheckout = () => {
                   }}>
                   DELIVERY DETAILS
                 </Typography>
-                {addressInput ? (
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}>
+                  <Typography style={{ color: "#B7B9BC" }}>
+                    Delivery Address
+                  </Typography>
+                  <TouchableOpacity
+                    style={{
+                      color: "#B7B9BC",
+                      border: "1px white solid",
+                      padding: 10,
+                      borderRadius: 5,
+                    }}>
+                    +
+                  </TouchableOpacity>
+                </View>
+
+                <View>
+                  <Typography variant="h6" style={{ color: "#FFFFFF" }}>
+                    {`${selectedAddress.address}, ${selectedAddress.Township}, ${selectedAddress.PoBox}`}
+                  </Typography>
+
                   <View
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      alignItems: "flex-star",
-
-                      height: "62vh",
-                    }}>
-                    <PlaceAutocomplete onPlaceSelect={handlePlaceSelect} />
-                  </View>
-                ) : (
-                  <>
-                    <View
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}>
-                      <Typography style={{ color: "#B7B9BC" }}>
-                        Delivery Address
-                      </Typography>
-                      <TouchableOpacity
-                        style={{
-                          color: "#B7B9BC",
-                          border: "1px white solid",
-                          padding: 10,
-                          borderRadius: 5,
-                        }}
-                        onPress={() => setAddessInput(true)} // Assuming setAddessInput is a function
-                      >
-                        <Text>+</Text>
-                      </TouchableOpacity>
-                    </View>
-                    <View>
-                      <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                        {`${selectedAddress.address}, ${selectedAddress.Township}, ${selectedAddress.PoBox}`}
-                      </Typography>
-
-                      <View
-                        style={{
-                          marginTop: "10px",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "lightgrey",
-                        }}></View>
-                      <Typography
-                        variant="h5"
-                        sx={{ color: "#B7B9BC", fontSize: 20, marginTop: 1 }}>
-                        Recent Addresses
-                      </Typography>
-                      <AddressList
-                        data={AddressData}
-                        onAddressPress={(selectedItem) =>
-                          setSelectedAddress(selectedItem)
-                        }
-                      />
-                    </View>
-                  </>
-                )}
-
+                      marginTop: "10px",
+                      borderBottomWidth: 1,
+                      borderBottomColor: "lightgrey",
+                    }}></View>
+                  <Typography
+                    variant="h5"
+                    sx={{ color: "#B7B9BC", fontSize: 20, marginTop: 1 }}>
+                    Recent Addresess
+                  </Typography>
+                  <AddressList
+                    data={AddressData}
+                    onAddressPress={(selectedItem) =>
+                      setSelectedAddress(selectedItem)
+                    }
+                  />
+                </View>
                 <Typography style={{ color: "#FFFFFF", marginTop: "14px" }}>
                   Select Delivery date
                 </Typography>

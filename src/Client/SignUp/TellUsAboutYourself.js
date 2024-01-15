@@ -24,7 +24,7 @@ const TellUsAboutYourself = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [pastLocations, setPastLocations] = useState([]);
   const user = firebase.auth().currentUser;
   const [address, setAddress] = useState({});
   const [coordinates, setCoordinates] = useState({});
@@ -111,6 +111,7 @@ const TellUsAboutYourself = ({ navigation }) => {
           lat: coordinates.lat,
           lng: coordinates.lng,
         },
+        pastLocations
       });
 
       console.log("User information successfully submitted to Firestore.");
@@ -135,8 +136,15 @@ const TellUsAboutYourself = ({ navigation }) => {
   };
 
   useEffect(() => {
-    setLocation(address.formatted_address);
+    if (address && address.formatted_address) {
+      setLocation(address.formatted_address);
+      setPastLocations((prevLocations) => [...prevLocations, address.formatted_address]);
+      console.log("address.formatted_address is ", address.formatted_address);
+    } else {
+      console.log("Address or address.formatted_address is undefined");
+    }
   }, [address]);
+  
 
   return (
     <ImageBackground

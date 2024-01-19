@@ -119,7 +119,7 @@ export default function BusinessCard({ business }) {
               justifyContent: "space-between",
               alignItems: "center",
               flexDirection: "row",
-              
+              //backgroundColor:'red'
             }}
           >
             <TouchableOpacity onPress={scrollLeft}>
@@ -186,10 +186,10 @@ export default function BusinessCard({ business }) {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                padding: 15,
+                padding: 55,
                 flex: 1,
                 transition: "0.5s ease-in-out",
-                height: "40vh",
+                height: "20vh",
                 width: "80%",
               }}
             >

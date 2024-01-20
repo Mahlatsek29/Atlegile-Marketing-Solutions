@@ -1643,7 +1643,7 @@ export default function BusinessAccount() {
                 style={{
                   flexDirection: "column",
                   alignItems: "center",
-                  border: "1px gray solid",
+                  border: "1px lightgray solid",
                   width: "25vw",
                   padding: 10,
                   margin: 10,
@@ -1671,7 +1671,7 @@ export default function BusinessAccount() {
                 style={{
                   flexDirection: "column",
                   alignItems: "center",
-                  border: "1px gray solid",
+                  border: "1px lightgray solid",
                   width: "25vw",
                   padding: 10,
                   margin: 10,
@@ -1698,7 +1698,7 @@ export default function BusinessAccount() {
                 style={{
                   flexDirection: "column",
                   alignItems: "center",
-                  border: "1px gray solid",
+                  border: "1px lightgray solid",
                   width: "25vw",
                   padding: 10,
                   margin: 10,
@@ -1725,7 +1725,7 @@ export default function BusinessAccount() {
                 style={{
                   flexDirection: "column",
                   alignItems: "center",
-                  border: "1px gray solid",
+                  border: "1px lightgray solid",
                   width: "25vw",
                   padding: 10,
                   margin: 10,

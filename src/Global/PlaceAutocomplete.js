@@ -70,9 +70,9 @@ const PlaceAutocomplete = ({ onPlaceSelect }) => {
       {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
         <View>
           <TextField
-            variant="standard"
+           // variant="standard"
             fullWidth
-            style={{ height: "auto", width: "20vw" , backgroundColor:'white'}}
+            style={{ width: "20vw" , backgroundColor:'white'}}
             {...getInputProps({ placeholder: "Type location" })}
           />
           <View>

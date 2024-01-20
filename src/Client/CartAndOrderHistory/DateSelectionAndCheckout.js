@@ -1177,7 +1177,7 @@ const DateSelectionAndCheckout = () => {
 
                     <View style={{ border: "1px white solid" }}>
                       <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                        {pastLocations || initialAddress}
+                        {pastLocations}
                       </Typography>
 
                       <View

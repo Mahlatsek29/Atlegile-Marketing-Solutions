@@ -108,9 +108,8 @@ export default function BusinessCard({ business }) {
             display: "flex",
             flexDirection: "column",
             marginTop: 50,
-            //backgroundColor:'yellow',
             alignItems: "center",
-            marginBottom:50
+            marginBottom: 50,
           }}
         >
           <View
@@ -120,8 +119,7 @@ export default function BusinessCard({ business }) {
               justifyContent: "space-between",
               alignItems: "center",
               flexDirection: "row",
-              // marginBottom: 80,
-             // backgroundColor:'green'
+              //backgroundColor:'red'
             }}
           >
             <TouchableOpacity onPress={scrollLeft}>
@@ -167,14 +165,13 @@ export default function BusinessCard({ business }) {
               <ScrollView
                 ref={scrollViewRef}
                 horizontal
-                showsHorizontalScrollIndicator={false}
-                style={{ flexDirection: "row", marginHorizontal:10 }}
+                showsHorizontalScrollIndicator={false}               
                 onContentSizeChange={(contentWidth) =>
                   handleContentSizeChange(contentWidth)
                 }
               >
                 {oneCompany.map((product) => (
-                  <ProductCard key={product.id} productId={product.id} />
+                  <ProductCard key={product.id} productId={product.id}/>
                 ))}
               </ScrollView>
             </View>
@@ -189,10 +186,10 @@ export default function BusinessCard({ business }) {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                padding: 15,
+                padding: 55,
                 flex: 1,
                 transition: "0.5s ease-in-out",
-                height: "40vh",
+                height: "20vh",
                 width: "80%",
               }}
             >

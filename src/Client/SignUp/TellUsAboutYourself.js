@@ -32,54 +32,54 @@ const TellUsAboutYourself = ({ navigation }) => {
   const handleContinue = async (e) => {
     e.preventDefault();
     
-    let streetAddress;
+    // let streetAddress;
 
-    if (address.address_components.length === 8) {
-      streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-    } else if (address.address_components.length === 9) {
-      streetAddress = ` ${address.address_components[1].long_name} ${address.address_components[2].long_name} `;
-    }
+    // if (address.address_components.length === 8) {
+    //   streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+    // } else if (address.address_components.length === 9) {
+    //   streetAddress = ` ${address.address_components[1].long_name} ${address.address_components[2].long_name} `;
+    // }
 
-    let localArea;
+    // let localArea;
 
-    if (address.address_components.length === 8) {
-      localArea = `${address.address_components[2].long_name} `;
-    } else if (address.address_components.length === 9) {
-      localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
-    }
-    let localCity;
+    // if (address.address_components.length === 8) {
+    //   localArea = `${address.address_components[2].long_name} `;
+    // } else if (address.address_components.length === 9) {
+    //   localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
+    // }
+    // let localCity;
 
-    if (address.address_components.length === 8) {
-      localCity = `${address.address_components[4].long_name}`;
-    } else if (address.address_components.length === 9) {
-      localCity = `${address.address_components[5].long_name} `;
-    }
+    // if (address.address_components.length === 8) {
+    //   localCity = `${address.address_components[4].long_name}`;
+    // } else if (address.address_components.length === 9) {
+    //   localCity = `${address.address_components[5].long_name} `;
+    // }
 
-    let zoneCity;
+    // let zoneCity;
 
-    if (address.address_components.length === 8) {
-      zoneCity = `${address.address_components[5].long_name}`;
-    } else if (address.address_components.length === 9) {
-      zoneCity = `${address.address_components[6].long_name} `;
-    }
+    // if (address.address_components.length === 8) {
+    //   zoneCity = `${address.address_components[5].long_name}`;
+    // } else if (address.address_components.length === 9) {
+    //   zoneCity = `${address.address_components[6].long_name} `;
+    // }
 
-    let countryOfCity;
+    // let countryOfCity;
 
-    if (address.address_components.length === 8) {
-      countryOfCity = `${address.address_components[6].long_name}`;
-    } else if (address.address_components.length === 9) {
-      countryOfCity = `${address.address_components[7].short_name} `;
-    }
+    // if (address.address_components.length === 8) {
+    //   countryOfCity = `${address.address_components[6].long_name}`;
+    // } else if (address.address_components.length === 9) {
+    //   countryOfCity = `${address.address_components[7].short_name} `;
+    // }
 
-    let postalCode;
+    // let postalCode;
 
-    if (address.address_components.length === 8) {
-      postalCode = `${address.address_components[7].long_name}`;
-    } else if (address.address_components.length === 9) {
-      postalCode = `${address.address_components[8].long_name} `;
-    }
+    // if (address.address_components.length === 8) {
+    //   postalCode = `${address.address_components[7].long_name}`;
+    // } else if (address.address_components.length === 9) {
+    //   postalCode = `${address.address_components[8].long_name} `;
+    // }
 
-    if (!name || !surname || !phone || !gender || !email || !location) {
+    if (!name || !surname || !phone || !gender || !email ) {
       alert("Please fill in all fields before continuing.");
       return;
     }
@@ -96,7 +96,7 @@ const TellUsAboutYourself = ({ navigation }) => {
         phone,
         gender,
         email,
-        location,
+       // location,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         uid: user.uid,
         locationDetails: {
@@ -111,7 +111,6 @@ const TellUsAboutYourself = ({ navigation }) => {
           lat: coordinates.lat,
           lng: coordinates.lng,
         },
-        pastLocations
       });
 
       console.log("User information successfully submitted to Firestore.");
@@ -256,10 +255,10 @@ const TellUsAboutYourself = ({ navigation }) => {
           }}
         />
 
-        <PlaceAutocomplete
+        {/* <PlaceAutocomplete
           style={{ width: "25vw" }}
           onPlaceSelect={handlePlaceSelect}
-        />
+        /> */}
 
         <TouchableOpacity style={styles.button} onPress={handleContinue}>
           {loading ? (

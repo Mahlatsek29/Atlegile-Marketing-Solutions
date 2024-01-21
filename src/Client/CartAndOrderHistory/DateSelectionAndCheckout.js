@@ -83,6 +83,10 @@ const DateSelectionAndCheckout = () => {
   const [loading, setLoading] = useState(false);
   const [trackingRef, setTrackingRef] = useState("");
   const [shipmentStatus, setShipmentStatus] = useState("");
+  const [location, setLocation] = useState("");
+
+  const [pastPreciseLocation, setPastPreciseLocation] = useState([{}]);
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -296,7 +300,7 @@ const DateSelectionAndCheckout = () => {
     };
 
     fetchLocationDetails();
-  }, [user]);
+  }, [preciseLocation]);
 
   const AddressData = [
     {
@@ -320,7 +324,7 @@ const DateSelectionAndCheckout = () => {
       PoBox: 1861,
     },
   ];
-  // console.log("cartData 2 : ", cartData);
+  console.log("cartData 2 : ", cartData);
 
   const AddressComponent = ({ address, township, poBox, onPress }) => (
     <TouchableOpacity onPress={onPress}>
@@ -461,13 +465,55 @@ const DateSelectionAndCheckout = () => {
   // }, []);
   useEffect(() => {
     console.log("local_area is ", preciseLocation);
+
+    let streetAddress;
+          let localArea;
+          let localCity;
+          let zoneCity;
+          let countryOfCity;
+          let postalCode;
+          if (address.address_components) {
+          if (address.address_components && address.address_components.length === 8) {
+            streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+            localArea = `${address.address_components[2].long_name}`;
+            localCity = `${address.address_components[4].long_name}`;
+            zoneCity = `${address.address_components[5].long_name}`;
+            countryOfCity = `${address.address_components[6].long_name}`;
+            postalCode = `${address.address_components[7].long_name}`;
+          } else if (address.address_components && address.address_components.length === 9) {
+            streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+            localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
+            localCity = `${address.address_components[5].long_name}`;
+            zoneCity = `${address.address_components[6].long_name}`;
+            countryOfCity = `${address.address_components[7].short_name}`;
+            postalCode = `${address.address_components[8].long_name}`;
+          } else {
+            console.error("Invalid length of address components.");
+            return;
+          }
+        } else {
+          console.error("Address components not available.");
+          return;
+        }
+    
     const gettingRate = async () => {
       const today = new Date();
       const formattedDate = today.toISOString().split("T")[0];
-
+       
       const theRates = {
         collection_address: collectionAdress,
-        delivery_address: preciseLocation,
+        delivery_address: {
+                      type: "",
+                      company: "",
+                      street_address: streetAddress,
+                      local_area: localArea,
+                      city: localCity,
+                      zone: zoneCity,
+                      country: countryOfCity,
+                      code: postalCode,
+                      lat: coordinates.lat,
+                      lng: coordinates.lng,
+                    },
         parcels: [
           {
             submitted_length_cm: 20,
@@ -509,16 +555,56 @@ const DateSelectionAndCheckout = () => {
       }
     };
     gettingRate();
-  }, [preciseLocation, collectionAdress]);
+  }, [address, collectionAdress]);
 
   const creattingShipment = async () => {
     console.log("collectionAdress is ", collectionAdress);
     console.log(" preciseLocation is ", preciseLocation);
+    let streetAddress;
+          let localArea;
+          let localCity;
+          let zoneCity;
+          let countryOfCity;
+          let postalCode;
+          if (address.address_components) {
+          if (address.address_components && address.address_components.length === 8) {
+            streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+            localArea = `${address.address_components[2].long_name}`;
+            localCity = `${address.address_components[4].long_name}`;
+            zoneCity = `${address.address_components[5].long_name}`;
+            countryOfCity = `${address.address_components[6].long_name}`;
+            postalCode = `${address.address_components[7].long_name}`;
+          } else if (address.address_components && address.address_components.length === 9) {
+            streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+            localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
+            localCity = `${address.address_components[5].long_name}`;
+            zoneCity = `${address.address_components[6].long_name}`;
+            countryOfCity = `${address.address_components[7].short_name}`;
+            postalCode = `${address.address_components[8].long_name}`;
+          } else {
+            console.error("Invalid length of address components.");
+            return;
+          }
+        } else {
+          console.error("Address components not available.");
+          return;
+        }
     const shipment = {
       collection_address: collectionAdress,
       collection_contact: {
         name: theBusinessName,
-        mobile_number: collectioPhoneNUmber,
+        mobile_number:  {
+          type: "",
+          company: "",
+          street_address: streetAddress,
+          local_area: localArea,
+          city: localCity,
+          zone: zoneCity,
+          country: countryOfCity,
+          code: postalCode,
+          lat: coordinates.lat,
+          lng: coordinates.lng,
+        },
         email: "cornel+sandy@uafrica.com",
       },
       delivery_address: preciseLocation,
@@ -683,71 +769,89 @@ const DateSelectionAndCheckout = () => {
     setCoordinates(latLng);
   };
 
-  // useEffect(async () => {
-  //   try {
+  useEffect(() => {
+    setLocation(address.formatted_address);
+    setPastLocations((prevLocations) => [...prevLocations, address.formatted_address]);
+    // setPastPreciseLocation((prevLocations) => [...prevLocations, { location: address.formatted_address, preciseLocation: preciseLocation }]);
+  }, [address,preciseLocation]);
+  
 
-  //     let streetAddress;
-  //     let localArea;
-  //     let localCity;
-  //     let zoneCity;
-  //     let countryOfCity;
-  //     let postalCode;
-  //     if (address.address_components) {
-  //     if (address.address_components && address.address_components.length === 8) {
-  //       streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-  //       localArea = `${address.address_components[2].long_name}`;
-  //       localCity = `${address.address_components[4].long_name}`;
-  //       zoneCity = `${address.address_components[5].long_name}`;
-  //       countryOfCity = `${address.address_components[6].long_name}`;
-  //       postalCode = `${address.address_components[7].long_name}`;
-  //     } else if (address.address_components && address.address_components.length === 9) {
-  //       streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-  //       localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
-  //       localCity = `${address.address_components[5].long_name}`;
-  //       zoneCity = `${address.address_components[6].long_name}`;
-  //       countryOfCity = `${address.address_components[7].short_name}`;
-  //       postalCode = `${address.address_components[8].long_name}`;
-  //     } else {
-  //       console.error("Invalid length of address components.");
-  //       return;
-  //     }
-  //   } else {
-  //     console.error("Address components not available.");
-  //     return;
-  //   }
+//   useEffect(async () => {
+//     const fetchData = async () => {
+//     try {
 
-  //     const cartCollectionRef = collection(firestore, "Users");
-  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
-  //     const querySnapshot = await getDocs(q);
+//       let streetAddress;
+//       let localArea;
+//       let localCity;
+//       let zoneCity;
+//       let countryOfCity;
+//       let postalCode;
+//       if (address.address_components) {
+//       if (address.address_components && address.address_components.length === 8) {
+//         streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+//         localArea = `${address.address_components[2].long_name}`;
+//         localCity = `${address.address_components[4].long_name}`;
+//         zoneCity = `${address.address_components[5].long_name}`;
+//         countryOfCity = `${address.address_components[6].long_name}`;
+//         postalCode = `${address.address_components[7].long_name}`;
+//       } else if (address.address_components && address.address_components.length === 9) {
+//         streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+//         localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
+//         localCity = `${address.address_components[5].long_name}`;
+//         zoneCity = `${address.address_components[6].long_name}`;
+//         countryOfCity = `${address.address_components[7].short_name}`;
+//         postalCode = `${address.address_components[8].long_name}`;
+//       } else {
+//         console.error("Invalid length of address components.");
+//         return;
+//       }
+//     } else {
+//       console.error("Address components not available.");
+//       return;
+//     }
 
-  //     querySnapshot.forEach(async (doc) => {
-  //       try {
-  //         await updateDoc(doc.ref, {
-  //           location: address.formatted_address,
-  //           locationDetails: {
-  //             type: "",
-  //             company: "",
-  //             street_address: streetAddress,
-  //             local_area: localArea,
-  //             city: localCity,
-  //             zone: zoneCity,
-  //             country: countryOfCity,
-  //             code: postalCode,
-  //             lat: coordinates.lat, // Assuming coordinates is defined somewhere
-  //             lng: coordinates.lng,
-  //           },
-  //         });
-  //       } catch (error) {
-  //         console.error("Error updating document in Users collection:", error);
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     });
-  //   } catch (error) {
-  //     console.error("Error in useEffect:", error);
-  //     setLoading(false);
-  //   }
-  // }, [ coordinates]);
+//     const cartCollectionRef = collection(firestore, "Users");
+//     const q = query(cartCollectionRef, where("uid", "==", user.uid));
+//     const querySnapshot = await getDocs(q);
+
+//     querySnapshot.forEach(async (doc) => {
+//       try {
+//         await updateDoc(doc.ref, {
+//           location: address.formatted_address,
+//           locationDetails: {
+//             type: "",
+//             company: "",
+//             street_address: streetAddress,
+//             local_area: localArea,
+//             city: localCity,
+//             zone: zoneCity,
+//             country: countryOfCity,
+//             code: postalCode,
+//             lat: coordinates.lat,
+//             lng: coordinates.lng,
+//           },
+//          // pastPreciseLocation:pastPreciseLocation
+          
+//         });
+//       } catch (error) {
+//         console.error("Error updating document in Users collection:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     });
+//   } catch (error) {
+//     console.error("Error in useEffect:", error);
+//     setLoading(false);
+//   }
+// };
+
+// fetchData(); // Call the async function directly
+
+// // Cleanup function
+// return () => {
+//   // Cleanup code if needed
+// };
+// }, [ address,preciseLocation]);
 
   // useEffect(async () => {
   //   try {
@@ -776,7 +880,7 @@ const DateSelectionAndCheckout = () => {
   //     console.error("Error querying Users collection:", error);
   //     setLoading(false);
   //   }
-  // }, [address, user]);
+  // }, [address, user,pastLocations]);
 
   return (
     <>
@@ -1015,16 +1119,35 @@ const DateSelectionAndCheckout = () => {
                     style={{
                       display: "flex",
                       flexDirection: "row",
-                      justifyContent: "center",
+                      justifyContent: "space-between",
                       alignItems: "flex-star",
                       width: "100%",
-                      height: "62vh",
+                      height: "80vh",
+                      backgroundColor:'white'
+                    
                     }}
                   >
                     <PlaceAutocomplete
-                      style={{ width: "25vw" }}
+                      style={{   }}
                       onPlaceSelect={handlePlaceSelect}
                     />
+
+                    <TouchableOpacity
+                      style={{
+                        color: "black",
+                        border: "2px #062338 solid",
+                        padding: 10,
+                        borderRadius: 30,
+                        //marginLeft:10
+                        height:'6.5vh',
+                        //backgroundColor: "#062338",
+                      }}
+                      onPress={() => setAddessInput(false)} // Assuming setAddessInput is a function
+                    >
+                      <Text style={{ color: "#062338" ,
+                      paddingHorizontal:8,
+                        }}>Close</Text>
+                    </TouchableOpacity>
                   </View>
                 ) : (
                   <>
@@ -1042,19 +1165,19 @@ const DateSelectionAndCheckout = () => {
                       <TouchableOpacity
                         style={{
                           color: "#B7B9BC",
-                          border: "1px white solid",
+                          border: "2px white solid",
                           padding: 10,
-                          borderRadius: 5,
+                          borderRadius:30
                         }}
                         onPress={() => setAddessInput(true)} // Assuming setAddessInput is a function
                       >
-                        <Text style={{ color: "white" }}>+</Text>
+                        <Text style={{ color: "white" , paddingHorizontal:10,}}>View</Text>
                       </TouchableOpacity>
                     </View>
 
                     <View style={{ border: "1px white solid" }}>
                       <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                        {pastLocations || initialAddress}
+                        {pastLocations}
                       </Typography>
 
                       <View

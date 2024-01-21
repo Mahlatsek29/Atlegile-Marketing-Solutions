@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Button, Toolbar, Typography, Box, Badge } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
-import { View, Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity,Text } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { auth, firestore } from "../config";
 import { ShoppingCart } from "@mui/icons-material";
+
+import { AntDesign } from "@expo/vector-icons";
 const Navbar = () => {
   const navigation = useNavigation();
   const imageLogo = require("../../assets/logo.png");
   const [userData, setUserData] = useState(null);
   const [cartCount, setCartCount] = useState(2);
+
+  
   useEffect(() => {
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -60,6 +64,10 @@ const Navbar = () => {
   const navigateLanding = () => {
     navigation.navigate("Landing");
   };
+  const goBack = () => {
+    console.log('the goBack button is called')
+    navigation.goBack();
+  };
 
   return (
     <Toolbar
@@ -68,6 +76,9 @@ const Navbar = () => {
         display: "flex",
         flexDirection: "row",
       }}>
+         <TouchableOpacity onPress={goBack}>
+         <AntDesign name="arrowleft" size={24} color="black" />
+      </TouchableOpacity>
       <View>
         <TouchableOpacity onPress={() => navigation.navigate("Landing")}>
           <Image

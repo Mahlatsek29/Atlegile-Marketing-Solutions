@@ -68,62 +68,133 @@ const BusinessRegistration = () => {
 
     let streetAddress;
 
-    if (address.address_components.length === 8) {
+    if (
+      address.address_components.length === 5 ||
+      address.address_components.length === 4 ||
+      address.address_components.length === 3 ||
+      address.address_components.length === 2 ||
+      address.address_components.length === 1
+    ) {
+      streetAddress = " ";
+    } else if (address.address_components.length === 6) {
+      streetAddress = address.address_components[0].long_name;
+    } else if (address.address_components.length === 7) {
+      streetAddress = address.address_components[0].long_name;
+    } else if (address.address_components.length === 8) {
       streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-      
     } else if (address.address_components.length === 9) {
       streetAddress = ` ${address.address_components[1].long_name} ${address.address_components[2].long_name} `;
-      
     }
 
-  let localArea;
+    let localArea;
 
-  if (address.address_components.length === 8) {
-    localArea = `${address.address_components[2].long_name} `;
-   
-  } else if (address.address_components.length === 9) {
-    localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
-    
-  }
-  let localCity;
+    if (
+      address.address_components.length === 4 ||
+      address.address_components.length === 3 ||
+      address.address_components.length === 2 ||
+      address.address_components.length === 1
+    ) {
+      localArea = " ";
+    } else if (address.address_components.length === 5) {
+      localArea = address.address_components[0].long_name;
+    } else if (address.address_components.length === 6) {
+      localArea = address.address_components[1].long_name;
+    } else if (address.address_components.length === 7) {
+      localArea = address.address_components[1].long_name;
+    } else if (address.address_components.length === 8) {
+      localArea = address.address_components[2].long_name;
+    } else if (address.address_components.length === 9) {
+      localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
+    }
 
-  if (address.address_components.length === 8) {
-    localCity = `${address.address_components[4].long_name}`;
-   
-  } else if (address.address_components.length === 9) {
-    localCity = `${address.address_components[5].long_name} `;
-   
-  }
+    let localCity;
 
-  let zoneCity;
+    if (
+      address.address_components.length === 3 ||
+      address.address_components.length === 2 ||
+      address.address_components.length === 1
+    ) {
+      localCity = "";
+    } else if (address.address_components.length === 4) {
+      localCity = address.address_components[0].long_name;
+    } else if (address.address_components.length === 5) {
+      localCity = address.address_components[1].long_name;
+    } else if (address.address_components.length === 6) {
+      localCity = address.address_components[2].long_name;
+    } else if (address.address_components.length === 7) {
+      localCity = address.address_components[3].long_name;
+    } else if (address.address_components.length === 8) {
+      localCity = address.address_components[4].long_name;
+    } else if (address.address_components.length === 9) {
+      localCity = address.address_components[5].long_name;
+    }
 
-  if (address.address_components.length === 8) {
-    zoneCity = `${address.address_components[5].long_name}`;
-   
-  } else if (address.address_components.length === 9) {
-    zoneCity = `${address.address_components[6].long_name} `;
-    
-  }
+    let zoneCity;
 
-  let countryOfCity;
+    if (
+      address.address_components.length === 2 ||
+      address.address_components.length === 1
+    ) {
+      zoneCity = " ";
+    } else if (address.address_components.length === 3) {
+      zoneCity = address.address_components[0].long_name;
+    } else if (address.address_components.length === 4) {
+      zoneCity = address.address_components[1].long_name;
+    } else if (address.address_components.length === 5) {
+      zoneCity = address.address_components[2].long_name;
+    } else if (address.address_components.length === 6) {
+      zoneCity = address.address_components[3].long_name;
+    } else if (address.address_components.length === 7) {
+      zoneCity = address.address_components[4].long_name;
+    } else if (address.address_components.length === 8) {
+      zoneCity = address.address_components[5].long_name;
+    } else if (address.address_components.length === 9) {
+      zoneCity = address.address_components[6].long_name;
+    }
 
-  if (address.address_components.length === 8) {
-    countryOfCity = `${address.address_components[6].long_name}`;
-    
-  } else if (address.address_components.length === 9) {
-    countryOfCity = `${address.address_components[7].short_name} `;
-    
-  }
+    let countryOfCity;
 
-  let postalCode;
+    if (address.address_components.length === 1) {
+      countryOfCity = " ";
+    } else if (address.address_components.length === 2) {
+      countryOfCity = address.address_components[0].long_name;
+    } else if (address.address_components.length === 3) {
+      countryOfCity = address.address_components[1].long_name;
+    } else if (address.address_components.length === 4) {
+      countryOfCity = address.address_components[2].long_name;
+    } else if (address.address_components.length === 5) {
+      countryOfCity = address.address_components[3].long_name;
+    } else if (address.address_components.length === 6) {
+      countryOfCity = address.address_components[4].long_name;
+    } else if (address.address_components.length === 7) {
+      countryOfCity = address.address_components[5].long_name;
+    } else if (address.address_components.length === 8) {
+      countryOfCity = address.address_components[6].long_name;
+    } else if (address.address_components.length === 9) {
+      countryOfCity = address.address_components[7].short_name;
+    }
 
-  if (address.address_components.length === 8) {
-    postalCode = `${address.address_components[7].long_name}`;
-    
-  } else if (address.address_components.length === 9) {
-    postalCode = `${address.address_components[8].long_name} `;
-   
-  }
+    let postalCode;
+
+    if (address.address_components.length === 1) {
+      postalCode = address.address_components[0].long_name;
+    } else if (address.address_components.length === 2) {
+      postalCode = address.address_components[1].long_name;
+    } else if (address.address_components.length === 3) {
+      postalCode = address.address_components[2].long_name;
+    } else if (address.address_components.length === 4) {
+      postalCode = address.address_components[3].long_name;
+    } else if (address.address_components.length === 5) {
+      postalCode = address.address_components[4].long_name;
+    } else if (address.address_components.length === 6) {
+      postalCode = address.address_components[5].long_name;
+    } else if (address.address_components.length === 7) {
+      postalCode = address.address_components[6].long_name;
+    } else if (address.address_components.length === 8) {
+      postalCode = address.address_components[7].long_name;
+    } else if (address.address_components.length === 9) {
+      postalCode = address.address_components[8].long_name;
+    }
 
     try {
       setLoading(true);
@@ -242,7 +313,6 @@ const BusinessRegistration = () => {
     "Fashion",
   ];
 
- 
   useEffect(() => {
     setLocation(address.formatted_address);
   }, [address]);
@@ -270,26 +340,34 @@ const BusinessRegistration = () => {
         <View
           style={{
             backgroundColor: "white",
-            width: 500,
+            width: "37vw",
             position: "absolute",
             right: 16,
             top: 16,
             bottom: 16,
           }}
         >
-          <div
+          <View
             style={{
               // backgroundColor: "red",
-              height: "100%",
+              height: "95vh",
               display: "flex",
               alignItems: "center",
               flexDirection: "column",
-              justifyContent: "space-around",
+              justifyContent: "center",
             }}
           >
-            <div>
-              <img src={logo} style={{ height: "9vh", width: "90%" }} />
-            </div>
+            <View
+              style={{
+                height: "12vh",
+                width: "15vw",
+              }}
+            >
+              <Image
+                source={require("../../Global/images/logo.svg")}
+                style={{ height: "12vh", width: "15vw" }}
+              />
+            </View>
             <div
               style={{
                 // backgroundColor: "yellow",
@@ -300,15 +378,15 @@ const BusinessRegistration = () => {
             >
               <form onSubmit={handlechange} style={{ width: "100%" }}>
                 <View
-                  className="form-container"
+                  // className="form-container"
                   style={{
                     justifyContent: "center",
 
-                    alignSelf: "center",
+                    // alignSelf: "center",
 
                     display: "flex",
                     // backgroundColor: "purple",
-                    alignSelf: "center",
+                    // alignSelf: "center",
 
                     // marginBottom: "30px",
                   }}
@@ -332,7 +410,7 @@ const BusinessRegistration = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    style={{ width: "100%" }}
+                    // style={{ width: "100%" ,height:"5vh"}}
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
                   />
@@ -344,11 +422,11 @@ const BusinessRegistration = () => {
                     variant="standard"
                     value={selectedRole}
                     onChange={(e) => setSelectedRole(e.target.value)}
-                    style={{
-                      width: "100%",
-                      textAlign: "left",
-                      marginTop: "10px",
-                    }}
+                    // style={{
+                    //   width: "100%",
+                    //   textAlign: "left",
+                    //  // marginTop: "10px",
+                    // }}
                   >
                     {roleOptions.map((option) => (
                       <MenuItem key={option} value={option}>
@@ -366,10 +444,10 @@ const BusinessRegistration = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    style={{
-                      width: "100%",
-                      marginTop: "10px",
-                    }}
+                    // style={{
+                    //   width: "100%",
+                    //  // marginTop: "10px",
+                    // }}
                     value={regNumber}
                     onChange={(e) => setRegNumber(e.target.value)}
                     required
@@ -384,7 +462,9 @@ const BusinessRegistration = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    style={{ width: "100%", marginTop: "10px" }}
+                    // style={{ width: "100%",
+                    //  //marginTop: "10px"
+                    //  }}
                     value={website}
                     onChange={(e) => setWebsite(e.target.value)}
                   />
@@ -409,7 +489,7 @@ const BusinessRegistration = () => {
                       onChange={(e) => setSelectedBusinessType(e.target.value)}
                       style={{
                         width: "48%",
-                        marginTop: "5px",
+                        //marginTop: "5px",
                         marginRight: "10px",
                         textAlign: "left",
                       }}
@@ -430,7 +510,7 @@ const BusinessRegistration = () => {
                       onChange={(e) => setSelectedIndustry(e.target.value)}
                       style={{
                         width: "48%",
-                        marginTop: "5px",
+                        // marginTop: "5px",
                         textAlign: "left",
                       }}
                       required
@@ -450,7 +530,10 @@ const BusinessRegistration = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    style={{ width: "100%", marginTop: "10px" }}
+                    style={{
+                      width: "100%",
+                      //  marginTop: "10px"
+                    }}
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     required
@@ -463,7 +546,10 @@ const BusinessRegistration = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    style={{ width: "100%", marginTop: "10px" }}
+                    style={{
+                      width: "100%",
+                      // marginTop: "10px"
+                    }}
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
                     required
@@ -474,7 +560,7 @@ const BusinessRegistration = () => {
                     style={{
                       width: "100%",
                       height: "10%",
-                      marginTop: "5%",
+                      marginTop: "3vh",
                       background: "#072840",
                       borderRadius: "30px",
                     }}
@@ -492,7 +578,7 @@ const BusinessRegistration = () => {
               </form>
               {/* Display the success alert when showSuccessAlert is true */}
             </div>
-          </div>
+          </View>
         </View>
       </View>
 

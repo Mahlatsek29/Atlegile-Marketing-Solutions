@@ -467,53 +467,153 @@ const DateSelectionAndCheckout = () => {
     console.log("local_area is ", preciseLocation);
 
     let streetAddress;
-          let localArea;
-          let localCity;
-          let zoneCity;
-          let countryOfCity;
-          let postalCode;
-          if (address.address_components) {
-          if (address.address_components && address.address_components.length === 8) {
-            streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-            localArea = `${address.address_components[2].long_name}`;
-            localCity = `${address.address_components[4].long_name}`;
-            zoneCity = `${address.address_components[5].long_name}`;
-            countryOfCity = `${address.address_components[6].long_name}`;
-            postalCode = `${address.address_components[7].long_name}`;
-          } else if (address.address_components && address.address_components.length === 9) {
-            streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-            localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
-            localCity = `${address.address_components[5].long_name}`;
-            zoneCity = `${address.address_components[6].long_name}`;
-            countryOfCity = `${address.address_components[7].short_name}`;
-            postalCode = `${address.address_components[8].long_name}`;
-          } else {
-            console.error("Invalid length of address components.");
-            return;
-          }
-        } else {
-          console.error("Address components not available.");
-          return;
-        }
-    
+
+    if (
+      address.address_components.length === 5 ||
+      address.address_components.length === 4 ||
+      address.address_components.length === 3 ||
+      address.address_components.length === 2 ||
+      address.address_components.length === 1
+    ) {
+      streetAddress = " ";
+    } else if (address.address_components.length === 6) {
+      streetAddress = address.address_components[0].long_name;
+    } else if (address.address_components.length === 7) {
+      streetAddress = address.address_components[0].long_name;
+    } else if (address.address_components.length === 8) {
+      streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+    } else if (address.address_components.length === 9) {
+      streetAddress = ` ${address.address_components[1].long_name} ${address.address_components[2].long_name} `;
+    }
+
+    let localArea;
+
+    if (
+      address.address_components.length === 4 ||
+      address.address_components.length === 3 ||
+      address.address_components.length === 2 ||
+      address.address_components.length === 1
+    ) {
+      localArea = " ";
+    } else if (address.address_components.length === 5) {
+      localArea = address.address_components[0].long_name;
+    } else if (address.address_components.length === 6) {
+      localArea = address.address_components[1].long_name;
+    } else if (address.address_components.length === 7) {
+      localArea = address.address_components[1].long_name;
+    } else if (address.address_components.length === 8) {
+      localArea = address.address_components[2].long_name;
+    } else if (address.address_components.length === 9) {
+      localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
+    }
+
+    let localCity;
+
+    if (
+      address.address_components.length === 3 ||
+      address.address_components.length === 2 ||
+      address.address_components.length === 1
+    ) {
+      localCity = "";
+    } else if (address.address_components.length === 4) {
+      localCity = address.address_components[0].long_name;
+    } else if (address.address_components.length === 5) {
+      localCity = address.address_components[1].long_name;
+    } else if (address.address_components.length === 6) {
+      localCity = address.address_components[2].long_name;
+    } else if (address.address_components.length === 7) {
+      localCity = address.address_components[3].long_name;
+    } else if (address.address_components.length === 8) {
+      localCity = address.address_components[4].long_name;
+    } else if (address.address_components.length === 9) {
+      localCity = address.address_components[5].long_name;
+    }
+
+    let zoneCity;
+
+    if (
+      address.address_components.length === 2 ||
+      address.address_components.length === 1
+    ) {
+      zoneCity = " ";
+    } else if (address.address_components.length === 3) {
+      zoneCity = address.address_components[0].long_name;
+    } else if (address.address_components.length === 4) {
+      zoneCity = address.address_components[1].long_name;
+    } else if (address.address_components.length === 5) {
+      zoneCity = address.address_components[2].long_name;
+    } else if (address.address_components.length === 6) {
+      zoneCity = address.address_components[3].long_name;
+    } else if (address.address_components.length === 7) {
+      zoneCity = address.address_components[4].long_name;
+    } else if (address.address_components.length === 8) {
+      zoneCity = address.address_components[5].long_name;
+    } else if (address.address_components.length === 9) {
+      zoneCity = address.address_components[6].long_name;
+    }
+
+    let countryOfCity;
+
+    if (address.address_components.length === 1) {
+      countryOfCity = " ";
+    } else if (address.address_components.length === 2) {
+      countryOfCity = address.address_components[0].long_name;
+    } else if (address.address_components.length === 3) {
+      countryOfCity = address.address_components[1].long_name;
+    } else if (address.address_components.length === 4) {
+      countryOfCity = address.address_components[2].long_name;
+    } else if (address.address_components.length === 5) {
+      countryOfCity = address.address_components[3].long_name;
+    } else if (address.address_components.length === 6) {
+      countryOfCity = address.address_components[4].long_name;
+    } else if (address.address_components.length === 7) {
+      countryOfCity = address.address_components[5].long_name;
+    } else if (address.address_components.length === 8) {
+      countryOfCity = address.address_components[6].long_name;
+    } else if (address.address_components.length === 9) {
+      countryOfCity = address.address_components[7].short_name;
+    }
+
+    let postalCode;
+
+    if (address.address_components.length === 1) {
+      postalCode = address.address_components[0].long_name;
+    } else if (address.address_components.length === 2) {
+      postalCode = address.address_components[1].long_name;
+    } else if (address.address_components.length === 3) {
+      postalCode = address.address_components[2].long_name;
+    } else if (address.address_components.length === 4) {
+      postalCode = address.address_components[3].long_name;
+    } else if (address.address_components.length === 5) {
+      postalCode = address.address_components[4].long_name;
+    } else if (address.address_components.length === 6) {
+      postalCode = address.address_components[5].long_name;
+    } else if (address.address_components.length === 7) {
+      postalCode = address.address_components[6].long_name;
+    } else if (address.address_components.length === 8) {
+      postalCode = address.address_components[7].long_name;
+    } else if (address.address_components.length === 9) {
+      postalCode = address.address_components[8].long_name;
+    }
+
     const gettingRate = async () => {
       const today = new Date();
       const formattedDate = today.toISOString().split("T")[0];
-       
+
       const theRates = {
         collection_address: collectionAdress,
         delivery_address: {
-                      type: "",
-                      company: "",
-                      street_address: streetAddress,
-                      local_area: localArea,
-                      city: localCity,
-                      zone: zoneCity,
-                      country: countryOfCity,
-                      code: postalCode,
-                      lat: coordinates.lat,
-                      lng: coordinates.lng,
-                    },
+          type: "",
+          company: "",
+          street_address: streetAddress,
+          local_area: localArea,
+          city: localCity,
+          zone: zoneCity,
+          country: countryOfCity,
+          code: postalCode,
+          lat: coordinates.lat,
+          lng: coordinates.lng,
+        },
         parcels: [
           {
             submitted_length_cm: 20,
@@ -561,39 +661,45 @@ const DateSelectionAndCheckout = () => {
     console.log("collectionAdress is ", collectionAdress);
     console.log(" preciseLocation is ", preciseLocation);
     let streetAddress;
-          let localArea;
-          let localCity;
-          let zoneCity;
-          let countryOfCity;
-          let postalCode;
-          if (address.address_components) {
-          if (address.address_components && address.address_components.length === 8) {
-            streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-            localArea = `${address.address_components[2].long_name}`;
-            localCity = `${address.address_components[4].long_name}`;
-            zoneCity = `${address.address_components[5].long_name}`;
-            countryOfCity = `${address.address_components[6].long_name}`;
-            postalCode = `${address.address_components[7].long_name}`;
-          } else if (address.address_components && address.address_components.length === 9) {
-            streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-            localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
-            localCity = `${address.address_components[5].long_name}`;
-            zoneCity = `${address.address_components[6].long_name}`;
-            countryOfCity = `${address.address_components[7].short_name}`;
-            postalCode = `${address.address_components[8].long_name}`;
-          } else {
-            console.error("Invalid length of address components.");
-            return;
-          }
-        } else {
-          console.error("Address components not available.");
-          return;
-        }
+    let localArea;
+    let localCity;
+    let zoneCity;
+    let countryOfCity;
+    let postalCode;
+    if (address.address_components) {
+      if (
+        address.address_components &&
+        address.address_components.length === 8
+      ) {
+        streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+        localArea = `${address.address_components[2].long_name}`;
+        localCity = `${address.address_components[4].long_name}`;
+        zoneCity = `${address.address_components[5].long_name}`;
+        countryOfCity = `${address.address_components[6].long_name}`;
+        postalCode = `${address.address_components[7].long_name}`;
+      } else if (
+        address.address_components &&
+        address.address_components.length === 9
+      ) {
+        streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+        localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
+        localCity = `${address.address_components[5].long_name}`;
+        zoneCity = `${address.address_components[6].long_name}`;
+        countryOfCity = `${address.address_components[7].short_name}`;
+        postalCode = `${address.address_components[8].long_name}`;
+      } else {
+        console.error("Invalid length of address components.");
+        return;
+      }
+    } else {
+      console.error("Address components not available.");
+      return;
+    }
     const shipment = {
       collection_address: collectionAdress,
       collection_contact: {
         name: theBusinessName,
-        mobile_number:  {
+        mobile_number: {
           type: "",
           company: "",
           street_address: streetAddress,
@@ -771,87 +877,89 @@ const DateSelectionAndCheckout = () => {
 
   useEffect(() => {
     setLocation(address.formatted_address);
-    setPastLocations((prevLocations) => [...prevLocations, address.formatted_address]);
+    setPastLocations((prevLocations) => [
+      ...prevLocations,
+      address.formatted_address,
+    ]);
     // setPastPreciseLocation((prevLocations) => [...prevLocations, { location: address.formatted_address, preciseLocation: preciseLocation }]);
-  }, [address,preciseLocation]);
-  
+  }, [address, preciseLocation]);
 
-//   useEffect(async () => {
-//     const fetchData = async () => {
-//     try {
+  //   useEffect(async () => {
+  //     const fetchData = async () => {
+  //     try {
 
-//       let streetAddress;
-//       let localArea;
-//       let localCity;
-//       let zoneCity;
-//       let countryOfCity;
-//       let postalCode;
-//       if (address.address_components) {
-//       if (address.address_components && address.address_components.length === 8) {
-//         streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-//         localArea = `${address.address_components[2].long_name}`;
-//         localCity = `${address.address_components[4].long_name}`;
-//         zoneCity = `${address.address_components[5].long_name}`;
-//         countryOfCity = `${address.address_components[6].long_name}`;
-//         postalCode = `${address.address_components[7].long_name}`;
-//       } else if (address.address_components && address.address_components.length === 9) {
-//         streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-//         localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
-//         localCity = `${address.address_components[5].long_name}`;
-//         zoneCity = `${address.address_components[6].long_name}`;
-//         countryOfCity = `${address.address_components[7].short_name}`;
-//         postalCode = `${address.address_components[8].long_name}`;
-//       } else {
-//         console.error("Invalid length of address components.");
-//         return;
-//       }
-//     } else {
-//       console.error("Address components not available.");
-//       return;
-//     }
+  //       let streetAddress;
+  //       let localArea;
+  //       let localCity;
+  //       let zoneCity;
+  //       let countryOfCity;
+  //       let postalCode;
+  //       if (address.address_components) {
+  //       if (address.address_components && address.address_components.length === 8) {
+  //         streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+  //         localArea = `${address.address_components[2].long_name}`;
+  //         localCity = `${address.address_components[4].long_name}`;
+  //         zoneCity = `${address.address_components[5].long_name}`;
+  //         countryOfCity = `${address.address_components[6].long_name}`;
+  //         postalCode = `${address.address_components[7].long_name}`;
+  //       } else if (address.address_components && address.address_components.length === 9) {
+  //         streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+  //         localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
+  //         localCity = `${address.address_components[5].long_name}`;
+  //         zoneCity = `${address.address_components[6].long_name}`;
+  //         countryOfCity = `${address.address_components[7].short_name}`;
+  //         postalCode = `${address.address_components[8].long_name}`;
+  //       } else {
+  //         console.error("Invalid length of address components.");
+  //         return;
+  //       }
+  //     } else {
+  //       console.error("Address components not available.");
+  //       return;
+  //     }
 
-//     const cartCollectionRef = collection(firestore, "Users");
-//     const q = query(cartCollectionRef, where("uid", "==", user.uid));
-//     const querySnapshot = await getDocs(q);
+  //     const cartCollectionRef = collection(firestore, "Users");
+  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
+  //     const querySnapshot = await getDocs(q);
 
-//     querySnapshot.forEach(async (doc) => {
-//       try {
-//         await updateDoc(doc.ref, {
-//           location: address.formatted_address,
-//           locationDetails: {
-//             type: "",
-//             company: "",
-//             street_address: streetAddress,
-//             local_area: localArea,
-//             city: localCity,
-//             zone: zoneCity,
-//             country: countryOfCity,
-//             code: postalCode,
-//             lat: coordinates.lat,
-//             lng: coordinates.lng,
-//           },
-//          // pastPreciseLocation:pastPreciseLocation
-          
-//         });
-//       } catch (error) {
-//         console.error("Error updating document in Users collection:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     });
-//   } catch (error) {
-//     console.error("Error in useEffect:", error);
-//     setLoading(false);
-//   }
-// };
+  //     querySnapshot.forEach(async (doc) => {
+  //       try {
+  //         await updateDoc(doc.ref, {
+  //           location: address.formatted_address,
+  //           locationDetails: {
+  //             type: "",
+  //             company: "",
+  //             street_address: streetAddress,
+  //             local_area: localArea,
+  //             city: localCity,
+  //             zone: zoneCity,
+  //             country: countryOfCity,
+  //             code: postalCode,
+  //             lat: coordinates.lat,
+  //             lng: coordinates.lng,
+  //           },
+  //          // pastPreciseLocation:pastPreciseLocation
 
-// fetchData(); // Call the async function directly
+  //         });
+  //       } catch (error) {
+  //         console.error("Error updating document in Users collection:", error);
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.error("Error in useEffect:", error);
+  //     setLoading(false);
+  //   }
+  // };
 
-// // Cleanup function
-// return () => {
-//   // Cleanup code if needed
-// };
-// }, [ address,preciseLocation]);
+  // fetchData(); // Call the async function directly
+
+  // // Cleanup function
+  // return () => {
+  //   // Cleanup code if needed
+  // };
+  // }, [ address,preciseLocation]);
 
   // useEffect(async () => {
   //   try {
@@ -1123,12 +1231,11 @@ const DateSelectionAndCheckout = () => {
                       alignItems: "flex-star",
                       width: "100%",
                       height: "80vh",
-                      backgroundColor:'white'
-                    
+                      backgroundColor: "white",
                     }}
                   >
                     <PlaceAutocomplete
-                      style={{   }}
+                      style={{}}
                       onPlaceSelect={handlePlaceSelect}
                     />
 
@@ -1139,14 +1246,14 @@ const DateSelectionAndCheckout = () => {
                         padding: 10,
                         borderRadius: 30,
                         //marginLeft:10
-                        height:'6.5vh',
+                        height: "6.5vh",
                         //backgroundColor: "#062338",
                       }}
                       onPress={() => setAddessInput(false)} // Assuming setAddessInput is a function
                     >
-                      <Text style={{ color: "#062338" ,
-                      paddingHorizontal:8,
-                        }}>Close</Text>
+                      <Text style={{ color: "#062338", paddingHorizontal: 8 }}>
+                        Close
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 ) : (
@@ -1167,11 +1274,13 @@ const DateSelectionAndCheckout = () => {
                           color: "#B7B9BC",
                           border: "2px white solid",
                           padding: 10,
-                          borderRadius:30
+                          borderRadius: 30,
                         }}
                         onPress={() => setAddessInput(true)} // Assuming setAddessInput is a function
                       >
-                        <Text style={{ color: "white" , paddingHorizontal:10,}}>View</Text>
+                        <Text style={{ color: "white", paddingHorizontal: 10 }}>
+                          View
+                        </Text>
                       </TouchableOpacity>
                     </View>
 

@@ -1,4 +1,4 @@
-// import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, IconButton } from "@mui/material";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import {
@@ -19,6 +19,45 @@ import { useNavigation } from '@react-navigation/native';
 const FollowUs = () => {
   const navigation = useNavigation();
 
+  const [userData, setUserData] = useState(null);
+  const [cartCount, setCartCount] = useState(2);
+  useEffect(() => {
+    const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const cartCollectionRef = firestore
+          .collection("Cart")
+          .where("uid", "==", user.uid);
+
+        const unsubscribeCartSnapshot = cartCollectionRef.onSnapshot(
+          (snapshot) => {
+            const itemCount = snapshot.docs.length;
+            setCartCount(itemCount);
+          }
+        );
+
+        const userDocRef = firestore.collection("Users").doc(user.uid);
+        const unsubscribeSnapshot = userDocRef.onSnapshot((doc) => {
+          if (doc.exists) {
+            setUserData(doc.data());
+          } else {
+            console.error("User data not found");
+          }
+        });
+
+        return () => {
+          unsubscribeCartSnapshot();
+          unsubscribeSnapshot();
+        };
+      } else {
+        setUserData(null);
+        setCartCount(0); // Reset cart count when user is not authenticated
+      }
+    });
+
+    return () => {
+      unsubscribeAuth();
+    };
+  }, []);
 
   const openYouTube = () => {
     navigate.navigation("https://www.youtube.com/");

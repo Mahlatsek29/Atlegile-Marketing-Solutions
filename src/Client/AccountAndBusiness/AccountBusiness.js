@@ -801,108 +801,48 @@ export default function BusinessAccount() {
           // visible={true}
           // onDismiss={() => setPaymentModal(false)}
           style={{
-            top: 65,
             position: "absolute",
-            // width: "100%",
-            // height: "100%",
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
             display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "flex-end",
-            zIndex: 9999,
-            alignSelf: "flex-end",
+            alignItems: "center",
+            zIndex: 1000, // Adjust as needed
           }}
         >
-          <Grid
-            container
+          <View
             style={{
-              width: "100%",
-              marginBottom: "-10vh",
-              //   border: "1px solid green",
+              flex: 1,
+              // justifyContent: "felx-end",
+              alignSelf: "flex-end",
+              width: 50,
+             
             }}
           >
-            <Grid
-              item
-              lg={8}
-              md={8}
-              sm={{ hidden: true }}
+            <View
               style={{
-                // border: "1px solid",
-                // backgroundColor: "blue",
+                position: "fixed",
+                // top: 0,
+                // left: 0,
+                width: "40vw",
+                height: "100vh",
+                backgroundColor: "white",
                 display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                width: "100%",
+                alignSelf: "flex-end",
+                justifyContent: "flex-end",
+                zIndex: 999,
+                
               }}
             >
-              <Grid
-                Container
-                lg={6}
-                md={6}
-                style={{
-                  //   backgroudColor: "blue",
-                  width: "100vw",
-                  //   border: "1px solid yellow",
-                }}
-              ></Grid>
-              <Grid
-                Container
-                lg={6}
-                md={6}
-                style={{
-                  // backgroudColor: "yellow",
-                  width: "100vw",
-                  // border: "1px solid yellow",
-                  marginBottom: "-8px",
-                }}
-              >
-                <img
-                  src={Banner}
-                  style={{
-                    height: "21vh",
-                    width: "65vw",
-                    paddingTop: "30vh",
-                    marginLeft: "10px",
-                    marginRight: "2px",
-                  }}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid
-              item
-              lg={4}
-              md={4}
-              style={{
-                // border: "1px solid red",
-                backgroundColor: "#fff",
-                marginLeft: "-10px",
-                width: "100%",
-                height: "98vh",
-                // marginLeft: "2px",
-                alignSelf: "center",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <Grid style={{ alignSelf: "center" }}>
+              <Grid style={{  alignSelf:'center' }}>
                 <img
                   src={logo}
                   style={{ height: "9vh", width: "90%", paddingTop: "15vh" }}
                 />
               </Grid>
-              {/* <Box
-            component="form"
-            sx={{
-              "& > :not(style)": { m: 1, width: "25ch" },
-            }}
-            noValidate
-            autoComplete="off"
-            onSubmit={handleContinue}> */}
+              
               <View
-                className="form-container"
+                //className="form-container"
                 style={{
                   justifyContent: "center",
                   textAlign: "center",
@@ -1116,7 +1056,7 @@ export default function BusinessAccount() {
 
                     {/* <Typography variant="caption" color="error" style={{ marginBottom: "10px" }}>
               {nameError || businessNameError || priceError || quantityError || brandError || categoryError}
-            </Typography> */}
+             </Typography> */}
 
                     {loading ? (
                       <Box
@@ -1149,8 +1089,8 @@ export default function BusinessAccount() {
                 </View>
               </View>
               {/* </Box> */}
-            </Grid>
-          </Grid>
+            </View>
+          </View>
         </View>
       ) : null}
       {paymentModal ? (
@@ -1570,7 +1510,7 @@ export default function BusinessAccount() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              height:'189vh'
+              height: "189vh",
             }}
           >
             <TouchableOpacity
@@ -1617,12 +1557,11 @@ export default function BusinessAccount() {
 
             <Text style={{ textAlign: "center", fontSize: 15 }}>
               Welcome to AMS, where we strive to ensure a secure and trustworthy{" "}
-              environment for 
-              <br /> businesses and customers alike. As part of
-              our commitment to maintaining the integrity of 
-              <br /> our
-              platform, we have implemented an authorization process for new
-              business
+              environment for
+              <br /> businesses and customers alike. As part of our commitment
+              to maintaining the integrity of
+              <br /> our platform, we have implemented an authorization process
+              for new business
               <br />
               registrations. This process is designed to verify the legitimacy
               and authenticity of the <br />
@@ -1790,7 +1729,7 @@ export default function BusinessAccount() {
                   flexDirection: "column",
                   width: "27vw",
                   marginBottom: 10,
-                 // backgroundColor:'red'
+                  // backgroundColor:'red'
                 }}
               >
                 <Typography
@@ -1817,14 +1756,16 @@ export default function BusinessAccount() {
                 paddingLeft: 40,
                 height: "70vh",
                 marginBottom: 20,
-                width:'75%',
-                //paddingTop:10
+                width: "75%",
+                display: "flex",
+                //alignItems:'center',
+                justifyContent: "center",
               }}
             >
               <Image
                 source={BusinessAccountPlus}
                 alt="business plus logo"
-                style={{ width: "45%", height: "25%", marginBottom: 5 ,marginTop:5}}
+                style={{ width: "20vw", height: "15vh", marginBottom: 5 }}
               />
               <View
                 style={{
@@ -1953,7 +1894,7 @@ export default function BusinessAccount() {
         <View
           style={{
             paddingLeft: 30,
-            backgroundColor: "#FFFFFF",
+            backgroundColor: "whitesmoke",
             alignItems: "flex-start",
           }}
         >
@@ -1962,14 +1903,16 @@ export default function BusinessAccount() {
             justifyContent="flex-start"
             alignItems="center"
             paddingRight={2}
+            
           >
-            <Paper
+            <View
               elevation={3}
               style={{
                 padding: "20px",
                 height: "100%",
                 width: "300px",
                 margin: "auto",
+                backgroundColor: "whitesmoke",
               }}
             >
               <Box textAlign="center">
@@ -2070,11 +2013,11 @@ export default function BusinessAccount() {
                   SIGN OUT
                 </Button>
               </Box>
-            </Paper>
+            </View>
           </Box>
         </View>
 
-        <View style={{ width: "70%" }}>
+        <View style={{flex:1 }}>
           <View
             style={{
               height: "150px",
@@ -2300,10 +2243,11 @@ export default function BusinessAccount() {
             <View
             // style={{backgroundColor:"white"}}
             >
-              <Card
+              <View
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
+
                   paddingRight: 30,
                   paddingBottom: 30,
                   paddingTop: 30,
@@ -2311,19 +2255,52 @@ export default function BusinessAccount() {
                   // height: "100px",
                 }}
               >
-                <View>
-                  <Text style={{ fontWeight: "700", fontSize: 30 }}>
-                    PRODUCTS & SERVICES
-                  </Text>
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View>
+                    <Text style={{ fontWeight: "700", fontSize: 30 }}>
+                      PRODUCTS & SERVICES
+                    </Text>
+                    <Text
+                      style={{
+                        display: businessAuthorization ? "none" : "",
+                        fontWeight: 600,
+                        fontSize: 14,
+                      }}
+                    >
+                      Please add a minimum of 3 products
+                    </Text>
+                  </View>
                   <Text
                     style={{
-                      display: businessAuthorization ? "none" : "",
+                      color: "white",
                       fontWeight: 600,
                       fontSize: 14,
+                      backgroundColor: "#072840",
+                      paddingTop: 10,
+                      paddingBottom: 10,
+                      paddingLeft: 25,
+                      paddingRight: 25,
+                      borderRadius: 20,
                     }}
                   >
-                    Please add a minimum of 3 products
+                    BUSINESS PLUS R150/PM
                   </Text>
+                </View>
+
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
                   <Text
                     style={{
                       color: "white",
@@ -2336,56 +2313,42 @@ export default function BusinessAccount() {
                       display: businessAuthorization ? "none" : "flex",
                       marginTop: 5,
                       justifyContent: "center",
+                      paddingLeft: 25,
+                      paddingRight: 25,
                     }}
                   >
                     AUTHORIZATION PENDING
                   </Text>
-                </View>
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <TouchableOpacity onPress={() => setAddProduct(true)}>
-                    <Text
-                      style={{
-                        color: "white",
-                        fontWeight: 600,
-                        fontSize: 14,
-                        backgroundColor: "#072840",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        paddingLeft: 25,
-                        paddingRight: 25,
-                        borderRadius: 20,
-                        display: !businessAuthorization ? "none" : "flex",
-                        marginRight: 20,
-                      }}
-                    >
-                      ADD PRODUCT
-                    </Text>
-                  </TouchableOpacity>
-                  <Text
+                  <View
                     style={{
-                      color: "white",
-                      fontWeight: 600,
-                      fontSize: 14,
-                      backgroundColor: "#072840",
-                      paddingTop: 10,
-                      paddingBottom: 10,
-                      paddingLeft: 25,
-                      paddingRight: 25,
-                      borderRadius: 20,
                       display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
-                    BUSINESS PLUS R150/PM
-                  </Text>
+                    <TouchableOpacity onPress={() => setAddProduct(true)}>
+                      <Text
+                        style={{
+                          color: "white",
+                          fontWeight: 600,
+                          fontSize: 14,
+                          backgroundColor: "#072840",
+                          paddingTop: 10,
+                          paddingBottom: 10,
+                          paddingLeft: 25,
+                          paddingRight: 25,
+                          borderRadius: 20,
+                          display: !businessAuthorization ? "none" : "flex",
+                          marginRight: 20,
+                        }}
+                      >
+                        ADD PRODUCT
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </Card>
+              </View>
 
               {businessAuthorization ? (
                 <Card
@@ -2527,7 +2490,7 @@ export default function BusinessAccount() {
                   {businessAuthorization ? null : (
                     <View
                       style={{
-                        width: 350,
+                        width:"25vw",
                         flexDirection: "column",
                         border: "1px lightgray solid",
                         padding: 40,
@@ -2542,7 +2505,7 @@ export default function BusinessAccount() {
                       <Image
                         source={require("../../Global/images/BusinessPlus+.jpg")}
                         alt="business plus logo"
-                        style={{ width: "85%", height: "20%", marginBottom: 5 }}
+                        style={{ width: "10vw", height: "7vh", marginBottom: 5 }}
                       />
                       {/* </TouchableOpacity> */}
 

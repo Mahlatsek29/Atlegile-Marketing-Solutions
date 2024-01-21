@@ -79,7 +79,7 @@ const FollowUs = () => {
     >
       <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
         <Icon2 name="phone" size={16} color="white" />
-
+        {console.log("userdata Header.js line 82: ",userData)}
         <Typography variant="subtitle2">(225) 555-0118</Typography>
       </Box>
 

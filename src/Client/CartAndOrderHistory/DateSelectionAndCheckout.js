@@ -603,36 +603,74 @@ const DateSelectionAndCheckout = () => {
   const creattingShipment = async () => {
     console.log("collectionAdress is ", collectionAdress);
     console.log(" preciseLocation is ", preciseLocation);
+   
     let streetAddress;
     let localArea;
     let localCity;
     let zoneCity;
     let countryOfCity;
     let postalCode;
+
     if (address.address_components) {
-      if (
-        address.address_components &&
-        address.address_components.length === 8
-      ) {
-        streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-        localArea = `${address.address_components[2].long_name}`;
-        localCity = `${address.address_components[4].long_name}`;
-        zoneCity = `${address.address_components[5].long_name}`;
-        countryOfCity = `${address.address_components[6].long_name}`;
-        postalCode = `${address.address_components[7].long_name}`;
-      } else if (
-        address.address_components &&
-        address.address_components.length === 9
-      ) {
-        streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-        localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
-        localCity = `${address.address_components[5].long_name}`;
-        zoneCity = `${address.address_components[6].long_name}`;
-        countryOfCity = `${address.address_components[7].short_name}`;
-        postalCode = `${address.address_components[8].long_name}`;
-      } else {
-        console.error("Invalid length of address components.");
-        return;
+      const length = address.address_components.length;
+
+      switch (length) {
+        case 1:
+          postalCode = address.address_components[0].long_name;
+          break;
+        case 2:
+          countryOfCity = address.address_components[0].short_name;
+          postalCode = address.address_components[1].long_name;
+          break;
+        case 3:
+          countryOfCity = address.address_components[1].short_name;
+          postalCode = address.address_components[2].long_name;
+          break;
+        case 4:
+          localCity = address.address_components[0].long_name;
+          countryOfCity = address.address_components[2].short_name;
+          postalCode = address.address_components[3].long_name;
+          break;
+        case 5:
+          localArea = address.address_components[0].long_name;
+          localCity = address.address_components[1].long_name;
+          countryOfCity = address.address_components[3].short_name;
+          postalCode = address.address_components[4].long_name;
+          break;
+        case 6:
+          localArea = address.address_components[0].long_name;
+          localCity = address.address_components[1].long_name;
+          zoneCity = address.address_components[2].long_name;
+          countryOfCity = address.address_components[3].short_name;
+          postalCode = address.address_components[4].long_name;
+          break;
+        case 7:
+          streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
+          localArea = address.address_components[2].long_name;
+          localCity = address.address_components[3].long_name;
+          zoneCity = address.address_components[4].long_name;
+          countryOfCity = address.address_components[5].short_name;
+          postalCode = address.address_components[6].long_name;
+          break;
+        case 8:
+          streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+          localArea = address.address_components[2].long_name;
+          localCity = address.address_components[4].long_name;
+          zoneCity = address.address_components[5].long_name;
+          countryOfCity = address.address_components[6].short_name;
+          postalCode = address.address_components[7].long_name;
+          break;
+        case 9:
+          streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+          localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
+          localCity = address.address_components[5].long_name;
+          zoneCity = address.address_components[6].long_name;
+          countryOfCity = address.address_components[7].short_name;
+          postalCode = address.address_components[8].long_name;
+          break;
+        default:
+          console.error("Invalid length of address components.");
+          return;
       }
     } else {
       console.error("Address components not available.");
@@ -827,82 +865,129 @@ const DateSelectionAndCheckout = () => {
     // setPastPreciseLocation((prevLocations) => [...prevLocations, { location: address.formatted_address, preciseLocation: preciseLocation }]);
   }, [address, preciseLocation]);
 
-  //   useEffect(async () => {
-  //     const fetchData = async () => {
-  //     try {
+//     useEffect( () => {
+//       const fetchData = async () => {
+//       try {
 
-  //       let streetAddress;
-  //       let localArea;
-  //       let localCity;
-  //       let zoneCity;
-  //       let countryOfCity;
-  //       let postalCode;
-  //       if (address.address_components) {
-  //       if (address.address_components && address.address_components.length === 8) {
-  //         streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-  //         localArea = `${address.address_components[2].long_name}`;
-  //         localCity = `${address.address_components[4].long_name}`;
-  //         zoneCity = `${address.address_components[5].long_name}`;
-  //         countryOfCity = `${address.address_components[6].long_name}`;
-  //         postalCode = `${address.address_components[7].long_name}`;
-  //       } else if (address.address_components && address.address_components.length === 9) {
-  //         streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-  //         localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
-  //         localCity = `${address.address_components[5].long_name}`;
-  //         zoneCity = `${address.address_components[6].long_name}`;
-  //         countryOfCity = `${address.address_components[7].short_name}`;
-  //         postalCode = `${address.address_components[8].long_name}`;
-  //       } else {
-  //         console.error("Invalid length of address components.");
-  //         return;
-  //       }
-  //     } else {
-  //       console.error("Address components not available.");
-  //       return;
-  //     }
+        
+//     let streetAddress;
+//     let localArea;
+//     let localCity;
+//     let zoneCity;
+//     let countryOfCity;
+//     let postalCode;
 
-  //     const cartCollectionRef = collection(firestore, "Users");
-  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
-  //     const querySnapshot = await getDocs(q);
+//     if (address.address_components) {
+//       const length = address.address_components.length;
 
-  //     querySnapshot.forEach(async (doc) => {
-  //       try {
-  //         await updateDoc(doc.ref, {
-  //           location: address.formatted_address,
-  //           locationDetails: {
-  //             type: "",
-  //             company: "",
-  //             street_address: streetAddress,
-  //             local_area: localArea,
-  //             city: localCity,
-  //             zone: zoneCity,
-  //             country: countryOfCity,
-  //             code: postalCode,
-  //             lat: coordinates.lat,
-  //             lng: coordinates.lng,
-  //           },
-  //          // pastPreciseLocation:pastPreciseLocation
+//       switch (length) {
+//         case 1:
+//           postalCode = address.address_components[0].long_name;
+//           break;
+//         case 2:
+//           countryOfCity = address.address_components[0].short_name;
+//           postalCode = address.address_components[1].long_name;
+//           break;
+//         case 3:
+//           countryOfCity = address.address_components[1].short_name;
+//           postalCode = address.address_components[2].long_name;
+//           break;
+//         case 4:
+//           localCity = address.address_components[0].long_name;
+//           countryOfCity = address.address_components[2].short_name;
+//           postalCode = address.address_components[3].long_name;
+//           break;
+//         case 5:
+//           localArea = address.address_components[0].long_name;
+//           localCity = address.address_components[1].long_name;
+//           countryOfCity = address.address_components[3].short_name;
+//           postalCode = address.address_components[4].long_name;
+//           break;
+//         case 6:
+//           localArea = address.address_components[0].long_name;
+//           localCity = address.address_components[1].long_name;
+//           zoneCity = address.address_components[2].long_name;
+//           countryOfCity = address.address_components[3].short_name;
+//           postalCode = address.address_components[4].long_name;
+//           break;
+//         case 7:
+//           streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
+//           localArea = address.address_components[2].long_name;
+//           localCity = address.address_components[3].long_name;
+//           zoneCity = address.address_components[4].long_name;
+//           countryOfCity = address.address_components[5].short_name;
+//           postalCode = address.address_components[6].long_name;
+//           break;
+//         case 8:
+//           streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+//           localArea = address.address_components[2].long_name;
+//           localCity = address.address_components[4].long_name;
+//           zoneCity = address.address_components[5].long_name;
+//           countryOfCity = address.address_components[6].short_name;
+//           postalCode = address.address_components[7].long_name;
+//           break;
+//         case 9:
+//           streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+//           localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
+//           localCity = address.address_components[5].long_name;
+//           zoneCity = address.address_components[6].long_name;
+//           countryOfCity = address.address_components[7].short_name;
+//           postalCode = address.address_components[8].long_name;
+//           break;
+//         default:
+//           console.error("Invalid length of address components.");
+//           return;
+//       }
+//     } else {
+//       console.error("Address components not available.");
+//       return;
+//     }
 
-  //         });
-  //       } catch (error) {
-  //         console.error("Error updating document in Users collection:", error);
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     });
-  //   } catch (error) {
-  //     console.error("Error in useEffect:", error);
-  //     setLoading(false);
-  //   }
-  // };
+//     if (!address || !coordinates.lat || !coordinates.lng) {
+//       console.error("Missing required data for updateDoc.");
+//       return;
+//     }
 
-  // fetchData(); // Call the async function directly
+//     const cartCollectionRef = collection(firestore, "Users");
+//     const q = query(cartCollectionRef, where("uid", "==", user.uid));
+//     const querySnapshot = await getDocs(q);
+//     console.log('the useEffect is called')
+//     querySnapshot.forEach(async (doc) => {
+//       try {
+//         await updateDoc(doc.ref, {
+//           location: address.formatted_address,
+//           locationDetails: {
+//             type: "",
+//             company: "",
+//             street_address: streetAddress,
+//             local_area: localArea,
+//             city: localCity,
+//             zone: zoneCity,
+//             country: countryOfCity,
+//             code: postalCode,
+//             lat: coordinates.lat,
+//             lng: coordinates.lng,
+//           },
+//         });
+//       } catch (error) {
+//         console.error("Error updating document in Users collection:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     });
+//   } catch (error) {
+//     console.error("Error in useEffect:", error);
+//     setLoading(false);
+//   }
+// };
 
-  // // Cleanup function
-  // return () => {
-  //   // Cleanup code if needed
-  // };
-  // }, [ address,preciseLocation]);
+// fetchData(); // Call the async function directly
+
+// // Cleanup function
+// return () => {
+//   // Cleanup code if needed
+// };
+// }, [address, coordinates]);
 
   // useEffect(async () => {
   //   try {
@@ -1152,6 +1237,8 @@ const DateSelectionAndCheckout = () => {
                 //height: "790px",
                 width: "35%",
                 marginTop: "20px",
+                display:'flex',
+                justifyContent:'space-between'
               }}
             >
               <View style={{ padding: "20px" }}>
@@ -1256,7 +1343,7 @@ const DateSelectionAndCheckout = () => {
                 )}
 
                 {cartData.length > 1 || cartData.length === 1 ? (
-                  <>
+                  <View >
                     <Typography style={{ color: "#FFFFFF", marginTop: "14px" }}>
                       Select Delivery date
                     </Typography>
@@ -1312,17 +1399,23 @@ const DateSelectionAndCheckout = () => {
                       ))}
                     </View>
 
-                    <Button
+                   
+                  </View>
+                ) : null}
+              </View>
+              <Button
                       variant="outlined"
                       style={{
-                        marginTop: 90,
+                        marginBottom: 20,
                         borderWidth: 1,
                         borderColor: "lightgrey",
                         borderRadius: 15,
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-evenly",
+                       // display: "flex",
+                       // flexDirection: "row",
+                       // justifyContent: "space-evenly",
                         alignItems: "center",
+                        width:"80%",
+                        alignSelf:"center"
                       }}
                       onClick={creattingShipment}
                     >
@@ -1335,9 +1428,6 @@ const DateSelectionAndCheckout = () => {
                         CHECKOUT
                       </Typography>
                     </Button>
-                  </>
-                ) : null}
-              </View>
             </View>
           </View>
         </Container>

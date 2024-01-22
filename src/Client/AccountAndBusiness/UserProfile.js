@@ -336,7 +336,7 @@ const UserProfile = () => {
               }}
               variant="outlined"
             >
-              REGISTER AS A FREELANCER
+              REGISTER AS A TALENT
             </Button>
             <Button
               style={{

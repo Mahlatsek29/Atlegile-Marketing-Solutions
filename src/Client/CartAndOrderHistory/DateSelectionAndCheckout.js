@@ -467,133 +467,76 @@ const DateSelectionAndCheckout = () => {
     console.log("local_area is ", preciseLocation);
 
     let streetAddress;
-
-    if (
-      address.address_components.length === 5 ||
-      address.address_components.length === 4 ||
-      address.address_components.length === 3 ||
-      address.address_components.length === 2 ||
-      address.address_components.length === 1
-    ) {
-      streetAddress = " ";
-    } else if (address.address_components.length === 6) {
-      streetAddress = address.address_components[0].long_name;
-    } else if (address.address_components.length === 7) {
-      streetAddress = address.address_components[0].long_name;
-    } else if (address.address_components.length === 8) {
-      streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-    } else if (address.address_components.length === 9) {
-      streetAddress = ` ${address.address_components[1].long_name} ${address.address_components[2].long_name} `;
-    }
-
     let localArea;
-
-    if (
-      address.address_components.length === 4 ||
-      address.address_components.length === 3 ||
-      address.address_components.length === 2 ||
-      address.address_components.length === 1
-    ) {
-      localArea = " ";
-    } else if (address.address_components.length === 5) {
-      localArea = address.address_components[0].long_name;
-    } else if (address.address_components.length === 6) {
-      localArea = address.address_components[1].long_name;
-    } else if (address.address_components.length === 7) {
-      localArea = address.address_components[1].long_name;
-    } else if (address.address_components.length === 8) {
-      localArea = address.address_components[2].long_name;
-    } else if (address.address_components.length === 9) {
-      localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
-    }
-
     let localCity;
-
-    if (
-      address.address_components.length === 3 ||
-      address.address_components.length === 2 ||
-      address.address_components.length === 1
-    ) {
-      localCity = "";
-    } else if (address.address_components.length === 4) {
-      localCity = address.address_components[0].long_name;
-    } else if (address.address_components.length === 5) {
-      localCity = address.address_components[1].long_name;
-    } else if (address.address_components.length === 6) {
-      localCity = address.address_components[2].long_name;
-    } else if (address.address_components.length === 7) {
-      localCity = address.address_components[3].long_name;
-    } else if (address.address_components.length === 8) {
-      localCity = address.address_components[4].long_name;
-    } else if (address.address_components.length === 9) {
-      localCity = address.address_components[5].long_name;
-    }
-
     let zoneCity;
-
-    if (
-      address.address_components.length === 2 ||
-      address.address_components.length === 1
-    ) {
-      zoneCity = " ";
-    } else if (address.address_components.length === 3) {
-      zoneCity = address.address_components[0].long_name;
-    } else if (address.address_components.length === 4) {
-      zoneCity = address.address_components[1].long_name;
-    } else if (address.address_components.length === 5) {
-      zoneCity = address.address_components[2].long_name;
-    } else if (address.address_components.length === 6) {
-      zoneCity = address.address_components[3].long_name;
-    } else if (address.address_components.length === 7) {
-      zoneCity = address.address_components[4].long_name;
-    } else if (address.address_components.length === 8) {
-      zoneCity = address.address_components[5].long_name;
-    } else if (address.address_components.length === 9) {
-      zoneCity = address.address_components[6].long_name;
-    }
-
     let countryOfCity;
-
-    if (address.address_components.length === 1) {
-      countryOfCity = " ";
-    } else if (address.address_components.length === 2) {
-      countryOfCity = address.address_components[0].long_name;
-    } else if (address.address_components.length === 3) {
-      countryOfCity = address.address_components[1].long_name;
-    } else if (address.address_components.length === 4) {
-      countryOfCity = address.address_components[2].long_name;
-    } else if (address.address_components.length === 5) {
-      countryOfCity = address.address_components[3].long_name;
-    } else if (address.address_components.length === 6) {
-      countryOfCity = address.address_components[4].long_name;
-    } else if (address.address_components.length === 7) {
-      countryOfCity = address.address_components[5].long_name;
-    } else if (address.address_components.length === 8) {
-      countryOfCity = address.address_components[6].long_name;
-    } else if (address.address_components.length === 9) {
-      countryOfCity = address.address_components[7].short_name;
-    }
-
     let postalCode;
 
-    if (address.address_components.length === 1) {
-      postalCode = address.address_components[0].long_name;
-    } else if (address.address_components.length === 2) {
-      postalCode = address.address_components[1].long_name;
-    } else if (address.address_components.length === 3) {
-      postalCode = address.address_components[2].long_name;
-    } else if (address.address_components.length === 4) {
-      postalCode = address.address_components[3].long_name;
-    } else if (address.address_components.length === 5) {
-      postalCode = address.address_components[4].long_name;
-    } else if (address.address_components.length === 6) {
-      postalCode = address.address_components[5].long_name;
-    } else if (address.address_components.length === 7) {
-      postalCode = address.address_components[6].long_name;
-    } else if (address.address_components.length === 8) {
-      postalCode = address.address_components[7].long_name;
-    } else if (address.address_components.length === 9) {
-      postalCode = address.address_components[8].long_name;
+    if (address.address_components) {
+      const length = address.address_components.length;
+
+      switch (length) {
+        case 1:
+          postalCode = address.address_components[0].long_name;
+          break;
+        case 2:
+          countryOfCity = address.address_components[0].short_name;
+          postalCode = address.address_components[1].long_name;
+          break;
+        case 3:
+          countryOfCity = address.address_components[1].short_name;
+          postalCode = address.address_components[2].long_name;
+          break;
+        case 4:
+          localCity = address.address_components[0].long_name;
+          countryOfCity = address.address_components[2].short_name;
+          postalCode = address.address_components[3].long_name;
+          break;
+        case 5:
+          localArea = address.address_components[0].long_name;
+          localCity = address.address_components[1].long_name;
+          countryOfCity = address.address_components[3].short_name;
+          postalCode = address.address_components[4].long_name;
+          break;
+        case 6:
+          localArea = address.address_components[0].long_name;
+          localCity = address.address_components[1].long_name;
+          zoneCity = address.address_components[2].long_name;
+          countryOfCity = address.address_components[3].short_name;
+          postalCode = address.address_components[4].long_name;
+          break;
+        case 7:
+          streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
+          localArea = address.address_components[2].long_name;
+          localCity = address.address_components[3].long_name;
+          zoneCity = address.address_components[4].long_name;
+          countryOfCity = address.address_components[5].short_name;
+          postalCode = address.address_components[6].long_name;
+          break;
+        case 8:
+          streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+          localArea = address.address_components[2].long_name;
+          localCity = address.address_components[4].long_name;
+          zoneCity = address.address_components[5].long_name;
+          countryOfCity = address.address_components[6].short_name;
+          postalCode = address.address_components[7].long_name;
+          break;
+        case 9:
+          streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+          localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
+          localCity = address.address_components[5].long_name;
+          zoneCity = address.address_components[6].long_name;
+          countryOfCity = address.address_components[7].short_name;
+          postalCode = address.address_components[8].long_name;
+          break;
+        default:
+          console.error("Invalid length of address components.");
+          return;
+      }
+    } else {
+      console.error("Address components not available.");
+      return;
     }
 
     const gettingRate = async () => {

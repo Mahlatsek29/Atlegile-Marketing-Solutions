@@ -157,19 +157,19 @@ const BusinessRegistration = () => {
     if (address.address_components.length === 1) {
       countryOfCity = " ";
     } else if (address.address_components.length === 2) {
-      countryOfCity = address.address_components[0].long_name;
+      countryOfCity = address.address_components[0].short_name;
     } else if (address.address_components.length === 3) {
-      countryOfCity = address.address_components[1].long_name;
+      countryOfCity = address.address_components[1].short_name;
     } else if (address.address_components.length === 4) {
-      countryOfCity = address.address_components[2].long_name;
+      countryOfCity = address.address_components[2].short_name;
     } else if (address.address_components.length === 5) {
-      countryOfCity = address.address_components[3].long_name;
+      countryOfCity = address.address_components[3].short_name;
     } else if (address.address_components.length === 6) {
-      countryOfCity = address.address_components[4].long_name;
+      countryOfCity = address.address_components[4].short_name;
     } else if (address.address_components.length === 7) {
-      countryOfCity = address.address_components[5].long_name;
+      countryOfCity = address.address_components[5].short_name;
     } else if (address.address_components.length === 8) {
-      countryOfCity = address.address_components[6].long_name;
+      countryOfCity = address.address_components[6].short_name;
     } else if (address.address_components.length === 9) {
       countryOfCity = address.address_components[7].short_name;
     }

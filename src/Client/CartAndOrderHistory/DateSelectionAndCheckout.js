@@ -325,7 +325,7 @@ const DateSelectionAndCheckout = () => {
         <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
           
           {address && address.slice(0, 40)}
-                        {address && address.length < 50 ? "" : "..."}
+          {address && address.length < 50 ? "" : "..."}
         </Text>
       </View>
     </TouchableOpacity>
@@ -1108,7 +1108,7 @@ const DateSelectionAndCheckout = () => {
                     </Typography>
                     {selectedIndex !== null && (
                       <Typography style={{ fontWeight: "bold" }}>
-                        R{rates[selectedIndex].rate}
+                        R{rates[selectedIndex].base_rate.charge}
                       </Typography>
                     )}
                   </View>
@@ -1252,7 +1252,7 @@ const DateSelectionAndCheckout = () => {
 
                     <View style={{ border: "1px white solid" }}>
                       <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                        {location && location.slice(0, 20)}
+                        {location && location.slice(0, 30)}
                         {location && location.length < 50 ? "" : "..."}
                       </Typography>
 

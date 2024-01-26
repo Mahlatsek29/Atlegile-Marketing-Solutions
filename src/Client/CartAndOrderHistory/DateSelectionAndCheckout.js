@@ -85,8 +85,8 @@ const DateSelectionAndCheckout = () => {
   const [shipmentStatus, setShipmentStatus] = useState("");
   const [location, setLocation] = useState("");
   const [pastPreciseLocation, setPastPreciseLocation] = useState([]);
-  const [isPicked,setIsPicked] = useState(false)
-  const [arrayIndex,setArrayIndex] = useState(null)
+  const [isPicked, setIsPicked] = useState(false);
+  const [arrayIndex, setArrayIndex] = useState(null);
   const [forceUpdate, setForceUpdate] = useState(false);
   const [isLocationSelected, setIsLocationSelected] = useState(false);
   useEffect(() => {
@@ -295,7 +295,7 @@ const DateSelectionAndCheckout = () => {
           const pastLocations = data.pastLocations;
           const pastPreciseLocation = data.pastPreciseLocation;
 
-         // setPreciseLocation(location);
+          // setPreciseLocation(location);
           setPastLocations(pastLocations);
           setPastPreciseLocation(pastPreciseLocation);
         });
@@ -311,52 +311,56 @@ const DateSelectionAndCheckout = () => {
     <TouchableOpacity onPress={onPress}>
       <View
         style={{
-          width: '100%',
+          width: "100%",
           borderBottomWidth: 2,
-          borderBottomColor: 'whitesmoke',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
+          borderBottomColor: "whitesmoke",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-start",
           paddingTop: 2,
-          flexWrap: 'wrap',
+          flexWrap: "wrap",
           marginBottom: 15,
         }}
       >
-        <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'white' }}>
-          {address}
+        <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+          
+          {address && address.slice(0, 40)}
+                        {address && address.length < 50 ? "" : "..."}
         </Text>
       </View>
     </TouchableOpacity>
   );
-  
+
   const LocationList = ({ data, onLocationPress }) => (
-    <ScrollView style={{ height: 250, padding: 10 }} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={{ height: 250, padding: 10 }}
+      showsVerticalScrollIndicator={false}
+    >
       {data && Array.isArray(data) ? (
         data.map((item, index) => (
-          <LocationComponent key={index} address={item} onPress={() => onLocationPress(item, index)} />
+          <LocationComponent
+            key={index}
+            address={item}
+            onPress={() => onLocationPress(item, index)}
+          />
         ))
       ) : (
         <Text>No data available</Text>
       )}
     </ScrollView>
   );
-  
-  
 
   const handleLocationPress = (selectedItem, index) => {
     //  setIsPicked(true)
-      setIsLocationSelected(true);
-      setLocation(selectedItem);
-      setArrayIndex(index);
+    setIsLocationSelected(true);
+    setLocation(selectedItem);
+    setArrayIndex(index);
   };
- 
 
- useEffect(() => {
-  console.log('this is happening')
-       setPreciseLocation(pastPreciseLocation[arrayIndex]);
- }, [arrayIndex,isLocationSelected]);
- 
-  
+  useEffect(() => {
+    console.log("this is happening");
+    setPreciseLocation(pastPreciseLocation[arrayIndex]);
+  }, [arrayIndex, isLocationSelected]);
 
   const navigateToLanding = () => {
     navigation.navigate("Landing");
@@ -389,150 +393,150 @@ const DateSelectionAndCheckout = () => {
     let zoneCity;
     let countryOfCity;
     let postalCode;
- 
+
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0];
- 
+
     const commonRates = {
-       collection_address: {
-          type: "business",
-          company: "Atlegile@co.za",
-          street_address: "Diepkloof 319-Iq",
-          local_area: "Soweto",
-          city: "City of Johannesburg Metropolitan Municipality",
-          zone: "Gauteng",
-          country: "ZA",
-          code: "1862",
-          lat: -26.2609931,
-          lng: 27.9502322,
-       },
-       parcels: [
-          {
-             submitted_length_cm: 20,
-             submitted_width_cm: 20,
-             submitted_height_cm: 10,
-             submitted_weight_kg: 2,
-          },
-       ],
-       declared_value: 1100,
-       collection_min_date: formattedDate,
-       delivery_min_date: formattedDate,
+      collection_address: {
+        type: "business",
+        company: "Atlegile@co.za",
+        street_address: "Diepkloof 319-Iq",
+        local_area: "Soweto",
+        city: "City of Johannesburg Metropolitan Municipality",
+        zone: "Gauteng",
+        country: "ZA",
+        code: "1862",
+        lat: -26.2609931,
+        lng: 27.9502322,
+      },
+      parcels: [
+        {
+          submitted_length_cm: 20,
+          submitted_width_cm: 20,
+          submitted_height_cm: 10,
+          submitted_weight_kg: 2,
+        },
+      ],
+      declared_value: 1100,
+      collection_min_date: formattedDate,
+      delivery_min_date: formattedDate,
     };
- 
+
     if (address.address_components && isPicked) {
-       const length = address.address_components.length;
- 
-       switch (length) {
-          case 1:
-             postalCode = address.address_components[0].long_name;
-             break;
-          case 2:
-             countryOfCity = address.address_components[0].short_name;
-             postalCode = address.address_components[1].long_name;
-             break;
-          case 3:
-             countryOfCity = address.address_components[1].short_name;
-             postalCode = address.address_components[2].long_name;
-             break;
-          case 4:
-             localCity = address.address_components[0].long_name;
-             countryOfCity = address.address_components[2].short_name;
-             postalCode = address.address_components[3].long_name;
-             break;
-          case 5:
-             localArea = address.address_components[0].long_name;
-             localCity = address.address_components[1].long_name;
-             countryOfCity = address.address_components[3].short_name;
-             postalCode = address.address_components[4].long_name;
-             break;
-          case 6:
-             localArea = address.address_components[0].long_name;
-             localCity = address.address_components[1].long_name;
-             zoneCity = address.address_components[2].long_name;
-             countryOfCity = address.address_components[3].short_name;
-             postalCode = address.address_components[4].long_name;
-             break;
-          case 7:
-             streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
-             localArea = address.address_components[2].long_name;
-             localCity = address.address_components[3].long_name;
-             zoneCity = address.address_components[4].long_name;
-             countryOfCity = address.address_components[5].short_name;
-             postalCode = address.address_components[6].long_name;
-             break;
-          case 8:
-             streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-             localArea = address.address_components[2].long_name;
-             localCity = address.address_components[4].long_name;
-             zoneCity = address.address_components[5].long_name;
-             countryOfCity = address.address_components[6].short_name;
-             postalCode = address.address_components[7].long_name;
-             break;
-          case 9:
-             streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-             localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
-             localCity = address.address_components[5].long_name;
-             zoneCity = address.address_components[6].long_name;
-             countryOfCity = address.address_components[7].short_name;
-             postalCode = address.address_components[8].long_name;
-             break;
-          default:
-             console.error("Invalid length of address components.");
-             return;
-       }
+      const length = address.address_components.length;
+
+      switch (length) {
+        case 1:
+          postalCode = address.address_components[0].long_name;
+          break;
+        case 2:
+          countryOfCity = address.address_components[0].short_name;
+          postalCode = address.address_components[1].long_name;
+          break;
+        case 3:
+          countryOfCity = address.address_components[1].short_name;
+          postalCode = address.address_components[2].long_name;
+          break;
+        case 4:
+          localCity = address.address_components[0].long_name;
+          countryOfCity = address.address_components[2].short_name;
+          postalCode = address.address_components[3].long_name;
+          break;
+        case 5:
+          localArea = address.address_components[0].long_name;
+          localCity = address.address_components[1].long_name;
+          countryOfCity = address.address_components[3].short_name;
+          postalCode = address.address_components[4].long_name;
+          break;
+        case 6:
+          localArea = address.address_components[0].long_name;
+          localCity = address.address_components[1].long_name;
+          zoneCity = address.address_components[2].long_name;
+          countryOfCity = address.address_components[3].short_name;
+          postalCode = address.address_components[4].long_name;
+          break;
+        case 7:
+          streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
+          localArea = address.address_components[2].long_name;
+          localCity = address.address_components[3].long_name;
+          zoneCity = address.address_components[4].long_name;
+          countryOfCity = address.address_components[5].short_name;
+          postalCode = address.address_components[6].long_name;
+          break;
+        case 8:
+          streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+          localArea = address.address_components[2].long_name;
+          localCity = address.address_components[4].long_name;
+          zoneCity = address.address_components[5].long_name;
+          countryOfCity = address.address_components[6].short_name;
+          postalCode = address.address_components[7].long_name;
+          break;
+        case 9:
+          streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+          localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
+          localCity = address.address_components[5].long_name;
+          zoneCity = address.address_components[6].long_name;
+          countryOfCity = address.address_components[7].short_name;
+          postalCode = address.address_components[8].long_name;
+          break;
+        default:
+          console.error("Invalid length of address components.");
+          return;
+      }
     }
-   console.log('preciseLocation is ',preciseLocation)
+    console.log("preciseLocation is ", preciseLocation);
     const deliveryRates = {
-       delivery_address: preciseLocation || {
-          type: "",
-          company: "",
-          street_address: streetAddress,
-          local_area: localArea,
-          city: localCity,
-          zone: zoneCity,
-          country: countryOfCity,
-          code: postalCode,
-          lat: coordinates.lat,
-          lng: coordinates.lng,
-       },
+      delivery_address: preciseLocation || {
+        type: "",
+        company: "",
+        street_address: streetAddress,
+        local_area: localArea,
+        city: localCity,
+        zone: zoneCity,
+        country: countryOfCity,
+        code: postalCode,
+        lat: coordinates.lat,
+        lng: coordinates.lng,
+      },
     };
- 
+
     const theRates = { ...commonRates, ...deliveryRates };
- 
+
     const gettingRate = async () => {
-       console.log("theRatesCollectionAdress ", theRates.collection_address);
-       console.log("theRatesDeliverAdress ", theRates.delivery_address);
- 
-       const config = {
-          headers: {
-             Authorization: `Bearer ${CourierAPIKey}`,
-             "Content-Type": "application/json",
-          },
-       };
- 
-       try {
-          const response = await axios.post(
-             "https://api.shiplogic.com/v2/rates",
-             theRates,
-             config
-          );
-          console.log("Courier API rates response:", response.data);
-          if (response.data.rates) {
-             setRates(response.data.rates);
-          } else {
-             console.log("Rates not found in the response");
-          }
-       } catch (error) {
-          console.error("Error getting rates", error);
-          if (error.response) {
-             console.log("Response data:", error.response.data);
-          }
-       }
+      console.log("theRatesCollectionAdress ", theRates.collection_address);
+      console.log("theRatesDeliverAdress ", theRates.delivery_address);
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${CourierAPIKey}`,
+          "Content-Type": "application/json",
+        },
+      };
+
+      try {
+        const response = await axios.post(
+          "https://api.shiplogic.com/v2/rates",
+          theRates,
+          config
+        );
+        console.log("Courier API rates response:", response.data);
+        if (response.data.rates) {
+          setRates(response.data.rates);
+        } else {
+          console.log("Rates not found in the response");
+        }
+      } catch (error) {
+        console.error("Error getting rates", error);
+        if (error.response) {
+          console.log("Response data:", error.response.data);
+        }
+      }
     };
- 
+
     gettingRate();
- }, [preciseLocation,location]);
- 
+  }, [preciseLocation, location]);
+
   const creattingShipment = async () => {
     let streetAddress;
     let localArea;
@@ -799,7 +803,7 @@ const DateSelectionAndCheckout = () => {
 
   useEffect(() => {
     setLocation(address.formatted_address);
-}, [address,coordinates]);
+  }, [address, coordinates]);
 
   useEffect(() => {
     const updateLocation = async () => {
@@ -808,17 +812,17 @@ const DateSelectionAndCheckout = () => {
         console.error("User not authenticated.");
         return;
       }
-          console.log('this is happeninn 1')
+      console.log("this is happeninn 1");
 
-        const getAddressDetails = () => {
-          let streetAddress;
-      let localArea;
-      let localCity;
-      let zoneCity;
-      let countryOfCity;
-      let postalCode;
-      
-      console.log('this is happeninn 2')
+      const getAddressDetails = () => {
+        let streetAddress;
+        let localArea;
+        let localCity;
+        let zoneCity;
+        let countryOfCity;
+        let postalCode;
+
+        console.log("this is happeninn 2");
         const length = address.address_components.length;
 
         switch (length) {
@@ -879,7 +883,7 @@ const DateSelectionAndCheckout = () => {
             console.error("Invalid length of address components.");
             return;
         }
-    
+
         return {
           streetAddress: streetAddress || "",
           localArea: localArea || "",
@@ -888,60 +892,67 @@ const DateSelectionAndCheckout = () => {
           countryOfCity: countryOfCity || "",
           postalCode: postalCode || "",
         };
-        };
-    
-        const getAddressComponents = () => {
-          const addressDetails = getAddressDetails();
-          console.log('this is happeninn 3')
-          const { streetAddress, localArea, localCity, zoneCity, countryOfCity, postalCode } = addressDetails;
-    
-          return {
-            type: "",
-            company: "",
-            street_address: streetAddress,
-            local_area: localArea,
-            city: localCity,
-            zone: zoneCity,
-            country: countryOfCity,
-            code: postalCode,
-            lat: coordinates.lat,
-            lng: coordinates.lng,
-          };
-        };
-        console.log('this is happeninn 4')
-        const cartCollectionRef = collection(firestore, "Users");
-        const q = query(cartCollectionRef, where("uid", "==", user.uid));
-    
-        try {
-          const querySnapshot = await getDocs(q);
-    
-          querySnapshot.forEach(async (doc) => {
-            const userDocRef = doc.ref;
-            const currentPastLocations = doc.data()?.pastLocations || [];
-    
-            if (!currentPastLocations.includes(location)) {
-              const addressComponents = getAddressComponents();
-    
-              // Update the pastLocations field with the new location
-              await updateDoc(userDocRef, {
-                pastLocations: arrayUnion(location),
-                pastPreciseLocation: arrayUnion(addressComponents),
-              });
-    
-              console.log("Location updated successfully!");
-            } else {
-              console.log("Location already exists in pastLocations.");
-            }
-          });
-        } catch (error) {
-          console.error("Error fetching location details:", error);
-        }
       };
-    
-      if (location) {
-        updateLocation();
+
+      const getAddressComponents = () => {
+        const addressDetails = getAddressDetails();
+        console.log("this is happeninn 3");
+        const {
+          streetAddress,
+          localArea,
+          localCity,
+          zoneCity,
+          countryOfCity,
+          postalCode,
+        } = addressDetails;
+
+        return {
+          type: "",
+          company: "",
+          street_address: streetAddress,
+          local_area: localArea,
+          city: localCity,
+          zone: zoneCity,
+          country: countryOfCity,
+          code: postalCode,
+          lat: coordinates.lat,
+          lng: coordinates.lng,
+        };
+      };
+      console.log("this is happeninn 4");
+      const cartCollectionRef = collection(firestore, "Users");
+      const q = query(cartCollectionRef, where("uid", "==", user.uid));
+
+      try {
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach(async (doc) => {
+          const userDocRef = doc.ref;
+          const currentPastLocations = doc.data()?.pastLocations || [];
+
+          if (!currentPastLocations.includes(location)) {
+            const addressComponents = getAddressComponents();
+
+            // Update the pastLocations field with the new location
+            await updateDoc(userDocRef, {
+              pastLocations: arrayUnion(location),
+              pastPreciseLocation: arrayUnion(addressComponents),
+            });
+
+            console.log("Location updated successfully!");
+          } else {
+            console.log("Location already exists in pastLocations.");
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching location details:", error);
       }
-    }, [preciseLocation, location]);
+    };
+
+    if (location) {
+      updateLocation();
+    }
+  }, [preciseLocation, location]);
 
   return (
     <>
@@ -1241,7 +1252,8 @@ const DateSelectionAndCheckout = () => {
 
                     <View style={{ border: "1px white solid" }}>
                       <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                        {location}
+                        {location && location.slice(0, 20)}
+                        {location && location.length < 50 ? "" : "..."}
                       </Typography>
 
                       <View
@@ -1272,60 +1284,61 @@ const DateSelectionAndCheckout = () => {
                     <Typography style={{ color: "#FFFFFF", marginTop: "14px" }}>
                       Select Delivery date
                     </Typography>
-                   {location ?(<View
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "flex-start",
-                        flexWrap: "wrap", // Added flexWrap to allow wrapping
-                        width: "100%",
-                      }}
-                    >
-                      {rates.map((rate, index) => (
-                        <View key={index}>
-                          <TouchableOpacity
-                            onPress={() => handlePress(index)}
-                            style={{
-                              height: "100px",
-                              width: "80px",
-                              marginTop: "10px",
-                              borderWidth: 1,
-                              borderColor: "white",
-                              marginRight: 10,
-                              backgroundColor:
-                                selectedIndex === index
-                                  ? "#2E5A88"
-                                  : "transparent",
-                            }}
-                          >
-                            
-                            <View
+                    {location ? (
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "flex-start",
+                          flexWrap: "wrap", // Added flexWrap to allow wrapping
+                          width: "100%",
+                        }}
+                      >
+                        {rates.map((rate, index) => (
+                          <View key={index}>
+                            <TouchableOpacity
+                              onPress={() => handlePress(index)}
                               style={{
-                                display: "flex",
-                                alignItems: "center",
-                                marginTop: "20px",
+                                height: "100px",
+                                width: "80px",
+                                marginTop: "10px",
+                                borderWidth: 1,
+                                borderColor: "white",
+                                marginRight: 10,
+                                backgroundColor:
+                                  selectedIndex === index
+                                    ? "#2E5A88"
+                                    : "transparent",
                               }}
                             >
-                              <Typography style={{ color: "white" }}>
-                                {new Date(
-                                  rate.service_level.delivery_date_to
-                                ).toLocaleString("default", { month: "short" })}
-                              </Typography>
-                              <Typography
-                                variant="h5"
-                                style={{ color: "white" }}
+                              <View
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  marginTop: "20px",
+                                }}
                               >
-                                {new Date(
-                                  rate.service_level.delivery_date_to
-                                ).getDate()}
-                              </Typography>
-                            </View>
-                          </TouchableOpacity>
-                        </View>
-                      ))}
-                    </View>):null}
-                   
-                    
+                                <Typography style={{ color: "white" }}>
+                                  {new Date(
+                                    rate.service_level.delivery_date_to
+                                  ).toLocaleString("default", {
+                                    month: "short",
+                                  })}
+                                </Typography>
+                                <Typography
+                                  variant="h5"
+                                  style={{ color: "white" }}
+                                >
+                                  {new Date(
+                                    rate.service_level.delivery_date_to
+                                  ).getDate()}
+                                </Typography>
+                              </View>
+                            </TouchableOpacity>
+                          </View>
+                        ))}
+                      </View>
+                    ) : null}
                   </View>
                 ) : null}
               </View>

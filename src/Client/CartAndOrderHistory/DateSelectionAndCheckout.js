@@ -84,9 +84,11 @@ const DateSelectionAndCheckout = () => {
   const [trackingRef, setTrackingRef] = useState("");
   const [shipmentStatus, setShipmentStatus] = useState("");
   const [location, setLocation] = useState("");
-
-  const [pastPreciseLocation, setPastPreciseLocation] = useState([{}]);
-
+  const [pastPreciseLocation, setPastPreciseLocation] = useState([]);
+  const [isPicked,setIsPicked] = useState(false)
+  const [arrayIndex,setArrayIndex] = useState(null)
+  const [forceUpdate, setForceUpdate] = useState(false);
+  const [isLocationSelected, setIsLocationSelected] = useState(false);
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -289,10 +291,13 @@ const DateSelectionAndCheckout = () => {
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           // Assuming your inner object and array are inside the data.locationDetails
-          const location = data.locationDetails;
+          //const location = data.locationDetails;
           const pastLocations = data.pastLocations;
-          setPreciseLocation(location);
+          const pastPreciseLocation = data.pastPreciseLocation;
+
+         // setPreciseLocation(location);
           setPastLocations(pastLocations);
+          setPastPreciseLocation(pastPreciseLocation);
         });
       } catch (error) {
         console.error("Error fetching location details:", error);
@@ -300,114 +305,59 @@ const DateSelectionAndCheckout = () => {
     };
 
     fetchLocationDetails();
-  }, [preciseLocation]);
-
-  const AddressData = [
-    {
-      address: " 564 Zamakulungisa St, Emdeni South ",
-      Township: "Soweto",
-      PoBox: 1861,
-    },
-    {
-      address: " 564 Zamakulungisa St, South ",
-      Township: "Soweto",
-      PoBox: 1861,
-    },
-    {
-      address: " 564 Zamakulungisa St, Emdeni ",
-      Township: "Soweto",
-      PoBox: 1861,
-    },
-    {
-      address: " 564 Zamakulungisa St, Emdeni South ",
-      Township: "Soweto",
-      PoBox: 1861,
-    },
-  ];
-  console.log("cartData 2 : ", cartData);
-
-  const AddressComponent = ({ address, township, poBox, onPress }) => (
-    <TouchableOpacity onPress={onPress}>
-      <View
-        style={{
-          width: "100%",
-          borderBottomWidth: 2,
-          borderBottomColor: "#1D1D1D",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          paddingTop: 2,
-          flexWrap: "wrap",
-          marginBottom: 15,
-        }}
-      >
-        <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
-          {address},
-        </Text>
-        <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
-          {township},
-        </Text>
-        <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
-          {poBox}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-  const AddressList = ({ data, onAddressPress }) => (
-    <ScrollView
-      style={{ height: 250, padding: 10 }}
-      showsVerticalScrollIndicator={false}
-    >
-      {data.map((item, index) => (
-        <AddressComponent
-          key={index}
-          address={item.address}
-          township={item.Township}
-          poBox={item.PoBox}
-          onPress={() => onAddressPress(item)}
-        />
-      ))}
-    </ScrollView>
-  );
-
-  const [selectedAddress, setSelectedAddress] = useState(AddressData[0]);
+  }, [user]);
 
   const LocationComponent = ({ address, onPress }) => (
     <TouchableOpacity onPress={onPress}>
       <View
         style={{
-          width: "100%",
+          width: '100%',
           borderBottomWidth: 2,
-          borderBottomColor: "whitesmoke",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-start",
+          borderBottomColor: 'whitesmoke',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
           paddingTop: 2,
-          flexWrap: "wrap",
+          flexWrap: 'wrap',
           marginBottom: 15,
         }}
       >
-        <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+        <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'white' }}>
           {address}
         </Text>
       </View>
     </TouchableOpacity>
   );
-
+  
   const LocationList = ({ data, onLocationPress }) => (
-    <ScrollView
-      style={{ height: 250, padding: 10 }}
-      showsVerticalScrollIndicator={false}
-    >
-      {data.map((item, index) => (
-        <LocationComponent
-          key={index}
-          address={item}
-          onPress={() => onLocationPress(item)}
-        />
-      ))}
+    <ScrollView style={{ height: 250, padding: 10 }} showsVerticalScrollIndicator={false}>
+      {data && Array.isArray(data) ? (
+        data.map((item, index) => (
+          <LocationComponent key={index} address={item} onPress={() => onLocationPress(item, index)} />
+        ))
+      ) : (
+        <Text>No data available</Text>
+      )}
     </ScrollView>
   );
+  
+  
+
+  const handleLocationPress = (selectedItem, index) => {
+    //  setIsPicked(true)
+      setIsLocationSelected(true);
+      setLocation(selectedItem);
+      setArrayIndex(index);
+  };
+ 
+
+ useEffect(() => {
+  console.log('this is happening')
+       setPreciseLocation(pastPreciseLocation[arrayIndex]);
+ }, [arrayIndex,isLocationSelected]);
+ 
+  
+
   const navigateToLanding = () => {
     navigation.navigate("Landing");
   };
@@ -432,120 +382,108 @@ const DateSelectionAndCheckout = () => {
     setOrderTotal(finalTotal);
   }, [cartData, selectedIndex, rates]);
 
-  //  useEffect(() => {
-  //   const tackingShipment = async () => {
-  //     const config = {
-  //       headers: {
-  //         Authorization: `Bearer ${CourierAPIKey}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     };
-
-  //     try {
-  //       const response = await axios.get(
-  //         "https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=TN7PRG",
-  //         config
-  //       );
-  //       console.log("Courier API traking shipment response:", response.data);
-
-  //       setShipmentTrack(response.data);
-  //     } catch (error) {
-  //       console.error("Error getting shipments", error);
-  //       if (error.response) {
-  //         console.log("Response data:", error.response.data);
-  //       }
-  //       return [];
-  //     }
-  //   };
-
-  //   tackingShipment();
-  //   console.log("shipmentTrack:", shipmentTrack.shipments);
-  //   //console.log("tracking_events:", shipmentTrack.shipments[0].tracking_events);
-  //   //console.log("status:", shipmentTrack.shipments[0].tracking_events[0].status);
-  // }, []);
   useEffect(() => {
-    console.log("local_area is ", preciseLocation);
-
     let streetAddress;
     let localArea;
     let localCity;
     let zoneCity;
     let countryOfCity;
     let postalCode;
-
-    if (address.address_components) {
-      const length = address.address_components.length;
-
-      switch (length) {
-        case 1:
-          postalCode = address.address_components[0].long_name;
-          break;
-        case 2:
-          countryOfCity = address.address_components[0].short_name;
-          postalCode = address.address_components[1].long_name;
-          break;
-        case 3:
-          countryOfCity = address.address_components[1].short_name;
-          postalCode = address.address_components[2].long_name;
-          break;
-        case 4:
-          localCity = address.address_components[0].long_name;
-          countryOfCity = address.address_components[2].short_name;
-          postalCode = address.address_components[3].long_name;
-          break;
-        case 5:
-          localArea = address.address_components[0].long_name;
-          localCity = address.address_components[1].long_name;
-          countryOfCity = address.address_components[3].short_name;
-          postalCode = address.address_components[4].long_name;
-          break;
-        case 6:
-          localArea = address.address_components[0].long_name;
-          localCity = address.address_components[1].long_name;
-          zoneCity = address.address_components[2].long_name;
-          countryOfCity = address.address_components[3].short_name;
-          postalCode = address.address_components[4].long_name;
-          break;
-        case 7:
-          streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
-          localArea = address.address_components[2].long_name;
-          localCity = address.address_components[3].long_name;
-          zoneCity = address.address_components[4].long_name;
-          countryOfCity = address.address_components[5].short_name;
-          postalCode = address.address_components[6].long_name;
-          break;
-        case 8:
-          streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-          localArea = address.address_components[2].long_name;
-          localCity = address.address_components[4].long_name;
-          zoneCity = address.address_components[5].long_name;
-          countryOfCity = address.address_components[6].short_name;
-          postalCode = address.address_components[7].long_name;
-          break;
-        case 9:
-          streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-          localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
-          localCity = address.address_components[5].long_name;
-          zoneCity = address.address_components[6].long_name;
-          countryOfCity = address.address_components[7].short_name;
-          postalCode = address.address_components[8].long_name;
-          break;
-        default:
-          console.error("Invalid length of address components.");
-          return;
-      }
-    } else {
-      console.error("Address components not available.");
-      return;
+ 
+    const today = new Date();
+    const formattedDate = today.toISOString().split("T")[0];
+ 
+    const commonRates = {
+       collection_address: {
+          type: "business",
+          company: "Atlegile@co.za",
+          street_address: "Diepkloof 319-Iq",
+          local_area: "Soweto",
+          city: "City of Johannesburg Metropolitan Municipality",
+          zone: "Gauteng",
+          country: "ZA",
+          code: "1862",
+          lat: -26.2609931,
+          lng: 27.9502322,
+       },
+       parcels: [
+          {
+             submitted_length_cm: 20,
+             submitted_width_cm: 20,
+             submitted_height_cm: 10,
+             submitted_weight_kg: 2,
+          },
+       ],
+       declared_value: 1100,
+       collection_min_date: formattedDate,
+       delivery_min_date: formattedDate,
+    };
+ 
+    if (address.address_components && isPicked) {
+       const length = address.address_components.length;
+ 
+       switch (length) {
+          case 1:
+             postalCode = address.address_components[0].long_name;
+             break;
+          case 2:
+             countryOfCity = address.address_components[0].short_name;
+             postalCode = address.address_components[1].long_name;
+             break;
+          case 3:
+             countryOfCity = address.address_components[1].short_name;
+             postalCode = address.address_components[2].long_name;
+             break;
+          case 4:
+             localCity = address.address_components[0].long_name;
+             countryOfCity = address.address_components[2].short_name;
+             postalCode = address.address_components[3].long_name;
+             break;
+          case 5:
+             localArea = address.address_components[0].long_name;
+             localCity = address.address_components[1].long_name;
+             countryOfCity = address.address_components[3].short_name;
+             postalCode = address.address_components[4].long_name;
+             break;
+          case 6:
+             localArea = address.address_components[0].long_name;
+             localCity = address.address_components[1].long_name;
+             zoneCity = address.address_components[2].long_name;
+             countryOfCity = address.address_components[3].short_name;
+             postalCode = address.address_components[4].long_name;
+             break;
+          case 7:
+             streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
+             localArea = address.address_components[2].long_name;
+             localCity = address.address_components[3].long_name;
+             zoneCity = address.address_components[4].long_name;
+             countryOfCity = address.address_components[5].short_name;
+             postalCode = address.address_components[6].long_name;
+             break;
+          case 8:
+             streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+             localArea = address.address_components[2].long_name;
+             localCity = address.address_components[4].long_name;
+             zoneCity = address.address_components[5].long_name;
+             countryOfCity = address.address_components[6].short_name;
+             postalCode = address.address_components[7].long_name;
+             break;
+          case 9:
+             streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+             localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
+             localCity = address.address_components[5].long_name;
+             zoneCity = address.address_components[6].long_name;
+             countryOfCity = address.address_components[7].short_name;
+             postalCode = address.address_components[8].long_name;
+             break;
+          default:
+             console.error("Invalid length of address components.");
+             return;
+       }
     }
-
-    const gettingRate = async () => {
-      const today = new Date();
-      const formattedDate = today.toISOString().split("T")[0];
-
-      const theRates = {
-        collection_address: collectionAdress,
-        delivery_address: {
+   console.log('preciseLocation is ',preciseLocation)
+    const deliveryRates = {
+       delivery_address: preciseLocation || {
           type: "",
           company: "",
           street_address: streetAddress,
@@ -556,54 +494,46 @@ const DateSelectionAndCheckout = () => {
           code: postalCode,
           lat: coordinates.lat,
           lng: coordinates.lng,
-        },
-        parcels: [
-          {
-            submitted_length_cm: 20,
-            submitted_width_cm: 20,
-            submitted_height_cm: 10,
-            submitted_weight_kg: 2,
-          },
-        ],
-        declared_value: 1100,
-        collection_min_date: formattedDate,
-        delivery_min_date: formattedDate,
-      };
-      console.log("theRatesCollectionAdress ", theRates.collection_address);
-      console.log("theRatesDeliverAdress ", theRates.delivery_address);
-      const config = {
-        headers: {
-          Authorization: `Bearer ${CourierAPIKey}`,
-          "Content-Type": "application/json",
-        },
-      };
-
-      try {
-        const response = await axios.post(
-          "https://api.shiplogic.com/v2/rates",
-          theRates,
-          config
-        );
-        console.log("Courier API rates response:", response.data);
-        if (response.data.rates) {
-          setRates(response.data.rates);
-        } else {
-          console.log("Rates not found in the response");
-        }
-      } catch (error) {
-        console.error("Error getting rates", error);
-        if (error.response) {
-          console.log("Response data:", error.response.data);
-        }
-      }
+       },
     };
+ 
+    const theRates = { ...commonRates, ...deliveryRates };
+ 
+    const gettingRate = async () => {
+       console.log("theRatesCollectionAdress ", theRates.collection_address);
+       console.log("theRatesDeliverAdress ", theRates.delivery_address);
+ 
+       const config = {
+          headers: {
+             Authorization: `Bearer ${CourierAPIKey}`,
+             "Content-Type": "application/json",
+          },
+       };
+ 
+       try {
+          const response = await axios.post(
+             "https://api.shiplogic.com/v2/rates",
+             theRates,
+             config
+          );
+          console.log("Courier API rates response:", response.data);
+          if (response.data.rates) {
+             setRates(response.data.rates);
+          } else {
+             console.log("Rates not found in the response");
+          }
+       } catch (error) {
+          console.error("Error getting rates", error);
+          if (error.response) {
+             console.log("Response data:", error.response.data);
+          }
+       }
+    };
+ 
     gettingRate();
-  }, [address, collectionAdress]);
-
+ }, [preciseLocation,location]);
+ 
   const creattingShipment = async () => {
-    console.log("collectionAdress is ", collectionAdress);
-    console.log(" preciseLocation is ", preciseLocation);
-   
     let streetAddress;
     let localArea;
     let localCity;
@@ -677,24 +607,35 @@ const DateSelectionAndCheckout = () => {
       return;
     }
     const shipment = {
-      collection_address: collectionAdress,
+      collection_address: {
+        type: "business",
+        company: "Atlegile@co.za",
+        street_address: "Diepkloof 319-Iq",
+        local_area: "Soweto",
+        city: "City of Johannesburg Metropolitan Municipality",
+        zone: "Gauteng",
+        country: "ZA",
+        code: "1862",
+        lat: -26.2609931,
+        lng: 27.9502322,
+      },
       collection_contact: {
         name: theBusinessName,
-        mobile_number: {
-          type: "",
-          company: "",
-          street_address: streetAddress,
-          local_area: localArea,
-          city: localCity,
-          zone: zoneCity,
-          country: countryOfCity,
-          code: postalCode,
-          lat: coordinates.lat,
-          lng: coordinates.lng,
-        },
+        mobile_number: "",
         email: "cornel+sandy@uafrica.com",
       },
-      delivery_address: preciseLocation,
+      delivery_address: {
+        type: "",
+        company: "",
+        street_address: streetAddress,
+        local_area: localArea,
+        city: localCity,
+        zone: zoneCity,
+        country: countryOfCity,
+        code: postalCode,
+        lat: coordinates.lat,
+        lng: coordinates.lng,
+      },
       delivery_contact: {
         name: "Boiketlo Mochochoko",
         mobile_number: "0734157351",
@@ -801,7 +742,7 @@ const DateSelectionAndCheckout = () => {
         // Add a new document with user information, product ID, product price, quantity, and image
         await addDoc(cartCollectionRef, {
           createdAt: serverTimestamp(),
-          deliveryAddress: pastLocations,
+          deliveryAddress: location,
           deliveryDate: serverTimestamp(),
           deliveryFee: rates[selectedIndex].rate,
           deliveryGuy: data[Math.floor(Math.random() * 10)],
@@ -858,165 +799,149 @@ const DateSelectionAndCheckout = () => {
 
   useEffect(() => {
     setLocation(address.formatted_address);
-    setPastLocations((prevLocations) => [
-      ...prevLocations,
-      address.formatted_address,
-    ]);
-    // setPastPreciseLocation((prevLocations) => [...prevLocations, { location: address.formatted_address, preciseLocation: preciseLocation }]);
-  }, [address, preciseLocation]);
+}, [address,coordinates]);
 
-//     useEffect( () => {
-//       const fetchData = async () => {
-//       try {
+  useEffect(() => {
+    const updateLocation = async () => {
+      console.log("Updating location:", location);
+      if (!user || !user.uid) {
+        console.error("User not authenticated.");
+        return;
+      }
+          console.log('this is happeninn 1')
 
-        
-//     let streetAddress;
-//     let localArea;
-//     let localCity;
-//     let zoneCity;
-//     let countryOfCity;
-//     let postalCode;
+        const getAddressDetails = () => {
+          let streetAddress;
+      let localArea;
+      let localCity;
+      let zoneCity;
+      let countryOfCity;
+      let postalCode;
+      
+      console.log('this is happeninn 2')
+        const length = address.address_components.length;
 
-//     if (address.address_components) {
-//       const length = address.address_components.length;
-
-//       switch (length) {
-//         case 1:
-//           postalCode = address.address_components[0].long_name;
-//           break;
-//         case 2:
-//           countryOfCity = address.address_components[0].short_name;
-//           postalCode = address.address_components[1].long_name;
-//           break;
-//         case 3:
-//           countryOfCity = address.address_components[1].short_name;
-//           postalCode = address.address_components[2].long_name;
-//           break;
-//         case 4:
-//           localCity = address.address_components[0].long_name;
-//           countryOfCity = address.address_components[2].short_name;
-//           postalCode = address.address_components[3].long_name;
-//           break;
-//         case 5:
-//           localArea = address.address_components[0].long_name;
-//           localCity = address.address_components[1].long_name;
-//           countryOfCity = address.address_components[3].short_name;
-//           postalCode = address.address_components[4].long_name;
-//           break;
-//         case 6:
-//           localArea = address.address_components[0].long_name;
-//           localCity = address.address_components[1].long_name;
-//           zoneCity = address.address_components[2].long_name;
-//           countryOfCity = address.address_components[3].short_name;
-//           postalCode = address.address_components[4].long_name;
-//           break;
-//         case 7:
-//           streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
-//           localArea = address.address_components[2].long_name;
-//           localCity = address.address_components[3].long_name;
-//           zoneCity = address.address_components[4].long_name;
-//           countryOfCity = address.address_components[5].short_name;
-//           postalCode = address.address_components[6].long_name;
-//           break;
-//         case 8:
-//           streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-//           localArea = address.address_components[2].long_name;
-//           localCity = address.address_components[4].long_name;
-//           zoneCity = address.address_components[5].long_name;
-//           countryOfCity = address.address_components[6].short_name;
-//           postalCode = address.address_components[7].long_name;
-//           break;
-//         case 9:
-//           streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-//           localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
-//           localCity = address.address_components[5].long_name;
-//           zoneCity = address.address_components[6].long_name;
-//           countryOfCity = address.address_components[7].short_name;
-//           postalCode = address.address_components[8].long_name;
-//           break;
-//         default:
-//           console.error("Invalid length of address components.");
-//           return;
-//       }
-//     } else {
-//       console.error("Address components not available.");
-//       return;
-//     }
-
-//     if (!address || !coordinates.lat || !coordinates.lng) {
-//       console.error("Missing required data for updateDoc.");
-//       return;
-//     }
-
-//     const cartCollectionRef = collection(firestore, "Users");
-//     const q = query(cartCollectionRef, where("uid", "==", user.uid));
-//     const querySnapshot = await getDocs(q);
-//     console.log('the useEffect is called')
-//     querySnapshot.forEach(async (doc) => {
-//       try {
-//         await updateDoc(doc.ref, {
-//           location: address.formatted_address,
-//           locationDetails: {
-//             type: "",
-//             company: "",
-//             street_address: streetAddress,
-//             local_area: localArea,
-//             city: localCity,
-//             zone: zoneCity,
-//             country: countryOfCity,
-//             code: postalCode,
-//             lat: coordinates.lat,
-//             lng: coordinates.lng,
-//           },
-//         });
-//       } catch (error) {
-//         console.error("Error updating document in Users collection:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     });
-//   } catch (error) {
-//     console.error("Error in useEffect:", error);
-//     setLoading(false);
-//   }
-// };
-
-// fetchData(); // Call the async function directly
-
-// // Cleanup function
-// return () => {
-//   // Cleanup code if needed
-// };
-// }, [address, coordinates]);
-
-  // useEffect(async () => {
-  //   try {
-  //     const cartCollectionRef = collection(firestore, "Users");
-
-  //     // Check if user is defined before querying
-  //     if (user) {
-  //       const q = query(cartCollectionRef, where("uid", "==", user.uid));
-  //       const querySnapshot = await getDocs(q);
-
-  //       querySnapshot.forEach(async (doc) => {
-  //         try {
-  //           if (address.formatted_address) {
-  //             await updateDoc(doc.ref, {
-  //               pastLocations: arrayUnion(address.formatted_address),
-  //             });
-  //           }
-  //         } catch (error) {
-  //           console.error("Error updating document in Users collection:", error);
-  //         } finally {
-  //           setLoading(false);
-  //         }
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error querying Users collection:", error);
-  //     setLoading(false);
-  //   }
-  // }, [address, user,pastLocations]);
+        switch (length) {
+          case 1:
+            postalCode = address.address_components[0].long_name;
+            break;
+          case 2:
+            countryOfCity = address.address_components[0].short_name;
+            postalCode = address.address_components[1].long_name;
+            break;
+          case 3:
+            countryOfCity = address.address_components[1].short_name;
+            postalCode = address.address_components[2].long_name;
+            break;
+          case 4:
+            localCity = address.address_components[0].long_name;
+            countryOfCity = address.address_components[2].short_name;
+            postalCode = address.address_components[3].long_name;
+            break;
+          case 5:
+            localArea = address.address_components[0].long_name;
+            localCity = address.address_components[1].long_name;
+            countryOfCity = address.address_components[3].short_name;
+            postalCode = address.address_components[4].long_name;
+            break;
+          case 6:
+            localArea = address.address_components[0].long_name;
+            localCity = address.address_components[1].long_name;
+            zoneCity = address.address_components[2].long_name;
+            countryOfCity = address.address_components[3].short_name;
+            postalCode = address.address_components[4].long_name;
+            break;
+          case 7:
+            streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
+            localArea = address.address_components[2].long_name;
+            localCity = address.address_components[3].long_name;
+            zoneCity = address.address_components[4].long_name;
+            countryOfCity = address.address_components[5].short_name;
+            postalCode = address.address_components[6].long_name;
+            break;
+          case 8:
+            streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+            localArea = address.address_components[2].long_name;
+            localCity = address.address_components[4].long_name;
+            zoneCity = address.address_components[5].long_name;
+            countryOfCity = address.address_components[6].short_name;
+            postalCode = address.address_components[7].long_name;
+            break;
+          case 9:
+            streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+            localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
+            localCity = address.address_components[5].long_name;
+            zoneCity = address.address_components[6].long_name;
+            countryOfCity = address.address_components[7].short_name;
+            postalCode = address.address_components[8].long_name;
+            break;
+          default:
+            console.error("Invalid length of address components.");
+            return;
+        }
+    
+        return {
+          streetAddress: streetAddress || "",
+          localArea: localArea || "",
+          localCity: localCity || "",
+          zoneCity: zoneCity || "",
+          countryOfCity: countryOfCity || "",
+          postalCode: postalCode || "",
+        };
+        };
+    
+        const getAddressComponents = () => {
+          const addressDetails = getAddressDetails();
+          console.log('this is happeninn 3')
+          const { streetAddress, localArea, localCity, zoneCity, countryOfCity, postalCode } = addressDetails;
+    
+          return {
+            type: "",
+            company: "",
+            street_address: streetAddress,
+            local_area: localArea,
+            city: localCity,
+            zone: zoneCity,
+            country: countryOfCity,
+            code: postalCode,
+            lat: coordinates.lat,
+            lng: coordinates.lng,
+          };
+        };
+        console.log('this is happeninn 4')
+        const cartCollectionRef = collection(firestore, "Users");
+        const q = query(cartCollectionRef, where("uid", "==", user.uid));
+    
+        try {
+          const querySnapshot = await getDocs(q);
+    
+          querySnapshot.forEach(async (doc) => {
+            const userDocRef = doc.ref;
+            const currentPastLocations = doc.data()?.pastLocations || [];
+    
+            if (!currentPastLocations.includes(location)) {
+              const addressComponents = getAddressComponents();
+    
+              // Update the pastLocations field with the new location
+              await updateDoc(userDocRef, {
+                pastLocations: arrayUnion(location),
+                pastPreciseLocation: arrayUnion(addressComponents),
+              });
+    
+              console.log("Location updated successfully!");
+            } else {
+              console.log("Location already exists in pastLocations.");
+            }
+          });
+        } catch (error) {
+          console.error("Error fetching location details:", error);
+        }
+      };
+    
+      if (location) {
+        updateLocation();
+      }
+    }, [preciseLocation, location]);
 
   return (
     <>
@@ -1237,8 +1162,8 @@ const DateSelectionAndCheckout = () => {
                 //height: "790px",
                 width: "35%",
                 marginTop: "20px",
-                display:'flex',
-                justifyContent:'space-between'
+                display: "flex",
+                justifyContent: "space-between",
               }}
             >
               <View style={{ padding: "20px" }}>
@@ -1316,7 +1241,7 @@ const DateSelectionAndCheckout = () => {
 
                     <View style={{ border: "1px white solid" }}>
                       <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                        {pastLocations}
+                        {location}
                       </Typography>
 
                       <View
@@ -1334,8 +1259,8 @@ const DateSelectionAndCheckout = () => {
                       </Typography>
                       <LocationList
                         data={pastLocations}
-                        onLocationPress={(selectedItem) =>
-                          setPastLocations([selectedItem])
+                        onLocationPress={(selectedItem, index) =>
+                          handleLocationPress(selectedItem, index)
                         }
                       />
                     </View>
@@ -1343,11 +1268,11 @@ const DateSelectionAndCheckout = () => {
                 )}
 
                 {cartData.length > 1 || cartData.length === 1 ? (
-                  <View >
+                  <View>
                     <Typography style={{ color: "#FFFFFF", marginTop: "14px" }}>
                       Select Delivery date
                     </Typography>
-                    <View
+                   {location ?(<View
                       style={{
                         display: "flex",
                         flexDirection: "row",
@@ -1373,6 +1298,7 @@ const DateSelectionAndCheckout = () => {
                                   : "transparent",
                             }}
                           >
+                            
                             <View
                               style={{
                                 display: "flex",
@@ -1397,37 +1323,37 @@ const DateSelectionAndCheckout = () => {
                           </TouchableOpacity>
                         </View>
                       ))}
-                    </View>
-
+                    </View>):null}
                    
+                    
                   </View>
                 ) : null}
               </View>
               <Button
-                      variant="outlined"
-                      style={{
-                        marginBottom: 20,
-                        borderWidth: 1,
-                        borderColor: "lightgrey",
-                        borderRadius: 15,
-                       // display: "flex",
-                       // flexDirection: "row",
-                       // justifyContent: "space-evenly",
-                        alignItems: "center",
-                        width:"80%",
-                        alignSelf:"center"
-                      }}
-                      onClick={creattingShipment}
-                    >
-                      <Typography
-                        style={{
-                          fontSize: 16,
-                          color: "#FFFFFF",
-                        }}
-                      >
-                        CHECKOUT
-                      </Typography>
-                    </Button>
+                variant="outlined"
+                style={{
+                  marginBottom: 20,
+                  borderWidth: 1,
+                  borderColor: "lightgrey",
+                  borderRadius: 15,
+                  // display: "flex",
+                  // flexDirection: "row",
+                  // justifyContent: "space-evenly",
+                  alignItems: "center",
+                  width: "80%",
+                  alignSelf: "center",
+                }}
+                onClick={creattingShipment}
+              >
+                <Typography
+                  style={{
+                    fontSize: 16,
+                    color: "#FFFFFF",
+                  }}
+                >
+                  CHECKOUT
+                </Typography>
+              </Button>
             </View>
           </View>
         </Container>

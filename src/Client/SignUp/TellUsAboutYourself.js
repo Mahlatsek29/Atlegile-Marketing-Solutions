@@ -32,53 +32,6 @@ const TellUsAboutYourself = ({ navigation }) => {
   const handleContinue = async (e) => {
     e.preventDefault();
     
-    // let streetAddress;
-
-    // if (address.address_components.length === 8) {
-    //   streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-    // } else if (address.address_components.length === 9) {
-    //   streetAddress = ` ${address.address_components[1].long_name} ${address.address_components[2].long_name} `;
-    // }
-
-    // let localArea;
-
-    // if (address.address_components.length === 8) {
-    //   localArea = `${address.address_components[2].long_name} `;
-    // } else if (address.address_components.length === 9) {
-    //   localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
-    // }
-    // let localCity;
-
-    // if (address.address_components.length === 8) {
-    //   localCity = `${address.address_components[4].long_name}`;
-    // } else if (address.address_components.length === 9) {
-    //   localCity = `${address.address_components[5].long_name} `;
-    // }
-
-    // let zoneCity;
-
-    // if (address.address_components.length === 8) {
-    //   zoneCity = `${address.address_components[5].long_name}`;
-    // } else if (address.address_components.length === 9) {
-    //   zoneCity = `${address.address_components[6].long_name} `;
-    // }
-
-    // let countryOfCity;
-
-    // if (address.address_components.length === 8) {
-    //   countryOfCity = `${address.address_components[6].long_name}`;
-    // } else if (address.address_components.length === 9) {
-    //   countryOfCity = `${address.address_components[7].short_name} `;
-    // }
-
-    // let postalCode;
-
-    // if (address.address_components.length === 8) {
-    //   postalCode = `${address.address_components[7].long_name}`;
-    // } else if (address.address_components.length === 9) {
-    //   postalCode = `${address.address_components[8].long_name} `;
-    // }
-
     if (!name || !surname || !phone || !gender || !email ) {
       alert("Please fill in all fields before continuing.");
       return;
@@ -95,22 +48,9 @@ const TellUsAboutYourself = ({ navigation }) => {
         surname,
         phone,
         gender,
-        email,
-       // location,
+        email,      
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        uid: user.uid,
-        // locationDetails: {
-        //   type: "",
-        //   company: "",
-        //   street_address: streetAddress,
-        //   local_area: localArea,
-        //   city: localCity,
-        //   zone: zoneCity,
-        //   country: countryOfCity,
-        //   code: postalCode,
-        //   lat: coordinates.lat,
-        //   lng: coordinates.lng,
-        // },
+        uid: user.uid,       
       });
 
       console.log("User information successfully submitted to Firestore.");
@@ -125,18 +65,7 @@ const TellUsAboutYourself = ({ navigation }) => {
   };
   const emptyOption = [""];
   const genderOptions = ["Male", "Female", "Other"];
-  
-  const handlePlaceSelect = ({ place, latLng }) => {
-    // Do something with the selected place details and latitude/longitude
-    console.log("Selected place:", place.address_components);
-    console.log("Latitude and Longitude:", latLng);
-    setAddress(place);
-    setCoordinates(latLng);
-  };
 
-  useEffect(() => {
-    setLocation(address.formatted_address);
-  }, [address]);
 
   return (
     <ImageBackground

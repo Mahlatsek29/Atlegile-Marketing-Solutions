@@ -10,13 +10,14 @@
     "build": "expo export:web"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.1",
+    "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^19.0.0",
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.14.18",
-    "@mui/material": "^5.14.18",
+    "@mui/joy": "^5.0.0-beta.24",
+    "@mui/material": "^5.15.6",
     "@mui/styled-engine-sc": "^6.0.0-alpha.6",
     "@react-google-maps/api": "^2.19.2",
     "@react-native-async-storage/async-storage": "^1.18.2",

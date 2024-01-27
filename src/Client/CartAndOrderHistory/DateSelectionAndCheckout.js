@@ -538,6 +538,59 @@ const DateSelectionAndCheckout = () => {
   }, [preciseLocation, location]);
 
   const creattingShipment = async () => {
+    console.log('the delivery address is ', preciseLocation);
+    const commonShipment = {
+      collection_address: {
+        type: "business",
+        company: "Atlegile@co.za",
+        street_address: "Diepkloof 319-Iq",
+        local_area: "Soweto",
+        city: "City of Johannesburg Metropolitan Municipality",
+        zone: "Gauteng",
+        country: "ZA",
+        code: "1862",
+        lat: -26.2609931,
+        lng: 27.9502322,
+      },
+      collection_contact: {
+        name: theBusinessName,
+        mobile_number: "",
+        email: "cornel+sandy@uafrica.com",
+      },
+      
+      delivery_contact: {
+        name: "Boiketlo Mochochoko",
+        mobile_number: "0734157351",
+        email: "mochochokoboiketlo@gmail.com",
+      },
+      parcels: [
+        {
+          parcel_description: "Standard flyer",
+          submitted_length_cm: 20,
+          submitted_width_cm: 20,
+          submitted_height_cm: 10,
+          submitted_weight_kg: 2,
+        },
+      ],
+      opt_in_rates: [],
+      opt_in_time_based_rates: [76],
+      special_instructions_collection:
+        "This is a test shipment - DO NOT COLLECT",
+      special_instructions_delivery: "This is a test shipment - DO NOT DELIVER",
+      declared_value: 1100,
+      collection_min_date: "2021-05-21T00:00:00.000Z",
+      collection_after: "08:00",
+      collection_before: "16:00",
+      delivery_min_date: "2021-05-21T00:00:00.000Z",
+      delivery_after: "10:00",
+      delivery_before: "17:00",
+      custom_tracking_reference: "",
+      customer_reference: "ORDERNO123",
+      service_level_code: "ECO",
+      mute_notifications: false,
+    }
+
+
     let streetAddress;
     let localArea;
     let localCity;
@@ -545,7 +598,7 @@ const DateSelectionAndCheckout = () => {
     let countryOfCity;
     let postalCode;
 
-    if (address.address_components) {
+    if (address.address_components && isPicked) {
       const length = address.address_components.length;
 
       switch (length) {
@@ -606,29 +659,12 @@ const DateSelectionAndCheckout = () => {
           console.error("Invalid length of address components.");
           return;
       }
-    } else {
-      console.error("Address components not available.");
-      return;
     }
-    const shipment = {
-      collection_address: {
-        type: "business",
-        company: "Atlegile@co.za",
-        street_address: "Diepkloof 319-Iq",
-        local_area: "Soweto",
-        city: "City of Johannesburg Metropolitan Municipality",
-        zone: "Gauteng",
-        country: "ZA",
-        code: "1862",
-        lat: -26.2609931,
-        lng: 27.9502322,
-      },
-      collection_contact: {
-        name: theBusinessName,
-        mobile_number: "",
-        email: "cornel+sandy@uafrica.com",
-      },
-      delivery_address: {
+
+    console.log('the delivery address is ', preciseLocation);
+
+    const deliveryAddress = {
+      delivery_address: preciseLocation || {
         type: "",
         company: "",
         street_address: streetAddress,
@@ -636,63 +672,38 @@ const DateSelectionAndCheckout = () => {
         city: localCity,
         zone: zoneCity,
         country: countryOfCity,
-        code: postalCode,
+        code: postalCode,  // Ensure this is a valid postal code for the specified country
         lat: coordinates.lat,
         lng: coordinates.lng,
       },
-      delivery_contact: {
-        name: "Boiketlo Mochochoko",
-        mobile_number: "0734157351",
-        email: "mochochokoboiketlo@gmail.com",
-      },
-      parcels: [
-        {
-          parcel_description: "Standard flyer",
-          submitted_length_cm: 20,
-          submitted_width_cm: 20,
-          submitted_height_cm: 10,
-          submitted_weight_kg: 2,
-        },
-      ],
-      opt_in_rates: [],
-      opt_in_time_based_rates: [76],
-      special_instructions_collection:
-        "This is a test shipment - DO NOT COLLECT",
-      special_instructions_delivery: "This is a test shipment - DO NOT DELIVER",
-      declared_value: 1100,
-      collection_min_date: "2021-05-21T00:00:00.000Z",
-      collection_after: "08:00",
-      collection_before: "16:00",
-      delivery_min_date: "2021-05-21T00:00:00.000Z",
-      delivery_after: "10:00",
-      delivery_before: "17:00",
-      custom_tracking_reference: "",
-      customer_reference: "ORDERNO123",
-      service_level_code: "ECO",
-      mute_notifications: false,
     };
+  //  console.log('deliveryAddress:', deliveryAddress); 
+    const shipment = { ...commonShipment, ...deliveryAddress };
+   // console.log('shipment object:', shipment);  // Log the entire shipment object
+    console.log("shipmentCollectionAdress ", shipment.collection_address);
+    console.log("shipmentDeliverAdress ", shipment.delivery_address);
+
     const config = {
       headers: {
         Authorization: `Bearer ${CourierAPIKey}`,
         "Content-Type": "application/json",
       },
     };
-
+    
     try {
       const response = await axios.post(
         "https://api.shiplogic.com/v2/shipments",
         shipment,
         config
       );
-      console.log(
-        "Courier API creating shpment response:",
-        response.data.short_tracking_reference
-      );
+    
+      console.log("Courier API creating shipment response:", response.data.short_tracking_reference);
       setTrackingRef(response.data.short_tracking_reference);
+    
       return response.data;
     } catch (error) {
-      console.error("Error getting shipment details", error);
-
+      console.error("Error creating shipment:", error);
+    
       if (error.response) {
         console.log("Response status:", error.response.status);
         console.log("Response data:", error.response.data);
@@ -702,7 +713,9 @@ const DateSelectionAndCheckout = () => {
         console.log("Error in making the request:", error.message);
       }
     }
+    
   };
+
 
   useEffect(() => {
     const tackingShipment = async () => {
@@ -722,7 +735,7 @@ const DateSelectionAndCheckout = () => {
           "Courier API traking shipment response:",
           response.data.shipments[0].status
         );
-
+        console.log('shipmentStatus is ',response.data)
         setShipmentStatus(response.data.shipments[0].status);
       } catch (error) {
         console.error("Error getting shipments", error);
@@ -774,6 +787,7 @@ const DateSelectionAndCheckout = () => {
     };
     handleAddToCart();
   }, [shipmentStatus]);
+  
 
   const handlePayment = () => {
     // console.log(shipmentStatus)

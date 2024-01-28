@@ -172,7 +172,7 @@ const Navbar = () => {
               <View
                 style={{ marginLeft: "10px" }}
                 onClick={() => {
-                  navigation.navigate("AccountAndBusiness");
+                  navigation.navigate("UserProfile");
                 }}>
                 <Typography variant="subtitle1">
                   Welcome, {userData.name}

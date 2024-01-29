@@ -713,104 +713,109 @@ export default function BusinessAccount() {
                           </Box>
                         </Grid>
                       </Grid>
-                      <Card
-                        sx={{
-                          width: "80%",
-                          p: theme.spacing(2),
-                          marginBottom: theme.spacing(2),
-                          alignSelf: "flex-end",
-                          mx: "auto", // Center the Card horizontally
-                          height: "auto",
-                        }}
-                      >
-                        <Box p={theme.spacing(2)}>
-                          <Image
-                            source={BusinessAccountPlus}
-                            alt="business plus logo"
-                            p={theme.spacing(2)}
-                            style={{
-                              width: "17vw", // Make the width 100% of the container
-                              height: "12vh", // Maintain the aspect ratio
-                              // maxWidth: "17vw", // Limit the maximum width if needed
-                              // maxHeight: "12vh", // Limit the maximum height if needed
-                            }}
-                          />
-                        </Box>
-
-                        <Box p={theme.spacing(2)}>
-                          <Box
-                            display="flex"
-                            flexDirection={{ xs: "column", md: "row" }}
-                            justifyContent="space-between"
-                            alignItems="center"
-                            mb={theme.spacing(2)}
-                          >
-                            <Typography
+                      <View style={{ marginBottom: 10,paddingBottom:"50px" }}>
+                        <Card
+                          sx={{
+                            width: "80%",
+                            p: 0,
+                            alignSelf: "flex-end",
+                            mx: "auto", // Center the Card horizontally
+                            height: "auto",
+                          }}
+                        //  style={{ marginBottom: 10 ,paddingBottom:10}} 
+                          mb={10}// Add marginBottom directly in inline style
+                        >
+                          <Box p={theme.spacing(2)}>
+                            <Image
+                              source={BusinessAccountPlus}
+                              alt="business plus logo"
+                              p={theme.spacing(2)}
                               style={{
-                                color: "#252b42",
-                                fontWeight: "700",
-                                fontSize: theme.typography.h4.fontSize,
-                                width: { xs: "100%", md: "50%" },
+                                width: "17vw", // Make the width 100% of the container
+                                height: "12vh", // Maintain the aspect ratio
+                                // maxWidth: "17vw", // Limit the maximum width if needed
+                                // maxHeight: "12vh", // Limit the maximum height if needed
                               }}
-                            >
-                              BUSINESS PLUS <br/>
-                              SUBSCRIPTION
-                            </Typography>
-
-                            <Box
-                              textAlign="center"
-                              mb={{ xs: theme.spacing(2), md: 0 }}
-                            >
-                              <Typography
-                                style={{
-                                  color: "#23a6f0",
-                                  fontWeight: "700",
-                                  fontSize: theme.typography.h3.fontSize,
-                                }}
-                              >
-                                R150
-                              </Typography>
-                              <Typography
-                                style={{
-                                  color: "#b8d9f7",
-                                  fontWeight: "700",
-                                  fontSize: theme.typography.h6.fontSize,
-                                }}
-                              >
-                                Per Month
-                              </Typography>
-                            </Box>
+                            />
                           </Box>
 
-                          <Typography paragraph mb={theme.spacing(4)}>
-                            Unlock More Opportunities with Business Plus
-                            Subscription
-                          </Typography>
-
-                          <Box mb={theme.spacing(2)}>
-                            {[
-                              "List Unlimited Products",
-                              "Priority Support",
-                              "Exclusive Promotions",
-                            ].map((item, index) => (
-                              <Box
-                                key={index}
-                                display="flex"
-                                alignItems="center"
-                                mb={theme.spacing(2)}
+                          <Box p={theme.spacing(2)}>
+                            <Box
+                              display="flex"
+                              flexDirection={{ xs: "column", md: "row" }}
+                              justifyContent="space-between"
+                              alignItems="center"
+                              mb={theme.spacing(2)}
+                            >
+                              <Typography
+                                style={{
+                                  color: "#252b42",
+                                  fontWeight: 500,
+                                  fontSize: theme.typography.h4.fontSize,
+                                  width: { xs: "100%", md: "50%" },
+                                }}
                               >
-                                <CheckCircleIcon style={{ color: "#2dc071" }} />
+                                BUSINESS PLUS <br />
+                                SUBSCRIPTION
+                              </Typography>
+
+                              <Box
+                                textAlign="center"
+                                mb={{ xs: theme.spacing(2), md: 0 }}
+                              >
                                 <Typography
-                                  ml={theme.spacing(1)}
-                                  fontWeight="bold"
+                                  style={{
+                                    color: "#23a6f0",
+                                    fontWeight: "700",
+                                    fontSize: theme.typography.h3.fontSize,
+                                  }}
                                 >
-                                  {item}
+                                  R150
+                                </Typography>
+                                <Typography
+                                  style={{
+                                    color: "#b8d9f7",
+                                    fontWeight: "700",
+                                    fontSize: theme.typography.h6.fontSize,
+                                  }}
+                                >
+                                  Per Month
                                 </Typography>
                               </Box>
-                            ))}
+                            </Box>
+
+                            <Typography paragraph mb={theme.spacing(4)}>
+                              Unlock More Opportunities with Business Plus
+                              Subscription
+                            </Typography>
+
+                            <Box mb={theme.spacing(2)}>
+                              {[
+                                "List Unlimited Products",
+                                "Priority Support",
+                                "Exclusive Promotions",
+                              ].map((item, index) => (
+                                <Box
+                                  key={index}
+                                  display="flex"
+                                  alignItems="center"
+                                  mb={theme.spacing(2)}
+                                >
+                                  <CheckCircleIcon
+                                    style={{ color: "#2dc071" }}
+                                  />
+                                  <Typography
+                                    ml={theme.spacing(1)}
+                                    fontWeight="bold"
+                                  >
+                                    {item}
+                                  </Typography>
+                                </Box>
+                              ))}
+                            </Box>
                           </Box>
-                        </Box>
-                      </Card>
+                        </Card>
+                      </View>
                     </Box>
                   </Grid>
                 </Grid>

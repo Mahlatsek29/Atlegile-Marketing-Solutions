@@ -749,6 +749,7 @@ const DateSelectionAndCheckout = () => {
           response.data.shipments[0].tracking_events[0].status
         );
         setShipmentStatus(response.data.shipments[0].tracking_events[0].status);
+        
       } catch (error) {
         console.error("Error getting shipments", error);
         if (error.response) {
@@ -771,6 +772,7 @@ const DateSelectionAndCheckout = () => {
         // Add a new document with user information, product ID, product price, quantity, and image
         await addDoc(cartCollectionRef, {
           createdAt: serverTimestamp(),
+          trackingEventsRef:trackingRef,
           deliveryAddress: location,
           deliveryDate: serverTimestamp(),
           deliveryFee: rates[selectedIndex].rate,

@@ -9,7 +9,16 @@ import {
   TextInput,
   FlatList,
 } from "react-native";
-import { Container, Typography, Button } from "@mui/material";
+import {
+  Container,
+  Typography,
+  Button,
+  Grid,
+  Box,
+  Card,
+  ImageList,
+  ImageListItem,
+} from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
@@ -89,6 +98,7 @@ const DateSelectionAndCheckout = () => {
   const [arrayIndex, setArrayIndex] = useState(null);
   const [forceUpdate, setForceUpdate] = useState(false);
   const [isLocationSelected, setIsLocationSelected] = useState(false);
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -323,7 +333,6 @@ const DateSelectionAndCheckout = () => {
         }}
       >
         <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
-          
           {address && address.slice(0, 40)}
           {address && address.length < 50 ? "" : "..."}
         </Text>
@@ -538,7 +547,7 @@ const DateSelectionAndCheckout = () => {
   }, [preciseLocation, location]);
 
   const creattingShipment = async () => {
-    console.log('the delivery address is ', preciseLocation);
+    console.log("the delivery address is ", preciseLocation);
     const commonShipment = {
       collection_address: {
         type: "business",
@@ -557,7 +566,7 @@ const DateSelectionAndCheckout = () => {
         mobile_number: "",
         email: "cornel+sandy@uafrica.com",
       },
-      
+
       delivery_contact: {
         name: "Boiketlo Mochochoko",
         mobile_number: "0734157351",
@@ -588,8 +597,7 @@ const DateSelectionAndCheckout = () => {
       customer_reference: "ORDERNO123",
       service_level_code: "ECO",
       mute_notifications: false,
-    }
-
+    };
 
     let streetAddress;
     let localArea;
@@ -661,7 +669,7 @@ const DateSelectionAndCheckout = () => {
       }
     }
 
-    console.log('the delivery address is ', preciseLocation);
+    console.log("the delivery address is ", preciseLocation);
 
     const deliveryAddress = {
       delivery_address: preciseLocation || {
@@ -672,14 +680,14 @@ const DateSelectionAndCheckout = () => {
         city: localCity,
         zone: zoneCity,
         country: countryOfCity,
-        code: postalCode,  // Ensure this is a valid postal code for the specified country
+        code: postalCode, // Ensure this is a valid postal code for the specified country
         lat: coordinates.lat,
         lng: coordinates.lng,
       },
     };
-  //  console.log('deliveryAddress:', deliveryAddress); 
+    //  console.log('deliveryAddress:', deliveryAddress);
     const shipment = { ...commonShipment, ...deliveryAddress };
-   // console.log('shipment object:', shipment);  // Log the entire shipment object
+    // console.log('shipment object:', shipment);  // Log the entire shipment object
     console.log("shipmentCollectionAdress ", shipment.collection_address);
     console.log("shipmentDeliverAdress ", shipment.delivery_address);
 
@@ -689,21 +697,24 @@ const DateSelectionAndCheckout = () => {
         "Content-Type": "application/json",
       },
     };
-    
+
     try {
       const response = await axios.post(
         "https://api.shiplogic.com/v2/shipments",
         shipment,
         config
       );
-    
-      console.log("Courier API creating shipment response:", response.data.short_tracking_reference);
+
+      console.log(
+        "Courier API creating shipment response:",
+        response.data.short_tracking_reference
+      );
       setTrackingRef(response.data.short_tracking_reference);
-    
+
       return response.data;
     } catch (error) {
       console.error("Error creating shipment:", error);
-    
+
       if (error.response) {
         console.log("Response status:", error.response.status);
         console.log("Response data:", error.response.data);
@@ -713,9 +724,7 @@ const DateSelectionAndCheckout = () => {
         console.log("Error in making the request:", error.message);
       }
     }
-    
   };
-
 
   useEffect(() => {
     const tackingShipment = async () => {
@@ -735,8 +744,11 @@ const DateSelectionAndCheckout = () => {
           "Courier API traking shipment response:",
           response.data.shipments[0].status
         );
-        console.log('shipmentStatus is ',response.data)
-        setShipmentStatus(response.data.shipments[0].status);
+        console.log(
+          "shipmentStatus is ",
+          response.data.shipments[0].tracking_events[0].status
+        );
+        setShipmentStatus(response.data.shipments[0].tracking_events[0].status);
       } catch (error) {
         console.error("Error getting shipments", error);
         if (error.response) {
@@ -787,7 +799,6 @@ const DateSelectionAndCheckout = () => {
     };
     handleAddToCart();
   }, [shipmentStatus]);
-  
 
   const handlePayment = () => {
     // console.log(shipmentStatus)
@@ -972,417 +983,422 @@ const DateSelectionAndCheckout = () => {
     <>
       <FollowUs />
       <Navbar />
-      <ScrollView style={{ flexDirection: "column" }}>
-        <Container fixed sx={{ minHeight: "90vh" }}>
-          <View style={{ display: "flex", flexDirection: "row" }}>
-            <View
-              style={{
-                height: "800px",
-                width: "65%",
-                marginTop: "20px",
-                marginRight: "10px",
-              }}
-            >
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                <Typography>
-                  <TouchableOpacity
-                    onPress={navigateToLanding}
-                    style={{ color: "grey" }}
-                  >
-                    <Text>Acount /</Text>
-                  </TouchableOpacity>
+      <ScrollView style={{ flexDirection: "column" ,backgroundColor:'white'}}>
+        <Container sx={{ minHeight: "90vh" }}>
+          <Grid container spacing={2} mx="auto">
+            <Grid item xs={12} md={8}>
+              {/* Left Side Content */}
+              <Box mt={2} pr={4}>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  ORDER #ABC246
                 </Typography>
-                <Typography>
-                  <TouchableOpacity
-                    onPress={navigateToOrderHistory}
-                    style={{ color: "grey" }}
-                  >
-                    Cart
-                  </TouchableOpacity>
-                </Typography>
-              </View>
-              <Typography
-                variant="h4"
-                style={{ marginTop: "50px", fontWeight: "bold" }}
-              >
-                CART
-              </Typography>
-              {cartData.length < 1 ? (
-                <h2>Your Cart Is Currently Empty</h2>
-              ) : (
-                <>
-                  <Typography variant="h6" style={{ fontWeight: "bold" }}>
-                    ORDER #ABC246
+                <View style={{ display: "flex", flexDirection: "row" }}>
+                  <Typography>
+                    <TouchableOpacity
+                      onPress={navigateToLanding}
+                      style={{ color: "grey" }}
+                    >
+                      <Text>Acount /</Text>
+                    </TouchableOpacity>
                   </Typography>
-                  <ScrollView style={{ flex: 1 }}>
+                  <Typography>
+                    <TouchableOpacity
+                      onPress={navigateToOrderHistory}
+                      style={{ color: "grey" }}
+                    >
+                      Cart
+                    </TouchableOpacity>
+                  </Typography>
+                </View>
+                <Typography
+                  variant="h4"
+                  style={{ marginTop: "50px", fontWeight: "bold" }}
+                >
+                  CART
+                </Typography>
+                <ScrollView
+                  style={{ flex: 1, height: "50vh", alignSelf: "center" }}
+                  showsVerticalScrollIndicator={false}
+                >
+                  <Grid container spacing={2}>
                     {cartData.map((item, index) => (
-                      <View
-                        style={{
-                          width: "100%",
-                          height: "20vh",
-                          borderBottomWidth: 2,
-                          borderBottomColor: "#1D1D1D",
-                          // backgroundColor: "yellow",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          paddingTop: 2,
-                        }}
-                        key={index}
-                      >
-                        {/* <View
-                      style={{
-                        width: "25%",
-                        // height: "100%",
-                        backgroundColor: "#000026",
-                        // backgroundColor:'red'
-                      }}> */}
-                        <Image
-                          source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
-                          style={{
-                            width: "30%",
-                            height: "100%",
-                            resizeMode: "cover",
-                          }}
-                        />
-                        {/* </View> */}
-                        <View style={{ width: "30%", paddingLeft: 10 }}>
-                          <Text
-                            style={{
-                              fontSize: 16,
-                              fontWeight: "bold",
-                              color: "gray",
-                            }}
+                      <Grid item xs={12} key={index}>
+                        <Card sx={{ height: "auto",  borderBottomColor:"black"}}>
+                          <Box
+                            display="flex"
+                            flexDirection={{ xs: "column", md: "row" }}
+                            alignItems="center"
+                            borderBottomWidth={2}
+                            padding={2}
                           >
-                            Product
-                          </Text>
-                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                            {item.name}
-                          </Text>
-                        </View>
-                        <View style={{ width: "30%", paddingLeft: 10 }}>
-                          <Text
-                            style={{
-                              fontSize: 16,
-                              fontWeight: "bold",
-                              color: "gray",
-                            }}
-                          >
-                            Quantity
-                          </Text>
-                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                            {item.quantity}
-                          </Text>
-                        </View>
-                        <View style={{ width: "30%", paddingLeft: 10 }}>
-                          <Text
-                            style={{
-                              fontSize: 16,
-                              fontWeight: "bold",
-                              color: "gray",
-                            }}
-                          >
-                            Amount
-                          </Text>
-                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                            {item.amount}
-                          </Text>
-                        </View>
-                      </View>
-                    ))}
-                  </ScrollView>
-                </>
-              )}
+                            <Box
+                              width={{ xs: "100%", md: "30%" }}
+                              marginBottom={{ xs: 2, md: 0 }}
+                            >
+                              <ImageList cols={1} rowHeight="100%">
+                                <ImageListItem style={{ width: "100%" }}>
+                                  <img
+                                    src={item.image}
+                                    alt={item.name}
+                                    style={{
+                                      width: "100%",
+                                      height: "100%",
+                                      objectFit: "cover",
+                                    }}
+                                  />
+                                </ImageListItem>
+                              </ImageList>
+                            </Box>
 
-              {/* <View>
+                            <Box
+                              width={{ xs: "100%", md: "30%" }}
+                              paddingLeft={{ xs: 0, md: 2 }}
+                              marginBottom={{ xs: 2, md: 0 }}
+                            >
+                              <Typography
+                                fontSize={16}
+                                fontWeight="bold"
+                                color="gray"
+                              >
+                                Product
+                              </Typography>
+                              <Typography fontSize={18} fontWeight="bold">
+                                {item.name}
+                              </Typography>
+                            </Box>
+
+                            <Box
+                              width={{ xs: "100%", md: "30%" }}
+                              paddingLeft={{ xs: 0, md: 2 }}
+                              marginBottom={{ xs: 2, md: 0 }}
+                            >
+                              <Typography
+                                fontSize={16}
+                                fontWeight="bold"
+                                color="gray"
+                              >
+                                Quantity
+                              </Typography>
+                              <Typography fontSize={18} fontWeight="bold">
+                                {item.quantity}
+                              </Typography>
+                            </Box>
+
+                            <Box
+                              width={{ xs: "100%", md: "30%" }}
+                              paddingLeft={{ xs: 0, md: 2 }}
+                            >
+                              <Typography
+                                fontSize={16}
+                                fontWeight="bold"
+                                color="gray"
+                              >
+                                Amount
+                              </Typography>
+                              <Typography fontSize={18} fontWeight="bold">
+                                {item.amount}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </Card>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </ScrollView>
+
+                {/* <View>
                 <Text>Hello world</Text>
               </View> */}
-              {cartData.length > 1 || cartData.length === 1 ? (
-                <>
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Typography style={{ fontWeight: "bold" }}>
-                      Order Summary
-                    </Typography>
-                  </View>
-                  <View
-                    style={{
-                      display: "flex",
-                      marginTop: "8px",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Typography style={{ fontWeight: "bold" }}>
-                      Delivery
-                    </Typography>
-                    {selectedIndex !== null && (
-                      <Typography style={{ fontWeight: "bold" }}>
-                        R{rates[selectedIndex].base_rate.charge}
-                      </Typography>
-                    )}
-                  </View>
-
-                  <View
-                    style={{
-                      display: "flex",
-                      marginTop: "8px",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Typography style={{ fontWeight: "bold" }}>
-                      {" "}
-                      Agent Referral
-                    </Typography>
-                    <Typography style={{ fontWeight: "bold" }}>
-                      {selectedIndex !== null
-                        ? `R${agentReferral.toFixed(2)}`
-                        : null}
-                    </Typography>
-                  </View>
-                  <View
-                    style={{
-                      display: "flex",
-                      marginTop: "8px",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Typography style={{ fontWeight: "bold" }}>
-                      {" "}
-                      Tax{" "}
-                    </Typography>
-                    <Typography style={{ fontWeight: "bold" }}>
-                      {selectedIndex !== null ? `R${tax.toFixed(2)}` : null}
-                    </Typography>
-                  </View>
-
-                  <View
-                    style={{
-                      display: "flex",
-                      marginTop: "8px",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                      Total
-                    </Typography>
-                    <Typography variant="h5" style={{ fontWeight: "bold" }}>
-                      R {orderTotal}
-                    </Typography>
-                  </View>
-                </>
-              ) : null}
-            </View>
-
-            <View
-              style={{
-                backgroundColor: "#062338",
-                //height: "790px",
-                width: "35%",
-                marginTop: "20px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <View style={{ padding: "20px" }}>
-                <Typography
-                  variant="h5"
-                  style={{
-                    color: "#FFFFFF",
-                    marginBottom: "20px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  DELIVERY DETAILS
-                </Typography>
-                {addressInput ? (
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "flex-star",
-                      width: "100%",
-                      height: "80vh",
-                      backgroundColor: "white",
-                    }}
-                  >
-                    <PlaceAutocomplete
-                      style={{}}
-                      onPlaceSelect={handlePlaceSelect}
-                    />
-
-                    <TouchableOpacity
-                      style={{
-                        color: "black",
-                        border: "2px #062338 solid",
-                        padding: 10,
-                        borderRadius: 30,
-                        //marginLeft:10
-                        height: "6.5vh",
-                        //backgroundColor: "#062338",
-                      }}
-                      onPress={() => setAddessInput(false)} // Assuming setAddessInput is a function
-                    >
-                      <Text style={{ color: "#062338", paddingHorizontal: 8 }}>
-                        Close
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                ) : (
+                {cartData.length > 1 || cartData.length === 1 ? (
                   <>
                     <View
                       style={{
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "space-between",
-                        alignItems: "center",
                       }}
                     >
-                      <Typography style={{ color: "#B7B9BC" }}>
-                        Delivery Address
+                      <Typography style={{ fontWeight: "bold" }}>
+                        Order Summary
                       </Typography>
-                      <TouchableOpacity
-                        style={{
-                          color: "#B7B9BC",
-                          border: "2px white solid",
-                          padding: 10,
-                          borderRadius: 30,
-                        }}
-                        onPress={() => setAddessInput(true)} // Assuming setAddessInput is a function
-                      >
-                        <Text style={{ color: "white", paddingHorizontal: 10 }}>
-                          View
-                        </Text>
-                      </TouchableOpacity>
+                    </View>
+                    <View
+                      style={{
+                        display: "flex",
+                        marginTop: "8px",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography style={{ fontWeight: "bold" }}>
+                        Delivery
+                      </Typography>
+                      {selectedIndex !== null && (
+                        <Typography style={{ fontWeight: "bold" }}>
+                          R{rates[selectedIndex].base_rate.charge}
+                        </Typography>
+                      )}
                     </View>
 
-                    <View style={{ border: "1px white solid" }}>
-                      <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                        {location && location.slice(0, 30)}
-                        {location && location.length < 50 ? "" : "..."}
+                    <View
+                      style={{
+                        display: "flex",
+                        marginTop: "8px",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography style={{ fontWeight: "bold" }}>
+                        {" "}
+                        Agent Referral
                       </Typography>
+                      <Typography style={{ fontWeight: "bold" }}>
+                        {selectedIndex !== null
+                          ? `R${agentReferral.toFixed(2)}`
+                          : null}
+                      </Typography>
+                    </View>
+                    <View
+                      style={{
+                        display: "flex",
+                        marginTop: "8px",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography style={{ fontWeight: "bold" }}>
+                        {" "}
+                        Tax{" "}
+                      </Typography>
+                      <Typography style={{ fontWeight: "bold" }}>
+                        {selectedIndex !== null ? `R${tax.toFixed(2)}` : null}
+                      </Typography>
+                    </View>
 
-                      <View
-                        style={{
-                          marginTop: "10px",
-                          borderBottomWidth: 1,
-                          borderBottomColor: "lightgrey",
-                        }}
-                      ></View>
-                      <Typography
-                        variant="h5"
-                        sx={{ color: "#B7B9BC", fontSize: 20, marginTop: 1 }}
-                      >
-                        Recent Addresses
+                    <View
+                      style={{
+                        display: "flex",
+                        marginTop: "8px",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography variant="h5" style={{ fontWeight: "bold" }}>
+                        Total
                       </Typography>
-                      <LocationList
-                        data={pastLocations}
-                        onLocationPress={(selectedItem, index) =>
-                          handleLocationPress(selectedItem, index)
-                        }
-                      />
+                      <Typography variant="h5" style={{ fontWeight: "bold" }}>
+                        R {orderTotal}
+                      </Typography>
                     </View>
                   </>
-                )}
-
-                {cartData.length > 1 || cartData.length === 1 ? (
+                ) : null}
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              {/* Right Side Content */}
+              <Box
+                backgroundColor="#062338"
+                mt={2}
+                p={2}
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-between"
+                mpr={4}
+              >
+                <Box mb={4}>
                   <View>
-                    <Typography style={{ color: "#FFFFFF", marginTop: "14px" }}>
-                      Select Delivery date
+                    <Typography
+                      variant="h5"
+                      style={{
+                        color: "#FFFFFF",
+                        marginBottom: "20px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      DELIVERY DETAILS
                     </Typography>
-                    {location ? (
+                    {addressInput ? (
                       <View
                         style={{
                           display: "flex",
                           flexDirection: "row",
-                          justifyContent: "flex-start",
-                          flexWrap: "wrap", // Added flexWrap to allow wrapping
+                          justifyContent: "space-between",
+                          alignItems: "flex-star",
                           width: "100%",
+                          height: "80vh",
+                          backgroundColor: "white",
                         }}
                       >
-                        {rates.map((rate, index) => (
-                          <View key={index}>
-                            <TouchableOpacity
-                              onPress={() => handlePress(index)}
-                              style={{
-                                height: "100px",
-                                width: "80px",
-                                marginTop: "10px",
-                                borderWidth: 1,
-                                borderColor: "white",
-                                marginRight: 10,
-                                backgroundColor:
-                                  selectedIndex === index
-                                    ? "#2E5A88"
-                                    : "transparent",
-                              }}
+                        <PlaceAutocomplete
+                          style={{}}
+                          onPlaceSelect={handlePlaceSelect}
+                        />
+
+                        <TouchableOpacity
+                          style={{
+                            color: "black",
+                            border: "2px #062338 solid",
+                            padding: 10,
+                            borderRadius: 30,
+                            //marginLeft:10
+                            height: "6.5vh",
+                            //backgroundColor: "#062338",
+                          }}
+                          onPress={() => setAddessInput(false)} // Assuming setAddessInput is a function
+                        >
+                          <Text
+                            style={{ color: "#062338", paddingHorizontal: 8 }}
+                          >
+                            Close
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    ) : (
+                      <>
+                        <View
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Typography style={{ color: "#B7B9BC" }}>
+                            Delivery Address
+                          </Typography>
+                          <TouchableOpacity
+                            style={{
+                              color: "#B7B9BC",
+                              border: "2px white solid",
+                              padding: 10,
+                              borderRadius: 30,
+                            }}
+                            onPress={() => setAddessInput(true)} // Assuming setAddessInput is a function
+                          >
+                            <Text
+                              style={{ color: "white", paddingHorizontal: 10 }}
                             >
-                              <View
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  marginTop: "20px",
-                                }}
-                              >
-                                <Typography style={{ color: "white" }}>
-                                  {new Date(
-                                    rate.service_level.delivery_date_to
-                                  ).toLocaleString("default", {
-                                    month: "short",
-                                  })}
-                                </Typography>
-                                <Typography
-                                  variant="h5"
-                                  style={{ color: "white" }}
+                              View
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+
+                        <View style={{ border: "1px white solid" }}>
+                          <Typography variant="h6" style={{ color: "#FFFFFF" }}>
+                            {location && location.slice(0, 30)}
+                            {location && location.length < 50 ? "" : "..."}
+                          </Typography>
+
+                          <View
+                            style={{
+                              marginTop: "10px",
+                              borderBottomWidth: 1,
+                              borderBottomColor: "lightgrey",
+                            }}
+                          ></View>
+                          <Typography
+                            variant="h5"
+                            sx={{
+                              color: "#B7B9BC",
+                              fontSize: 20,
+                              marginTop: 1,
+                            }}
+                          >
+                            Recent Addresses
+                          </Typography>
+                          <LocationList
+                            data={pastLocations}
+                            onLocationPress={(selectedItem, index) =>
+                              handleLocationPress(selectedItem, index)
+                            }
+                          />
+                        </View>
+                      </>
+                    )}
+
+                    {cartData.length > 1 || cartData.length === 1 ? (
+                      <View>
+                        <Typography
+                          style={{ color: "#FFFFFF", marginTop: "14px" }}
+                        >
+                          Select Delivery date
+                        </Typography>
+                        {location ? (
+                          <View
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              justifyContent: "flex-start",
+                              flexWrap: "wrap", // Added flexWrap to allow wrapping
+                              width: "100%",
+                            }}
+                          >
+                            {rates.map((rate, index) => (
+                              <View key={index}>
+                                <TouchableOpacity
+                                  onPress={() => handlePress(index)}
+                                  style={{
+                                    height: "100px",
+                                    width: "80px",
+                                    marginTop: "10px",
+                                    borderWidth: 1,
+                                    borderColor: "white",
+                                    marginRight: 10,
+                                    backgroundColor:
+                                      selectedIndex === index
+                                        ? "#2E5A88"
+                                        : "transparent",
+                                  }}
                                 >
-                                  {new Date(
-                                    rate.service_level.delivery_date_to
-                                  ).getDate()}
-                                </Typography>
+                                  <View
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      marginTop: "20px",
+                                    }}
+                                  >
+                                    <Typography style={{ color: "white" }}>
+                                      {new Date(
+                                        rate.service_level.delivery_date_to
+                                      ).toLocaleString("default", {
+                                        month: "short",
+                                      })}
+                                    </Typography>
+                                    <Typography
+                                      variant="h5"
+                                      style={{ color: "white" }}
+                                    >
+                                      {new Date(
+                                        rate.service_level.delivery_date_to
+                                      ).getDate()}
+                                    </Typography>
+                                  </View>
+                                </TouchableOpacity>
                               </View>
-                            </TouchableOpacity>
+                            ))}
                           </View>
-                        ))}
+                        ) : null}
                       </View>
                     ) : null}
                   </View>
-                ) : null}
-              </View>
-              <Button
-                variant="outlined"
-                style={{
-                  marginBottom: 20,
-                  borderWidth: 1,
-                  borderColor: "lightgrey",
-                  borderRadius: 15,
-                  // display: "flex",
-                  // flexDirection: "row",
-                  // justifyContent: "space-evenly",
-                  alignItems: "center",
-                  width: "80%",
-                  alignSelf: "center",
-                }}
-                onClick={creattingShipment}
-              >
-                <Typography
-                  style={{
-                    fontSize: 16,
-                    color: "#FFFFFF",
+                </Box>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    width: "80%",
+                    alignSelf: "center",
+                    borderColor: "lightgrey",
+                    borderRadius: 15,
                   }}
+                  onClick={creattingShipment}
                 >
-                  CHECKOUT
-                </Typography>
-              </Button>
-            </View>
-          </View>
+                  <Typography sx={{ fontSize: 16, color: "#FFFFFF" }}>
+                    CHECKOUT
+                  </Typography>
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
         </Container>
 
         <Footer />

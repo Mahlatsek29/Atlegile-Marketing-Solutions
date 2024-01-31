@@ -98,7 +98,8 @@ const DateSelectionAndCheckout = () => {
   const [arrayIndex, setArrayIndex] = useState(null);
   const [forceUpdate, setForceUpdate] = useState(false);
   const [isLocationSelected, setIsLocationSelected] = useState(false);
-
+  const [driver, setDriver] = useState("");
+  const [minDeliveryDate,setMinDeliveryDate] = useState('')
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -427,7 +428,7 @@ const DateSelectionAndCheckout = () => {
           submitted_weight_kg: 2,
         },
       ],
-      declared_value: 1100,
+      declared_value: cartData.price,
       collection_min_date: formattedDate,
       delivery_min_date: formattedDate,
     };
@@ -585,17 +586,17 @@ const DateSelectionAndCheckout = () => {
       opt_in_time_based_rates: [76],
       special_instructions_collection:
         "This is a test shipment - DO NOT COLLECT",
-      special_instructions_delivery: "This is a test shipment - DO NOT DELIVER",
-      declared_value: 1100,
-      collection_min_date: "2021-05-21T00:00:00.000Z",
+      special_instructions_delivery:  rates[selectedIndex].service_level.description,
+      declared_value: cartData.price,
+      collection_min_date: rates[selectedIndex].service_level.collection_date,
       collection_after: "08:00",
       collection_before: "16:00",
-      delivery_min_date: "2021-05-21T00:00:00.000Z",
+      delivery_min_date: rates[selectedIndex].service_level.delivery_date_from,
       delivery_after: "10:00",
       delivery_before: "17:00",
       custom_tracking_reference: "",
       customer_reference: "ORDERNO123",
-      service_level_code: "ECO",
+      service_level_code:  rates[selectedIndex].service_level.code,
       mute_notifications: false,
     };
 
@@ -705,12 +706,10 @@ const DateSelectionAndCheckout = () => {
         config
       );
 
-      console.log(
-        "Courier API creating shipment response:",
-        response.data.short_tracking_reference
-      );
+      console.log("Courier API creating shipment response:", response.data);
       setTrackingRef(response.data.short_tracking_reference);
-
+      setDriver(response.data.delivery_agent_id);
+      console.log('driver is ',response.data.delivery_agent_id )
       return response.data;
     } catch (error) {
       console.error("Error creating shipment:", error);
@@ -749,7 +748,6 @@ const DateSelectionAndCheckout = () => {
           response.data.shipments[0].tracking_events[0].status
         );
         setShipmentStatus(response.data.shipments[0].tracking_events[0].status);
-        
       } catch (error) {
         console.error("Error getting shipments", error);
         if (error.response) {
@@ -772,11 +770,11 @@ const DateSelectionAndCheckout = () => {
         // Add a new document with user information, product ID, product price, quantity, and image
         await addDoc(cartCollectionRef, {
           createdAt: serverTimestamp(),
-          trackingEventsRef:trackingRef,
+          trackingEventsRef: trackingRef,
           deliveryAddress: location,
           deliveryDate: serverTimestamp(),
-          deliveryFee: rates[selectedIndex].rate,
-          deliveryGuy: data[Math.floor(Math.random() * 10)],
+          deliveryFee: rates[selectedIndex].base_rate.charge,
+          deliveryGuy: driver,
           name: userData?.name,
           userName: userData?.name,
           invoiceNumber: `#${Math.floor(
@@ -985,7 +983,7 @@ const DateSelectionAndCheckout = () => {
     <>
       <FollowUs />
       <Navbar />
-      <ScrollView style={{ flexDirection: "column" ,backgroundColor:'white'}}>
+      <ScrollView style={{ flexDirection: "column", backgroundColor: "white" }}>
         <Container sx={{ minHeight: "90vh" }}>
           <Grid container spacing={2} mx="auto">
             <Grid item xs={12} md={8}>
@@ -1025,7 +1023,9 @@ const DateSelectionAndCheckout = () => {
                   <Grid container spacing={2}>
                     {cartData.map((item, index) => (
                       <Grid item xs={12} key={index}>
-                        <Card sx={{ height: "auto",  borderBottomColor:"black"}}>
+                        <Card
+                          sx={{ height: "auto", borderBottomColor: "black" }}
+                        >
                           <Box
                             display="flex"
                             flexDirection={{ xs: "column", md: "row" }}

@@ -152,173 +152,88 @@ const AddProductsAndServices = () => {
 
   return (
     <View
-      className="container"
+    style={{
+      width: "100vw",
+      backgroundImage: `url(${background})`,
+      backgroundSize: "cover",
+      height: "100vh",
+    }}
+  >
+    <Grid
+      container
       style={{
-        width: "100vw",
-        backgroundImage: `url(${background})`,
-        backgroundSize: "cover",
-        height: "100vh",
-      }}>
+        width: "100%",
+        marginBottom: "-10vh",
+        position: "absolute",
+        top: 5,
+        left: -10,
+        right: 10,
+      }}
+    >
       <Grid
-        container
+        item
+        lg={8}
+        md={8}
+        sm={{ hidden: true }}
         style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
           width: "100%",
-          marginBottom: "-10vh",
-          position: "absolute",
-          top: 5,
-          left: -10,
-          // bottom: 10,
-          right: 10,
-          // backgroundColor: "purple",
-        }}>
-        <Grid
-          item
-          lg={8}
-          md={8}
-          sm={{ hidden: true }}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            width: "100%",
-          }}>
-          <Grid
-            Container
-            lg={6}
-            md={6}
-            style={{
-              width: "100vw",
-            }}></Grid>
-          <Grid
-            Container
-            lg={6}
-            md={6}
-            style={{
-              width: "100vw",
-              marginBottom: "-8px",
-            }}>
-            <img
-              src={Banner}
-              style={{
-                height: "21vh",
-                width: "65vw",
-                paddingTop: "30vh",
-                marginLeft: "10px",
-                marginRight: "2px",
-              }}
-            />
-          </Grid>
-        </Grid>
+        }}
+      >
+        {/* Left grid content */}
+      </Grid>
 
-        <Grid
-          item
-          lg={4}
-          md={4}
-          style={{
-            backgroundColor: "#fff",
-            marginLeft: "-10px",
-            width: "100%",
-            height: "98vh",
-            alignSelf: "center",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}>
-          <Grid style={{ alignSelf: "center" }}>
+      <Grid
+        item
+        lg={4}
+        md={4}
+        style={{
+          backgroundColor: "#fff",
+          marginLeft: "-10px",
+          width: "100%",
+          height: "98vh",
+          alignSelf: "center",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <Grid style={{ alignSelf: "center" }}>
+        
             <img
               src={logo}
               style={{ height: "9vh", width: "90%", paddingTop: "8vh" }}
             />
-          </Grid>
+        
+        </Grid>
 
-          <View
-            className="form-container"
+        <View
+          className="form-container"
+          style={{
+            justifyContent: "center",
+            textAlign: "left",
+            alignItems: "center",
+            width: "75%",
+            marginLeft: "80px",
+            marginBottom: "30px",
+          }}
+        >
+          <Typography
+            variant="h2"
             style={{
-              justifyContent: "center",
+              color: "#000",
               textAlign: "left",
-              alignItems: "center",
-              width: "75%",
-              marginLeft: "80px",
-              marginBottom: "30px",
-              // backgroundColor: "red",
-            }}>
-            <Typography
-              variant="h2"
-              sx={{
-                color: "#000",
-                textAlign: "left",
-                fontSize: "15px",
-                width: "100%",
-                // backgroundColor: "blue",
-                // textAlign: "center",
-                fontWeight: "bold",
-                marginBottom: 1,
-              }}>
-              ADD PRODUCTS + SERVICES
-            </Typography>
-            <View
-              className="uploadContainer"
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "100%",
-                height: "8vh",
-              }}>
-              {images.length > 0 ? (
-                images.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image.url}
-                    alt={`Product Image ${index + 1}`}
-                    style={{
-                      padding: "15px",
-                      marginRight: "10px",
-                      width: "16%",
-                      height: "8vh",
-                    }}
-                  />
-                ))
-              ) : (
-                <img
-                  src={placeholder}
-                  alt="Placeholder"
-                  style={{
-                    padding: "5px",
-                    marginRight: "10px",
-                    width: "16%",
-                    height: "8vh",
-                  }}
-                />
-              )}
-
-              <TouchableOpacity style={{ width: 60 }}>
-                <label
-                  htmlFor="imageInput"
-                  className="add"
-                  style={{
-                    backgroundColor: "whitesmoke",
-                    color: "#000",
-                    padding: "25px",
-                    width: "10%",
-                    cursor: "pointer",
-                    alignSelf: "center",
-                  }}>
-                  +
-                </label>
-              </TouchableOpacity>
-              <input
-                type="file"
-                id="imageInput"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handleImageChange}
-                multiple
-              />
-            </View>
-
-            <View style={{ alignSelf: "center" }}>
+              fontSize: "15px",
+              width: "100%",
+              fontWeight: "bold",
+              marginBottom: 1,
+            }}
+          >
+            ADD PRODUCTS + SERVICES
+          </Typography>
+          <View style={{ alignSelf: "center" }}>
               <form onSubmit={handleContinue}>
                 <TextField
                   fullWidth
@@ -539,10 +454,36 @@ const AddProductsAndServices = () => {
                 </Button>
               </form>
             </View>
-          </View>
-        </Grid>
+          
+          {/* <Button
+            variant="contained"
+            style={{
+              width: "100%",
+              height: "10%",
+              marginTop: "5%",
+              background: "#072840",
+              borderRadius: "30px",
+            }}
+            type="submit"
+          >
+            {loading ? (
+              <View
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CircularProgress color="inherit" size={25} />
+              </View>
+            ) : (
+              "Continue"
+            )}
+          </Button> */}
+        </View>
       </Grid>
-    </View>
+    </Grid>
+  </View>
   );
 };
 

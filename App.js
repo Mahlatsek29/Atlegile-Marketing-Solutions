@@ -25,6 +25,7 @@ import DateSelectionAndCheckout from "./src/Client/CartAndOrderHistory/DateSelec
 import Favourites from "./src/Client/Favourites/Favourites";
 import BusinessCard from "./src/Client/Landing/BusinessCard";
 
+
 const Stack = createStackNavigator();
 
 function App() {

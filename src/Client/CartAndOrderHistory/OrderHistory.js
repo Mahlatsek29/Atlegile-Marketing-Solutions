@@ -43,7 +43,7 @@ const OrderHistory = () => {
     "Linda",
     "Thobile",
   ]);
-const [shipmentStatus,setShipmentStatus] = useState('')
+  const [shipmentStatus, setShipmentStatus] = useState("");
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -103,13 +103,8 @@ const [shipmentStatus,setShipmentStatus] = useState('')
       return;
     }
 
-<<<<<<< HEAD
-    const cartCollectionRef = collection(firestore, "CartHistory");
-    const q = query(cartCollectionRef, where("uid", "==", user.uid));
-=======
     const cartCollectionRef = collection(firestore, "Orders");
     const q = query(cartCollectionRef, where("userId", "==", user.uid));
->>>>>>> origin/Ristar-art
 
     try {
       const querySnapshot = await getDocs(q);
@@ -155,7 +150,7 @@ const [shipmentStatus,setShipmentStatus] = useState('')
             "Content-Type": "application/json",
           },
         };
-  
+
         try {
           const response = await axios.get(
             `https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=${cartData[0].trackingRef}`,
@@ -169,7 +164,9 @@ const [shipmentStatus,setShipmentStatus] = useState('')
             "shipmentStatus is ",
             response.data.shipments[0].tracking_events[0].status
           );
-          setShipmentStatus(response.data.shipments[0].tracking_events[0].status);
+          setShipmentStatus(
+            response.data.shipments[0].tracking_events[0].status
+          );
         } catch (error) {
           console.error("Error getting shipments", error);
           if (error.response) {
@@ -181,10 +178,10 @@ const [shipmentStatus,setShipmentStatus] = useState('')
         console.error("Tracking reference not available in cartData");
       }
     };
-  
+
     tackingShipment();
   }, [cartData]);
-  
+
   // const data = [
   //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "ONGOING" },
   //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
@@ -216,8 +213,7 @@ const [shipmentStatus,setShipmentStatus] = useState('')
               height: 100,
               display: "flex",
               flexDirection: "row",
-            }}
-          >
+            }}>
             <Typography
               variant="h5"
               style={{
@@ -227,8 +223,7 @@ const [shipmentStatus,setShipmentStatus] = useState('')
                 display: "flex",
                 alignItems: "center",
                 fontWeight: "bold",
-              }}
-            >
+              }}>
               ORDER HISTORY
             </Typography>
             <Typography
@@ -237,8 +232,7 @@ const [shipmentStatus,setShipmentStatus] = useState('')
                 width: 200,
                 display: "flex",
                 alignItems: "center",
-              }}
-            >
+              }}>
               <TextInput
                 style={{
                   borderBottomWidth: 2,
@@ -254,8 +248,7 @@ const [shipmentStatus,setShipmentStatus] = useState('')
                 height: 80,
                 width: 200,
                 marginRight: "10px",
-              }}
-            >
+              }}>
               <View
                 style={{
                   color: "gray",
@@ -264,8 +257,7 @@ const [shipmentStatus,setShipmentStatus] = useState('')
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Text style={{ color: "gray", marginTop: 25 }}>
                   Please Select
                 </Text>
@@ -281,8 +273,7 @@ const [shipmentStatus,setShipmentStatus] = useState('')
                 height: 50,
                 width: 50,
                 marginTop: 15,
-              }}
-            >
+              }}>
               <TouchableOpacity>
                 <Icon name="search" size={20} />
               </TouchableOpacity>
@@ -293,8 +284,7 @@ const [shipmentStatus,setShipmentStatus] = useState('')
             {cartData.map((item, index) => (
               <TouchableOpacity
                 onPress={() => navigateToDeliveryAndChatSystem(item.status)}
-                key={index}
-              >
+                key={index}>
                 <Grid item xs={12} key={item.id}>
                   <Card sx={{ height: "auto", borderBottomColor: "black" }}>
                     <Box
@@ -302,12 +292,10 @@ const [shipmentStatus,setShipmentStatus] = useState('')
                       flexDirection={{ xs: "column", md: "row" }}
                       alignItems="center"
                       borderBottomWidth={2}
-                      padding={2}
-                    >
+                      padding={2}>
                       <Box
                         width={{ xs: "100%", md: "30%" }}
-                        marginBottom={{ xs: 2, md: 0 }}
-                      >
+                        marginBottom={{ xs: 2, md: 0 }}>
                         <ImageList cols={1} rowHeight="100%">
                           <ImageListItem style={{ width: "100%" }}>
                             <img
@@ -325,49 +313,41 @@ const [shipmentStatus,setShipmentStatus] = useState('')
                       <Box
                         width={{ xs: "100%", md: "30%" }}
                         paddingLeft={{ xs: 0, md: 2 }}
-                        marginBottom={{ xs: 2, md: 0 }}
-                      >
+                        marginBottom={{ xs: 2, md: 0 }}>
                         <Typography
                           fontSize={16}
                           fontWeight="bold"
-                          color="gray"
-                        >
+                          color="gray">
                           {item.orderNumber}
                         </Typography>
                         <Typography
-                          style={{ fontSize: 18, fontWeight: "bold" }}
-                        >
-                            {item.timestamp.toLocaleString()}
+                          style={{ fontSize: 18, fontWeight: "bold" }}>
+                          {item.timestamp.toLocaleString()}
                         </Typography>
                       </Box>
                       <Box
                         width={{ xs: "100%", md: "30%" }}
                         paddingLeft={{ xs: 0, md: 2 }}
-                        marginBottom={{ xs: 2, md: 0 }}
-                      >
+                        marginBottom={{ xs: 2, md: 0 }}>
                         <Typography
                           fontSize={16}
                           fontWeight="bold"
-                          color="gray"
-                        >
+                          color="gray">
                           Delivered by
                         </Typography>
                         <Typography
-                          style={{ fontSize: 18, fontWeight: "bold" }}
-                        >
+                          style={{ fontSize: 18, fontWeight: "bold" }}>
                           {item.deliveryGuy}
                         </Typography>
                       </Box>
                       <Box
                         width={{ xs: "100%", md: "30%" }}
                         paddingLeft={{ xs: 0, md: 2 }}
-                        marginBottom={{ xs: 2, md: 0 }}
-                      >
+                        marginBottom={{ xs: 2, md: 0 }}>
                         <Typography
                           fontSize={16}
                           fontWeight="bold"
-                          color="gray"
-                        >
+                          color="gray">
                           Status
                         </Typography>
                         <Typography
@@ -380,8 +360,7 @@ const [shipmentStatus,setShipmentStatus] = useState('')
                                 : item.DeliveryStatus !== "delivered"
                                 ? "orange"
                                 : "black",
-                          }}
-                        >
+                          }}>
                           {shipmentStatus}
                         </Typography>
                       </Box>

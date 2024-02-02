@@ -330,14 +330,8 @@ const UserProfile = () => {
                 outlineColor: "#072840",
                 marginRight: "5px",
               }}
-<<<<<<< HEAD
               variant="outlined">
-              REGISTER AS A FREELANCER
-=======
-              variant="outlined"
-            >
               REGISTER AS A TALENT
->>>>>>> origin/Ristar-art
             </Button>
             <Button
               style={{

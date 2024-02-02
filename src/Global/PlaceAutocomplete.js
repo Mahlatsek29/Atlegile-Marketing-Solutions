@@ -1,10 +1,9 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, TextInput, Text } from "react-native-web";
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
-
 import {
   Container,
   Typography,
@@ -66,18 +65,13 @@ const PlaceAutocomplete = ({ onPlaceSelect }) => {
     <PlacesAutocomplete
       value={address}
       onChange={setAddress}
-      onSelect={handleSelect}
-    >
+      onSelect={handleSelect}>
       {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
         <View>
           <TextField
-           // variant="standard"
+            // variant="standard"
             fullWidth
-<<<<<<< HEAD
-            style={{ height: "auto", width: "20vw" , backgroundColor:'white'}}
-=======
-            style={{ width: "20vw" , backgroundColor:'white'}}
->>>>>>> origin/Ristar-art
+            style={{ width: "20vw", backgroundColor: "white" }}
             {...getInputProps({ placeholder: "Type location" })}
           />
           <View>
@@ -86,16 +80,14 @@ const PlaceAutocomplete = ({ onPlaceSelect }) => {
               <View
                 style={{ width: "20vw" }}
                 {...getSuggestionItemProps(suggestion)}
-                key={suggestion.placeId}
-              >
+                key={suggestion.placeId}>
                 <Typography
                   style={{
                     width: "20vw",
                     display: "flex",
                     flexWrap: "wrap",
                     color: "gray",
-                  }}
-                >
+                  }}>
                   {suggestion.description}
                 </Typography>
               </View>

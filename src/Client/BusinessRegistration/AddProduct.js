@@ -233,6 +233,68 @@ const AddProductsAndServices = () => {
           >
             ADD PRODUCTS + SERVICES
           </Typography>
+          <View
+                  className="uploadContainer"
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    height: "8vh",
+                  }}
+                >
+                  {images.length > 0 ? (
+                    images.map((image, index) => (
+                      <img
+                        key={index}
+                        src={image.url}
+                        alt={`Product Image ${index + 1}`}
+                        style={{
+                          padding: "15px",
+                          marginRight: "10px",
+                          width: "16%",
+                          height: "8vh",
+                        }}
+                      />
+                    ))
+                  ) : (
+                    <img
+                      src={placeholder}
+                      alt="Placeholder"
+                      style={{
+                        padding: "5px",
+                        marginRight: "10px",
+                        width: "16%",
+                        height: "8vh",
+                      }}
+                    />
+                  )}
+
+                  <label
+                    htmlFor="imageInput"
+                    className="add"
+                    style={{
+                      backgroundColor: "whitesmoke",
+                      color: "#000",
+                      padding: "25px",
+                      // paddingBottom:'20px',
+                      width: "5%",
+                      cursor: "pointer",
+                      alignSelf: "center",
+                    }}
+                  >
+                    +
+                  </label>
+                  <input
+                    type="file"
+                    id="imageInput"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleImageChange}
+                    multiple // Allow selecting multiple files
+                  />
+                </View>
           <View style={{ alignSelf: "center" }}>
               <form onSubmit={handleContinue}>
                 <TextField
@@ -313,7 +375,8 @@ const AddProductsAndServices = () => {
                       onChange={(e) => setQuantity(e.target.value)}
                       required
                     />
-                  </View><View style={{ display: "flex", flexDirection: "row" }}>
+                  </View>
+                  <View style={{ display: "flex", flexDirection: "row" }}>
                     <TextField
                       fullWidth
                       id="outlined-number"

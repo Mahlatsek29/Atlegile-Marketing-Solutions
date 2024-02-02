@@ -100,6 +100,10 @@ const DateSelectionAndCheckout = () => {
   const [isLocationSelected, setIsLocationSelected] = useState(false);
   const [driver, setDriver] = useState("");
   const [minDeliveryDate,setMinDeliveryDate] = useState('')
+  const [length,setLength] = useState (null)
+  const [width,setWidth] = useState(null)
+  const [height,setHeight] = useState(null)
+  const [weight,setWeight]= useState(null)
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -185,12 +189,20 @@ const DateSelectionAndCheckout = () => {
 
       // Check if the document exists
       if (docSnapshot.data()) {
-        // Access the businessName field
+        // Accesswi the businessName field
         const businessName = docSnapshot.data().businessName;
-
+        const length = docSnapshot.data().length;
+        const width = docSnapshot.data().width;
+        const height = docSnapshot.data().height;
+       const weight = docSnapshot.data().weight;
         // Now you can use the businessName variable as needed
         console.log("Business Name:", businessName);
         setTheBusinessName(businessName);
+        setLength(length);
+        setWeight(weight);
+        setWidth(width);
+        setHeight(height);
+
       } else {
         console.log("Document not found.");
       }
@@ -200,37 +212,37 @@ const DateSelectionAndCheckout = () => {
     if (cartData) {
       fetchCompanyData();
     }
-  }, [cartData, newArr, firestore, setCompany, user]);
+  }, [cartData, newArr, firestore, user]);
 
-  useEffect(() => {
-    const findBusinessByName = async () => {
-      console.log("theBusinessName is ", theBusinessName);
+  // useEffect(() => {
+  //   const findBusinessByName = async () => {
+  //     console.log("theBusinessName is ", theBusinessName);
 
-      // Replace 'yourCollection' with the actual reference to your "Business" collection
-      const businessCollection = firebase.firestore().collection("Business");
+  //     // Replace 'yourCollection' with the actual reference to your "Business" collection
+  //     const businessCollection = firebase.firestore().collection("Business");
 
-      try {
-        // Constructing the query
-        const querySnapshot = await businessCollection
-          .where("businessName", "==", theBusinessName)
-          .get();
+  //     try {
+  //       // Constructing the query
+  //       const querySnapshot = await businessCollection
+  //         .where("businessName", "==", theBusinessName)
+  //         .get();
 
-        querySnapshot.forEach((doc) => {
-          // Access the locationDetails field
-          const locationDetails = doc.data().locationDetails;
-          const collectionContacts = doc.data().phoneNumber;
-          console.log("Location Details:", locationDetails);
-          setCollecionadress(locationDetails);
-          setCollectioPhoneNUmber(collectionContacts);
-        });
-      } catch (error) {
-        console.error("Error getting documents: ", error);
-      }
-    };
+  //       querySnapshot.forEach((doc) => {
+  //         // Access the locationDetails field
+  //         const locationDetails = doc.data().locationDetails;
+  //         const collectionContacts = doc.data().phoneNumber;
+  //         console.log("Location Details:", locationDetails);
+  //         setCollecionadress(locationDetails);
+  //         setCollectioPhoneNUmber(collectionContacts);
+  //       });
+  //     } catch (error) {
+  //       console.error("Error getting documents: ", error);
+  //     }
+  //   };
 
-    // Call findBusinessByName whenever theBusinessName changes
-    findBusinessByName();
-  }, [theBusinessName, user]);
+  //   // Call findBusinessByName whenever theBusinessName changes
+  //   findBusinessByName();
+  // }, [theBusinessName, user]);
 
   useEffect(() => {
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
@@ -422,10 +434,10 @@ const DateSelectionAndCheckout = () => {
       },
       parcels: [
         {
-          submitted_length_cm: 20,
-          submitted_width_cm: 20,
-          submitted_height_cm: 10,
-          submitted_weight_kg: 2,
+          submitted_length_cm: length,
+          submitted_width_cm: width,
+          submitted_height_cm: height,
+          submitted_weight_kg: weight,
         },
       ],
       declared_value: cartData.price,
@@ -576,10 +588,10 @@ const DateSelectionAndCheckout = () => {
       parcels: [
         {
           parcel_description: "Standard flyer",
-          submitted_length_cm: 20,
-          submitted_width_cm: 20,
-          submitted_height_cm: 10,
-          submitted_weight_kg: 2,
+          submitted_length_cm: length,
+          submitted_width_cm: width,
+          submitted_height_cm: height,
+          submitted_weight_kg: weight,
         },
       ],
       opt_in_rates: [],

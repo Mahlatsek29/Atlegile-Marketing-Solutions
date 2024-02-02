@@ -115,10 +115,10 @@ const AddProductsAndServices = () => {
         description,
         selectedProductCategory,
         brand,
-        height,
-        length,
-        width,
-        weight,
+        height: parseFloat(height),  // Parse input as a float
+      length: parseFloat(length),  // Parse input as a float
+      width: parseFloat(width),    // Parse input as a float
+      weight: parseFloat(weight),  // Parse input as a float
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
 

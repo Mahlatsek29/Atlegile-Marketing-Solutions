@@ -125,10 +125,10 @@ export default function BusinessAccount() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [banner, setBanner] = useState([]);
   const [userData, setUserData] = useState(null);
-  const [length,setLength] = useState (null)
-  const [width,setWidth] = useState(null)
-  const [height,setHeight] = useState(null)
-  const [weight,setWeight]= useState(null)
+  const [length, setLength] = useState(null);
+  const [width, setWidth] = useState(null);
+  const [height, setHeight] = useState(null);
+  const [weight, setWeight] = useState(null);
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -516,10 +516,10 @@ export default function BusinessAccount() {
         description,
         selectedProductCategory,
         brand,
-        height,
-        length,
-        width,
-        weight,
+        height: parseFloat(height), // Parse input as a float
+        length: parseFloat(length), // Parse input as a float
+        width: parseFloat(width), // Parse input as a float
+        weight: parseFloat(weight), // Parse input as a float
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         // ... (other fields)
       });
@@ -721,7 +721,7 @@ export default function BusinessAccount() {
                           </Box>
                         </Grid>
                       </Grid>
-                      <View style={{ marginBottom: 10,paddingBottom:"50px" }}>
+                      <View style={{ marginBottom: 10, paddingBottom: "50px" }}>
                         <Card
                           sx={{
                             width: "80%",
@@ -730,8 +730,8 @@ export default function BusinessAccount() {
                             mx: "auto", // Center the Card horizontally
                             height: "auto",
                           }}
-                        //  style={{ marginBottom: 10 ,paddingBottom:10}} 
-                          mb={10}// Add marginBottom directly in inline style
+                          //  style={{ marginBottom: 10 ,paddingBottom:10}}
+                          mb={10} // Add marginBottom directly in inline style
                         >
                           <Box p={theme.spacing(2)}>
                             <Image
@@ -1286,69 +1286,77 @@ export default function BusinessAccount() {
                         required
                       />
                     </View>
-                    <bd/>
+                    <bd />
                     <View style={{ display: "flex", flexDirection: "row" }}>
-                    <TextField
-                      fullWidth
-                      id="outlined-number"
-                      label="length_cm"
-                      type="number"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{
-                        width: "45%",
-                        marginRight: "10px",
-                        marginTop: "10px",
-                      }}
-                      value={length}
-                      onChange={(e) => setLength(e.target.value)}
-                      required
-                    />
-                    <TextField
-                      fullWidth
-                      id="outlined-number"
-                      label="width_cm"
-                      type="number"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{ width: "45%", marginTop: "10px", marginRight: "10px",}}
-                      value={width}
-                      onChange={(e) => setWidth(e.target.value)}
-                      required
-                    />
-                    <TextField
-                      fullWidth
-                      id="outlined-number"
-                      label="height_cm"
-                      type="number"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{ width: "45%", marginTop: "10px" ,marginRight: "10px",}}
-                      value={height}
-                      onChange={(e) => setHeight(e.target.value)}
-                      required
-                    />
-                    <TextField
-                      fullWidth
-                      id="outlined-number"
-                      label="weight_kg"
-                      type="number"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{ width: "45%", marginTop: "10px" }}
-                      value={weight}
-                      onChange={(e) => setWeight(e.target.value)}
-                      required
-                    />
-                  </View>
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="length_cm"
+                        type="number"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{
+                          width: "45%",
+                          marginRight: "10px",
+                          marginTop: "10px",
+                        }}
+                        value={length}
+                        onChange={(e) => setLength(e.target.value)}
+                        required
+                      />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="width_cm"
+                        type="number"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{
+                          width: "45%",
+                          marginTop: "10px",
+                          marginRight: "10px",
+                        }}
+                        value={width}
+                        onChange={(e) => setWidth(e.target.value)}
+                        required
+                      />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="height_cm"
+                        type="number"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{
+                          width: "45%",
+                          marginTop: "10px",
+                          marginRight: "10px",
+                        }}
+                        value={height}
+                        onChange={(e) => setHeight(e.target.value)}
+                        required
+                      />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="weight_kg"
+                        type="number"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{ width: "45%", marginTop: "10px" }}
+                        value={weight}
+                        onChange={(e) => setWeight(e.target.value)}
+                        required
+                      />
+                    </View>
                     <br />
                     <TextField
                       fullWidth

@@ -44,53 +44,12 @@ const Landing = () => {
 
   const [collectionList, setCollectionList] = useState([]);
   const [firebaseCollection, setFirebaseCollection] = useState(null);
-  const [banner, setBanner] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+
   const navigatebusinessproduct = () => {
     navigation.navigate("BusinessProducts");
   };
 
-  // useEffect(() => {
-  //   const fetchBusinesses = async () => {
-  //     const businessesRef = firebase.firestore().collection("Business");
-
-  //     try {
-  //       const snapshot = await businessesRef.get();
-  //       const businessesData = snapshot.docs.map((doc) => ({
-  //         id: doc.id,
-  //         ...doc.data(),
-  //       }));
-  //       // console.log(businessesData);
-  //       setBusinesses(businessesData);
-  //     } catch (error) {
-  //       console.error("Error fetching businesses:", error);
-  //     }
-  //   };
-
-  //   fetchBusinesses();
-  // }, []);
-  // console.log(businesses);
-  // useEffect(() => {
-  //   // const user = auth.currentUser;
-  //   const businessesRef = firebase.firestore().collection("Products");
-  //   // const colRef = collection(FIRESTORE_DB, "Products");
-
-  //   const q = query(businessesRef, where("company", "==", "Coca-cola"));
-
-  //   console.log("query ", q);
-  //   onSnapshot(q, (querySnapshot) => {
-  //     const collection = [];
-  //     querySnapshot?.docs.forEach((doc) => {
-  //       collection.push({ ...doc.data(), key: doc.id });
-  //     });
-  //     collection.map((item) =>
-  //       collectionList.push({ value: item.company, key: item.key })
-  //     );
-  //     console.log("collectionList : ", collectionList);
-  //     setFirebaseCollection(collection);
-  //   });
-  // }, []);
-
+  
   useEffect(() => {
     const fetchProducts = async () => {
       const productsRef = firebase.firestore().collection("Products");
@@ -116,59 +75,9 @@ const Landing = () => {
     fetchProducts();
   }, []);
 
-  useEffect(() => {
-    const fetchBanner = async () => {
-      try {
-        const bannerCollection = firestore.collection('Banner');
-        const snapshot = await bannerCollection.get();
   
-        const bannerData = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            bannerImage: data.bannerImage,
-            discountPrice: data.discountPrice,
-            originalPrice: data.originalPrice,
-            other: data.other,
-            productName: data.productName,
-            quantity: data.quantity,
-          };
-        });
-        console.log("bannerData is ",bannerData)
-        setBanner(bannerData);
-      } catch (error) {
-        console.error('Error fetching banner images:', error);
-      }
-    };
-   
-    fetchBanner();
-  }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      
-
-      if (banner[0].bannerImage.length > 0) {
-        setCurrentIndex((prevIndex) =>
-          prevIndex === banner[0].bannerImage.length - 1 ? 0 : prevIndex + 1
-        );
-      }
-    }, 10000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [banner]);
-
-  const handlePrevClick = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? banner[0].bannerImage.length - 1 : prevIndex - 1
-    );
-  };
-  const handleNextClick = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === banner[0].bannerImage.length - 1 ? 0 : prevIndex + 1
-    );
-  };
+ 
   const scrollLeft = (scrollViewRef) => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({ x: 0, animated: true });
@@ -257,12 +166,13 @@ const Landing = () => {
             </button>
           </Grid>
         </container>
-        <View>
+        <View >
           <FlatList
             data={businesses}
             keyExtractor={(item) => item}
-            renderItem={({ item }) => <BusinessCard business={item} />}
+            renderItem={({ item }) => <BusinessCard business={item}  />}
           />
+<<<<<<< HEAD
             {/* {banner.length > 0 ? (
                     <View
                       style={{
@@ -337,6 +247,9 @@ const Landing = () => {
                       </TouchableOpacity>
                     </View>
                   ) : null} */}
+=======
+          
+>>>>>>> origin/Ristar-art
         </View>
         <Grid container style={{ width: "100%", height: "40vh" }}>
           <Grid item xl={2} lg={2} sm={2} xs={2}>

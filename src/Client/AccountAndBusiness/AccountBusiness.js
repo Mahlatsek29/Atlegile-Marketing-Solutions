@@ -23,14 +23,29 @@ const logo = require("../../Global/images/cropped-AMS-Shadow-Queen-Logo_BNY-1320
 const bg = require("../../Global/images/blackSilk.jpg");
 import {
   Container,
-  Typography,
+  // Typography,
   Grid,
   TextField,
-  Button,
   Card,
   MenuItem,
   Box,
+  Button,
+  useTheme,
 } from "@mui/material";
+import Typography from "@mui/joy/Typography";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+
+//import Button from '@mui/joy/Button';
+import FormControl from "@mui/joy/FormControl";
+import FormLabel from "@mui/joy/FormLabel";
+import Switch from "@mui/joy/Switch";
+import List from "@mui/joy/List";
+import ListItem from "@mui/joy/ListItem";
+import Modal from "@mui/joy/Modal";
+import ModalClose from "@mui/joy/ModalClose";
+import ModalDialog from "@mui/joy/ModalDialog";
+import ModalOverflow from "@mui/joy/ModalOverflow";
+import Stack from "@mui/joy/Stack";
 import Paper from "@mui/material/Paper";
 import { AntDesign } from "@expo/vector-icons";
 //import logo from "../../Global/images/logo.png";
@@ -143,49 +158,46 @@ export default function BusinessAccount() {
       unsubscribeAuth();
     };
   }, []);
- useEffect(() => {
-  const fetchBanner = async () => {
-    try {
-      const bannerCollection = firestore.collection('Banner');
-      const snapshot = await bannerCollection.get();
+  useEffect(() => {
+    const fetchBanner = async () => {
+      try {
+        const bannerCollection = firestore.collection("Banner");
+        const snapshot = await bannerCollection.get();
 
-      const bannerData = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          bannerImage: data.bannerImage,
-          discountPrice: data.discountPrice,
-          originalPrice: data.originalPrice,
-          other: data.other,
-          productName: data.productName,
-          quantity: data.quantity,
-        };
-      });
-      console.log("bannerData is ",bannerData)
-      setBanner(bannerData);
-    } catch (error) {
-      console.error('Error fetching banner images:', error);
-    }
-  };
- 
-  fetchBanner();
-}, []);
+        const bannerData = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            bannerImage: data.bannerImage,
+            discountPrice: data.discountPrice,
+            originalPrice: data.originalPrice,
+            other: data.other,
+            productName: data.productName,
+            quantity: data.quantity,
+          };
+        });
+        console.log("bannerData is ", bannerData);
+        setBanner(bannerData);
+      } catch (error) {
+        console.error("Error fetching banner images:", error);
+      }
+    };
 
+    fetchBanner();
+  }, []);
 
-useEffect(() => {
-  const interval = setInterval(() => {
-   
-    if (banner[0].bannerImage.length > 0) {
-      setCurrentIndex((prevIndex) =>
-        prevIndex === banner[0].bannerImage.length - 1 ? 0 : prevIndex + 1
-      );
-    }
-  }, 10000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (banner[0].bannerImage.length > 0) {
+        setCurrentIndex((prevIndex) =>
+          prevIndex === banner[0].bannerImage.length - 1 ? 0 : prevIndex + 1
+        );
+      }
+    }, 10000);
 
-  return () => {
-    clearInterval(interval);
-  };
-}, [banner]);
-
+    return () => {
+      clearInterval(interval);
+    };
+  }, [banner]);
 
   const handlePrevClick = () => {
     setCurrentIndex((prevIndex) =>
@@ -398,50 +410,47 @@ useEffect(() => {
     setEditModal(false);
   };
 
+  const handleSaveAddBanner = async (e) => {
+    e.preventDefault();
 
+    const bannerCollection = firestore.collection("Banner");
+    const bannerId = bannerCollection.id;
+    // Create a document with the specified fields
+    const bannerData = {
+      bannerImage: [], // Initialize an empty array to store image URLs
+      discountPrice: parseFloat(priceDiscount), // Convert to number
+      originalPrice: parseFloat(priceOriginal), // Convert to number
+      other: otherBanner,
+      productName: productName,
+      quantity: parseInt(quantity), // Convert to number
+    };
 
-const handleSaveAddBanner = async (e) => {
-  e.preventDefault();
+    try {
+      // Upload images to Firebase Storage
+      const uploadTasks = images.map((image, index) => {
+        const imageRef = storage.ref(`banner_images/${bannerId}/image${index}`);
+        return imageRef.put(image.file);
+      });
 
-  const bannerCollection = firestore.collection('Banner');
-  const bannerId = bannerCollection.id;
-  // Create a document with the specified fields
-  const bannerData = {
-    bannerImage: [], // Initialize an empty array to store image URLs
-    discountPrice: parseFloat(priceDiscount), // Convert to number
-    originalPrice: parseFloat(priceOriginal), // Convert to number
-    other: otherBanner,
-    productName: productName,
-    quantity: parseInt(quantity), // Convert to number
+      await Promise.all(uploadTasks); // Wait for all images to be uploaded
+
+      // Get download URLs of the images
+      const downloadURLs = await Promise.all(
+        uploadTasks.map((task) => task.snapshot.ref.getDownloadURL())
+      );
+
+      // Update the bannerData with image URLs
+      bannerData.bannerImage = downloadURLs;
+
+      // Add the document to the 'Banner' collection
+      await bannerCollection.add(bannerData);
+
+      console.log("Banner data added successfully!");
+      setBannerModal(false);
+    } catch (error) {
+      console.error("Error adding banner data: ", error);
+    }
   };
-
-  try {
-    // Upload images to Firebase Storage
-    const uploadTasks = images.map((image, index) => {
-      const imageRef = storage.ref(`banner_images/${bannerId}/image${index}`);
-      return imageRef.put(image.file);
-    });
-
-    await Promise.all(uploadTasks); // Wait for all images to be uploaded
-
-    // Get download URLs of the images
-    const downloadURLs = await Promise.all(
-      uploadTasks.map((task) => task.snapshot.ref.getDownloadURL())
-    );
-
-    // Update the bannerData with image URLs
-    bannerData.bannerImage = downloadURLs;
-
-    // Add the document to the 'Banner' collection
-    await bannerCollection.add(bannerData);
-
-    console.log('Banner data added successfully!');
-    setBannerModal(false);
-  } catch (error) {
-    console.error('Error adding banner data: ', error);
-  }
-};
-
 
   const handleSavePaymentInfo = (e) => {
     e.preventDefault();
@@ -540,9 +549,282 @@ const handleSaveAddBanner = async (e) => {
       setLoading(false);
     }
   };
+  const [layout, setLayout] = React.useState("fullscreen");
+  const [scroll, setScroll] = React.useState(true);
+  const theme = useTheme();
 
   return (
     <>
+      <React.Fragment>
+        {/* <Stack direction="row" spacing={1}>
+        <Button
+          variant="outlined"
+          color="neutral"
+          onClick={() => {
+            setLayout('center');
+          }}
+        >
+          Center
+        </Button>
+        <Button
+          variant="outlined"
+          color="neutral"
+          onClick={() => {
+            setLayout('fullscreen');
+          }}
+        >
+          Full screen
+        </Button>
+      </Stack> */}
+        <Modal
+          open={!!layout}
+          onClose={() => {
+            setLayout(undefined);
+          }}
+        >
+          <ModalOverflow>
+            <ModalDialog
+              aria-labelledby="modal-dialog-overflow"
+              layout={layout}
+              sx={{ backgroundColor: "transparent" }}
+            >
+              <ModalClose />
+              {/* <Typography id="modal-dialog-overflow" level="h2">
+              Overflow content
+            </Typography>
+            <FormControl
+              orientation="horizontal"
+              sx={{ bgcolor: 'background.level2', p: 1, borderRadius: 'sm' }}
+            >
+              <FormLabel>Long content</FormLabel>
+              <Switch
+                checked={scroll}
+                onChange={(event) => setScroll(event.target.checked)}
+                sx={{ ml: 'auto' }}
+              />
+            </FormControl> */}
+              {scroll && (
+                <Grid
+                  container
+                  justifyContent="center" // Center the contents horizontally
+                  alignItems="center"
+                  style={{
+                    position: "absolute",
+                    //  top: 50,
+                    // backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    zIndex: 1000,
+                  }}
+                >
+                  <Grid item xs={10} md={8} lg={8}>
+                    <Box bgcolor="white" p={2}>
+                      <Box textAlign="center" mb={2}>
+                        <img
+                          src={logo}
+                          alt="cropped AMS Shadow Queen Logo BNY-1320x772"
+                          style={{ width: "60%", maxWidth: 200 }}
+                        />
+                      </Box>
+                      <Typography
+                        variant="h5"
+                        fontWeight="bold"
+                        mb={2}
+                        textAlign="center"
+                      >
+                        BUSINESS REGISTRATION AUTHORIZATION
+                      </Typography>
+                      <Typography textAlign="center" paragraph marginBottom={5}>
+                        Welcome to AMS, where we strive to ensure a secure and
+                        trustworthy environment for
+                        <br /> businesses and customers alike. As part of our
+                        commitment to maintaining the integrity of
+                        <br /> our platform, we have implemented an
+                        authorization process for new business
+                        <br />
+                        registrations. This process is designed to verify the
+                        legitimacy and authenticity of the <br />
+                        businesses that join our community.
+                      </Typography>
+                      <Box maxWidth="80%" mx="auto" marginBottom={5}>
+                        <Grid container spacing={2} textAlign="center">
+                          {[
+                            {
+                              title: "Enhance Trust",
+                              content:
+                                "By confirming the legitimacy of businesses, we build trust among our users, making it a safer place to conduct business.",
+                            },
+                            {
+                              title: "Review",
+                              content:
+                                "Our dedicated team will review the provided details, ensuring they align with our platform's policies and standards.",
+                            },
+                            {
+                              title: "Verification",
+                              content:
+                                "In some cases, we may request additional documents or information to verify the authenticity of your business.",
+                            },
+                            {
+                              title: "Approval",
+                              content:
+                                "Once your registration is approved, your business profile will be live on our platform, and you can start receiving orders for your products and services.",
+                            },
+                          ].map((item, index) => (
+                            <Grid item xs={12} sm={6} md={6} lg={6} key={index}>
+                              <Card>
+                                <Box p={2}>
+                                  <Typography
+                                    variant="h6"
+                                    fontWeight="bold"
+                                    mb={1}
+                                  >
+                                    {item.title}
+                                  </Typography>
+                                  <Typography>{item.content}</Typography>
+                                </Box>
+                              </Card>
+                            </Grid>
+                          ))}
+                        </Grid>
+                      </Box>
+                      <Grid container spacing={2} justifyContent="center">
+                        <Grid item xs={12} sm={6} md={6} lg={5}>
+                          <Box mb={2}>
+                            <Typography variant="h6" fontWeight="bold">
+                              TIMEFRAME
+                            </Typography>
+                            <Typography>
+                              The authorization process typically takes [X]
+                              business days, depending on the complexity of your
+                              business and the accuracy of the information
+                              provided.
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={6} lg={5}>
+                          <Box mb={2}>
+                            <Typography variant="h6" fontWeight="bold">
+                              CONTACT US
+                            </Typography>
+                            <Typography>
+                              If you have any questions or require assistance
+                              during the authorization process, please don't
+                              hesitate to contact our support team at [Contact
+                              Information].
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                      <View style={{ marginBottom: 10,paddingBottom:"50px" }}>
+                        <Card
+                          sx={{
+                            width: "80%",
+                            p: 0,
+                            alignSelf: "flex-end",
+                            mx: "auto", // Center the Card horizontally
+                            height: "auto",
+                          }}
+                        //  style={{ marginBottom: 10 ,paddingBottom:10}} 
+                          mb={10}// Add marginBottom directly in inline style
+                        >
+                          <Box p={theme.spacing(2)}>
+                            <Image
+                              source={BusinessAccountPlus}
+                              alt="business plus logo"
+                              p={theme.spacing(2)}
+                              style={{
+                                width: "17vw", // Make the width 100% of the container
+                                height: "12vh", // Maintain the aspect ratio
+                                // maxWidth: "17vw", // Limit the maximum width if needed
+                                // maxHeight: "12vh", // Limit the maximum height if needed
+                              }}
+                            />
+                          </Box>
+
+                          <Box p={theme.spacing(2)}>
+                            <Box
+                              display="flex"
+                              flexDirection={{ xs: "column", md: "row" }}
+                              justifyContent="space-between"
+                              alignItems="center"
+                              mb={theme.spacing(2)}
+                            >
+                              <Typography
+                                style={{
+                                  color: "#252b42",
+                                  fontWeight: 500,
+                                  fontSize: theme.typography.h4.fontSize,
+                                  width: { xs: "100%", md: "50%" },
+                                }}
+                              >
+                                BUSINESS PLUS <br />
+                                SUBSCRIPTION
+                              </Typography>
+
+                              <Box
+                                textAlign="center"
+                                mb={{ xs: theme.spacing(2), md: 0 }}
+                              >
+                                <Typography
+                                  style={{
+                                    color: "#23a6f0",
+                                    fontWeight: "700",
+                                    fontSize: theme.typography.h3.fontSize,
+                                  }}
+                                >
+                                  R150
+                                </Typography>
+                                <Typography
+                                  style={{
+                                    color: "#b8d9f7",
+                                    fontWeight: "700",
+                                    fontSize: theme.typography.h6.fontSize,
+                                  }}
+                                >
+                                  Per Month
+                                </Typography>
+                              </Box>
+                            </Box>
+
+                            <Typography paragraph mb={theme.spacing(4)}>
+                              Unlock More Opportunities with Business Plus
+                              Subscription
+                            </Typography>
+
+                            <Box mb={theme.spacing(2)}>
+                              {[
+                                "List Unlimited Products",
+                                "Priority Support",
+                                "Exclusive Promotions",
+                              ].map((item, index) => (
+                                <Box
+                                  key={index}
+                                  display="flex"
+                                  alignItems="center"
+                                  mb={theme.spacing(2)}
+                                >
+                                  <CheckCircleIcon
+                                    style={{ color: "#2dc071" }}
+                                  />
+                                  <Typography
+                                    ml={theme.spacing(1)}
+                                    fontWeight="bold"
+                                  >
+                                    {item}
+                                  </Typography>
+                                </Box>
+                              ))}
+                            </Box>
+                          </Box>
+                        </Card>
+                      </View>
+                    </Box>
+                  </Grid>
+                </Grid>
+              )}
+            </ModalDialog>
+          </ModalOverflow>
+        </Modal>
+      </React.Fragment>
+
       {editModal ? (
         <View
           // visible={true}
@@ -807,90 +1089,35 @@ const handleSaveAddBanner = async (e) => {
           // visible={true}
           // onDismiss={() => setPaymentModal(false)}
           style={{
-            top: 65,
             position: "absolute",
-            // width: "100%",
-            // height: "100%",
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
             display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "flex-end",
-            zIndex: 9999,
-            alignSelf: "flex-end",
+            alignItems: "center",
+            zIndex: 1000, // Adjust as needed
           }}
         >
-          <Grid
-            container
+          <View
             style={{
-              width: "100%",
-              marginBottom: "-10vh",
-              //   border: "1px solid green",
+              flex: 1,
+              // justifyContent: "felx-end",
+              alignSelf: "flex-end",
+              width: 50,
             }}
           >
-            <Grid
-              item
-              lg={8}
-              md={8}
-              sm={{ hidden: true }}
+            <View
               style={{
-                // border: "1px solid",
-                // backgroundColor: "blue",
+                position: "fixed",
+                // top: 0,
+                // left: 0,
+                width: "40vw",
+                height: "100vh",
+                backgroundColor: "white",
                 display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                width: "100%",
-              }}
-            >
-              <Grid
-                Container
-                lg={6}
-                md={6}
-                style={{
-                  //   backgroudColor: "blue",
-                  width: "100vw",
-                  //   border: "1px solid yellow",
-                }}
-              ></Grid>
-              <Grid
-                Container
-                lg={6}
-                md={6}
-                style={{
-                  // backgroudColor: "yellow",
-                  width: "100vw",
-                  // border: "1px solid yellow",
-                  marginBottom: "-8px",
-                }}
-              >
-                <img
-                  src={Banner}
-                  style={{
-                    height: "21vh",
-                    width: "65vw",
-                    paddingTop: "30vh",
-                    marginLeft: "10px",
-                    marginRight: "2px",
-                  }}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid
-              item
-              lg={4}
-              md={4}
-              style={{
-                // border: "1px solid red",
-                backgroundColor: "#fff",
-                marginLeft: "-10px",
-                width: "100%",
-                height: "98vh",
-                // marginLeft: "2px",
-                alignSelf: "center",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
+                alignSelf: "flex-end",
+                justifyContent: "flex-end",
+                zIndex: 999,
               }}
             >
               <Grid style={{ alignSelf: "center" }}>
@@ -899,16 +1126,9 @@ const handleSaveAddBanner = async (e) => {
                   style={{ height: "9vh", width: "90%", paddingTop: "15vh" }}
                 />
               </Grid>
-              {/* <Box
-            component="form"
-            sx={{
-              "& > :not(style)": { m: 1, width: "25ch" },
-            }}
-            noValidate
-            autoComplete="off"
-            onSubmit={handleContinue}> */}
+
               <View
-                className="form-container"
+                //className="form-container"
                 style={{
                   justifyContent: "center",
                   textAlign: "center",
@@ -1122,7 +1342,7 @@ const handleSaveAddBanner = async (e) => {
 
                     {/* <Typography variant="caption" color="error" style={{ marginBottom: "10px" }}>
               {nameError || businessNameError || priceError || quantityError || brandError || categoryError}
-            </Typography> */}
+             </Typography> */}
 
                     {loading ? (
                       <Box
@@ -1155,154 +1375,154 @@ const handleSaveAddBanner = async (e) => {
                 </View>
               </View>
               {/* </Box> */}
-            </Grid>
-          </Grid>
+            </View>
+          </View>
         </View>
       ) : null}
       {paymentModal ? (
         <View
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
-          display: "flex",
-          alignItems: "center",
-          zIndex: 1000, // Adjust as needed
-        }}
-      >
-        <View
           style={{
-            flex: 1,
-            justifyContent: "felx-end",
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
+            display: "flex",
             alignItems: "center",
-            width: 50,
+            zIndex: 1000, // Adjust as needed
           }}
         >
-          <Card
+          <View
             style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100vw",
-              height: "100vh",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              display: "flex",
-              //alignItems: "center",
-              justifyContent: "flex-end",
-              zIndex: 999,
+              flex: 1,
+              justifyContent: "felx-end",
+              alignItems: "center",
+              width: 50,
             }}
           >
-            <View
+            <Card
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                display: "flex",
+                //alignItems: "center",
+                justifyContent: "flex-end",
+                zIndex: 999,
+              }}
+            >
+              <View
                 style={{
                   width: "34%",
                   height: "100%",
                   backgroundColor: "white",
-                  justifyContent:"space-between"
+                  justifyContent: "space-between",
                 }}
               >
-              <View
-                style={{
-                  height: "50vh",
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  source={{ uri: logo }}
+                <View
                   style={{
-                    height: "9%",
-                    width: "80%",
-                    paddingTop: "30%",
-                    scale: "0.5",
-                  }}
-                />
-              </View>
-               
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "75%",
-                  marginLeft: 80,
-                  marginBottom: 30,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "#000",
-                    textAlign: "left",
-                    fontSize: 30,
-                    fontWeight: "bold",
+                    height: "50vh",
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  PAYMENT INFO
-                </Text>
-
-                <form onSubmit={handleSavePaymentInfo}>
-                  <TextField
-                    id="standard-basic"
-                    label="Card Holder"
-                    variant="standard"
-                    fullWidth
-                    required
-                    value={cardHolder}
-                    onChange={(e) => setCardHolder(e.target.value)}
-                    style={{ width: "100%" }}
-                  />
-                  <TextField
-                    id="standard-basic"
-                    label="Card Number"
-                    variant="standard"
-                    fullWidth
-                    required
-                    type="text"
-                    value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value)}
-                    style={{ width: "100%" }}
-                  />
-                  <View style={{ display: "flex", flexDirection: "row" }}>
-                    <TextField
-                      id="standard-basic"
-                      label="Expiary"
-                      variant="standard"
-                      fullWidth
-                      value={expiery}
-                      type="text"
-                      required
-                      onChange={(e) => setExpiery(e.target.value)}
-                      style={{ width: "45%", marginRight: "15px" }}
-                    />
-                    <TextField
-                      id="standard-basic"
-                      label="CVV"
-                      variant="standard"
-                      fullWidth
-                      value={cvv}
-                      type="text"
-                      required
-                      onChange={(e) => setCvv(e.target.value)}
-                      style={{ width: "45%", marginRight: "15px" }}
-                    />
-                  </View>
-                  <Button
-                    mode="contained"
-                    type="submit"
-                    // onPress={handlePaymentButtonPress}
+                  <Image
+                    source={{ uri: logo }}
                     style={{
+                      height: "9%",
                       width: "80%",
-                      height: "15%",
-                      margin: 20,
-                      borderRadius: 30,
-                      backgroundColor: "#072840",
+                      paddingTop: "30%",
+                      scale: "0.5",
+                    }}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "75%",
+                    marginLeft: 80,
+                    marginBottom: 30,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#000",
+                      textAlign: "left",
+                      fontSize: 30,
+                      fontWeight: "bold",
                     }}
                   >
-                    Continue
-                  </Button>
-                </form>
-              </View>
+                    PAYMENT INFO
+                  </Text>
+
+                  <form onSubmit={handleSavePaymentInfo}>
+                    <TextField
+                      id="standard-basic"
+                      label="Card Holder"
+                      variant="standard"
+                      fullWidth
+                      required
+                      value={cardHolder}
+                      onChange={(e) => setCardHolder(e.target.value)}
+                      style={{ width: "100%" }}
+                    />
+                    <TextField
+                      id="standard-basic"
+                      label="Card Number"
+                      variant="standard"
+                      fullWidth
+                      required
+                      type="text"
+                      value={cardNumber}
+                      onChange={(e) => setCardNumber(e.target.value)}
+                      style={{ width: "100%" }}
+                    />
+                    <View style={{ display: "flex", flexDirection: "row" }}>
+                      <TextField
+                        id="standard-basic"
+                        label="Expiary"
+                        variant="standard"
+                        fullWidth
+                        value={expiery}
+                        type="text"
+                        required
+                        onChange={(e) => setExpiery(e.target.value)}
+                        style={{ width: "45%", marginRight: "15px" }}
+                      />
+                      <TextField
+                        id="standard-basic"
+                        label="CVV"
+                        variant="standard"
+                        fullWidth
+                        value={cvv}
+                        type="text"
+                        required
+                        onChange={(e) => setCvv(e.target.value)}
+                        style={{ width: "45%", marginRight: "15px" }}
+                      />
+                    </View>
+                    <Button
+                      mode="contained"
+                      type="submit"
+                      // onPress={handlePaymentButtonPress}
+                      style={{
+                        width: "80%",
+                        height: "15%",
+                        margin: 20,
+                        borderRadius: 30,
+                        backgroundColor: "#072840",
+                      }}
+                    >
+                      Continue
+                    </Button>
+                  </form>
+                </View>
               </View>
             </Card>
           </View>
@@ -1556,411 +1776,20 @@ const handleSaveAddBanner = async (e) => {
           </View>
         </View>
       ) : null}
-      {landing ? (
-        <View
-          style={{
-            top: 50,
-            position: "absolute",
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-        >
-          <View
-            style={{
-              width: "60%",
-              backgroundColor: "white",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                borderRadius: 50,
-                paddingHorizontal: "10%",
-                paddingVertical: "4%",
-                width: "100%",
-                // height: "7px",
-                //backgroundColor:"green"
-              }}
-              onPress={handlePopUp}
-            >
-              <AntDesign
-                name="close"
-                size={24}
-                color="black"
-                style={{
-                  top: 50,
-                  position: "absolute",
-                  right: 50,
-                  width: 20, // Use numbers for dimensions, not strings
-                  height: 20,
-                }}
-              />
-            </TouchableOpacity>
 
-            <View
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                //  paddingBottom: 20,
-                //paddingTop: 20,
-                height: "20vh",
-                width: "100%",
-              }}
-            >
-              <Image
-                source={logo}
-                alt="cropped AMS Shadow Queen Logo BNY-1320x772"
-                style={{ width: "15%", height: "35%" }}
-              />
-            </View>
-
-            <Text
-              style={{
-                fontWeight: 700,
-                fontSize: 15,
-                marginTop: "-30px",
-                textAlign: "center",
-              }}
-            >
-              BUSINESS REGISTRATION AUTHORIZATION
-            </Text>
-
-            <Text style={{ textAlign: "center", fontSize: 15 }}>
-              Welcome to AMS, where we strive to ensure a secure and trustworthy{" "}
-              <br />
-              environment for businesses and customers alike. As part of our
-              <br />
-              commitment to maintaining the integrity of our platform, we have
-              <br />
-              implemented an authorization process for new business
-              <br />
-              registrations. This process is designed to verify the legitimacy
-              <br />
-              and authenticity of the businesses that join our community.
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                paddingTop: 20,
-                paddingBottom: 20,
-                width: "80%",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <Card
-                style={{
-                  flexDirection: "column",
-                  alignItems: "center",
-                  border: "1px gray solid",
-                  width: "35%",
-                  padding: 10,
-                  margin: 10,
-                }}
-              >
-                <Typography
-                  style={{
-                    fontWeight: "700",
-                    fontSize: 15,
-                    marginBottom: 12,
-                    textAlign: "center",
-                  }}
-                >
-                  Enhance Trust
-                </Typography>
-
-                <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
-                  By confirming the legitimacy of businesses, <br /> we build
-                  trust among our users, making it a<br /> safer place to
-                  conduct business.
-                </Typography>
-              </Card>
-
-              <Card
-                style={{
-                  flexDirection: "column",
-                  alignItems: "center",
-                  border: "1px gray solid",
-                  width: "35%",
-                  padding: 10,
-                  margin: 10,
-                }}
-              >
-                <Typography
-                  style={{
-                    fontWeight: "700",
-                    fontSize: 15,
-                    marginBottom: 20,
-                    textAlign: "center",
-                  }}
-                >
-                  Review
-                </Typography>
-                <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
-                  Our dedicated team will review the
-                  <br /> provided details, ensuring they align with
-                  <br /> our platform's policies and standards.
-                </Typography>
-              </Card>
-
-              <Card
-                style={{
-                  flexDirection: "column",
-                  alignItems: "center",
-                  border: "1px gray solid",
-                  width: "35%",
-                  padding: 10,
-                  margin: 10,
-                }}
-              >
-                <Typography
-                  style={{
-                    fontWeight: "700",
-                    fontSize: 15,
-                    marginBottom: 20,
-                    textAlign: "center",
-                  }}
-                >
-                  Verification
-                </Typography>
-                <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
-                  In some cases, we may request additional
-                  <br /> documents or information to verify the
-                  <br /> authenticity of your business.
-                </Typography>
-              </Card>
-
-              <Card
-                style={{
-                  flexDirection: "column",
-                  alignItems: "center",
-                  border: "1px gray solid",
-                  width: "35%",
-                  padding: 10,
-                  margin: 10,
-                }}
-              >
-                <Typography
-                  style={{
-                    fontWeight: "700",
-                    fontSize: 15,
-                    marginBottom: 20,
-                    textAlign: "center",
-                  }}
-                >
-                  Approval
-                </Typography>
-                <Typography sx={{ textAlign: "center", marginTop: "-10px" }}>
-                  Once your registration is approved, your
-                  <br /> business profile will be live on our platform,
-                  <br /> and you can start receiving orders for your
-                  <br /> products and services.
-                </Typography>
-              </Card>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                justifyContent: "space-between",
-                paddingTop: 20,
-                paddingBottom: 20,
-                width: "60%",
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "column",
-                  width: "49%",
-                  marginBottom: 10,
-                }}
-              >
-                <Typography
-                  style={{
-                    fontWeight: "700",
-                    fontSize: 15,
-                    marginBottom: 20,
-                    fontWeight: "bold",
-                  }}
-                >
-                  TIMEFRAME
-                </Typography>
-                <Typography sx={{ marginTop: "-20px" }}>
-                  The authorization process typically takes [X] business days,
-                  depending on the complexity of your business and the accuracy
-                  of the information provided.
-                </Typography>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: "column",
-                  width: "49%",
-                  marginBottom: 10,
-                }}
-              >
-                <Typography
-                  style={{
-                    fontWeight: "700",
-                    fontSize: 15,
-                    marginBottom: 20,
-                    fontWeight: "bold",
-                  }}
-                >
-                  CONTACT US
-                </Typography>
-                <Typography sx={{ marginTop: "-20px" }}>
-                  If you have any questions or require assistance during the
-                  authorization process, please don't hesitate to contact our
-                  support team at [Contact Information].
-                </Typography>
-              </View>
-            </View>
-            <Card
-              style={{
-                flexDirection: "column",
-                border: "1px lightgray solid",
-                padding: 40,
-                height: "40vh",
-                marginBottom: 30,
-              }}
-            >
-              <Image
-                source={BusinessAccountPlus}
-                alt="business plus logo"
-                style={{ width: "45%", height: "25%", marginBottom: 5 }}
-              />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography
-                  style={{
-                    color: "#252b42",
-                    fontWeight: "700",
-                    fontSize: 32,
-                    width: "50%",
-                  }}
-                >
-                  BUSINESS PLUS SUBSCRIPTION
-                </Typography>
-
-                <View
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                    width: "20%",
-                  }}
-                >
-                  <Typography
-                    style={{
-                      color: "#23a6f0",
-                      fontWeight: "700",
-                      fontSize: 40,
-                      marginBottom: -10,
-                    }}
-                  >
-                    R150
-                  </Typography>
-                  <Typography
-                    style={{
-                      color: "#b8d9f7",
-                      fontWeight: "700",
-                      fontSize: 20,
-                    }}
-                  >
-                    Per Month
-                  </Typography>
-                </View>
-              </View>
-              <Typography
-                style={{
-                  color: "#9e9e9e",
-                  fontWeight: "700",
-                  fontSize: 16,
-                  paddingTop: 10,
-                  paddingBottom: 10,
-                }}
-              >
-                Unlock More Opportunities with Business Plus Subscription
-              </Typography>
-              <View style={{ flexDirection: "column" }}>
-                <Typography
-                  style={{
-                    marginTop: 15,
-                    fontWeight: "700",
-                    fontSize: 18,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  {" "}
-                  <Ionicons
-                    name="checkmark-circle"
-                    size={30}
-                    color="#2dc071"
-                  />{" "}
-                  List Unlimited Products
-                </Typography>
-                <Typography
-                  style={{
-                    fontWeight: "700",
-                    fontSize: 18,
-                    marginTop: 12,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  {" "}
-                  <Ionicons
-                    name="checkmark-circle"
-                    size={30}
-                    color="#2dc071"
-                  />{" "}
-                  Priority Support
-                </Typography>
-                <Typography
-                  style={{
-                    fontWeight: "700",
-                    fontSize: 18,
-                    marginTop: 12,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  {" "}
-                  <Ionicons
-                    name="checkmark-circle"
-                    size={30}
-                    color="#2dc071"
-                  />{" "}
-                  Exclusive Promotions
-                </Typography>
-              </View>
-            </Card>
-          </View>
-        </View>
-      ) : null}
       <Header />
       <NavBar />
-      <View style={{ display: "flex", flexDirection: "row" ,backgroundColor:"#FFFFFF" }}>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          backgroundColor: "#FFFFFF",
+        }}
+      >
         <View
           style={{
             paddingLeft: 30,
-            backgroundColor:"#FFFFFF",
+            backgroundColor: "whitesmoke",
             alignItems: "flex-start",
           }}
         >
@@ -1970,13 +1799,14 @@ const handleSaveAddBanner = async (e) => {
             alignItems="center"
             paddingRight={2}
           >
-            <Paper
+            <View
               elevation={3}
               style={{
                 padding: "20px",
                 height: "100%",
                 width: "300px",
                 margin: "auto",
+                backgroundColor: "whitesmoke",
               }}
             >
               <Box textAlign="center">
@@ -2077,15 +1907,15 @@ const handleSaveAddBanner = async (e) => {
                   SIGN OUT
                 </Button>
               </Box>
-            </Paper>
+            </View>
           </Box>
         </View>
 
-        <View style={{ width: "70%" }}>
+        <View style={{ flex: 1 }}>
           <View
             style={{
               height: "150px",
-             // backgroundColor: "black",
+              // backgroundColor: "black",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -2307,10 +2137,11 @@ const handleSaveAddBanner = async (e) => {
             <View
             // style={{backgroundColor:"white"}}
             >
-              <Card
+              <View
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
+
                   paddingRight: 30,
                   paddingBottom: 30,
                   paddingTop: 30,
@@ -2318,19 +2149,52 @@ const handleSaveAddBanner = async (e) => {
                   // height: "100px",
                 }}
               >
-                <View>
-                  <Text style={{ fontWeight: "700", fontSize: 30 }}>
-                    PRODUCTS & SERVICES
-                  </Text>
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View>
+                    <Text style={{ fontWeight: "700", fontSize: 30 }}>
+                      PRODUCTS & SERVICES
+                    </Text>
+                    <Text
+                      style={{
+                        display: businessAuthorization ? "none" : "",
+                        fontWeight: 600,
+                        fontSize: 14,
+                      }}
+                    >
+                      Please add a minimum of 3 products
+                    </Text>
+                  </View>
                   <Text
                     style={{
-                      display: businessAuthorization ? "none" : "",
+                      color: "white",
                       fontWeight: 600,
                       fontSize: 14,
+                      backgroundColor: "#072840",
+                      paddingTop: 10,
+                      paddingBottom: 10,
+                      paddingLeft: 25,
+                      paddingRight: 25,
+                      borderRadius: 20,
                     }}
                   >
-                    Please add a minimum of 3 products
+                    BUSINESS PLUS R150/PM
                   </Text>
+                </View>
+
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
                   <Text
                     style={{
                       color: "white",
@@ -2343,56 +2207,42 @@ const handleSaveAddBanner = async (e) => {
                       display: businessAuthorization ? "none" : "flex",
                       marginTop: 5,
                       justifyContent: "center",
+                      paddingLeft: 25,
+                      paddingRight: 25,
                     }}
                   >
                     AUTHORIZATION PENDING
                   </Text>
-                </View>
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <TouchableOpacity onPress={() => setAddProduct(true)}>
-                    <Text
-                      style={{
-                        color: "white",
-                        fontWeight: 600,
-                        fontSize: 14,
-                        backgroundColor: "#072840",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        paddingLeft: 25,
-                        paddingRight: 25,
-                        borderRadius: 20,
-                        display: !businessAuthorization ? "none" : "flex",
-                        marginRight: 20,
-                      }}
-                    >
-                      ADD PRODUCT
-                    </Text>
-                  </TouchableOpacity>
-                  <Text
+                  <View
                     style={{
-                      color: "white",
-                      fontWeight: 600,
-                      fontSize: 14,
-                      backgroundColor: "#072840",
-                      paddingTop: 10,
-                      paddingBottom: 10,
-                      paddingLeft: 25,
-                      paddingRight: 25,
-                      borderRadius: 20,
                       display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
-                    BUSINESS PLUS R150/PM
-                  </Text>
+                    <TouchableOpacity onPress={() => setAddProduct(true)}>
+                      <Text
+                        style={{
+                          color: "white",
+                          fontWeight: 600,
+                          fontSize: 14,
+                          backgroundColor: "#072840",
+                          paddingTop: 10,
+                          paddingBottom: 10,
+                          paddingLeft: 25,
+                          paddingRight: 25,
+                          borderRadius: 20,
+                          display: !businessAuthorization ? "none" : "flex",
+                          marginRight: 20,
+                        }}
+                      >
+                        ADD PRODUCT
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </Card>
+              </View>
 
               {businessAuthorization ? (
                 <Card
@@ -2408,76 +2258,78 @@ const handleSaveAddBanner = async (e) => {
                   }}
                 >
                   {banner.length > 0 ? (
-  <View
-    style={{
-      backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
-      backgroundColor: "gray",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: 15,
-      flex: 1,
-      transition: "0.5s ease-in-out",
-    }}
-  >
-    <TouchableOpacity onPress={handlePrevClick} style={{ marginRight: 20 }}>
-      <AntDesign name="left" size={24} color="white" />
-    </TouchableOpacity>
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "column",
-        alignItems: "flex-start",
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 15,
-          fontWeight: 600,
-          color: "white",
-        }}
-      >
-        {banner[0].other}
-      </Text>
-      <Text
-        style={{
-          fontSize: 25,
-          fontWeight: 700,
-          color: "white",
-        }}
-      >
-        {banner[0].productName}
-      </Text>
-      <Text>
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: 700,
-            color: "#c29920",
-          }}
-        >
-          R{banner[0].discountPrice}
-        </Text>{" "}
-        <Text
-          style={{
-            fontSize: 15,
-            fontWeight: 400,
-            color: "white",
-          }}
-        >
-          R{banner[0].originalPrice}
-        </Text>
-      </Text>
-    </View>
+                    <View
+                      style={{
+                        backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
+                        backgroundColor: "gray",
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: 15,
+                        flex: 1,
+                        transition: "0.5s ease-in-out",
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={handlePrevClick}
+                        style={{ marginRight: 20 }}
+                      >
+                        <AntDesign name="left" size={24} color="white" />
+                      </TouchableOpacity>
+                      <View
+                        style={{
+                          flex: 1,
+                          flexDirection: "column",
+                          alignItems: "flex-start",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontWeight: 600,
+                            color: "white",
+                          }}
+                        >
+                          {banner[0].other}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 25,
+                            fontWeight: 700,
+                            color: "white",
+                          }}
+                        >
+                          {banner[0].productName}
+                        </Text>
+                        <Text>
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: 700,
+                              color: "#c29920",
+                            }}
+                          >
+                            R{banner[0].discountPrice}
+                          </Text>{" "}
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              fontWeight: 400,
+                              color: "white",
+                            }}
+                          >
+                            R{banner[0].originalPrice}
+                          </Text>
+                        </Text>
+                      </View>
 
-    <TouchableOpacity onPress={handleNextClick}>
-      <AntDesign name="right" size={24} color="white" />
-    </TouchableOpacity>
-  </View>
-) : null}
-
+                      <TouchableOpacity onPress={handleNextClick}>
+                        <AntDesign name="right" size={24} color="white" />
+                      </TouchableOpacity>
+                    </View>
+                  ) : null}
 
                   <TouchableOpacity
                     style={{
@@ -2516,9 +2368,9 @@ const handleSaveAddBanner = async (e) => {
                         flexWrap: "wrap",
                       }}
                     >
-                     {banner.map((item, index) => (
-  <Card2 key={index} open={() => setEditModal(true)} />
-))}
+                      {banner.map((item, index) => (
+                        <Card2 key={index} open={() => setEditModal(true)} />
+                      ))}
 
                       {/* {list.map((item, index) => (
                       <ProductCard
@@ -2532,7 +2384,7 @@ const handleSaveAddBanner = async (e) => {
                   {businessAuthorization ? null : (
                     <View
                       style={{
-                        width: 350,
+                        width: "25vw",
                         flexDirection: "column",
                         border: "1px lightgray solid",
                         padding: 40,
@@ -2547,7 +2399,11 @@ const handleSaveAddBanner = async (e) => {
                       <Image
                         source={require("../../Global/images/BusinessPlus+.jpg")}
                         alt="business plus logo"
-                        style={{ width: "85%", height: "20%", marginBottom: 5 }}
+                        style={{
+                          width: "10vw",
+                          height: "7vh",
+                          marginBottom: 5,
+                        }}
                       />
                       {/* </TouchableOpacity> */}
 

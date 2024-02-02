@@ -169,7 +169,7 @@ const Signup = () => {
       <View
         style={{
           backgroundColor: "#fff",
-          width: 500,
+          width: "37vw",
           position: "absolute",
           right: 16,
           top: 16,

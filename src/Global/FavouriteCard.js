@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   Snackbar,
+  
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 
@@ -16,9 +17,9 @@ import Skeleton from "@mui/material/Skeleton";
 import { Text, TouchableOpacity, View } from "react-native";
 import { firestore, auth } from "../config";
 import { useNavigation } from "@react-navigation/native";
-const FavouriteCard = ({ productData,productId  }) => {
-  const [product, setProduct] = useState(null)
-  const [isRed, setIsRed] = useState(false);;
+const FavouriteCard = ({ productData, productId }) => {
+  const [product, setProduct] = useState(null);
+  const [isRed, setIsRed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [uid, setUid] = useState(null);
   const [showSnackbar, setShowSnackbar] = useState(false);
@@ -37,19 +38,18 @@ const FavouriteCard = ({ productData,productId  }) => {
         console.error("User not authenticated.");
       }
     });
-  
+
     return () => {
       // Unsubscribe from the auth state observer when the component unmounts
       authObserver();
     };
   }, []);
-  
 
   useEffect(() => {
     console.log("Product Data:", productData);
-    setLoading(false);  // Add this line to set loading to false
+    setLoading(false); // Add this line to set loading to false
   }, [productData]);
-  
+
   const toggleHeart = async () => {
     try {
       const favCollectionRef = firestore.collection("Favourites");
@@ -185,7 +185,7 @@ const FavouriteCard = ({ productData,productId  }) => {
                 alignSelf: "center",
               }}
             />
- <Box
+            <Box
               style={{
                 backgroundColor: "#E74040",
                 position: "absolute",

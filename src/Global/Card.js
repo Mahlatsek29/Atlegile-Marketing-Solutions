@@ -26,6 +26,7 @@ const ProductCard = ({ productId }) => {
   const [showSnackbar1, setShowSnackbar1] = useState(false);
 
   const navigateProductDetails = () => {
+    console.log('productId is ',productId)
     navigation.navigate("ProductDetails", { productId });
   };
 

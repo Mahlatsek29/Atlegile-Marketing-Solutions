@@ -16,19 +16,40 @@ import Skeleton from "@mui/material/Skeleton";
 import { Text, TouchableOpacity, View } from "react-native";
 import { firestore, auth } from "../config";
 import { useNavigation } from "@react-navigation/native";
-const ProductCard = ({ productId }) => {
-  const navigation = useNavigation();
-  const [isRed, setIsRed] = useState(false);
-  const [product, setProduct] = useState(null);
+const FavouriteCard = ({ productData,productId  }) => {
+  const [product, setProduct] = useState(null)
+  const [isRed, setIsRed] = useState(false);;
   const [loading, setLoading] = useState(true);
   const [uid, setUid] = useState(null);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [showSnackbar1, setShowSnackbar1] = useState(false);
-
+  const navigation = useNavigation();
   const navigateProductDetails = () => {
     navigation.navigate("ProductDetails", { productId });
   };
 
+  useEffect(() => {
+    const authObserver = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUid(user.uid);
+      } else {
+        // User is not authenticated, handle accordingly (e.g., redirect to login)
+        console.error("User not authenticated.");
+      }
+    });
+  
+    return () => {
+      // Unsubscribe from the auth state observer when the component unmounts
+      authObserver();
+    };
+  }, []);
+  
+
+  useEffect(() => {
+    console.log("Product Data:", productData);
+    setLoading(false);  // Add this line to set loading to false
+  }, [productData]);
+  
   const toggleHeart = async () => {
     try {
       const favCollectionRef = firestore.collection("Favourites");
@@ -52,7 +73,7 @@ const ProductCard = ({ productId }) => {
           businessName: product.businessName,
           company: product.company,
           brand: product.brand,
-          image:product.images[0]
+          // Add other relevant fields
         });
         setIsRed(true);
         setShowSnackbar(true);
@@ -81,7 +102,6 @@ const ProductCard = ({ productId }) => {
       console.error("Error adding to cart:", error);
     }
   };
-
   const handleSnackbarClose1 = () => {
     setShowSnackbar1(false);
   };
@@ -89,39 +109,6 @@ const ProductCard = ({ productId }) => {
   const handleSnackbarClose = () => {
     setShowSnackbar(false);
   };
-
-  useEffect(() => {
-    const fetchProductData = async () => {
-      try {
-        const productDoc = await firestore
-          .collection("Products")
-          .doc(productId)
-          .get();
-        const productData = productDoc.data();
-        console.log("Fetched product data:", productData);
-        setProduct(productData);
-      } catch (error) {
-        console.error("Error fetching product data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProductData();
-  }, [productId]);
-
-  useEffect(() => {
-    const authObserver = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUid(user.uid);
-      }
-    });
-
-    return () => {
-      // Unsubscribe from the auth state observer when the component unmounts
-      authObserver();
-    };
-  }, []);
 
   if (loading) {
     // Render a loading state using Skeleton
@@ -144,23 +131,23 @@ const ProductCard = ({ productId }) => {
   }
 
   return (
-    <View style={{ marginHorizontal: 10 }}>
+    <View style={{ margin: 10 }}>
       <Card
         className="card-container"
         style={{
           width: "21vw",
           display: "flex",
           flexDirection: "column",
-          height:"82vh"
+          height: "82vh",
         }}
       >
         <View
           style={{
-           // backgroundColor: "purple",
+            // backgroundColor: "purple",
             justifyContent: "center",
             alignItems: "center",
             paddingHorizontal: 16,
-            height:"70vh"
+            height: "70vh",
           }}
         >
           <Box
@@ -184,11 +171,11 @@ const ProductCard = ({ productId }) => {
               component="img"
               height="140"
               image={
-                product.images && product.images.length > 0
-                  ? product.images[0]
+                productData.image && productData.image.length > 0
+                  ? productData.image
                   : "../../assets/image/headsets.png"
               }
-              alt={product.name}
+              alt={productData.name}
               style={{
                 position: "relative",
                 borderRadius: "100px",
@@ -198,7 +185,7 @@ const ProductCard = ({ productId }) => {
                 alignSelf: "center",
               }}
             />
-            <Box
+ <Box
               style={{
                 backgroundColor: "#E74040",
                 position: "absolute",
@@ -284,6 +271,19 @@ const ProductCard = ({ productId }) => {
                 />
               </TouchableOpacity>
             </Box>
+            <Box
+              style={{
+                paddingHorizontal: 10,
+                position: "absolute",
+                bottom: 30,
+                left: 80,
+                width: "6vw",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignSelf: "center",
+              }}
+            ></Box>
             {/* </Container> */}
           </Box>
           <View
@@ -291,9 +291,8 @@ const ProductCard = ({ productId }) => {
               width: "100%",
               justifyContent: "space-between",
               marginTop: 16,
-            //  backgroundColor:'red',
-              height:"25vh"
-
+              //  backgroundColor:'red',
+              height: "25vh",
             }}
           >
             <View>
@@ -302,8 +301,8 @@ const ProductCard = ({ productId }) => {
                   flexDirection: "row",
                   justifyContent: "center",
                   alignItems: "center",
-             //     backgroundColor:'green',
-                  flexWrap:'wrap'
+                  //     backgroundColor:'green',
+                  flexWrap: "wrap",
                 }}
               >
                 <Text
@@ -314,7 +313,7 @@ const ProductCard = ({ productId }) => {
                     fontWeight: "bold",
                   }}
                 >
-                  {product.selectedProductCategory}
+                  {productData.selectedProductCategory}
                 </Text>
                 <View
                   style={{
@@ -331,18 +330,17 @@ const ProductCard = ({ productId }) => {
               </View>
 
               <Typography variant="h5" component="h5">
-                {product.name && product.name.slice(0, 20)}
-                {product.name && product.name.length < 50
-                  ? ""
-                  : "..."}
+                {productData.name && productData.name.slice(0, 20)}
+                {productData.name && productData.name.length < 50 ? "" : "..."}
               </Typography>
               <Typography
                 variant="subtitle2"
                 component="p"
                 style={{ color: "gray" }}
               >
-                {product.description && product.description.slice(0, 50)}
-                {product.description && product.description.length < 50
+                {productData.description &&
+                  productData.description.slice(0, 50)}
+                {productData.description && productData.description.length < 50
                   ? ""
                   : "..."}
               </Typography>
@@ -359,7 +357,7 @@ const ProductCard = ({ productId }) => {
                 >
                   <Icon2 name="download" size={20} /> 15 Sales
                 </Typography>
-                <View style={{display:"flex", flexDirection:"row"}}  >
+                <View style={{ display: "flex", flexDirection: "row" }}>
                   <Typography
                     variant="subtitle2"
                     component="p"
@@ -368,10 +366,9 @@ const ProductCard = ({ productId }) => {
                       fontSize: "18px",
                       fontWeight: "700",
                       marginRight: "10px",
-                      
                     }}
                   >
-                    R{product.price}
+                    R{productData.price}
                   </Typography>
                   <Typography
                     variant="subtitle2"
@@ -382,14 +379,14 @@ const ProductCard = ({ productId }) => {
                       fontWeight: "700",
                     }}
                   >
-                    R{product.price}
+                    R{productData.price}
                   </Typography>
                 </View>
               </Box>
             </View>
           </View>
         </View>
-        <CardContent>
+        {/* <CardContent>
           <Button
             variant="outlined"
             color="primary"
@@ -412,10 +409,10 @@ const ProductCard = ({ productId }) => {
             VIEW
             <Icon name="arrow-right" size={20} />
           </Button>
-        </CardContent>
+        </CardContent> */}
       </Card>
     </View>
   );
 };
 
-export default ProductCard;
+export default FavouriteCard;

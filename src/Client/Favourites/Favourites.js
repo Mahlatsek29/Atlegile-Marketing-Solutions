@@ -23,11 +23,13 @@ import firebase from "firebase/compat/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import Swal from "sweetalert2";
+import FavouriteCard from "../../Global/FavouriteCard";
 const Favourites = ({ item }) => {
   const [checkOrder, setCheckOrder] = useState(false);
   const [userData, setUserData] = useState(null);
   const [cartData, setCartData] = useState([]);
   const [user, setUser] = useState(null);
+  const [products, setProducts] = useState([]);
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -38,17 +40,47 @@ const Favourites = ({ item }) => {
       unsubscribe(); // Unsubscribe from the auth state listener when component unmounts
     };
   }, []);
-  
+
+  useEffect(() => {
+    const fetchProductData = async () => {
+      console.log("userData is", userData);
+      if (!user) {
+        console.error("User not authenticated.");
+        return;
+      }
+
+      const cartCollectionRef = collection(firestore, "Favourites");
+      const q = query(cartCollectionRef, where("uid", "==", user.uid));
+
+      try {
+        const querySnapshot = await getDocs(q);
+
+        const productsData = [];
+        querySnapshot.forEach((doc) => {
+          productsData.push(doc.data());
+        });
+        console.log("productsData is ", productsData);
+        setProducts(productsData);
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+      }
+    };
+
+    fetchProductData();
+  }, [userData]);
+
   useEffect(() => {
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
       if (user) {
         const userDocRef = firestore.collection("Users").doc(user.uid);
 
-        // Fetch user details from Firestore
         try {
+          // Fetch user details from Firestore
           const userDoc = await userDocRef.get();
+
           if (userDoc.exists) {
-            setUserData(userDoc.data());
+            const userData = userDoc.data();
+            setUserData(userData);
           } else {
             console.error("User document does not exist");
           }
@@ -148,11 +180,11 @@ const Favourites = ({ item }) => {
     <View>
       <FollowUs />
       <Navbar />
-      <View style={{ display: "flex", flexDirection: "row" }}>
-        <View
+      <View style={{ display: "flex", flexDirection: "row",backgroundColor:'white' }}>
+      <View
           style={{
             paddingLeft: 30,
-            // backgroundColor:"#FFFFFF",
+            backgroundColor: "whitesmoke",
             alignItems: "flex-start",
           }}
         >
@@ -162,13 +194,14 @@ const Favourites = ({ item }) => {
             alignItems="center"
             paddingRight={2}
           >
-            <Paper
+            <View
               elevation={3}
               style={{
                 padding: "20px",
                 height: "100%",
                 width: "300px",
                 margin: "auto",
+                backgroundColor: "whitesmoke",
               }}
             >
               <Box textAlign="center">
@@ -269,7 +302,7 @@ const Favourites = ({ item }) => {
                   SIGN OUT
                 </Button>
               </Box>
-            </Paper>
+            </View>
           </Box>
         </View>
         {checkOrder ? (
@@ -459,33 +492,15 @@ const Favourites = ({ item }) => {
             </Typography>
             <View
               style={{
-                display: "flex",
+               // display: "flex",
                 flexDirection: "row",
-                justifyContent: "space-evenly",
+                //justifyContent: "space-evenly",
+                flexWrap:'wrap'
               }}
             >
-              <ScrollView horizontal={true}>
-                <Card2 />
-                <Card2 />
-                <Card2 />
-                <Card2 />
-                <Card2 />
-              </ScrollView>
-            </View>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-              }}
-            >
-              <ScrollView horizontal={true}>
-                <Card2 />
-                <Card2 />
-                <Card2 />
-                <Card2 />
-                <Card2 />
-              </ScrollView>
+              {products.map((product, index) => (
+                <FavouriteCard key={index} productData={product}  style={{marginBottom:10}}/>
+              ))}
             </View>
           </ScrollView>
         )}

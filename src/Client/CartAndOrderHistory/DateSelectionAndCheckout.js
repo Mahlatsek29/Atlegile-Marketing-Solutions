@@ -99,11 +99,15 @@ const DateSelectionAndCheckout = () => {
   const [forceUpdate, setForceUpdate] = useState(false);
   const [isLocationSelected, setIsLocationSelected] = useState(false);
   const [driver, setDriver] = useState("");
-  const [minDeliveryDate,setMinDeliveryDate] = useState('')
-  const [length,setLength] = useState (null)
-  const [width,setWidth] = useState(null)
-  const [height,setHeight] = useState(null)
-  const [weight,setWeight]= useState(null)
+  const [minDeliveryDate, setMinDeliveryDate] = useState("");
+  const [length, setLength] = useState(null);
+  const [width, setWidth] = useState(null);
+  const [height, setHeight] = useState(null);
+  const [weight, setWeight] = useState(null);
+  const [addressCard, setAddressCard] = useState(false);
+  const [fixedAddress, setFixedAddress] = useState({});
+  const [editedValue, setEditedValue] = useState("");
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -194,7 +198,7 @@ const DateSelectionAndCheckout = () => {
         const length = docSnapshot.data().length;
         const width = docSnapshot.data().width;
         const height = docSnapshot.data().height;
-       const weight = docSnapshot.data().weight;
+        const weight = docSnapshot.data().weight;
         // Now you can use the businessName variable as needed
         console.log("Business Name:", businessName);
         setTheBusinessName(businessName);
@@ -202,7 +206,6 @@ const DateSelectionAndCheckout = () => {
         setWeight(weight);
         setWidth(width);
         setHeight(height);
-
       } else {
         console.log("Document not found.");
       }
@@ -298,91 +301,91 @@ const DateSelectionAndCheckout = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchLocationDetails = async () => {
-      if (!user || !user.uid) {
-        console.error("User not authenticated.");
-        return;
-      }
+  // useEffect(() => {
+  //   const fetchLocationDetails = async () => {
+  //     if (!user || !user.uid) {
+  //       console.error("User not authenticated.");
+  //       return;
+  //     }
 
-      const cartCollectionRef = collection(firestore, "Users");
-      const q = query(cartCollectionRef, where("uid", "==", user.uid));
+  //     const cartCollectionRef = collection(firestore, "Users");
+  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
-      try {
-        const querySnapshot = await getDocs(q);
+  //     try {
+  //       const querySnapshot = await getDocs(q);
 
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          // Assuming your inner object and array are inside the data.locationDetails
-          //const location = data.locationDetails;
-          const pastLocations = data.pastLocations;
-          const pastPreciseLocation = data.pastPreciseLocation;
+  //       querySnapshot.forEach((doc) => {
+  //         const data = doc.data();
+  //         // Assuming your inner object and array are inside the data.locationDetails
+  //         //const location = data.locationDetails;
+  //         const pastLocations = data.pastLocations;
+  //         const pastPreciseLocation = data.pastPreciseLocation;
 
-          // setPreciseLocation(location);
-          setPastLocations(pastLocations);
-          setPastPreciseLocation(pastPreciseLocation);
-        });
-      } catch (error) {
-        console.error("Error fetching location details:", error);
-      }
-    };
+  //         // setPreciseLocation(location);
+  //         setPastLocations(pastLocations);
+  //         setPastPreciseLocation(pastPreciseLocation);
+  //       });
+  //     } catch (error) {
+  //       console.error("Error fetching location details:", error);
+  //     }
+  //   };
 
-    fetchLocationDetails();
-  }, [user]);
+  //   fetchLocationDetails();
+  // }, [user]);
 
-  const LocationComponent = ({ address, onPress }) => (
-    <TouchableOpacity onPress={onPress}>
-      <View
-        style={{
-          width: "100%",
-          borderBottomWidth: 2,
-          borderBottomColor: "whitesmoke",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          paddingTop: 2,
-          flexWrap: "wrap",
-          marginBottom: 15,
-        }}
-      >
-        <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
-          {address && address.slice(0, 40)}
-          {address && address.length < 50 ? "" : "..."}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+  // const LocationComponent = ({ address, onPress }) => (
+  //   <TouchableOpacity onPress={onPress}>
+  //     <View
+  //       style={{
+  //         width: "100%",
+  //         borderBottomWidth: 2,
+  //         borderBottomColor: "whitesmoke",
+  //         flexDirection: "row",
+  //         alignItems: "center",
+  //         justifyContent: "flex-start",
+  //         paddingTop: 2,
+  //         flexWrap: "wrap",
+  //         marginBottom: 15,
+  //       }}
+  //     >
+  //       <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+  //         {address && address.slice(0, 40)}
+  //         {address && address.length < 50 ? "" : "..."}
+  //       </Text>
+  //     </View>
+  //   </TouchableOpacity>
+  // );
 
-  const LocationList = ({ data, onLocationPress }) => (
-    <ScrollView
-      style={{ height: 250, padding: 10 }}
-      showsVerticalScrollIndicator={false}
-    >
-      {data && Array.isArray(data) ? (
-        data.map((item, index) => (
-          <LocationComponent
-            key={index}
-            address={item}
-            onPress={() => onLocationPress(item, index)}
-          />
-        ))
-      ) : (
-        <Text>No data available</Text>
-      )}
-    </ScrollView>
-  );
+  // const LocationList = ({ data, onLocationPress }) => (
+  //   <ScrollView
+  //     style={{ height: 250, padding: 10 }}
+  //     showsVerticalScrollIndicator={false}
+  //   >
+  //     {data && Array.isArray(data) ? (
+  //       data.map((item, index) => (
+  //         <LocationComponent
+  //           key={index}
+  //           address={item}
+  //           onPress={() => onLocationPress(item, index)}
+  //         />
+  //       ))
+  //     ) : (
+  //       <Text>No data available</Text>
+  //     )}
+  //   </ScrollView>
+  // );
 
-  const handleLocationPress = (selectedItem, index) => {
-    //  setIsPicked(true)
-    setIsLocationSelected(true);
-    setLocation(selectedItem);
-    setArrayIndex(index);
-  };
+  // const handleLocationPress = (selectedItem, index) => {
+  //   //  setIsPicked(true)
+  //   setIsLocationSelected(true);
+  //   setLocation(selectedItem);
+  //   setArrayIndex(index);
+  // };
 
-  useEffect(() => {
-    console.log("this is happening");
-    setPreciseLocation(pastPreciseLocation[arrayIndex]);
-  }, [arrayIndex, isLocationSelected]);
+  // useEffect(() => {
+  //   console.log("this is happening");
+  //   setPreciseLocation(pastPreciseLocation[arrayIndex]);
+  // }, [arrayIndex, isLocationSelected]);
 
   const navigateToLanding = () => {
     navigation.navigate("Landing");
@@ -560,7 +563,7 @@ const DateSelectionAndCheckout = () => {
   }, [preciseLocation, location]);
 
   const creattingShipment = async () => {
-    console.log("the delivery address is ", preciseLocation);
+    //  console.log("the delivery address is ", preciseLocation);
     const commonShipment = {
       collection_address: {
         type: "business",
@@ -598,7 +601,8 @@ const DateSelectionAndCheckout = () => {
       opt_in_time_based_rates: [76],
       special_instructions_collection:
         "This is a test shipment - DO NOT COLLECT",
-      special_instructions_delivery:  rates[selectedIndex].service_level.description,
+      special_instructions_delivery:
+        rates[selectedIndex].service_level.description,
       declared_value: cartData.price,
       collection_min_date: rates[selectedIndex].service_level.collection_date,
       collection_after: "08:00",
@@ -608,7 +612,7 @@ const DateSelectionAndCheckout = () => {
       delivery_before: "17:00",
       custom_tracking_reference: "",
       customer_reference: "ORDERNO123",
-      service_level_code:  rates[selectedIndex].service_level.code,
+      service_level_code: rates[selectedIndex].service_level.code,
       mute_notifications: false,
     };
 
@@ -682,21 +686,21 @@ const DateSelectionAndCheckout = () => {
       }
     }
 
-    console.log("the delivery address is ", preciseLocation);
+    //  console.log("the delivery address is ", preciseLocation);
 
     const deliveryAddress = {
-      delivery_address: preciseLocation || {
-        type: "",
-        company: "",
-        street_address: streetAddress,
-        local_area: localArea,
-        city: localCity,
-        zone: zoneCity,
-        country: countryOfCity,
-        code: postalCode, // Ensure this is a valid postal code for the specified country
-        lat: coordinates.lat,
-        lng: coordinates.lng,
-      },
+      // delivery_address: preciseLocation || {
+      //   type: "",
+      //   company: "",
+      //   street_address: streetAddress,
+      //   local_area: localArea,
+      //   city: localCity,
+      //   zone: zoneCity,
+      //   country: countryOfCity,
+      //   code: postalCode, // Ensure this is a valid postal code for the specified country
+      //   lat: coordinates.lat,
+      //   lng: coordinates.lng,
+      // },
     };
     //  console.log('deliveryAddress:', deliveryAddress);
     const shipment = { ...commonShipment, ...deliveryAddress };
@@ -721,7 +725,7 @@ const DateSelectionAndCheckout = () => {
       console.log("Courier API creating shipment response:", response.data);
       setTrackingRef(response.data.short_tracking_reference);
       setDriver(response.data.delivery_agent_id);
-      console.log('driver is ',response.data.delivery_agent_id )
+      console.log("driver is ", response.data.delivery_agent_id);
       return response.data;
     } catch (error) {
       console.error("Error creating shipment:", error);
@@ -836,12 +840,125 @@ const DateSelectionAndCheckout = () => {
     console.log("Latitude and Longitude:", latLng);
     setAddress(place);
     setCoordinates(latLng);
+    setAddressCard(true);
   };
 
   useEffect(() => {
     setLocation(address.formatted_address);
-  }, [address, coordinates]);
+    let streetAddress,
+      localArea,
+      localCity,
+      zoneCity,
+      countryOfCity,
+      postalCode;
+    if (address.address_components) {
+      const { address_components } = address;
+      const length = address_components.length;
+      switch (length) {
+        case 1:
+          postalCode = address_components[0].long_name;
+          break;
+        case 2:
+          countryOfCity = address_components[0].short_name;
+          postalCode = address_components[1].long_name;
+          break;
+        case 3:
+          countryOfCity = address_components[1].short_name;
+          postalCode = address_components[2].long_name;
+          break;
+        case 4:
+          localCity = address_components[0].long_name;
+          countryOfCity = address_components[2].short_name;
+          postalCode = address_components[3].long_name;
+          break;
+        case 5:
+          localArea = address_components[0].long_name;
+          localCity = address_components[1].long_name;
+          countryOfCity = address_components[3].short_name;
+          postalCode = address_components[4].long_name;
+          break;
+        case 6:
+          localArea = address_components[0].long_name;
+          localCity = address_components[1].long_name;
+          zoneCity = address_components[2].long_name;
+          countryOfCity = address_components[3].short_name;
+          postalCode = address_components[4].long_name;
+          break;
+        case 7:
+          streetAddress = `${address_components[1].long_name} ${address_components[0].long_name}`;
+          localArea = address_components[2].long_name;
+          localCity = address_components[3].long_name;
+          zoneCity = address_components[4].long_name;
+          countryOfCity = address_components[5].short_name;
+          postalCode = address_components[6].long_name;
+          break;
+        case 8:
+          streetAddress = `${address_components[0].long_name} ${address_components[1].long_name}`;
+          localArea = address_components[2].long_name;
+          localCity = address_components[4].long_name;
+          zoneCity = address_components[5].long_name;
+          countryOfCity = address_components[6].short_name;
+          postalCode = address_components[7].long_name;
+          break;
+        case 9:
+          streetAddress = `${address_components[1].long_name} ${address_components[2].long_name}`;
+          localArea = `${address_components[2].long_name} ${address_components[0].long_name}`;
+          localCity = address_components[5].long_name;
+          zoneCity = address_components[6].long_name;
+          countryOfCity = address_components[7].short_name;
+          postalCode = address_components[8].long_name;
+          break;
+        default:
+          console.error("Invalid length of address components.");
+          return;
+      }
+      setFixedAddress({
+        streetAddress,
+        localArea,
+        localCity,
+        zoneCity,
+        countryOfCity,
+        postalCode,
+      });
+    }
+  }, [address, isPicked]);
 
+  const handleFixAddress = () => {
+    setFixedAddress((prevAddress) => ({
+      ...prevAddress,
+      streetAddress: editedValue.streetAddress,
+      localArea: editedValue.localArea,
+      localCity: editedValue.localCity,
+      countryOfCity: editedValue.countryOfCity,
+      zoneCity: editedValue.zoneCity,
+      postalCode: editedValue.postalCode,
+      // Update other fields similarly based on your requirements
+    }));
+    setAddressCard(false); // Close the addressCard modal or handle other logic
+  };
+
+  const renderAddressField = (label, value, field) => (
+    <View
+      style={{
+        justifyContent: "space-between",
+        flexDirection: "row",
+        padding: 10,
+      }}
+    >
+      <Text style={{ alignSelf: "flex-start" }}>{label}:</Text>
+      <TextInput
+        style={{ alignSelf: "flex-start", borderWidth: 1, padding: 5, flex: 1 }}
+        value={value}
+        onChangeText={(text) =>
+          setEditedValue((prev) => ({ ...prev, [field]: text }))
+        }
+      />
+    </View>
+  );
+
+  useEffect(() => {
+    console.log("fixedAddress is", fixedAddress);
+  }, [fixedAddress]);
   useEffect(() => {
     const updateLocation = async () => {
       console.log("Updating location:", location);
@@ -993,6 +1110,133 @@ const DateSelectionAndCheckout = () => {
 
   return (
     <>
+      {addressCard ? (
+        <View
+          style={{
+            // top: 65,
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            flex: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            zIndex: 9999,
+            alignSelf: "flex-end",
+          }}
+        >
+          <View
+            style={{
+              height: "100vh",
+              width: "40vw",
+             // backgroundColor: "red",
+              justifyContent: "center",
+            }}
+          >
+            <View style={{ justifyContent: "center" }}>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  padding: 10,
+                }}
+              >
+                <Text>street_address:</Text>
+                <Text>{fixedAddress.streetAddress}</Text>
+              </View>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  padding: 10,
+                }}
+              >
+                <Text style={{ alignSelf: "flex-start" }}>local area:</Text>
+                <Text>{fixedAddress.localArea}</Text>
+              </View>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  padding: 10,
+                }}
+              >
+                <Text style={{ alignSelf: "flex-start" }}>city:</Text>
+                <Text>{fixedAddress.localCity}</Text>
+              </View>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  padding: 10,
+                }}
+              >
+                <Text style={{ alignSelf: "flex-start" }}>country:</Text>
+                <Text>{fixedAddress.countryOfCity}</Text>
+              </View>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  padding: 10,
+                }}
+              >
+                <Text style={{ alignSelf: "flex-start" }}>Province(zone):</Text>
+                <Text>{fixedAddress.zoneCity}</Text>
+              </View>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  padding: 10,
+                }}
+              >
+                <Text style={{ alignSelf: "flex-start" }}>code:</Text>
+                <Text>{fixedAddress.postalCode}</Text>
+              </View>
+            </View>
+            <View style={{ height: "80%", justifyContent: "space-between" }}>
+              {renderAddressField(
+                "street_address",
+                editedValue.streetAddress,
+                "streetAddress"
+              )}
+              {renderAddressField(
+                "local area",
+                editedValue.localArea,
+                "localArea"
+              )}
+              {renderAddressField("city", editedValue.localCity, "localCity")}
+              {renderAddressField(
+                "country",
+                editedValue.countryOfCity,
+                "countryOfCity"
+              )}
+              {renderAddressField(
+                "Province(zone)",
+                editedValue.zoneCity,
+                "zoneCity"
+              )}
+              {renderAddressField("code", editedValue.postalCode, "postalCode")}
+            </View>
+            <Button
+              variant="outlined"
+              sx={{
+                width: "80%",
+                alignSelf: "center",
+                borderColor: "lightgrey",
+                borderRadius: 15,
+              }}
+              onClick={() => handleFixAddress()}
+            >
+              <Typography sx={{ fontSize: 16, color: "#FFFFFF" }}>
+                SUBMIT
+              </Typography>
+            </Button>
+          </View>
+        </View>
+      ) : null}
       <FollowUs />
       <Navbar />
       <ScrollView style={{ flexDirection: "column", backgroundColor: "white" }}>
@@ -1320,12 +1564,12 @@ const DateSelectionAndCheckout = () => {
                           >
                             Recent Addresses
                           </Typography>
-                          <LocationList
+                          {/* <LocationList
                             data={pastLocations}
                             onLocationPress={(selectedItem, index) =>
                               handleLocationPress(selectedItem, index)
                             }
-                          />
+                          /> */}
                         </View>
                       </>
                     )}

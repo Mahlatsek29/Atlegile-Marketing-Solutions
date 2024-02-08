@@ -993,7 +993,7 @@ const DateSelectionAndCheckout = () => {
         >
           <View
             style={{
-              height: "100vh",
+              height: "70vh",
               width: "40vw",
               backgroundColor: "white",
               justifyContent: "center",

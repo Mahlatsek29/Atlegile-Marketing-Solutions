@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+} from "react-native";
+import {
   Box,
   Typography,
   Button,
@@ -11,8 +20,13 @@ import {
   Grid,
   TextField,
   Avatar,
+  CardMedia,
+  Snackbar,
   Skeleton,
+  CardContent,
+  Card,
 } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import logo from "../../Global/images/logo.png";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import image from "../../Global/images/fixed-height.png";
@@ -32,7 +46,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import ReviewsCard from "./ReviewsCard";
-import Card from "../../Global/Card2";
+//import Card from "../../Global/Card2";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -43,10 +57,14 @@ import {
   addDoc,
   collection,
   serverTimestamp,
+  query,
+  where,
+  limit,
+  getDocs,
 } from "firebase/firestore";
 import firebaseConfig from "../../config";
 import { firebase, auth } from "../../config";
-import { TouchableOpacity } from "react-native";
+
 import Navbar from "../../Global/Navbar";
 
 export default function ProductDetails({ navigation, route }) {
@@ -59,10 +77,72 @@ export default function ProductDetails({ navigation, route }) {
   const [review, setReview] = useState("");
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [showSnackbar1, setShowSnackbar1] = useState(false);
+  const [isRed, setIsRed] = useState(false);
   const user = firebase.auth().currentUser;
 
   const app = initializeApp(firebaseConfig);
   const firestore = getFirestore(app);
+
+  const navigateProductDetails = () => {
+    console.log("productId is ", productId);
+    navigation.navigate("ProductDetails", { productId });
+  };
+
+  const toggleHeart = async () => {
+    try {
+      const favCollectionRef = firestore.collection("Favourites");
+      const favDocRef = favCollectionRef.doc(productId);
+
+      const favDoc = await favDocRef.get();
+
+      if (favDoc.exists) {
+        // Document exists, remove from Favourites
+        await favDocRef.delete();
+        setIsRed(false);
+      } else {
+        // Document does not exist, add to Favourites
+        await favDocRef.set({
+          productId: productId,
+          uid: uid,
+          productName: product.name,
+          description: product.description,
+          price: product.price,
+          // serverTimestamp: firestore.FieldValue.serverTimestamp(),
+          businessName: product.businessName,
+          company: product.company,
+          brand: product.brand,
+          image: product.images[0],
+        });
+        setIsRed(true);
+        setShowSnackbar(true);
+      }
+    } catch (error) {
+      console.error("Error toggling heart:", error);
+    }
+  };
+
+  const addToCart = async () => {
+    try {
+      const cartCollectionRef = firestore.collection("Cart");
+      await cartCollectionRef.add({
+        uid: uid,
+        productId: productId,
+        description: product.description,
+        price: product.price,
+        name: product.name,
+        quantity: 1,
+        image:
+          product.images && product.images.length > 0 ? product.images[0] : "",
+        // Add other relevant fields
+      });
+      setShowSnackbar1(true);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  };
 
   const handleAddToCart = async () => {
     if (!user) {
@@ -185,6 +265,43 @@ export default function ProductDetails({ navigation, route }) {
     fetchProductData();
   }, [firestore, productId]);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const cartCollectionRef = collection(firestore, "Products");
+      const q = query(
+        cartCollectionRef,
+        where("businessName", "==", product.businessName),
+        limit(4) // Set the limit to 4 products
+      );
+
+      try {
+        const querySnapshot = await getDocs(q);
+
+        const productsData = [];
+        querySnapshot.forEach((doc) => {
+          // Get the document ID and data
+          const productWithId = { id: doc.id, ...doc.data() };
+          productsData.push(productWithId);
+        });
+
+        console.log("productsData is ", productsData);
+        setRelatedProducts(productsData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [product]); // Adjust the dependency to include only necessary variables
+  const handleSnackbarClose1 = () => {
+    setShowSnackbar1(false);
+  };
+
+  const handleSnackbarClose = () => {
+    setShowSnackbar(false);
+  };
+
   if (loading) {
     // Render a loading state using Skeleton
     return (
@@ -196,14 +313,16 @@ export default function ProductDetails({ navigation, route }) {
           alignItems: "center",
           marginRight: "50vh",
           minHeight: "100vh", // Set minimum height to occupy the full viewport height
-        }}>
+        }}
+      >
         <Container
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexDirection: "row",
-          }}>
+          }}
+        >
           <Skeleton
             variant="rectangular"
             width="40%"
@@ -224,7 +343,8 @@ export default function ProductDetails({ navigation, route }) {
             alignItems: "left",
             width: "30%",
             left: -90,
-          }}>
+          }}
+        >
           <Skeleton
             variant="text"
             width="70%"
@@ -312,62 +432,8 @@ export default function ProductDetails({ navigation, route }) {
     setCurrentImage(index);
   };
 
-  // const handleReviewPost = () => {
-  //   console.log("Posted review!");
-  // };
-
   return (
     <>
-      {/* Navbar */}
-      {/* <Box
-        sx={{
-          bgcolor: "white",
-          py: 2,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.navigate("Landing")}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <img
-              src={logo}
-              alt="Logo"
-              style={{ width: "100px", marginLeft: "200px" }}
-            />
-          </Box>
-        </TouchableOpacity>
-
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            flex: 1,
-            justifyContent: "flex-end",
-          }}
-        >
-          <Link to="/landingscreen">
-            <Button
-              sx={{ minWidth: "100px", mr: "20px", borderRadius: "40px" }}
-              variant="contained"
-              color="primary"
-            >
-              Shop
-            </Button>
-          </Link>
-
-          <Button sx={{ minWidth: "150px", mr: "20px" }}>ABOUT US</Button>
-          {/* <TouchableOpacity
-            onPress={navigation.navigate("DateSelectionAndCheckout")}>
-            <IconButton aria-label="cart" sx={{ color: "black" }}>
-              <ShoppingCartIcon />
-            </IconButton>
-          </TouchableOpacity> */}
-
-      {/* <Typography sx={{ mr: "20px" }}>Welcome Jane</Typography>
-        </Box>
-      </Box> */}
-      {/* End of Navbar */}
       <Navbar />
       <Box sx={{ backgroundColor: "white", height: "100%", overflowY: "auto" }}>
         <Container maxWidth="md">
@@ -376,18 +442,21 @@ export default function ProductDetails({ navigation, route }) {
               <Link
                 color="inherit"
                 href="/"
-                sx={{ fontSize: 15, textDecoration: "none" }}>
+                sx={{ fontSize: 15, textDecoration: "none" }}
+              >
                 Home
               </Link>
               <Link
                 color="inherit"
                 href="/vaas"
-                sx={{ fontSize: 15, textDecoration: "none" }}>
+                sx={{ fontSize: 15, textDecoration: "none" }}
+              >
                 VAAS
               </Link>
               <Typography
                 color="textPrimary"
-                sx={{ fontSize: 15, textDecoration: "none" }}>
+                sx={{ fontSize: 15, textDecoration: "none" }}
+              >
                 Digital Marketing Solutions Mbali
               </Typography>
             </Breadcrumbs>
@@ -401,11 +470,13 @@ export default function ProductDetails({ navigation, route }) {
                 width: "50%",
                 //border: "1px lightgray solid",
                 borderRadius: 2,
-              }}>
+              }}
+            >
               <Box sx={{ position: "relative" }}>
                 <IconButton
                   onClick={handlePrev}
-                  sx={{ position: "absolute", top: "50%", left: "5px" }}>
+                  sx={{ position: "absolute", top: "50%", left: "5px" }}
+                >
                   <ArrowBackIosIcon />
                 </IconButton>
                 <img
@@ -419,7 +490,8 @@ export default function ProductDetails({ navigation, route }) {
                 />
                 <IconButton
                   onClick={handleNext}
-                  sx={{ position: "absolute", top: "50%", right: "5px" }}>
+                  sx={{ position: "absolute", top: "50%", right: "5px" }}
+                >
                   <ArrowForwardIosIcon />
                 </IconButton>
               </Box>
@@ -449,22 +521,26 @@ export default function ProductDetails({ navigation, route }) {
                 height: "100%",
                 width: "50%",
                 pl: 2,
-              }}>
+              }}
+            >
               <Box
                 sx={{
                   //border: "1px red solid",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "flex-end",
-                }}>
+                }}
+              >
                 <Button
                   // onClick={() => navigation.navigate("/main/dashboard")}
                   sx={{
                     border: "1px #072840 solid",
                     borderRadius: 20,
-                  }}>
+                  }}
+                >
                   <Typography
-                    sx={{ fontWeight: "600", fontSize: 10, color: "#072840" }}>
+                    sx={{ fontWeight: "600", fontSize: 10, color: "#072840" }}
+                  >
                     PHYSICAL
                   </Typography>
                 </Button>
@@ -495,7 +571,8 @@ export default function ProductDetails({ navigation, route }) {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                  }}>
+                  }}
+                >
                   <Grid container sx={{ mt: 2, width: "50%", p: 1 }}>
                     <Grid
                       item
@@ -506,7 +583,8 @@ export default function ProductDetails({ navigation, route }) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                      }}>
+                      }}
+                    >
                       <RemoveIcon />
                     </Grid>
                     <Grid
@@ -517,7 +595,8 @@ export default function ProductDetails({ navigation, route }) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                      }}>
+                      }}
+                    >
                       {quantity}
                     </Grid>
                     <Grid
@@ -529,7 +608,8 @@ export default function ProductDetails({ navigation, route }) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                      }}>
+                      }}
+                    >
                       <AddIcon />
                     </Grid>
                   </Grid>
@@ -538,9 +618,11 @@ export default function ProductDetails({ navigation, route }) {
                     sx={{
                       backgroundColor: "#072840",
                       borderRadius: 20,
-                    }}>
+                    }}
+                  >
                     <Typography
-                      sx={{ fontSize: 15, color: "white", pl: 1, pr: 1 }}>
+                      sx={{ fontSize: 15, color: "white", pl: 1, pr: 1 }}
+                    >
                       ADD TO CART
                     </Typography>
                   </Button>
@@ -548,20 +630,23 @@ export default function ProductDetails({ navigation, route }) {
                 <Box
                   sx={{
                     borderLeft: "10px red solid",
-                  }}>
+                  }}
+                >
                   <Box
                     sx={{
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       p: 3,
-                    }}>
+                    }}
+                  >
                     <Box
                       onClick={increaseQuantity}
                       sx={{
                         //border: "1px #d32f2f solid",
                         pr: 2,
-                      }}>
+                      }}
+                    >
                       <Avatar sx={{ backgroundColor: "#d32f2f", p: 1 }}>
                         <CreditCardOutlinedIcon sx={{ color: "white" }} />
                       </Avatar>
@@ -573,7 +658,8 @@ export default function ProductDetails({ navigation, route }) {
                         {
                           //border: "1px red solid",
                         }
-                      }>
+                      }
+                    >
                       <Typography sx={{ fontWeight: "600" }}>
                         Digital Product
                       </Typography>
@@ -587,7 +673,8 @@ export default function ProductDetails({ navigation, route }) {
               </Box>
               <Box>
                 <Typography
-                  sx={{ fontWeight: "600", fontSize: 15, mt: 3, mb: 4 }}>
+                  sx={{ fontWeight: "600", fontSize: 15, mt: 3, mb: 4 }}
+                >
                   REVIEWS
                 </Typography>
                 <Box>
@@ -627,7 +714,8 @@ export default function ProductDetails({ navigation, route }) {
                       p: 1,
                     }}
                     onClick={handleReviewPost}
-                    variant="filled">
+                    variant="filled"
+                  >
                     REVIEW
                   </Button>
                 </Box>
@@ -644,14 +732,309 @@ export default function ProductDetails({ navigation, route }) {
                 MindMatters Publication
               </Typography>
               <Box
-                sx={{
+                style={{
                   display: "flex",
+                  margin: 10,
                   flexDirection: "row",
-                  alignItems: "center",
-                  overflowX: "auto",
-                }}>
-                <Card />
-                <Card />
+                  flexWrap: "wrap",
+                }}
+              >
+                {relatedProducts &&
+                  relatedProducts.map((relatedProduct) =>
+                    productId !== relatedProduct.id ? (
+                      <Card
+                        className="card-container"
+                        style={{
+                          width: "21vw",
+                          display: "flex",
+                          flexDirection: "column",
+                          height: "82vh",
+                          margin: 10,
+                        }}
+                      >
+                        <View
+                          style={{
+                            // backgroundColor: "purple",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            paddingHorizontal: 16,
+                            height: "70vh",
+                          }}
+                        >
+                          <Box
+                            style={{
+                              borderRadius: "16px",
+                              objectFit: "cover",
+                              position: "relative",
+                              backgroundColor: "whitesmoke",
+                              width: "250px",
+                              height: "250px",
+                              borderRadius: "50%",
+                              alignself: "center",
+                              justifyContent: "center",
+                              display: "flex",
+                              flexDirection: "column",
+                              alignSelf: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <CardMedia
+                              component="img"
+                              height="140"
+                              image={
+                                relatedProduct.images &&
+                                relatedProduct.images.length > 0
+                                  ? relatedProduct.images[0]
+                                  : "../../assets/image/headsets.png"
+                              }
+                              alt={relatedProduct.name}
+                              style={{
+                                position: "relative",
+                                borderRadius: "100px",
+                                objectFit: "cover",
+                                width: 220,
+                                height: 220,
+                                alignSelf: "center",
+                              }}
+                            />
+                            <Box
+                              style={{
+                                backgroundColor: "#E74040",
+                                position: "absolute",
+                                bottom: 200,
+                                padding: 2,
+                                width: "22%",
+                                borderRadius: "8%",
+                                alignSelf: "center",
+                              }}
+                            >
+                              <Typography
+                                variant="h5"
+                                style={{ color: "#fff", textAlign: "center" }}
+                              >
+                                sale
+                              </Typography>
+                            </Box>
+                            {/* <Container> */}
+                            <Snackbar
+                              open={showSnackbar}
+                              autoHideDuration={3000} // Adjust as needed
+                              onClose={handleSnackbarClose}
+                              anchorOrigin={{
+                                vertical: "top",
+                                horizontal: "center",
+                              }} // Set position to top center
+                            >
+                              <MuiAlert
+                                onClose={handleSnackbarClose}
+                                severity="success"
+                                sx={{ width: "100%" }}
+                              >
+                                Product added to favorites!
+                              </MuiAlert>
+                            </Snackbar>
+                            <Box
+                              style={{
+                                paddingHorizontal: 10,
+                                position: "absolute",
+                                bottom: 30,
+                                left: 80,
+                                width: "6vw",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                alignSelf: "center",
+                              }}
+                            >
+                              <TouchableOpacity
+                                onPress={() => toggleHeart(relatedProduct)}
+                              >
+                                <Icon
+                                  name={isRed ? "heart" : "heart-o"}
+                                  size={20}
+                                  style={{
+                                    padding: 10,
+                                    backgroundColor: "white",
+                                    borderRadius: "50%",
+                                  }}
+                                  color={isRed ? "red" : "black"}
+                                />
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() => addToCart(relatedProduct)}
+                                disabled={!relatedProduct}
+                              >
+                                <Snackbar
+                                  open={showSnackbar1}
+                                  autoHideDuration={3000} // Adjust as needed
+                                  onClose={handleSnackbarClose1}
+                                  anchorOrigin={{
+                                    vertical: "top",
+                                    horizontal: "center",
+                                  }} // Set position to top center
+                                >
+                                  <MuiAlert
+                                    onClose={handleSnackbarClose1}
+                                    severity="success"
+                                    sx={{ width: "100%" }}
+                                  >
+                                    Product added to Cart!
+                                  </MuiAlert>
+                                </Snackbar>
+                                <Icon
+                                  name="shopping-cart"
+                                  size={20}
+                                  style={{
+                                    padding: 10,
+                                    backgroundColor: "white",
+                                    borderRadius: "50%",
+                                  }}
+                                  color="black"
+                                />
+                              </TouchableOpacity>
+                            </Box>
+                            {/* </Container> */}
+                          </Box>
+                          <View
+                            style={{
+                              width: "100%",
+                              justifyContent: "space-between",
+                              marginTop: 16,
+                              //  backgroundColor:'red',
+                              height: "25vh",
+                            }}
+                          >
+                            <View>
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  //     backgroundColor:'green',
+                                  flexWrap: "wrap",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    flex: 1,
+                                    fontSize: "15px",
+                                    color: "#4FC3F7",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {relatedProduct.selectedProductCategory}
+                                </Text>
+                                <View
+                                  style={{
+                                    backgroundColor: "#072840",
+                                    paddingHorizontal: 5,
+                                    paddingVertical: 3,
+                                    borderRadius: 15,
+                                  }}
+                                >
+                                  <Text style={{}}>
+                                    ⭐{" "}
+                                    <Text style={{ color: "white" }}> 4.9</Text>
+                                  </Text>
+                                </View>
+                              </View>
+
+                              <Typography variant="h5" component="h5">
+                                {relatedProduct.name &&
+                                  relatedProduct.name.slice(0, 20)}
+                                {relatedProduct.name &&
+                                relatedProduct.name.length < 50
+                                  ? ""
+                                  : "..."}
+                              </Typography>
+                              <Typography
+                                variant="subtitle2"
+                                component="p"
+                                style={{ color: "gray" }}
+                              >
+                                {relatedProduct.description &&
+                                  relatedProduct.description.slice(0, 50)}
+                                {relatedProduct.description &&
+                                relatedProduct.description.length < 50
+                                  ? ""
+                                  : "..."}
+                              </Typography>
+                              <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="space-between"
+                              >
+                                <Typography
+                                  variant="body2"
+                                  component="p"
+                                  style={{ color: "gray" }}
+                                >
+                                  <Icon2 name="download" size={20} /> 15 Sales
+                                </Typography>
+                                <View
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                  }}
+                                >
+                                  <Typography
+                                    variant="subtitle2"
+                                    component="p"
+                                    style={{
+                                      color: "#BDBDBD",
+                                      fontSize: "18px",
+                                      fontWeight: "700",
+                                      marginRight: "10px",
+                                    }}
+                                  >
+                                    R{relatedProduct.price}
+                                  </Typography>
+                                  <Typography
+                                    variant="subtitle2"
+                                    component="p"
+                                    style={{
+                                      color: "rgb(97, 151, 97)",
+                                      fontSize: "18px",
+                                      fontWeight: "700",
+                                    }}
+                                  >
+                                    R{relatedProduct.price}
+                                  </Typography>
+                                </View>
+                              </Box>
+                            </View>
+                          </View>
+                        </View>
+                        <CardContent>
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            style={{
+                              border: "2px solid black",
+                              color: "rgb(43, 40, 40)",
+                              textDecoration: "none",
+                              width: "7vw",
+                              backgroundColor: "white",
+                              padding: "5px 20px",
+                              borderRadius: "25px",
+                              cursor: "pointer",
+                              fontSize: "18px",
+                              display: "flex",
+                              alignItems: "center",
+                              marginBottom: "2vh",
+                            }}
+                            onClick={() =>
+                              navigateProductDetails(relatedProduct.id)
+                            }
+                          >
+                            VIEW
+                            <Icon name="arrow-right" size={20} />
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ) : null
+                  )}
               </Box>
             </Box>
           </Box>

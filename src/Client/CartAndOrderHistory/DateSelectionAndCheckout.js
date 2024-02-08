@@ -49,6 +49,7 @@ import { firebase, auth, db } from "../../config";
 // import { timeStamp } from "console";
 
 import PlaceAutocomplete from "../../Global/PlaceAutocomplete";
+
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
   const [orderTotal, setOrderTotal] = useState(0);
@@ -107,7 +108,12 @@ const DateSelectionAndCheckout = () => {
   const [addressCard, setAddressCard] = useState(false);
   const [fixedAddress, setFixedAddress] = useState({});
   const [editedValue, setEditedValue] = useState("");
-
+  const [editStreetAdress, setEditStreetAdress] = useState(false);
+  const [editCity, setEditCity] = useState(false);
+  const [editZone, setEditZone] = useState(false);
+  const [editLocalArea, setEditLocalArea] = useState(false); 
+  const [editCode, setEditCode] = useState(false);
+  const [editCounty, setEditCountry] = useState(false);
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -412,12 +418,7 @@ const DateSelectionAndCheckout = () => {
   }, [cartData, selectedIndex, rates]);
 
   useEffect(() => {
-    let streetAddress;
-    let localArea;
-    let localCity;
-    let zoneCity;
-    let countryOfCity;
-    let postalCode;
+   
 
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0];
@@ -448,79 +449,17 @@ const DateSelectionAndCheckout = () => {
       delivery_min_date: formattedDate,
     };
 
-    if (address.address_components && isPicked) {
-      const length = address.address_components.length;
-
-      switch (length) {
-        case 1:
-          postalCode = address.address_components[0].long_name;
-          break;
-        case 2:
-          countryOfCity = address.address_components[0].short_name;
-          postalCode = address.address_components[1].long_name;
-          break;
-        case 3:
-          countryOfCity = address.address_components[1].short_name;
-          postalCode = address.address_components[2].long_name;
-          break;
-        case 4:
-          localCity = address.address_components[0].long_name;
-          countryOfCity = address.address_components[2].short_name;
-          postalCode = address.address_components[3].long_name;
-          break;
-        case 5:
-          localArea = address.address_components[0].long_name;
-          localCity = address.address_components[1].long_name;
-          countryOfCity = address.address_components[3].short_name;
-          postalCode = address.address_components[4].long_name;
-          break;
-        case 6:
-          localArea = address.address_components[0].long_name;
-          localCity = address.address_components[1].long_name;
-          zoneCity = address.address_components[2].long_name;
-          countryOfCity = address.address_components[3].short_name;
-          postalCode = address.address_components[4].long_name;
-          break;
-        case 7:
-          streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
-          localArea = address.address_components[2].long_name;
-          localCity = address.address_components[3].long_name;
-          zoneCity = address.address_components[4].long_name;
-          countryOfCity = address.address_components[5].short_name;
-          postalCode = address.address_components[6].long_name;
-          break;
-        case 8:
-          streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-          localArea = address.address_components[2].long_name;
-          localCity = address.address_components[4].long_name;
-          zoneCity = address.address_components[5].long_name;
-          countryOfCity = address.address_components[6].short_name;
-          postalCode = address.address_components[7].long_name;
-          break;
-        case 9:
-          streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-          localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
-          localCity = address.address_components[5].long_name;
-          zoneCity = address.address_components[6].long_name;
-          countryOfCity = address.address_components[7].short_name;
-          postalCode = address.address_components[8].long_name;
-          break;
-        default:
-          console.error("Invalid length of address components.");
-          return;
-      }
-    }
-    console.log("preciseLocation is ", preciseLocation);
+   
     const deliveryRates = {
-      delivery_address: preciseLocation || {
+      delivery_address:{
         type: "",
         company: "",
-        street_address: streetAddress,
-        local_area: localArea,
-        city: localCity,
-        zone: zoneCity,
-        country: countryOfCity,
-        code: postalCode,
+        street_address: fixedAddress.streetAddress,
+        local_area: fixedAddress.localArea,
+        city: fixedAddress.localCity,
+        zone: fixedAddress.zoneCity,
+        country: fixedAddress.countryOfCity,
+        code: fixedAddress.postalCode,
         lat: coordinates.lat,
         lng: coordinates.lng,
       },
@@ -616,98 +555,24 @@ const DateSelectionAndCheckout = () => {
       mute_notifications: false,
     };
 
-    let streetAddress;
-    let localArea;
-    let localCity;
-    let zoneCity;
-    let countryOfCity;
-    let postalCode;
-
-    if (address.address_components && isPicked) {
-      const length = address.address_components.length;
-
-      switch (length) {
-        case 1:
-          postalCode = address.address_components[0].long_name;
-          break;
-        case 2:
-          countryOfCity = address.address_components[0].short_name;
-          postalCode = address.address_components[1].long_name;
-          break;
-        case 3:
-          countryOfCity = address.address_components[1].short_name;
-          postalCode = address.address_components[2].long_name;
-          break;
-        case 4:
-          localCity = address.address_components[0].long_name;
-          countryOfCity = address.address_components[2].short_name;
-          postalCode = address.address_components[3].long_name;
-          break;
-        case 5:
-          localArea = address.address_components[0].long_name;
-          localCity = address.address_components[1].long_name;
-          countryOfCity = address.address_components[3].short_name;
-          postalCode = address.address_components[4].long_name;
-          break;
-        case 6:
-          localArea = address.address_components[0].long_name;
-          localCity = address.address_components[1].long_name;
-          zoneCity = address.address_components[2].long_name;
-          countryOfCity = address.address_components[3].short_name;
-          postalCode = address.address_components[4].long_name;
-          break;
-        case 7:
-          streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
-          localArea = address.address_components[2].long_name;
-          localCity = address.address_components[3].long_name;
-          zoneCity = address.address_components[4].long_name;
-          countryOfCity = address.address_components[5].short_name;
-          postalCode = address.address_components[6].long_name;
-          break;
-        case 8:
-          streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-          localArea = address.address_components[2].long_name;
-          localCity = address.address_components[4].long_name;
-          zoneCity = address.address_components[5].long_name;
-          countryOfCity = address.address_components[6].short_name;
-          postalCode = address.address_components[7].long_name;
-          break;
-        case 9:
-          streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-          localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
-          localCity = address.address_components[5].long_name;
-          zoneCity = address.address_components[6].long_name;
-          countryOfCity = address.address_components[7].short_name;
-          postalCode = address.address_components[8].long_name;
-          break;
-        default:
-          console.error("Invalid length of address components.");
-          return;
-      }
-    }
-
-    //  console.log("the delivery address is ", preciseLocation);
 
     const deliveryAddress = {
-      // delivery_address: preciseLocation || {
-      //   type: "",
-      //   company: "",
-      //   street_address: streetAddress,
-      //   local_area: localArea,
-      //   city: localCity,
-      //   zone: zoneCity,
-      //   country: countryOfCity,
-      //   code: postalCode, // Ensure this is a valid postal code for the specified country
-      //   lat: coordinates.lat,
-      //   lng: coordinates.lng,
-      // },
+      delivery_address:{
+        type: "",
+        company: "",
+        street_address: fixedAddress.streetAddress,
+        local_area: fixedAddress.localArea,
+        city: fixedAddress.localCity,
+        zone: fixedAddress.zoneCity,
+        country: fixedAddress.countryOfCity,
+        code: fixedAddress.postalCode,
+        lat: coordinates.lat,
+        lng: coordinates.lng,
+      },
     };
-    //  console.log('deliveryAddress:', deliveryAddress);
+    
     const shipment = { ...commonShipment, ...deliveryAddress };
-    // console.log('shipment object:', shipment);  // Log the entire shipment object
-    console.log("shipmentCollectionAdress ", shipment.collection_address);
-    console.log("shipmentDeliverAdress ", shipment.delivery_address);
-
+   
     const config = {
       headers: {
         Authorization: `Bearer ${CourierAPIKey}`,
@@ -1130,7 +995,7 @@ const DateSelectionAndCheckout = () => {
             style={{
               height: "100vh",
               width: "40vw",
-             // backgroundColor: "red",
+              backgroundColor: "white",
               justifyContent: "center",
             }}
           >
@@ -1142,8 +1007,21 @@ const DateSelectionAndCheckout = () => {
                   padding: 10,
                 }}
               >
-                <Text>street_address:</Text>
-                <Text>{fixedAddress.streetAddress}</Text>
+                {editStreetAdress ? (
+                  renderAddressField(
+                    "street_address",
+                    editedValue.streetAddress,
+                    "streetAddress"
+                  )
+                ) : (
+                  <>
+                    <Text>street_address:</Text>
+                    <Text>{fixedAddress.streetAddress}</Text>
+                    <TouchableOpacity onPress={()=>setEditStreetAdress(true)}>
+                      <Text>Edit</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
               </View>
               <View
                 style={{
@@ -1152,8 +1030,21 @@ const DateSelectionAndCheckout = () => {
                   padding: 10,
                 }}
               >
-                <Text style={{ alignSelf: "flex-start" }}>local area:</Text>
-                <Text>{fixedAddress.localArea}</Text>
+                {editLocalArea ? (
+                  renderAddressField(
+                    "local area",
+                    editedValue.localArea,
+                    "localArea"
+                  )
+                ) : (
+                  <>
+                    <Text style={{ alignSelf: "flex-start" }}>local area:</Text>
+                    <Text>{fixedAddress.localArea}</Text>
+                    <TouchableOpacity onPress={()=>setEditLocalArea(true)}>
+                      <Text>Edit</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
               </View>
               <View
                 style={{
@@ -1162,8 +1053,18 @@ const DateSelectionAndCheckout = () => {
                   padding: 10,
                 }}
               >
-                <Text style={{ alignSelf: "flex-start" }}>city:</Text>
-                <Text>{fixedAddress.localCity}</Text>
+                {" "}
+                {editCity ? (
+                  renderAddressField("city", editedValue.localCity, "localCity")
+                ) : (
+                  <>
+                    <Text style={{ alignSelf: "flex-start" }}>city:</Text>
+                    <Text>{fixedAddress.localCity}</Text>
+                    <TouchableOpacity onPress={()=>setEditCity(true)}>
+                      <Text>Edit</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
               </View>
               <View
                 style={{
@@ -1172,8 +1073,21 @@ const DateSelectionAndCheckout = () => {
                   padding: 10,
                 }}
               >
-                <Text style={{ alignSelf: "flex-start" }}>country:</Text>
-                <Text>{fixedAddress.countryOfCity}</Text>
+                {editCounty ? (
+                  renderAddressField(
+                    "country",
+                    editedValue.countryOfCity,
+                    "countryOfCity"
+                  )
+                ) : (
+                  <>
+                    <Text style={{ alignSelf: "flex-start" }}>country:</Text>
+                    <Text>{fixedAddress.countryOfCity}</Text>
+                    <TouchableOpacity onPress={()=>setEditCountry(true)}>
+                      <Text>Edit</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
               </View>
               <View
                 style={{
@@ -1182,8 +1096,24 @@ const DateSelectionAndCheckout = () => {
                   padding: 10,
                 }}
               >
-                <Text style={{ alignSelf: "flex-start" }}>Province(zone):</Text>
-                <Text>{fixedAddress.zoneCity}</Text>
+                {" "}
+                {editZone ? (
+                  renderAddressField(
+                    "Province(zone)",
+                    editedValue.zoneCity,
+                    "zoneCity"
+                  )
+                ) : (
+                  <>
+                    <Text style={{ alignSelf: "flex-start" }}>
+                      Province(zone):
+                    </Text>
+                    <Text>{fixedAddress.zoneCity}</Text>
+                    <TouchableOpacity onPress={()=>setEditZone(true)}>
+                      <Text>Edit</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
               </View>
               <View
                 style={{
@@ -1192,34 +1122,25 @@ const DateSelectionAndCheckout = () => {
                   padding: 10,
                 }}
               >
-                <Text style={{ alignSelf: "flex-start" }}>code:</Text>
-                <Text>{fixedAddress.postalCode}</Text>
+                {" "}
+                {editCode ? (
+                  renderAddressField(
+                    "code",
+                    editedValue.postalCode,
+                    "postalCode"
+                  )
+                ) : (
+                  <>
+                    <Text style={{ alignSelf: "flex-start" }}>code:</Text>
+                    <Text>{fixedAddress.postalCode}</Text>
+                    <TouchableOpacity onPress={()=>setEditCode(true)}>
+                      <Text>Edit</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
               </View>
             </View>
-            <View style={{ height: "80%", justifyContent: "space-between" }}>
-              {renderAddressField(
-                "street_address",
-                editedValue.streetAddress,
-                "streetAddress"
-              )}
-              {renderAddressField(
-                "local area",
-                editedValue.localArea,
-                "localArea"
-              )}
-              {renderAddressField("city", editedValue.localCity, "localCity")}
-              {renderAddressField(
-                "country",
-                editedValue.countryOfCity,
-                "countryOfCity"
-              )}
-              {renderAddressField(
-                "Province(zone)",
-                editedValue.zoneCity,
-                "zoneCity"
-              )}
-              {renderAddressField("code", editedValue.postalCode, "postalCode")}
-            </View>
+
             <Button
               variant="outlined"
               sx={{
@@ -1230,7 +1151,7 @@ const DateSelectionAndCheckout = () => {
               }}
               onClick={() => handleFixAddress()}
             >
-              <Typography sx={{ fontSize: 16, color: "#FFFFFF" }}>
+              <Typography sx={{ fontSize: 16, color: "#062338" }}>
                 SUBMIT
               </Typography>
             </Button>

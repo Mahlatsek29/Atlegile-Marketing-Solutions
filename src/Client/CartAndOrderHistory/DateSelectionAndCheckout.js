@@ -448,7 +448,7 @@ const DateSelectionAndCheckout = () => {
       collection_min_date: formattedDate,
       delivery_min_date: formattedDate,
     };
-
+  console.log('The courear fixedAddress is ',fixedAddress)
    
     const deliveryRates = {
       delivery_address:{
@@ -499,7 +499,7 @@ const DateSelectionAndCheckout = () => {
     };
 
     gettingRate();
-  }, [preciseLocation, location]);
+  }, [fixedAddress, location]);
 
   const creattingShipment = async () => {
     //  console.log("the delivery address is ", preciseLocation);
@@ -791,12 +791,12 @@ const DateSelectionAndCheckout = () => {
   const handleFixAddress = () => {
     setFixedAddress((prevAddress) => ({
       ...prevAddress,
-      streetAddress: editedValue.streetAddress,
-      localArea: editedValue.localArea,
-      localCity: editedValue.localCity,
-      countryOfCity: editedValue.countryOfCity,
-      zoneCity: editedValue.zoneCity,
-      postalCode: editedValue.postalCode,
+      streetAddress: editedValue.streetAddress || prevAddress.streetAddress,
+      localArea: editedValue.localArea || prevAddress.localArea,
+      localCity: editedValue.localCity || prevAddress.localCity,
+      zoneCity: editedValue.zoneCity || prevAddress.zoneCity,
+      countryOfCity: editedValue.countryOfCity || prevAddress.countryOfCity,
+      postalCode: editedValue.postalCode || prevAddress.postalCode,
       // Update other fields similarly based on your requirements
     }));
     setAddressCard(false); // Close the addressCard modal or handle other logic
@@ -824,154 +824,154 @@ const DateSelectionAndCheckout = () => {
   useEffect(() => {
     console.log("fixedAddress is", fixedAddress);
   }, [fixedAddress]);
-  useEffect(() => {
-    const updateLocation = async () => {
-      console.log("Updating location:", location);
-      if (!user || !user.uid) {
-        console.error("User not authenticated.");
-        return;
-      }
-      console.log("this is happeninn 1");
+  // useEffect(() => {
+  //   const updateLocation = async () => {
+  //     console.log("Updating location:", location);
+  //     if (!user || !user.uid) {
+  //       console.error("User not authenticated.");
+  //       return;
+  //     }
+  //     console.log("this is happeninn 1");
 
-      const getAddressDetails = () => {
-        let streetAddress;
-        let localArea;
-        let localCity;
-        let zoneCity;
-        let countryOfCity;
-        let postalCode;
+  //     const getAddressDetails = () => {
+  //       let streetAddress;
+  //       let localArea;
+  //       let localCity;
+  //       let zoneCity;
+  //       let countryOfCity;
+  //       let postalCode;
 
-        console.log("this is happeninn 2");
-        const length = address.address_components.length;
+  //       console.log("this is happeninn 2");
+  //       const length = address.address_components.length;
 
-        switch (length) {
-          case 1:
-            postalCode = address.address_components[0].long_name;
-            break;
-          case 2:
-            countryOfCity = address.address_components[0].short_name;
-            postalCode = address.address_components[1].long_name;
-            break;
-          case 3:
-            countryOfCity = address.address_components[1].short_name;
-            postalCode = address.address_components[2].long_name;
-            break;
-          case 4:
-            localCity = address.address_components[0].long_name;
-            countryOfCity = address.address_components[2].short_name;
-            postalCode = address.address_components[3].long_name;
-            break;
-          case 5:
-            localArea = address.address_components[0].long_name;
-            localCity = address.address_components[1].long_name;
-            countryOfCity = address.address_components[3].short_name;
-            postalCode = address.address_components[4].long_name;
-            break;
-          case 6:
-            localArea = address.address_components[0].long_name;
-            localCity = address.address_components[1].long_name;
-            zoneCity = address.address_components[2].long_name;
-            countryOfCity = address.address_components[3].short_name;
-            postalCode = address.address_components[4].long_name;
-            break;
-          case 7:
-            streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
-            localArea = address.address_components[2].long_name;
-            localCity = address.address_components[3].long_name;
-            zoneCity = address.address_components[4].long_name;
-            countryOfCity = address.address_components[5].short_name;
-            postalCode = address.address_components[6].long_name;
-            break;
-          case 8:
-            streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-            localArea = address.address_components[2].long_name;
-            localCity = address.address_components[4].long_name;
-            zoneCity = address.address_components[5].long_name;
-            countryOfCity = address.address_components[6].short_name;
-            postalCode = address.address_components[7].long_name;
-            break;
-          case 9:
-            streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-            localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
-            localCity = address.address_components[5].long_name;
-            zoneCity = address.address_components[6].long_name;
-            countryOfCity = address.address_components[7].short_name;
-            postalCode = address.address_components[8].long_name;
-            break;
-          default:
-            console.error("Invalid length of address components.");
-            return;
-        }
+  //       switch (length) {
+  //         case 1:
+  //           postalCode = address.address_components[0].long_name;
+  //           break;
+  //         case 2:
+  //           countryOfCity = address.address_components[0].short_name;
+  //           postalCode = address.address_components[1].long_name;
+  //           break;
+  //         case 3:
+  //           countryOfCity = address.address_components[1].short_name;
+  //           postalCode = address.address_components[2].long_name;
+  //           break;
+  //         case 4:
+  //           localCity = address.address_components[0].long_name;
+  //           countryOfCity = address.address_components[2].short_name;
+  //           postalCode = address.address_components[3].long_name;
+  //           break;
+  //         case 5:
+  //           localArea = address.address_components[0].long_name;
+  //           localCity = address.address_components[1].long_name;
+  //           countryOfCity = address.address_components[3].short_name;
+  //           postalCode = address.address_components[4].long_name;
+  //           break;
+  //         case 6:
+  //           localArea = address.address_components[0].long_name;
+  //           localCity = address.address_components[1].long_name;
+  //           zoneCity = address.address_components[2].long_name;
+  //           countryOfCity = address.address_components[3].short_name;
+  //           postalCode = address.address_components[4].long_name;
+  //           break;
+  //         case 7:
+  //           streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
+  //           localArea = address.address_components[2].long_name;
+  //           localCity = address.address_components[3].long_name;
+  //           zoneCity = address.address_components[4].long_name;
+  //           countryOfCity = address.address_components[5].short_name;
+  //           postalCode = address.address_components[6].long_name;
+  //           break;
+  //         case 8:
+  //           streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+  //           localArea = address.address_components[2].long_name;
+  //           localCity = address.address_components[4].long_name;
+  //           zoneCity = address.address_components[5].long_name;
+  //           countryOfCity = address.address_components[6].short_name;
+  //           postalCode = address.address_components[7].long_name;
+  //           break;
+  //         case 9:
+  //           streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+  //           localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
+  //           localCity = address.address_components[5].long_name;
+  //           zoneCity = address.address_components[6].long_name;
+  //           countryOfCity = address.address_components[7].short_name;
+  //           postalCode = address.address_components[8].long_name;
+  //           break;
+  //         default:
+  //           console.error("Invalid length of address components.");
+  //           return;
+  //       }
 
-        return {
-          streetAddress: streetAddress || "",
-          localArea: localArea || "",
-          localCity: localCity || "",
-          zoneCity: zoneCity || "",
-          countryOfCity: countryOfCity || "",
-          postalCode: postalCode || "",
-        };
-      };
+  //       return {
+  //         streetAddress: streetAddress || "",
+  //         localArea: localArea || "",
+  //         localCity: localCity || "",
+  //         zoneCity: zoneCity || "",
+  //         countryOfCity: countryOfCity || "",
+  //         postalCode: postalCode || "",
+  //       };
+  //     };
 
-      const getAddressComponents = () => {
-        const addressDetails = getAddressDetails();
-        console.log("this is happeninn 3");
-        const {
-          streetAddress,
-          localArea,
-          localCity,
-          zoneCity,
-          countryOfCity,
-          postalCode,
-        } = addressDetails;
+  //     const getAddressComponents = () => {
+  //       const addressDetails = getAddressDetails();
+  //       console.log("this is happeninn 3");
+  //       const {
+  //         streetAddress,
+  //         localArea,
+  //         localCity,
+  //         zoneCity,
+  //         countryOfCity,
+  //         postalCode,
+  //       } = addressDetails;
 
-        return {
-          type: "",
-          company: "",
-          street_address: streetAddress,
-          local_area: localArea,
-          city: localCity,
-          zone: zoneCity,
-          country: countryOfCity,
-          code: postalCode,
-          lat: coordinates.lat,
-          lng: coordinates.lng,
-        };
-      };
-      console.log("this is happeninn 4");
-      const cartCollectionRef = collection(firestore, "Users");
-      const q = query(cartCollectionRef, where("uid", "==", user.uid));
+  //       return {
+  //         type: "",
+  //         company: "",
+  //         street_address: streetAddress,
+  //         local_area: localArea,
+  //         city: localCity,
+  //         zone: zoneCity,
+  //         country: countryOfCity,
+  //         code: postalCode,
+  //         lat: coordinates.lat,
+  //         lng: coordinates.lng,
+  //       };
+  //     };
+  //     console.log("this is happeninn 4");
+  //     const cartCollectionRef = collection(firestore, "Users");
+  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
-      try {
-        const querySnapshot = await getDocs(q);
+  //     try {
+  //       const querySnapshot = await getDocs(q);
 
-        querySnapshot.forEach(async (doc) => {
-          const userDocRef = doc.ref;
-          const currentPastLocations = doc.data()?.pastLocations || [];
+  //       querySnapshot.forEach(async (doc) => {
+  //         const userDocRef = doc.ref;
+  //         const currentPastLocations = doc.data()?.pastLocations || [];
 
-          if (!currentPastLocations.includes(location)) {
-            const addressComponents = getAddressComponents();
+  //         if (!currentPastLocations.includes(location)) {
+  //           const addressComponents = getAddressComponents();
 
-            // Update the pastLocations field with the new location
-            await updateDoc(userDocRef, {
-              pastLocations: arrayUnion(location),
-              pastPreciseLocation: arrayUnion(addressComponents),
-            });
+  //           // Update the pastLocations field with the new location
+  //           await updateDoc(userDocRef, {
+  //             pastLocations: arrayUnion(location),
+  //             pastPreciseLocation: arrayUnion(addressComponents),
+  //           });
 
-            console.log("Location updated successfully!");
-          } else {
-            console.log("Location already exists in pastLocations.");
-          }
-        });
-      } catch (error) {
-        console.error("Error fetching location details:", error);
-      }
-    };
+  //           console.log("Location updated successfully!");
+  //         } else {
+  //           console.log("Location already exists in pastLocations.");
+  //         }
+  //       });
+  //     } catch (error) {
+  //       console.error("Error fetching location details:", error);
+  //     }
+  //   };
 
-    if (location) {
-      updateLocation();
-    }
-  }, [preciseLocation, location]);
+  //   if (location) {
+  //     updateLocation();
+  //   }
+  // }, [preciseLocation, location]);
 
   return (
     <>

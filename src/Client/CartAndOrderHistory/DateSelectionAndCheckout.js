@@ -111,7 +111,7 @@ const DateSelectionAndCheckout = () => {
   const [editStreetAdress, setEditStreetAdress] = useState(false);
   const [editCity, setEditCity] = useState(false);
   const [editZone, setEditZone] = useState(false);
-  const [editLocalArea, setEditLocalArea] = useState(false); 
+  const [editLocalArea, setEditLocalArea] = useState(false);
   const [editCode, setEditCode] = useState(false);
   const [editCounty, setEditCountry] = useState(false);
   useEffect(() => {
@@ -418,8 +418,6 @@ const DateSelectionAndCheckout = () => {
   }, [cartData, selectedIndex, rates]);
 
   useEffect(() => {
-   
-
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0];
 
@@ -448,10 +446,10 @@ const DateSelectionAndCheckout = () => {
       collection_min_date: formattedDate,
       delivery_min_date: formattedDate,
     };
-  console.log('The courear fixedAddress is ',fixedAddress)
-   
+    console.log("The courear fixedAddress is ", fixedAddress);
+
     const deliveryRates = {
-      delivery_address:{
+      delivery_address: {
         type: "",
         company: "",
         street_address: fixedAddress.streetAddress,
@@ -555,9 +553,8 @@ const DateSelectionAndCheckout = () => {
       mute_notifications: false,
     };
 
-
     const deliveryAddress = {
-      delivery_address:{
+      delivery_address: {
         type: "",
         company: "",
         street_address: fixedAddress.streetAddress,
@@ -570,9 +567,9 @@ const DateSelectionAndCheckout = () => {
         lng: coordinates.lng,
       },
     };
-    
+
     const shipment = { ...commonShipment, ...deliveryAddress };
-   
+
     const config = {
       headers: {
         Authorization: `Bearer ${CourierAPIKey}`,
@@ -1017,7 +1014,7 @@ const DateSelectionAndCheckout = () => {
                   <>
                     <Text>street_address:</Text>
                     <Text>{fixedAddress.streetAddress}</Text>
-                    <TouchableOpacity onPress={()=>setEditStreetAdress(true)}>
+                    <TouchableOpacity onPress={() => setEditStreetAdress(true)}>
                       <Text>Edit</Text>
                     </TouchableOpacity>
                   </>
@@ -1040,7 +1037,7 @@ const DateSelectionAndCheckout = () => {
                   <>
                     <Text style={{ alignSelf: "flex-start" }}>local area:</Text>
                     <Text>{fixedAddress.localArea}</Text>
-                    <TouchableOpacity onPress={()=>setEditLocalArea(true)}>
+                    <TouchableOpacity onPress={() => setEditLocalArea(true)}>
                       <Text>Edit</Text>
                     </TouchableOpacity>
                   </>
@@ -1060,7 +1057,7 @@ const DateSelectionAndCheckout = () => {
                   <>
                     <Text style={{ alignSelf: "flex-start" }}>city:</Text>
                     <Text>{fixedAddress.localCity}</Text>
-                    <TouchableOpacity onPress={()=>setEditCity(true)}>
+                    <TouchableOpacity onPress={() => setEditCity(true)}>
                       <Text>Edit</Text>
                     </TouchableOpacity>
                   </>
@@ -1083,7 +1080,7 @@ const DateSelectionAndCheckout = () => {
                   <>
                     <Text style={{ alignSelf: "flex-start" }}>country:</Text>
                     <Text>{fixedAddress.countryOfCity}</Text>
-                    <TouchableOpacity onPress={()=>setEditCountry(true)}>
+                    <TouchableOpacity onPress={() => setEditCountry(true)}>
                       <Text>Edit</Text>
                     </TouchableOpacity>
                   </>
@@ -1109,7 +1106,7 @@ const DateSelectionAndCheckout = () => {
                       Province(zone):
                     </Text>
                     <Text>{fixedAddress.zoneCity}</Text>
-                    <TouchableOpacity onPress={()=>setEditZone(true)}>
+                    <TouchableOpacity onPress={() => setEditZone(true)}>
                       <Text>Edit</Text>
                     </TouchableOpacity>
                   </>
@@ -1133,7 +1130,7 @@ const DateSelectionAndCheckout = () => {
                   <>
                     <Text style={{ alignSelf: "flex-start" }}>code:</Text>
                     <Text>{fixedAddress.postalCode}</Text>
-                    <TouchableOpacity onPress={()=>setEditCode(true)}>
+                    <TouchableOpacity onPress={() => setEditCode(true)}>
                       <Text>Edit</Text>
                     </TouchableOpacity>
                   </>
@@ -1467,7 +1464,8 @@ const DateSelectionAndCheckout = () => {
                             {location && location.slice(0, 30)}
                             {location && location.length < 50 ? "" : "..."}
                           </Typography>
-
+                          
+                          {/* 
                           <View
                             style={{
                               marginTop: "10px",
@@ -1485,13 +1483,24 @@ const DateSelectionAndCheckout = () => {
                           >
                             Recent Addresses
                           </Typography>
-                          {/* <LocationList
+                          <LocationList
                             data={pastLocations}
                             onLocationPress={(selectedItem, index) =>
                               handleLocationPress(selectedItem, index)
                             }
                           /> */}
                         </View>
+                        <Typography
+                            style={{ color: "grey", marginTop: "14px" }}
+                          >
+                            Delivery Notes
+                          </Typography>
+                          <Typography style={{ color: "white" }}>
+                            In essence, AMS aims to not only help businesses
+                            grow but also make a positive image on society by
+                            nurturing local talent and fostering sustainable
+                            busibess growth.
+                          </Typography>
                       </>
                     )}
 

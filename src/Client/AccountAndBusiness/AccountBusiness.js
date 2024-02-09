@@ -15,6 +15,7 @@ import {
   Text,
   TextInput,
   ScrollView,
+  FlatList,
 } from "react-native";
 // import { Modal, Title } from "react-native-paper";
 import { Footer } from "../../Global/Footer";
@@ -83,8 +84,8 @@ import mapImage from "../../Global/images/mapImage.png";
 import axios from "axios";
 import sara from "../../Global/images/Sara.png";
 import Swal from "sweetalert2";
-
-export default function BusinessAccount() {
+import BusinessProductCard from "../../Global/businessCard";
+export default function BusinessAccount({ productsData }) {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
@@ -125,6 +126,42 @@ export default function BusinessAccount() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [banner, setBanner] = useState([]);
   const [userData, setUserData] = useState(null);
+  const [length, setLength] = useState(null);
+  const [width, setWidth] = useState(null);
+  const [height, setHeight] = useState(null);
+  const [weight, setWeight] = useState(null);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchProductData = async () => {
+      if (!user) {
+        console.error("User not authenticated.");
+        return;
+      }
+
+      const cartCollectionRef = collection(firestore, "Products");
+      const q = query(
+        cartCollectionRef,
+        where("businessName", "==", userData.businessName)
+      );
+
+      try {
+        const querySnapshot = await getDocs(q);
+
+        const productsData = [];
+        querySnapshot.forEach((doc) => {
+          productsData.push(doc.data());
+        });
+
+        setProducts(productsData);
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+      }
+    };
+
+    fetchProductData();
+  }, [userData]);
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -158,6 +195,7 @@ export default function BusinessAccount() {
       unsubscribeAuth();
     };
   }, []);
+
   useEffect(() => {
     const fetchBanner = async () => {
       try {
@@ -334,18 +372,6 @@ export default function BusinessAccount() {
     "Baby and Maternity",
     "Electrical and Lighting",
   ];
-  // const list = [1, 2];
-  // let bannerListIndex = 0;
-  // let bannerList = [
-  //   {
-  //     backgroundImage: bg,
-  //     productName: "Cell Phone",
-  //     priceDiscount: 2,
-  //     quantity: 3,
-  //     priceOriginal: 24,
-  //     other: "Product Banner",
-  //   },
-  // ];
 
   const increment = () => {
     if (bannerListIndex === bannerList.length - 1) {
@@ -507,11 +533,15 @@ export default function BusinessAccount() {
       await productRef.set({
         name,
         businessName,
-        price,
+        price: parseFloat(price),
         quantity,
         description,
         selectedProductCategory,
         brand,
+        height: parseFloat(height), // Parse input as a float
+        length: parseFloat(length), // Parse input as a float
+        width: parseFloat(width), // Parse input as a float
+        weight: parseFloat(weight), // Parse input as a float
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         // ... (other fields)
       });
@@ -556,26 +586,6 @@ export default function BusinessAccount() {
   return (
     <>
       <React.Fragment>
-        {/* <Stack direction="row" spacing={1}>
-        <Button
-          variant="outlined"
-          color="neutral"
-          onClick={() => {
-            setLayout('center');
-          }}
-        >
-          Center
-        </Button>
-        <Button
-          variant="outlined"
-          color="neutral"
-          onClick={() => {
-            setLayout('fullscreen');
-          }}
-        >
-          Full screen
-        </Button>
-      </Stack> */}
         <Modal
           open={!!layout}
           onClose={() => {
@@ -713,7 +723,7 @@ export default function BusinessAccount() {
                           </Box>
                         </Grid>
                       </Grid>
-                      <View style={{ marginBottom: 10,paddingBottom:"50px" }}>
+                      <View style={{ marginBottom: 10, paddingBottom: "50px" }}>
                         <Card
                           sx={{
                             width: "80%",
@@ -722,8 +732,8 @@ export default function BusinessAccount() {
                             mx: "auto", // Center the Card horizontally
                             height: "auto",
                           }}
-                        //  style={{ marginBottom: 10 ,paddingBottom:10}} 
-                          mb={10}// Add marginBottom directly in inline style
+                          //  style={{ marginBottom: 10 ,paddingBottom:10}}
+                          mb={10} // Add marginBottom directly in inline style
                         >
                           <Box p={theme.spacing(2)}>
                             <Image
@@ -1278,6 +1288,77 @@ export default function BusinessAccount() {
                         required
                       />
                     </View>
+                    <bd />
+                    <View style={{ display: "flex", flexDirection: "row" }}>
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="length_cm"
+                        type="number"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{
+                          width: "45%",
+                          marginRight: "10px",
+                          marginTop: "10px",
+                        }}
+                        value={length}
+                        onChange={(e) => setLength(e.target.value)}
+                        required
+                      />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="width_cm"
+                        type="number"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{
+                          width: "45%",
+                          marginTop: "10px",
+                          marginRight: "10px",
+                        }}
+                        value={width}
+                        onChange={(e) => setWidth(e.target.value)}
+                        required
+                      />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="height_cm"
+                        type="number"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{
+                          width: "45%",
+                          marginTop: "10px",
+                          marginRight: "10px",
+                        }}
+                        value={height}
+                        onChange={(e) => setHeight(e.target.value)}
+                        required
+                      />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="weight_kg"
+                        type="number"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{ width: "45%", marginTop: "10px" }}
+                        value={weight}
+                        onChange={(e) => setWeight(e.target.value)}
+                        required
+                      />
+                    </View>
                     <br />
                     <TextField
                       fullWidth
@@ -1776,7 +1857,155 @@ export default function BusinessAccount() {
           </View>
         </View>
       ) : null}
+      {businessAuthorization ? null : (
+        <View
+          // visible={true}
+          // onDismiss={() => setPaymentModal(false)}
+          style={{
+            top: 400,
+            position: "absolute",
+            
+            flex: 1,
+            backgroundColor: "white",
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+            zIndex: 100,
+            alignSelf: "flex-end",
+          }}
+        >
+          <View
+            style={{
+              width: "25vw",
+              flexDirection: "column",
+              border: "1px lightgray solid",
+              padding: 40,
+              alignItems: "center",
+              height: 500,
+              zIndex: 500,
+            }}
+          >
+            {/* <TouchableOpacity
+                 // onPress={setBusinessAuthorization(true)}
+                  > */}
+            <Image
+              source={require("../../Global/images/BusinessPlus+.jpg")}
+              alt="business plus logo"
+              style={{
+                width: "10vw",
+                height: "7vh",
+                marginBottom: 5,
+              }}
+            />
+            {/* </TouchableOpacity> */}
 
+            <Text
+              style={{
+                color: "#252b42",
+                fontWeight: "700",
+                fontSize: 32,
+                textAlign: "center",
+              }}
+            >
+              <TouchableOpacity onPress={() => setPaymentModal(true)}>
+                <Text>BUSINESS PLUS SUBSCRIPTION</Text>
+              </TouchableOpacity>
+            </Text>
+            <Text
+              style={{
+                color: "#9e9e9e",
+                fontWeight: "700",
+                fontSize: 16,
+                textAlign: "center",
+                paddingTop: 10,
+                paddingBottom: 10,
+              }}
+            >
+              Unlock More Opportunities with Business Plus Subscription
+            </Text>
+            <View
+              style={{
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: "#23a6f0",
+                  fontWeight: "700",
+                  fontSize: 40,
+                  marginBottom: -10,
+                }}
+              >
+                R150
+              </Text>
+              <Text
+                style={{
+                  color: "#b8d9f7",
+                  fontWeight: "700",
+                  fontSize: 20,
+                }}
+              >
+                Per Month
+              </Text>
+            </View>
+            <View style={{ flexDirection: "column" }}>
+              <Text
+                style={{
+                  marginTop: 15,
+                  fontWeight: "700",
+                  fontSize: 18,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                {" "}
+                <Ionicons
+                  name="checkmark-circle"
+                  size={30}
+                  color="#2dc071"
+                />{" "}
+                List Unlimited Products
+              </Text>
+              <Text
+                style={{
+                  fontWeight: "700",
+                  fontSize: 18,
+                  marginTop: 15,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                {" "}
+                <Ionicons
+                  name="checkmark-circle"
+                  size={30}
+                  color="#2dc071"
+                />{" "}
+                Priority Support
+              </Text>
+              <Text
+                style={{
+                  fontWeight: "700",
+                  fontSize: 18,
+                  marginTop: 15,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                {" "}
+                <Ionicons
+                  name="checkmark-circle"
+                  size={30}
+                  color="#2dc071"
+                />{" "}
+                Exclusive Promotions
+              </Text>
+            </View>
+          </View>
+        </View>
+      )}
       <Header />
       <NavBar />
       <View
@@ -2355,7 +2584,7 @@ export default function BusinessAccount() {
               <ScrollView style={{ width: "100%" }}>
                 <View
                   style={{
-                    flexDirection: "row",
+                    // flexDirection: "row",
                     paddingRight: 10,
                     marginBottom: 20,
                   }}
@@ -2363,157 +2592,21 @@ export default function BusinessAccount() {
                   <View style={{ flex: 1 }}>
                     <View
                       style={{
-                        margin: 50,
+                        //margin: 50,
                         flexDirection: "row",
                         flexWrap: "wrap",
+                       // backgroundColor: "red",
                       }}
                     >
-                      {banner.map((item, index) => (
-                        <Card2 key={index} open={() => setEditModal(true)} />
+                      {products.map((product, index) => (
+                        <BusinessProductCard
+                          key={index}
+                          productData={product}
+                        />
                       ))}
-
-                      {/* {list.map((item, index) => (
-                      <ProductCard
-                        key={index}
-                        open={() => setEditModal(true)}
-                      />
-                    ))} */}
                     </View>
                   </View>
-
-                  {businessAuthorization ? null : (
-                    <View
-                      style={{
-                        width: "25vw",
-                        flexDirection: "column",
-                        border: "1px lightgray solid",
-                        padding: 40,
-                        alignItems: "center",
-                        height: 500,
-                        //   zIndex:500,
-                      }}
-                    >
-                      {/* <TouchableOpacity
-                 // onPress={setBusinessAuthorization(true)}
-                  > */}
-                      <Image
-                        source={require("../../Global/images/BusinessPlus+.jpg")}
-                        alt="business plus logo"
-                        style={{
-                          width: "10vw",
-                          height: "7vh",
-                          marginBottom: 5,
-                        }}
-                      />
-                      {/* </TouchableOpacity> */}
-
-                      <Text
-                        style={{
-                          color: "#252b42",
-                          fontWeight: "700",
-                          fontSize: 32,
-                          textAlign: "center",
-                        }}
-                      >
-                        <TouchableOpacity onPress={() => setPaymentModal(true)}>
-                          <Text>BUSINESS PLUS SUBSCRIPTION</Text>
-                        </TouchableOpacity>
-                      </Text>
-                      <Text
-                        style={{
-                          color: "#9e9e9e",
-                          fontWeight: "700",
-                          fontSize: 16,
-                          textAlign: "center",
-                          paddingTop: 10,
-                          paddingBottom: 10,
-                        }}
-                      >
-                        Unlock More Opportunities with Business Plus
-                        Subscription
-                      </Text>
-                      <View
-                        style={{
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            color: "#23a6f0",
-                            fontWeight: "700",
-                            fontSize: 40,
-                            marginBottom: -10,
-                          }}
-                        >
-                          R150
-                        </Text>
-                        <Text
-                          style={{
-                            color: "#b8d9f7",
-                            fontWeight: "700",
-                            fontSize: 20,
-                          }}
-                        >
-                          Per Month
-                        </Text>
-                      </View>
-                      <View style={{ flexDirection: "column" }}>
-                        <Text
-                          style={{
-                            marginTop: 15,
-                            fontWeight: "700",
-                            fontSize: 18,
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
-                        >
-                          {" "}
-                          <Ionicons
-                            name="checkmark-circle"
-                            size={30}
-                            color="#2dc071"
-                          />{" "}
-                          List Unlimited Products
-                        </Text>
-                        <Text
-                          style={{
-                            fontWeight: "700",
-                            fontSize: 18,
-                            marginTop: 15,
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
-                        >
-                          {" "}
-                          <Ionicons
-                            name="checkmark-circle"
-                            size={30}
-                            color="#2dc071"
-                          />{" "}
-                          Priority Support
-                        </Text>
-                        <Text
-                          style={{
-                            fontWeight: "700",
-                            fontSize: 18,
-                            marginTop: 15,
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
-                        >
-                          {" "}
-                          <Ionicons
-                            name="checkmark-circle"
-                            size={30}
-                            color="#2dc071"
-                          />{" "}
-                          Exclusive Promotions
-                        </Text>
-                      </View>
-                    </View>
-                  )}
+                  {/* <weight></weight>nvjmv mhv vkhb bv jb jvjhvjhvjvjhvjvjvjvjvvjvvjvjvvjhvjvjvjvjvjhvhv */}
                 </View>
               </ScrollView>
             </View>

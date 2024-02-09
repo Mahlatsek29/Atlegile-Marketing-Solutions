@@ -49,6 +49,7 @@ import { firebase, auth, db } from "../../config";
 // import { timeStamp } from "console";
 
 import PlaceAutocomplete from "../../Global/PlaceAutocomplete";
+
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
   const [orderTotal, setOrderTotal] = useState(0);
@@ -100,6 +101,19 @@ const DateSelectionAndCheckout = () => {
   const [isLocationSelected, setIsLocationSelected] = useState(false);
   const [driver, setDriver] = useState("");
   const [minDeliveryDate, setMinDeliveryDate] = useState("");
+  const [length, setLength] = useState(null);
+  const [width, setWidth] = useState(null);
+  const [height, setHeight] = useState(null);
+  const [weight, setWeight] = useState(null);
+  const [addressCard, setAddressCard] = useState(false);
+  const [fixedAddress, setFixedAddress] = useState({});
+  const [editedValue, setEditedValue] = useState("");
+  const [editStreetAdress, setEditStreetAdress] = useState(false);
+  const [editCity, setEditCity] = useState(false);
+  const [editZone, setEditZone] = useState(false);
+  const [editLocalArea, setEditLocalArea] = useState(false);
+  const [editCode, setEditCode] = useState(false);
+  const [editCounty, setEditCountry] = useState(false);
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -185,12 +199,19 @@ const DateSelectionAndCheckout = () => {
 
       // Check if the document exists
       if (docSnapshot.data()) {
-        // Access the businessName field
+        // Accesswi the businessName field
         const businessName = docSnapshot.data().businessName;
-
+        const length = docSnapshot.data().length;
+        const width = docSnapshot.data().width;
+        const height = docSnapshot.data().height;
+        const weight = docSnapshot.data().weight;
         // Now you can use the businessName variable as needed
         console.log("Business Name:", businessName);
         setTheBusinessName(businessName);
+        setLength(length);
+        setWeight(weight);
+        setWidth(width);
+        setHeight(height);
       } else {
         console.log("Document not found.");
       }
@@ -200,37 +221,37 @@ const DateSelectionAndCheckout = () => {
     if (cartData) {
       fetchCompanyData();
     }
-  }, [cartData, newArr, firestore, setCompany, user]);
+  }, [cartData, newArr, firestore, user]);
 
-  useEffect(() => {
-    const findBusinessByName = async () => {
-      console.log("theBusinessName is ", theBusinessName);
+  // useEffect(() => {
+  //   const findBusinessByName = async () => {
+  //     console.log("theBusinessName is ", theBusinessName);
 
-      // Replace 'yourCollection' with the actual reference to your "Business" collection
-      const businessCollection = firebase.firestore().collection("Business");
+  //     // Replace 'yourCollection' with the actual reference to your "Business" collection
+  //     const businessCollection = firebase.firestore().collection("Business");
 
-      try {
-        // Constructing the query
-        const querySnapshot = await businessCollection
-          .where("businessName", "==", theBusinessName)
-          .get();
+  //     try {
+  //       // Constructing the query
+  //       const querySnapshot = await businessCollection
+  //         .where("businessName", "==", theBusinessName)
+  //         .get();
 
-        querySnapshot.forEach((doc) => {
-          // Access the locationDetails field
-          const locationDetails = doc.data().locationDetails;
-          const collectionContacts = doc.data().phoneNumber;
-          console.log("Location Details:", locationDetails);
-          setCollecionadress(locationDetails);
-          setCollectioPhoneNUmber(collectionContacts);
-        });
-      } catch (error) {
-        console.error("Error getting documents: ", error);
-      }
-    };
+  //       querySnapshot.forEach((doc) => {
+  //         // Access the locationDetails field
+  //         const locationDetails = doc.data().locationDetails;
+  //         const collectionContacts = doc.data().phoneNumber;
+  //         console.log("Location Details:", locationDetails);
+  //         setCollecionadress(locationDetails);
+  //         setCollectioPhoneNUmber(collectionContacts);
+  //       });
+  //     } catch (error) {
+  //       console.error("Error getting documents: ", error);
+  //     }
+  //   };
 
-    // Call findBusinessByName whenever theBusinessName changes
-    findBusinessByName();
-  }, [theBusinessName, user]);
+  //   // Call findBusinessByName whenever theBusinessName changes
+  //   findBusinessByName();
+  // }, [theBusinessName, user]);
 
   useEffect(() => {
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
@@ -286,89 +307,91 @@ const DateSelectionAndCheckout = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchLocationDetails = async () => {
-      if (!user || !user.uid) {
-        console.error("User not authenticated.");
-        return;
-      }
+  // useEffect(() => {
+  //   const fetchLocationDetails = async () => {
+  //     if (!user || !user.uid) {
+  //       console.error("User not authenticated.");
+  //       return;
+  //     }
 
-      const cartCollectionRef = collection(firestore, "Users");
-      const q = query(cartCollectionRef, where("uid", "==", user.uid));
+  //     const cartCollectionRef = collection(firestore, "Users");
+  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
-      try {
-        const querySnapshot = await getDocs(q);
+  //     try {
+  //       const querySnapshot = await getDocs(q);
 
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          // Assuming your inner object and array are inside the data.locationDetails
-          //const location = data.locationDetails;
-          const pastLocations = data.pastLocations;
-          const pastPreciseLocation = data.pastPreciseLocation;
+  //       querySnapshot.forEach((doc) => {
+  //         const data = doc.data();
+  //         // Assuming your inner object and array are inside the data.locationDetails
+  //         //const location = data.locationDetails;
+  //         const pastLocations = data.pastLocations;
+  //         const pastPreciseLocation = data.pastPreciseLocation;
 
-          // setPreciseLocation(location);
-          setPastLocations(pastLocations);
-          setPastPreciseLocation(pastPreciseLocation);
-        });
-      } catch (error) {
-        console.error("Error fetching location details:", error);
-      }
-    };
+  //         // setPreciseLocation(location);
+  //         setPastLocations(pastLocations);
+  //         setPastPreciseLocation(pastPreciseLocation);
+  //       });
+  //     } catch (error) {
+  //       console.error("Error fetching location details:", error);
+  //     }
+  //   };
 
-    fetchLocationDetails();
-  }, [user]);
+  //   fetchLocationDetails();
+  // }, [user]);
 
-  const LocationComponent = ({ address, onPress }) => (
-    <TouchableOpacity onPress={onPress}>
-      <View
-        style={{
-          width: "100%",
-          borderBottomWidth: 2,
-          borderBottomColor: "whitesmoke",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          paddingTop: 2,
-          flexWrap: "wrap",
-          marginBottom: 15,
-        }}>
-        <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
-          {address && address.slice(0, 40)}
-          {address && address.length < 50 ? "" : "..."}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+  // const LocationComponent = ({ address, onPress }) => (
+  //   <TouchableOpacity onPress={onPress}>
+  //     <View
+  //       style={{
+  //         width: "100%",
+  //         borderBottomWidth: 2,
+  //         borderBottomColor: "whitesmoke",
+  //         flexDirection: "row",
+  //         alignItems: "center",
+  //         justifyContent: "flex-start",
+  //         paddingTop: 2,
+  //         flexWrap: "wrap",
+  //         marginBottom: 15,
+  //       }}
+  //     >
+  //       <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+  //         {address && address.slice(0, 40)}
+  //         {address && address.length < 50 ? "" : "..."}
+  //       </Text>
+  //     </View>
+  //   </TouchableOpacity>
+  // );
 
-  const LocationList = ({ data, onLocationPress }) => (
-    <ScrollView
-      style={{ height: 250, padding: 10 }}
-      showsVerticalScrollIndicator={false}>
-      {data && Array.isArray(data) ? (
-        data.map((item, index) => (
-          <LocationComponent
-            key={index}
-            address={item}
-            onPress={() => onLocationPress(item, index)}
-          />
-        ))
-      ) : (
-        <Text>No data available</Text>
-      )}
-    </ScrollView>
-  );
+  // const LocationList = ({ data, onLocationPress }) => (
+  //   <ScrollView
+  //     style={{ height: 250, padding: 10 }}
+  //     showsVerticalScrollIndicator={false}
+  //   >
+  //     {data && Array.isArray(data) ? (
+  //       data.map((item, index) => (
+  //         <LocationComponent
+  //           key={index}
+  //           address={item}
+  //           onPress={() => onLocationPress(item, index)}
+  //         />
+  //       ))
+  //     ) : (
+  //       <Text>No data available</Text>
+  //     )}
+  //   </ScrollView>
+  // );
 
-  const handleLocationPress = (selectedItem, index) => {
-    //  setIsPicked(true)
-    setIsLocationSelected(true);
-    setLocation(selectedItem);
-    setArrayIndex(index);
-  };
+  // const handleLocationPress = (selectedItem, index) => {
+  //   //  setIsPicked(true)
+  //   setIsLocationSelected(true);
+  //   setLocation(selectedItem);
+  //   setArrayIndex(index);
+  // };
 
-  useEffect(() => {
-    console.log("this is happening");
-    setPreciseLocation(pastPreciseLocation[arrayIndex]);
-  }, [arrayIndex, isLocationSelected]);
+  // useEffect(() => {
+  //   console.log("this is happening");
+  //   setPreciseLocation(pastPreciseLocation[arrayIndex]);
+  // }, [arrayIndex, isLocationSelected]);
 
   const navigateToLanding = () => {
     navigation.navigate("Landing");
@@ -395,13 +418,6 @@ const DateSelectionAndCheckout = () => {
   }, [cartData, selectedIndex, rates]);
 
   useEffect(() => {
-    let streetAddress;
-    let localArea;
-    let localCity;
-    let zoneCity;
-    let countryOfCity;
-    let postalCode;
-
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0];
 
@@ -420,90 +436,28 @@ const DateSelectionAndCheckout = () => {
       },
       parcels: [
         {
-          submitted_length_cm: 20,
-          submitted_width_cm: 20,
-          submitted_height_cm: 10,
-          submitted_weight_kg: 2,
+          submitted_length_cm: length,
+          submitted_width_cm: width,
+          submitted_height_cm: height,
+          submitted_weight_kg: weight,
         },
       ],
       declared_value: cartData.price,
       collection_min_date: formattedDate,
       delivery_min_date: formattedDate,
     };
+    console.log("The courear fixedAddress is ", fixedAddress);
 
-    if (address.address_components && isPicked) {
-      const length = address.address_components.length;
-
-      switch (length) {
-        case 1:
-          postalCode = address.address_components[0].long_name;
-          break;
-        case 2:
-          countryOfCity = address.address_components[0].short_name;
-          postalCode = address.address_components[1].long_name;
-          break;
-        case 3:
-          countryOfCity = address.address_components[1].short_name;
-          postalCode = address.address_components[2].long_name;
-          break;
-        case 4:
-          localCity = address.address_components[0].long_name;
-          countryOfCity = address.address_components[2].short_name;
-          postalCode = address.address_components[3].long_name;
-          break;
-        case 5:
-          localArea = address.address_components[0].long_name;
-          localCity = address.address_components[1].long_name;
-          countryOfCity = address.address_components[3].short_name;
-          postalCode = address.address_components[4].long_name;
-          break;
-        case 6:
-          localArea = address.address_components[0].long_name;
-          localCity = address.address_components[1].long_name;
-          zoneCity = address.address_components[2].long_name;
-          countryOfCity = address.address_components[3].short_name;
-          postalCode = address.address_components[4].long_name;
-          break;
-        case 7:
-          streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
-          localArea = address.address_components[2].long_name;
-          localCity = address.address_components[3].long_name;
-          zoneCity = address.address_components[4].long_name;
-          countryOfCity = address.address_components[5].short_name;
-          postalCode = address.address_components[6].long_name;
-          break;
-        case 8:
-          streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-          localArea = address.address_components[2].long_name;
-          localCity = address.address_components[4].long_name;
-          zoneCity = address.address_components[5].long_name;
-          countryOfCity = address.address_components[6].short_name;
-          postalCode = address.address_components[7].long_name;
-          break;
-        case 9:
-          streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-          localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
-          localCity = address.address_components[5].long_name;
-          zoneCity = address.address_components[6].long_name;
-          countryOfCity = address.address_components[7].short_name;
-          postalCode = address.address_components[8].long_name;
-          break;
-        default:
-          console.error("Invalid length of address components.");
-          return;
-      }
-    }
-    console.log("preciseLocation is ", preciseLocation);
     const deliveryRates = {
-      delivery_address: preciseLocation || {
+      delivery_address: {
         type: "",
         company: "",
-        street_address: streetAddress,
-        local_area: localArea,
-        city: localCity,
-        zone: zoneCity,
-        country: countryOfCity,
-        code: postalCode,
+        street_address: fixedAddress.streetAddress,
+        local_area: fixedAddress.localArea,
+        city: fixedAddress.localCity,
+        zone: fixedAddress.zoneCity,
+        country: fixedAddress.countryOfCity,
+        code: fixedAddress.postalCode,
         lat: coordinates.lat,
         lng: coordinates.lng,
       },
@@ -535,10 +489,10 @@ const DateSelectionAndCheckout = () => {
     };
 
     gettingRate();
-  }, [preciseLocation, location]);
+  }, [fixedAddress, location]);
 
   const creattingShipment = async () => {
-    console.log("the delivery address is ", preciseLocation);
+    //  console.log("the delivery address is ", preciseLocation);
     const commonShipment = {
       collection_address: {
         type: "business",
@@ -566,10 +520,10 @@ const DateSelectionAndCheckout = () => {
       parcels: [
         {
           parcel_description: "Standard flyer",
-          submitted_length_cm: 20,
-          submitted_width_cm: 20,
-          submitted_height_cm: 10,
-          submitted_weight_kg: 2,
+          submitted_length_cm: length,
+          submitted_width_cm: width,
+          submitted_height_cm: height,
+          submitted_weight_kg: weight,
         },
       ],
       opt_in_rates: [],
@@ -591,97 +545,22 @@ const DateSelectionAndCheckout = () => {
       mute_notifications: false,
     };
 
-    let streetAddress;
-    let localArea;
-    let localCity;
-    let zoneCity;
-    let countryOfCity;
-    let postalCode;
-
-    if (address.address_components && isPicked) {
-      const length = address.address_components.length;
-
-      switch (length) {
-        case 1:
-          postalCode = address.address_components[0].long_name;
-          break;
-        case 2:
-          countryOfCity = address.address_components[0].short_name;
-          postalCode = address.address_components[1].long_name;
-          break;
-        case 3:
-          countryOfCity = address.address_components[1].short_name;
-          postalCode = address.address_components[2].long_name;
-          break;
-        case 4:
-          localCity = address.address_components[0].long_name;
-          countryOfCity = address.address_components[2].short_name;
-          postalCode = address.address_components[3].long_name;
-          break;
-        case 5:
-          localArea = address.address_components[0].long_name;
-          localCity = address.address_components[1].long_name;
-          countryOfCity = address.address_components[3].short_name;
-          postalCode = address.address_components[4].long_name;
-          break;
-        case 6:
-          localArea = address.address_components[0].long_name;
-          localCity = address.address_components[1].long_name;
-          zoneCity = address.address_components[2].long_name;
-          countryOfCity = address.address_components[3].short_name;
-          postalCode = address.address_components[4].long_name;
-          break;
-        case 7:
-          streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
-          localArea = address.address_components[2].long_name;
-          localCity = address.address_components[3].long_name;
-          zoneCity = address.address_components[4].long_name;
-          countryOfCity = address.address_components[5].short_name;
-          postalCode = address.address_components[6].long_name;
-          break;
-        case 8:
-          streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-          localArea = address.address_components[2].long_name;
-          localCity = address.address_components[4].long_name;
-          zoneCity = address.address_components[5].long_name;
-          countryOfCity = address.address_components[6].short_name;
-          postalCode = address.address_components[7].long_name;
-          break;
-        case 9:
-          streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-          localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
-          localCity = address.address_components[5].long_name;
-          zoneCity = address.address_components[6].long_name;
-          countryOfCity = address.address_components[7].short_name;
-          postalCode = address.address_components[8].long_name;
-          break;
-        default:
-          console.error("Invalid length of address components.");
-          return;
-      }
-    }
-
-    console.log("the delivery address is ", preciseLocation);
-
     const deliveryAddress = {
-      delivery_address: preciseLocation || {
+      delivery_address: {
         type: "",
         company: "",
-        street_address: streetAddress,
-        local_area: localArea,
-        city: localCity,
-        zone: zoneCity,
-        country: countryOfCity,
-        code: postalCode, // Ensure this is a valid postal code for the specified country
+        street_address: fixedAddress.streetAddress,
+        local_area: fixedAddress.localArea,
+        city: fixedAddress.localCity,
+        zone: fixedAddress.zoneCity,
+        country: fixedAddress.countryOfCity,
+        code: fixedAddress.postalCode,
         lat: coordinates.lat,
         lng: coordinates.lng,
       },
     };
-    //  console.log('deliveryAddress:', deliveryAddress);
+
     const shipment = { ...commonShipment, ...deliveryAddress };
-    // console.log('shipment object:', shipment);  // Log the entire shipment object
-    console.log("shipmentCollectionAdress ", shipment.collection_address);
-    console.log("shipmentDeliverAdress ", shipment.delivery_address);
 
     const config = {
       headers: {
@@ -815,163 +694,459 @@ const DateSelectionAndCheckout = () => {
     console.log("Latitude and Longitude:", latLng);
     setAddress(place);
     setCoordinates(latLng);
+    setAddressCard(true);
   };
 
   useEffect(() => {
     setLocation(address.formatted_address);
-  }, [address, coordinates]);
+    let streetAddress,
+      localArea,
+      localCity,
+      zoneCity,
+      countryOfCity,
+      postalCode;
+    if (address.address_components) {
+      const { address_components } = address;
+      const length = address_components.length;
+      switch (length) {
+        case 1:
+          postalCode = address_components[0].long_name;
+          break;
+        case 2:
+          countryOfCity = address_components[0].short_name;
+          postalCode = address_components[1].long_name;
+          break;
+        case 3:
+          countryOfCity = address_components[1].short_name;
+          postalCode = address_components[2].long_name;
+          break;
+        case 4:
+          localCity = address_components[0].long_name;
+          countryOfCity = address_components[2].short_name;
+          postalCode = address_components[3].long_name;
+          break;
+        case 5:
+          localArea = address_components[0].long_name;
+          localCity = address_components[1].long_name;
+          countryOfCity = address_components[3].short_name;
+          postalCode = address_components[4].long_name;
+          break;
+        case 6:
+          localArea = address_components[0].long_name;
+          localCity = address_components[1].long_name;
+          zoneCity = address_components[2].long_name;
+          countryOfCity = address_components[3].short_name;
+          postalCode = address_components[4].long_name;
+          break;
+        case 7:
+          streetAddress = `${address_components[1].long_name} ${address_components[0].long_name}`;
+          localArea = address_components[2].long_name;
+          localCity = address_components[3].long_name;
+          zoneCity = address_components[4].long_name;
+          countryOfCity = address_components[5].short_name;
+          postalCode = address_components[6].long_name;
+          break;
+        case 8:
+          streetAddress = `${address_components[0].long_name} ${address_components[1].long_name}`;
+          localArea = address_components[2].long_name;
+          localCity = address_components[4].long_name;
+          zoneCity = address_components[5].long_name;
+          countryOfCity = address_components[6].short_name;
+          postalCode = address_components[7].long_name;
+          break;
+        case 9:
+          streetAddress = `${address_components[1].long_name} ${address_components[2].long_name}`;
+          localArea = `${address_components[2].long_name} ${address_components[0].long_name}`;
+          localCity = address_components[5].long_name;
+          zoneCity = address_components[6].long_name;
+          countryOfCity = address_components[7].short_name;
+          postalCode = address_components[8].long_name;
+          break;
+        default:
+          console.error("Invalid length of address components.");
+          return;
+      }
+      setFixedAddress({
+        streetAddress,
+        localArea,
+        localCity,
+        zoneCity,
+        countryOfCity,
+        postalCode,
+      });
+    }
+  }, [address, isPicked]);
+
+  const handleFixAddress = () => {
+    setFixedAddress((prevAddress) => ({
+      ...prevAddress,
+      streetAddress: editedValue.streetAddress || prevAddress.streetAddress,
+      localArea: editedValue.localArea || prevAddress.localArea,
+      localCity: editedValue.localCity || prevAddress.localCity,
+      zoneCity: editedValue.zoneCity || prevAddress.zoneCity,
+      countryOfCity: editedValue.countryOfCity || prevAddress.countryOfCity,
+      postalCode: editedValue.postalCode || prevAddress.postalCode,
+      // Update other fields similarly based on your requirements
+    }));
+    setAddressCard(false); // Close the addressCard modal or handle other logic
+  };
+
+  const renderAddressField = (label, value, field) => (
+    <View
+      style={{
+        justifyContent: "space-between",
+        flexDirection: "row",
+        padding: 10,
+      }}
+    >
+      <Text style={{ alignSelf: "flex-start" }}>{label}:</Text>
+      <TextInput
+        style={{ alignSelf: "flex-start", borderWidth: 1, padding: 5, flex: 1 }}
+        value={value}
+        onChangeText={(text) =>
+          setEditedValue((prev) => ({ ...prev, [field]: text }))
+        }
+      />
+    </View>
+  );
 
   useEffect(() => {
-    const updateLocation = async () => {
-      console.log("Updating location:", location);
-      if (!user || !user.uid) {
-        console.error("User not authenticated.");
-        return;
-      }
-      console.log("this is happeninn 1");
+    console.log("fixedAddress is", fixedAddress);
+  }, [fixedAddress]);
+  // useEffect(() => {
+  //   const updateLocation = async () => {
+  //     console.log("Updating location:", location);
+  //     if (!user || !user.uid) {
+  //       console.error("User not authenticated.");
+  //       return;
+  //     }
+  //     console.log("this is happeninn 1");
 
-      const getAddressDetails = () => {
-        let streetAddress;
-        let localArea;
-        let localCity;
-        let zoneCity;
-        let countryOfCity;
-        let postalCode;
+  //     const getAddressDetails = () => {
+  //       let streetAddress;
+  //       let localArea;
+  //       let localCity;
+  //       let zoneCity;
+  //       let countryOfCity;
+  //       let postalCode;
 
-        console.log("this is happeninn 2");
-        const length = address.address_components.length;
+  //       console.log("this is happeninn 2");
+  //       const length = address.address_components.length;
 
-        switch (length) {
-          case 1:
-            postalCode = address.address_components[0].long_name;
-            break;
-          case 2:
-            countryOfCity = address.address_components[0].short_name;
-            postalCode = address.address_components[1].long_name;
-            break;
-          case 3:
-            countryOfCity = address.address_components[1].short_name;
-            postalCode = address.address_components[2].long_name;
-            break;
-          case 4:
-            localCity = address.address_components[0].long_name;
-            countryOfCity = address.address_components[2].short_name;
-            postalCode = address.address_components[3].long_name;
-            break;
-          case 5:
-            localArea = address.address_components[0].long_name;
-            localCity = address.address_components[1].long_name;
-            countryOfCity = address.address_components[3].short_name;
-            postalCode = address.address_components[4].long_name;
-            break;
-          case 6:
-            localArea = address.address_components[0].long_name;
-            localCity = address.address_components[1].long_name;
-            zoneCity = address.address_components[2].long_name;
-            countryOfCity = address.address_components[3].short_name;
-            postalCode = address.address_components[4].long_name;
-            break;
-          case 7:
-            streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
-            localArea = address.address_components[2].long_name;
-            localCity = address.address_components[3].long_name;
-            zoneCity = address.address_components[4].long_name;
-            countryOfCity = address.address_components[5].short_name;
-            postalCode = address.address_components[6].long_name;
-            break;
-          case 8:
-            streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-            localArea = address.address_components[2].long_name;
-            localCity = address.address_components[4].long_name;
-            zoneCity = address.address_components[5].long_name;
-            countryOfCity = address.address_components[6].short_name;
-            postalCode = address.address_components[7].long_name;
-            break;
-          case 9:
-            streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-            localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
-            localCity = address.address_components[5].long_name;
-            zoneCity = address.address_components[6].long_name;
-            countryOfCity = address.address_components[7].short_name;
-            postalCode = address.address_components[8].long_name;
-            break;
-          default:
-            console.error("Invalid length of address components.");
-            return;
-        }
+  //       switch (length) {
+  //         case 1:
+  //           postalCode = address.address_components[0].long_name;
+  //           break;
+  //         case 2:
+  //           countryOfCity = address.address_components[0].short_name;
+  //           postalCode = address.address_components[1].long_name;
+  //           break;
+  //         case 3:
+  //           countryOfCity = address.address_components[1].short_name;
+  //           postalCode = address.address_components[2].long_name;
+  //           break;
+  //         case 4:
+  //           localCity = address.address_components[0].long_name;
+  //           countryOfCity = address.address_components[2].short_name;
+  //           postalCode = address.address_components[3].long_name;
+  //           break;
+  //         case 5:
+  //           localArea = address.address_components[0].long_name;
+  //           localCity = address.address_components[1].long_name;
+  //           countryOfCity = address.address_components[3].short_name;
+  //           postalCode = address.address_components[4].long_name;
+  //           break;
+  //         case 6:
+  //           localArea = address.address_components[0].long_name;
+  //           localCity = address.address_components[1].long_name;
+  //           zoneCity = address.address_components[2].long_name;
+  //           countryOfCity = address.address_components[3].short_name;
+  //           postalCode = address.address_components[4].long_name;
+  //           break;
+  //         case 7:
+  //           streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
+  //           localArea = address.address_components[2].long_name;
+  //           localCity = address.address_components[3].long_name;
+  //           zoneCity = address.address_components[4].long_name;
+  //           countryOfCity = address.address_components[5].short_name;
+  //           postalCode = address.address_components[6].long_name;
+  //           break;
+  //         case 8:
+  //           streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
+  //           localArea = address.address_components[2].long_name;
+  //           localCity = address.address_components[4].long_name;
+  //           zoneCity = address.address_components[5].long_name;
+  //           countryOfCity = address.address_components[6].short_name;
+  //           postalCode = address.address_components[7].long_name;
+  //           break;
+  //         case 9:
+  //           streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
+  //           localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
+  //           localCity = address.address_components[5].long_name;
+  //           zoneCity = address.address_components[6].long_name;
+  //           countryOfCity = address.address_components[7].short_name;
+  //           postalCode = address.address_components[8].long_name;
+  //           break;
+  //         default:
+  //           console.error("Invalid length of address components.");
+  //           return;
+  //       }
 
-        return {
-          streetAddress: streetAddress || "",
-          localArea: localArea || "",
-          localCity: localCity || "",
-          zoneCity: zoneCity || "",
-          countryOfCity: countryOfCity || "",
-          postalCode: postalCode || "",
-        };
-      };
+  //       return {
+  //         streetAddress: streetAddress || "",
+  //         localArea: localArea || "",
+  //         localCity: localCity || "",
+  //         zoneCity: zoneCity || "",
+  //         countryOfCity: countryOfCity || "",
+  //         postalCode: postalCode || "",
+  //       };
+  //     };
 
-      const getAddressComponents = () => {
-        const addressDetails = getAddressDetails();
-        console.log("this is happeninn 3");
-        const {
-          streetAddress,
-          localArea,
-          localCity,
-          zoneCity,
-          countryOfCity,
-          postalCode,
-        } = addressDetails;
+  //     const getAddressComponents = () => {
+  //       const addressDetails = getAddressDetails();
+  //       console.log("this is happeninn 3");
+  //       const {
+  //         streetAddress,
+  //         localArea,
+  //         localCity,
+  //         zoneCity,
+  //         countryOfCity,
+  //         postalCode,
+  //       } = addressDetails;
 
-        return {
-          type: "",
-          company: "",
-          street_address: streetAddress,
-          local_area: localArea,
-          city: localCity,
-          zone: zoneCity,
-          country: countryOfCity,
-          code: postalCode,
-          lat: coordinates.lat,
-          lng: coordinates.lng,
-        };
-      };
-      console.log("this is happeninn 4");
-      const cartCollectionRef = collection(firestore, "Users");
-      const q = query(cartCollectionRef, where("uid", "==", user.uid));
+  //       return {
+  //         type: "",
+  //         company: "",
+  //         street_address: streetAddress,
+  //         local_area: localArea,
+  //         city: localCity,
+  //         zone: zoneCity,
+  //         country: countryOfCity,
+  //         code: postalCode,
+  //         lat: coordinates.lat,
+  //         lng: coordinates.lng,
+  //       };
+  //     };
+  //     console.log("this is happeninn 4");
+  //     const cartCollectionRef = collection(firestore, "Users");
+  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
-      try {
-        const querySnapshot = await getDocs(q);
+  //     try {
+  //       const querySnapshot = await getDocs(q);
 
-        querySnapshot.forEach(async (doc) => {
-          const userDocRef = doc.ref;
-          const currentPastLocations = doc.data()?.pastLocations || [];
+  //       querySnapshot.forEach(async (doc) => {
+  //         const userDocRef = doc.ref;
+  //         const currentPastLocations = doc.data()?.pastLocations || [];
 
-          if (!currentPastLocations.includes(location)) {
-            const addressComponents = getAddressComponents();
+  //         if (!currentPastLocations.includes(location)) {
+  //           const addressComponents = getAddressComponents();
 
-            // Update the pastLocations field with the new location
-            await updateDoc(userDocRef, {
-              pastLocations: arrayUnion(location),
-              pastPreciseLocation: arrayUnion(addressComponents),
-            });
+  //           // Update the pastLocations field with the new location
+  //           await updateDoc(userDocRef, {
+  //             pastLocations: arrayUnion(location),
+  //             pastPreciseLocation: arrayUnion(addressComponents),
+  //           });
 
-            console.log("Location updated successfully!");
-          } else {
-            console.log("Location already exists in pastLocations.");
-          }
-        });
-      } catch (error) {
-        console.error("Error fetching location details:", error);
-      }
-    };
+  //           console.log("Location updated successfully!");
+  //         } else {
+  //           console.log("Location already exists in pastLocations.");
+  //         }
+  //       });
+  //     } catch (error) {
+  //       console.error("Error fetching location details:", error);
+  //     }
+  //   };
 
-    if (location) {
-      updateLocation();
-    }
-  }, [preciseLocation, location]);
+  //   if (location) {
+  //     updateLocation();
+  //   }
+  // }, [preciseLocation, location]);
 
   return (
     <>
+      {addressCard ? (
+        <View
+          style={{
+            // top: 65,
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            flex: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            zIndex: 9999,
+            alignSelf: "flex-end",
+          }}
+        >
+          <View
+            style={{
+              height: "70vh",
+              width: "40vw",
+              backgroundColor: "white",
+              justifyContent: "center",
+            }}
+          >
+            <View style={{ justifyContent: "center" }}>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  padding: 10,
+                }}
+              >
+                {editStreetAdress ? (
+                  renderAddressField(
+                    "street_address",
+                    editedValue.streetAddress,
+                    "streetAddress"
+                  )
+                ) : (
+                  <>
+                    <Text>street_address:</Text>
+                    <Text>{fixedAddress.streetAddress}</Text>
+                    <TouchableOpacity onPress={() => setEditStreetAdress(true)}>
+                      <Text>Edit</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  padding: 10,
+                }}
+              >
+                {editLocalArea ? (
+                  renderAddressField(
+                    "local area",
+                    editedValue.localArea,
+                    "localArea"
+                  )
+                ) : (
+                  <>
+                    <Text style={{ alignSelf: "flex-start" }}>local area:</Text>
+                    <Text>{fixedAddress.localArea}</Text>
+                    <TouchableOpacity onPress={() => setEditLocalArea(true)}>
+                      <Text>Edit</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  padding: 10,
+                }}
+              >
+                {" "}
+                {editCity ? (
+                  renderAddressField("city", editedValue.localCity, "localCity")
+                ) : (
+                  <>
+                    <Text style={{ alignSelf: "flex-start" }}>city:</Text>
+                    <Text>{fixedAddress.localCity}</Text>
+                    <TouchableOpacity onPress={() => setEditCity(true)}>
+                      <Text>Edit</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  padding: 10,
+                }}
+              >
+                {editCounty ? (
+                  renderAddressField(
+                    "country",
+                    editedValue.countryOfCity,
+                    "countryOfCity"
+                  )
+                ) : (
+                  <>
+                    <Text style={{ alignSelf: "flex-start" }}>country:</Text>
+                    <Text>{fixedAddress.countryOfCity}</Text>
+                    <TouchableOpacity onPress={() => setEditCountry(true)}>
+                      <Text>Edit</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  padding: 10,
+                }}
+              >
+                {" "}
+                {editZone ? (
+                  renderAddressField(
+                    "Province(zone)",
+                    editedValue.zoneCity,
+                    "zoneCity"
+                  )
+                ) : (
+                  <>
+                    <Text style={{ alignSelf: "flex-start" }}>
+                      Province(zone):
+                    </Text>
+                    <Text>{fixedAddress.zoneCity}</Text>
+                    <TouchableOpacity onPress={() => setEditZone(true)}>
+                      <Text>Edit</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View>
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  padding: 10,
+                }}
+              >
+                {" "}
+                {editCode ? (
+                  renderAddressField(
+                    "code",
+                    editedValue.postalCode,
+                    "postalCode"
+                  )
+                ) : (
+                  <>
+                    <Text style={{ alignSelf: "flex-start" }}>code:</Text>
+                    <Text>{fixedAddress.postalCode}</Text>
+                    <TouchableOpacity onPress={() => setEditCode(true)}>
+                      <Text>Edit</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View>
+            </View>
+
+            <Button
+              variant="outlined"
+              sx={{
+                width: "80%",
+                alignSelf: "center",
+                borderColor: "lightgrey",
+                borderRadius: 15,
+              }}
+              onClick={() => handleFixAddress()}
+            >
+              <Typography sx={{ fontSize: 16, color: "#062338" }}>
+                SUBMIT
+              </Typography>
+            </Button>
+          </View>
+        </View>
+      ) : null}
       <FollowUs />
       <Navbar />
       <ScrollView style={{ flexDirection: "column", backgroundColor: "white" }}>
@@ -1257,7 +1432,8 @@ const DateSelectionAndCheckout = () => {
                             {location && location.slice(0, 30)}
                             {location && location.length < 50 ? "" : "..."}
                           </Typography>
-
+                          
+                          {/* 
                           <View
                             style={{
                               marginTop: "10px",
@@ -1278,8 +1454,19 @@ const DateSelectionAndCheckout = () => {
                             onLocationPress={(selectedItem, index) =>
                               handleLocationPress(selectedItem, index)
                             }
-                          />
+                          /> */}
                         </View>
+                        <Typography
+                            style={{ color: "grey", marginTop: "14px" }}
+                          >
+                            Delivery Notes
+                          </Typography>
+                          <Typography style={{ color: "white" }}>
+                            In essence, AMS aims to not only help businesses
+                            grow but also make a positive image on society by
+                            nurturing local talent and fostering sustainable
+                            busibess growth.
+                          </Typography>
                       </>
                     )}
 

@@ -3,13 +3,14 @@ import { View, Text, ScrollView, TouchableOpacity, Button } from "react-native";
 import { firebase, firestore, auth } from "../../config"; // Adjust the path based on your project structure
 import ProductCard from "../../Global/Card";
 import { AntDesign } from "@expo/vector-icons";
-
+import { useNavigation } from "@react-navigation/native";
 export default function BusinessCard({ business }) {
   console.log(business);
   const scrollViewRef = useRef(null);
   const [products, setProducts] = useState([]);
   const [banner, setBanner] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const navigation = useNavigation();
   useEffect(() => {
     const fetchProducts = async () => {
       const productsRef = firebase.firestore().collection("Products");
@@ -135,7 +136,8 @@ export default function BusinessCard({ business }) {
                 position: "absolute",
                 //marginVertical: 16,
                 //  backgroundColor:'red'
-              }}>
+              }}
+            >
               <View
                 style={{
                   display: "flex",
@@ -143,7 +145,8 @@ export default function BusinessCard({ business }) {
                   justifyContent: "space-between",
                   //marginTop: 20,
                   //  backgroundColor:'blue'
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     fontSize: "30px",
@@ -153,7 +156,11 @@ export default function BusinessCard({ business }) {
                   {business}
                 </Text>
 
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("Products", { businessId: business })
+                  }
+                >
                   <Text>View All</Text>
                 </TouchableOpacity>
               </View>

@@ -86,9 +86,9 @@ export default function ProductDetails({ navigation, route }) {
   const app = initializeApp(firebaseConfig);
   const firestore = getFirestore(app);
 
-  const navigateProductDetails = () => {
-    console.log("productId is ", productId);
-    navigation.navigate("ProductDetails", { productId });
+  const handleChangeProduct = (relatedProductId) => {
+    // Navigate to the new product's details page
+    navigation.navigate('ProductDetails', { productId: relatedProductId });
   };
 
   const toggleHeart = async () => {
@@ -729,7 +729,7 @@ export default function ProductDetails({ navigation, route }) {
             </Typography>
             <Box sx={{ pl: 2 }}>
               <Typography sx={{ fontWeight: "600", fontSize: 15, mb: 2 }}>
-                MindMatters Publication
+                {product.company}
               </Typography>
               <Box
                 sx={{
@@ -1017,7 +1017,7 @@ export default function ProductDetails({ navigation, route }) {
                                 cursor: "pointer",
                               }}
                               onClick={() =>
-                                navigateProductDetails(relatedProduct.id)
+                                handleChangeProduct(relatedProduct.id)
                               }
                             >
                               

@@ -733,29 +733,33 @@ export default function ProductDetails({ navigation, route }) {
               </Typography>
               <Box
                 sx={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
+                  display: "flex",
+                  flexWrap: "wrap",
                   margin: 2,
-                //  justifyContent: 'space-around',
+                  //  justifyContent: 'space-around',
                 }}
               >
                 {relatedProducts &&
                   relatedProducts.map((relatedProduct) =>
                     productId !== relatedProduct.id ? (
                       <Card
-                      key={relatedProduct.id}
-                      sx={{
-                        width: { xs: '100%', sm: '45%', md: '35%', lg: '35%' },
-                        margin: 2,
-                      }}
-                     
+                        key={relatedProduct.id}
+                        sx={{
+                          width: {
+                            xs: "100%",
+                            sm: "45%",
+                            md: "35%",
+                            lg: "35%",
+                          },
+                          margin: 2,
+                        }}
                       >
                         <View
                           style={{
                             justifyContent: "center",
                             alignItems: "center",
                             paddingHorizontal: "5%", // Adjust as needed
-                          paddingTop:10
+                            paddingTop: 10,
                           }}
                         >
                           <Box
@@ -966,7 +970,8 @@ export default function ProductDetails({ navigation, route }) {
                                   component="p"
                                   style={{ color: "gray" }}
                                 >
-                                  <Icon2 name="download" size={20} /> {relatedProduct.quantity} Sales
+                                  <Icon2 name="download" size={20} />{" "}
+                                  {relatedProduct.quantity} Sales
                                 </Typography>
                                 <View
                                   style={{
@@ -1000,36 +1005,28 @@ export default function ProductDetails({ navigation, route }) {
                                 </View>
                               </Box>
                             </View>
-                            <CardContent>
-                          <Button
-                            variant="outlined"
-                            color="primary"
-                            style={{
-                              border: "2px solid black",
-                              color: "rgb(43, 40, 40)",
-                              textDecoration: "none",
-                              width: "7vw",
-                              backgroundColor: "white",
-                              padding: "5px 20px",
-                              borderRadius: "25px",
-                              cursor: "pointer",
-                              fontSize: "18px",
-                              display: "flex",
-                              alignItems: "center",
-                              marginBottom: "2vh",
-                            }}
-                            onClick={() =>
-                              navigateProductDetails(relatedProduct.id)
-                            }
-                          >
-                            VIEW
-                            <Icon name="arrow-right" size={20} />
-                          </Button>
-                        </CardContent>
+
+                            <Button
+                              style={{
+                                border:"2px black solid",
+                                alignSelf:"flex-start",
+                                paddingHorizontal:'5px',
+                                borderRadius:'50px',
+                                marginBottom:15,
+                                color:'black',
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                navigateProductDetails(relatedProduct.id)
+                              }
+                            >
+                              
+                             <Text>VIEW </Text> 
+                              <Icon name="arrow-right" size={20} />
+                             
+                            </Button>
                           </View>
-                         
                         </View>
-                       
                       </Card>
                     ) : null
                   )}

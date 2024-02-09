@@ -732,33 +732,30 @@ export default function ProductDetails({ navigation, route }) {
                 MindMatters Publication
               </Typography>
               <Box
-                style={{
-                  display: "flex",
-                  margin: 10,
-                  flexDirection: "row",
-                  flexWrap: "wrap",
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  margin: 2,
+                //  justifyContent: 'space-around',
                 }}
               >
                 {relatedProducts &&
                   relatedProducts.map((relatedProduct) =>
                     productId !== relatedProduct.id ? (
                       <Card
-                        className="card-container"
-                        style={{
-                          width: "21vw",
-                          display: "flex",
-                          flexDirection: "column",
-                          height: "82vh",
-                          margin: 10,
-                        }}
+                      key={relatedProduct.id}
+                      sx={{
+                        width: { xs: '100%', sm: '45%', md: '35%', lg: '35%' },
+                        margin: 2,
+                      }}
+                     
                       >
                         <View
                           style={{
-                            // backgroundColor: "purple",
                             justifyContent: "center",
                             alignItems: "center",
-                            paddingHorizontal: 16,
-                            height: "70vh",
+                            paddingHorizontal: "5%", // Adjust as needed
+                          paddingTop:10
                           }}
                         >
                           <Box
@@ -899,9 +896,8 @@ export default function ProductDetails({ navigation, route }) {
                             style={{
                               width: "100%",
                               justifyContent: "space-between",
-                              marginTop: 16,
-                              //  backgroundColor:'red',
-                              height: "25vh",
+                              marginTop: "5%", // Adjust as needed
+                              // height: "25vh",
                             }}
                           >
                             <View>
@@ -970,7 +966,7 @@ export default function ProductDetails({ navigation, route }) {
                                   component="p"
                                   style={{ color: "gray" }}
                                 >
-                                  <Icon2 name="download" size={20} /> 15 Sales
+                                  <Icon2 name="download" size={20} /> {relatedProduct.quantity} Sales
                                 </Typography>
                                 <View
                                   style={{
@@ -1004,9 +1000,7 @@ export default function ProductDetails({ navigation, route }) {
                                 </View>
                               </Box>
                             </View>
-                          </View>
-                        </View>
-                        <CardContent>
+                            <CardContent>
                           <Button
                             variant="outlined"
                             color="primary"
@@ -1032,6 +1026,10 @@ export default function ProductDetails({ navigation, route }) {
                             <Icon name="arrow-right" size={20} />
                           </Button>
                         </CardContent>
+                          </View>
+                         
+                        </View>
+                       
                       </Card>
                     ) : null
                   )}

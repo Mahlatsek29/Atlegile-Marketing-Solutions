@@ -217,23 +217,22 @@ const Products = () => {
         <FollowUs />
         <Navbar />
         <SearchBar />
-        <View
-          style={{
-            // display: "flex",
-            flexDirection: "row",
-            //justifyContent: "space-evenly",
-            flexWrap: "wrap",
-          }}
-        >
+        <Box
+                
+              >
           {products.map((product) => (
-            <View style={{ margin: 10 }}>
+            <View style={{ margin: 10 , flexDirection:'column',
+            flexWrap: "wrap",}}>
               <Card
-                className="card-container"
-                style={{
-                  width: "21vw",
-                  display: "flex",
-                  flexDirection: "column",
-                  height: "82vh",
+                sx={{
+                  width: {
+                    xs: "100%",
+                    sm: "45%",
+                    md: "35%",
+                    lg: "35%",
+                  },
+                  margin: 2,
+                 
                 }}
               >
                 <View
@@ -439,7 +438,7 @@ const Products = () => {
                           component="p"
                           style={{ color: "gray" }}
                         >
-                          <Icon2 name="download" size={20} /> 15 Sales
+                          <Icon2 name="download" size={20} /> {product.quantity} Sales
                         </Typography>
                         <View style={{ display: "flex", flexDirection: "row" }}>
                           <Typography
@@ -497,7 +496,7 @@ const Products = () => {
               </Card>
             </View>
           ))}
-        </View>
+        </Box>
 
         <Footer />
       </View>

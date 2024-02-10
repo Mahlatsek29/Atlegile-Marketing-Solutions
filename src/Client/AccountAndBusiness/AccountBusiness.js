@@ -32,10 +32,11 @@ import {
   Box,
   Button,
   useTheme,
+  CardMedia,
 } from "@mui/material";
 import Typography from "@mui/joy/Typography";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-
+import Icon2 from "react-native-vector-icons/Feather";
 //import Button from '@mui/joy/Button';
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
@@ -131,6 +132,30 @@ export default function BusinessAccount({ productsData }) {
   const [height, setHeight] = useState(null);
   const [weight, setWeight] = useState(null);
   const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+   // console.log("Product Data:", productData);
+    setLoading(false);  // Add this line to set loading to false
+  }, [products]);
+  if (loading) {
+    // Render a loading state using Skeleton
+    return (
+      <Card className="card-container">
+        <Skeleton
+          variant="rectangular"
+          width={270}
+          height={270}
+          animation="wave"
+        />
+        <CardContent>
+          <Skeleton variant="text" width={100} height={20} animation="wave" />
+          <Skeleton variant="text" width={200} height={16} animation="wave" />
+          <Skeleton variant="text" width={200} height={16} animation="wave" />
+          <Skeleton variant="text" width={80} height={14} animation="wave" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -2599,10 +2624,183 @@ export default function BusinessAccount({ productsData }) {
                       }}
                     >
                       {products.map((product, index) => (
-                        <BusinessProductCard
-                          key={index}
-                          productData={product}
-                        />
+                        
+                       
+                       
+                        <Card
+                        key={index}
+                        sx={{
+                          width: {
+                            xs: "100%",
+                            sm: "45%",
+                            md: "35%",
+                            lg: "35%",
+                          },
+                          margin: 2,
+                         
+                        }}
+                      >
+                        <View
+                          style={{
+                            // backgroundColor: "purple",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            paddingHorizontal: 16,
+                            height: "70vh",
+                          }}
+                        >
+                          <Box
+                            style={{
+                              borderRadius: "16px",
+                              objectFit: "cover",
+                              position: "relative",
+                              backgroundColor: "whitesmoke",
+                              width: "250px",
+                              height: "250px",
+                              borderRadius: "50%",
+                              alignself: "center",
+                              justifyContent: "center",
+                              display: "flex",
+                              flexDirection: "column",
+                              alignSelf: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <CardMedia
+                              component="img"
+                              height="140"
+                              image={
+                                product.images && product.images.length > 0
+                                  ? product.images[0]
+                                  : "../../assets/image/headsets.png"
+                              }
+                              alt={product.name}
+                              style={{
+                                position: "relative",
+                                borderRadius: "100px",
+                                objectFit: "cover",
+                                width: 220,
+                                height: 220,
+                                alignSelf: "center",
+                              }}
+                            />
+                
+                            <Box
+                              style={{
+                                paddingHorizontal: 10,
+                                position: "absolute",
+                                bottom: 30,
+                                left: 80,
+                                width: "6vw",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                alignSelf: "center",
+                              }}
+                            ></Box>
+                            {/* </Container> */}
+                          </Box>
+                          <View
+                            style={{
+                              width: "100%",
+                              justifyContent: "space-between",
+                              marginTop: 16,
+                              //  backgroundColor:'red',
+                              height: "25vh",
+                            }}
+                          >
+                            <View>
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  //     backgroundColor:'green',
+                                  flexWrap: "wrap",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    flex: 1,
+                                    fontSize: "15px",
+                                    color: "#4FC3F7",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {product.selectedProductCategory}
+                                </Text>
+                                <View
+                                  style={{
+                                    backgroundColor: "#072840",
+                                    paddingHorizontal: 5,
+                                    paddingVertical: 3,
+                                    borderRadius: 15,
+                                  }}
+                                >
+                                  <Text style={{}}>
+                                    ⭐ <Text style={{ color: "white" }}> 4.9</Text>
+                                  </Text>
+                                </View>
+                              </View>
+                
+                              <Typography variant="h5" component="h5">
+                                {product.name && product.name.slice(0, 20)}
+                                {product.name && product.name.length < 50 ? "" : "..."}
+                              </Typography>
+                              <Typography
+                                variant="subtitle2"
+                                component="p"
+                                style={{ color: "gray" }}
+                              >
+                                {product.description &&
+                                  product.description.slice(0, 50)}
+                                {product.description && product.description.length < 50
+                                  ? ""
+                                  : "..."}
+                              </Typography>
+                              <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="flex-start"
+                                justifyContent="space-between"
+                              >
+                                <Typography
+                                  variant="body2"
+                                  component="p"
+                                  style={{ color: "gray" }}
+                                >
+                                  <Icon2 name="download" size={20} /> 15 Sales
+                                </Typography>
+                                <View style={{ display: "flex", flexDirection: "row" }}>
+                                  <Typography
+                                    variant="subtitle2"
+                                    component="p"
+                                    style={{
+                                      color: "#BDBDBD",
+                                      fontSize: "18px",
+                                      fontWeight: "700",
+                                      marginRight: "10px",
+                                    }}
+                                  >
+                                    R{product.price}
+                                  </Typography>
+                                  <Typography
+                                    variant="subtitle2"
+                                    component="p"
+                                    style={{
+                                      color: "rgb(97, 151, 97)",
+                                      fontSize: "18px",
+                                      fontWeight: "700",
+                                    }}
+                                  >
+                                    R{product.price}
+                                  </Typography>
+                                </View>
+                              </Box>
+                            </View>
+                          </View>
+                        </View>
+                      </Card>
                       ))}
                     </View>
                   </View>

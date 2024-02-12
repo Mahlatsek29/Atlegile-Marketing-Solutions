@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Linking,
-  Image,
   ScrollView,
   TextInput,
-  FlatList,
 } from "react-native";
 import {
   Container,
@@ -18,37 +16,40 @@ import {
   Card,
   ImageList,
   ImageListItem,
+  TextField,
+  InputLabel,
 } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
-import mapImage from "../../Global/images/mapImage.png";
-import hdtv from "../../Global/images/hdtv.jpg";
 import axios from "axios";
-
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firestore } from "../../config";
 
 import {
   collection,
   query,
-  onSnapshot,
-  exists,
   doc,
   getDoc,
   where,
   getDocs,
   serverTimestamp,
   addDoc,
-  arrayUnion,
-  updateDoc,
 } from "firebase/firestore";
 
-import { firebase, auth, db } from "../../config";
+import { auth } from "../../config";
 // import { timeStamp } from "console";
-
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
 import PlaceAutocomplete from "../../Global/PlaceAutocomplete";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { FontAwesome5 } from "@expo/vector-icons";
+import "leaflet/dist/leaflet.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
@@ -73,34 +74,23 @@ const DateSelectionAndCheckout = () => {
     "Thobile",
   ]);
   const [newArr, setNewArr] = useState([]);
-  // const [user, setUser] = useState(null);
-  const [userId, setUserId] = useState(null);
-
-  // const [rates, setRates] = useState([]);
   const [userData, setUserData] = useState(null);
   const [inputValue, setInputValue] = useState("");
-  const [predictions, setPredictions] = useState([]);
   const [addressInput, setAddessInput] = useState(false);
+  
+  const mapRef = useRef(null);
+  // const latitude = -26.2609931;
+  // const longitude = 27.9502322;
+
   const [address, setAddress] = useState({});
-  const [coordinates, setCoordinates] = useState({});
-  const [preciseLocation, setPreciseLocation] = useState({});
-  const [pastLocations, setPastLocations] = useState([]);
-  const [initialAddress, setInitialAddress] = useState("");
-  const [company, setCompany] = useState([]);
+  const [error, setError] = useState(null);
+  const [coordinates, setCoordinates] = useState({lat:-26.2609931,lng:27.9502322,});
   const [theBusinessName, setTheBusinessName] = useState("");
-  const [collectionAdress, setCollecionadress] = useState({});
-  const [collectioPhoneNUmber, setCollectioPhoneNUmber] = useState();
-  const [loading, setLoading] = useState(false);
   const [trackingRef, setTrackingRef] = useState("");
   const [shipmentStatus, setShipmentStatus] = useState("");
   const [location, setLocation] = useState("");
-  const [pastPreciseLocation, setPastPreciseLocation] = useState([]);
   const [isPicked, setIsPicked] = useState(false);
-  const [arrayIndex, setArrayIndex] = useState(null);
-  const [forceUpdate, setForceUpdate] = useState(false);
-  const [isLocationSelected, setIsLocationSelected] = useState(false);
   const [driver, setDriver] = useState("");
-  const [minDeliveryDate, setMinDeliveryDate] = useState("");
   const [length, setLength] = useState(null);
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
@@ -114,37 +104,55 @@ const DateSelectionAndCheckout = () => {
   const [editLocalArea, setEditLocalArea] = useState(false);
   const [editCode, setEditCode] = useState(false);
   const [editCounty, setEditCountry] = useState(false);
+
+  // useEffect hook to listen for changes in authentication state
   useEffect(() => {
+    // Get the authentication instance
     const auth = getAuth();
+
+    // Subscribe to the authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // Update the state with the current user
       setUser(user);
     });
 
+    // Cleanup function to unsubscribe when the component unmounts
     return () => {
       unsubscribe(); // Unsubscribe from the auth state listener when component unmounts
     };
   }, []);
+
   // using local host URL for now which routes back to the initial screen but when hosted we will use the host URL
   const url = "http://localhost:19006";
   // const url2 = "https://atlegile-marketing-solutions.vercel.app/Reciept";
 
+  // Function to fetch cart data for the authenticated user
   const fetchCartData = async () => {
+    // Check if the user is authenticated
     if (!user) {
       console.error("User not authenticated.");
       return;
     }
 
+    // Reference to the 'Cart' collection in Firestore
     const cartCollectionRef = collection(firestore, "Cart");
+
+    // Query to get the cart items for the current user
     const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
     try {
+      // Get a snapshot of the query results
       const querySnapshot = await getDocs(q);
 
+      // Arrays to store cart items and cart products separately
       const cartItems = [];
       const cartProducts = [];
 
+      // Iterate through each document in the query snapshot
       querySnapshot.forEach((doc) => {
         const data = doc.data();
+
+        // Add cart item details to the 'cartItems' array
         cartItems.push({
           id: doc.id,
           product: data.product,
@@ -152,9 +160,10 @@ const DateSelectionAndCheckout = () => {
           amount: data.price * data.quantity,
           image: data.image,
           name: data.name,
-
           // Add other relevant fields from your Cart collection
         });
+
+        // Add cart product details to the 'cartProducts' array
         cartProducts.push({
           id: doc.id,
           productId: data.productId,
@@ -163,49 +172,55 @@ const DateSelectionAndCheckout = () => {
           amount: data.price * data.quantity,
           image: data.image,
           name: data.name,
-
           // Add other relevant fields from your Cart collection
         });
       });
-      console.log("cartProducts is ", cartProducts);
+
+      // Set the state with the fetched cart items and cart products
       setCartData(cartItems);
       setNewArr(cartProducts);
-      // setNewArr([...cartItems]);
-      console.log("cartData : ", cartData);
+
+      console.log("cartData: ", cartData);
     } catch (error) {
       console.error("Error fetching cart data:", error);
     }
   };
 
+  // Effect hook to fetch cart data when the user is authenticated
   useEffect(() => {
-    // Fetch cart data when the user is authenticated
+    // Check if the user is authenticated
     if (user) {
+      // Call the fetchCartData function to retrieve cart data
       fetchCartData();
     }
-  }, [user]); // Fetch cart data whenever the user changes
+  }, [user]); // Trigger the effect whenever the user changes
 
-  // ... Other imports and code ...
-
+  // Effect hook to fetch company data based on the first product in the cart
   useEffect(() => {
+    // Function to fetch company data
     const fetchCompanyData = async () => {
+      // Reference to the 'Products' collection in Firestore
       const cartCollectionRef = collection(firestore, "Products");
+
+      // Get the productId from the first product in the cart
       const docId = newArr[0]?.productId;
 
-      // Get a reference to the document
+      // Get a reference to the document using the productId
       const docRef = doc(cartCollectionRef, docId);
 
-      // Fetch the document
+      // Fetch the document snapshot
       const docSnapshot = await getDoc(docRef);
 
       // Check if the document exists
       if (docSnapshot.data()) {
-        // Accesswi the businessName field
+        // Extract relevant data from the document
         const businessName = docSnapshot.data().businessName;
         const length = docSnapshot.data().length;
         const width = docSnapshot.data().width;
         const height = docSnapshot.data().height;
         const weight = docSnapshot.data().weight;
-        // Now you can use the businessName variable as needed
+
+        // Log and set the extracted data in the component state
         console.log("Business Name:", businessName);
         setTheBusinessName(businessName);
         setLength(length);
@@ -223,42 +238,21 @@ const DateSelectionAndCheckout = () => {
     }
   }, [cartData, newArr, firestore, user]);
 
-  // useEffect(() => {
-  //   const findBusinessByName = async () => {
-  //     console.log("theBusinessName is ", theBusinessName);
-
-  //     // Replace 'yourCollection' with the actual reference to your "Business" collection
-  //     const businessCollection = firebase.firestore().collection("Business");
-
-  //     try {
-  //       // Constructing the query
-  //       const querySnapshot = await businessCollection
-  //         .where("businessName", "==", theBusinessName)
-  //         .get();
-
-  //       querySnapshot.forEach((doc) => {
-  //         // Access the locationDetails field
-  //         const locationDetails = doc.data().locationDetails;
-  //         const collectionContacts = doc.data().phoneNumber;
-  //         console.log("Location Details:", locationDetails);
-  //         setCollecionadress(locationDetails);
-  //         setCollectioPhoneNUmber(collectionContacts);
-  //       });
-  //     } catch (error) {
-  //       console.error("Error getting documents: ", error);
-  //     }
-  //   };
-
-  //   // Call findBusinessByName whenever theBusinessName changes
-  //   findBusinessByName();
-  // }, [theBusinessName, user]);
-
+  // Effect hook to calculate the order total based on cart items, tax, and delivery amount
   useEffect(() => {
+    // Calculate the total amount of all items in the cart
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
+
+    // Calculate the referral amount as 10% of the total amount
     const calculatedReferral = totalAmount * 0.1;
+
+    // Set the calculated referral amount in the component state
     setAgentReferral(calculatedReferral);
 
+    // Calculate the final order total by adding the total amount, referral amount, tax, and delivery amount
     const finalTotal = totalAmount + calculatedReferral + tax + deliveryAmount;
+
+    // Set the final order total in the component state
     setOrderTotal(finalTotal);
   }, [cartData, tax, deliveryAmount]);
 
@@ -306,92 +300,6 @@ const DateSelectionAndCheckout = () => {
       unsubscribeAuth();
     };
   }, []);
-
-  // useEffect(() => {
-  //   const fetchLocationDetails = async () => {
-  //     if (!user || !user.uid) {
-  //       console.error("User not authenticated.");
-  //       return;
-  //     }
-
-  //     const cartCollectionRef = collection(firestore, "Users");
-  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
-
-  //     try {
-  //       const querySnapshot = await getDocs(q);
-
-  //       querySnapshot.forEach((doc) => {
-  //         const data = doc.data();
-  //         // Assuming your inner object and array are inside the data.locationDetails
-  //         //const location = data.locationDetails;
-  //         const pastLocations = data.pastLocations;
-  //         const pastPreciseLocation = data.pastPreciseLocation;
-
-  //         // setPreciseLocation(location);
-  //         setPastLocations(pastLocations);
-  //         setPastPreciseLocation(pastPreciseLocation);
-  //       });
-  //     } catch (error) {
-  //       console.error("Error fetching location details:", error);
-  //     }
-  //   };
-
-  //   fetchLocationDetails();
-  // }, [user]);
-
-  // const LocationComponent = ({ address, onPress }) => (
-  //   <TouchableOpacity onPress={onPress}>
-  //     <View
-  //       style={{
-  //         width: "100%",
-  //         borderBottomWidth: 2,
-  //         borderBottomColor: "whitesmoke",
-  //         flexDirection: "row",
-  //         alignItems: "center",
-  //         justifyContent: "flex-start",
-  //         paddingTop: 2,
-  //         flexWrap: "wrap",
-  //         marginBottom: 15,
-  //       }}
-  //     >
-  //       <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
-  //         {address && address.slice(0, 40)}
-  //         {address && address.length < 50 ? "" : "..."}
-  //       </Text>
-  //     </View>
-  //   </TouchableOpacity>
-  // );
-
-  // const LocationList = ({ data, onLocationPress }) => (
-  //   <ScrollView
-  //     style={{ height: 250, padding: 10 }}
-  //     showsVerticalScrollIndicator={false}
-  //   >
-  //     {data && Array.isArray(data) ? (
-  //       data.map((item, index) => (
-  //         <LocationComponent
-  //           key={index}
-  //           address={item}
-  //           onPress={() => onLocationPress(item, index)}
-  //         />
-  //       ))
-  //     ) : (
-  //       <Text>No data available</Text>
-  //     )}
-  //   </ScrollView>
-  // );
-
-  // const handleLocationPress = (selectedItem, index) => {
-  //   //  setIsPicked(true)
-  //   setIsLocationSelected(true);
-  //   setLocation(selectedItem);
-  //   setArrayIndex(index);
-  // };
-
-  // useEffect(() => {
-  //   console.log("this is happening");
-  //   setPreciseLocation(pastPreciseLocation[arrayIndex]);
-  // }, [arrayIndex, isLocationSelected]);
 
   const navigateToLanding = () => {
     navigation.navigate("Landing");
@@ -696,13 +604,22 @@ const DateSelectionAndCheckout = () => {
     handleSearch();
   };
 
-  const handlePlaceSelect = ({ place, latLng }) => {
-    // Do something with the selected place details and latitude/longitude
-    console.log("Selected place:", place);
-    console.log("Latitude and Longitude:", latLng);
-    setAddress(place);
-    setCoordinates(latLng);
-    setAddressCard(true);
+  const handleSelect = async (value) => {
+    try {
+      const results = await geocodeByAddress(value);
+      const latLng = await getLatLng(results[0]);
+      setError(null); // Reset error state
+
+      // Do whatever you want with the selected place details here
+      console.log("Selected place:", results[0]);
+      console.log("Latitude and Longitude:", latLng);
+      setAddress(results[0]);
+      setCoordinates(latLng);
+      setAddressCard(true);
+    } catch (error) {
+      console.error("Geocoding error:", error);
+      setError("Geocoding error. Please try again."); // Set error state
+    }
   };
 
   useEffect(() => {
@@ -800,201 +717,56 @@ const DateSelectionAndCheckout = () => {
   };
 
   const renderAddressField = (label, value, field) => (
-    <View
-      style={{
-        justifyContent: "space-between",
-        flexDirection: "row",
-        padding: 10,
-      }}
+    <Grid
+      container
+      justifyContent="space-between"
+      alignItems="center"
+      spacing={1}
+      style={{ padding: 10 }}
     >
-      <Text style={{ alignSelf: "flex-start" }}>{label}:</Text>
-      <TextInput
-        style={{ alignSelf: "flex-start", borderWidth: 1, padding: 5, flex: 1 }}
-        value={value}
-        onChangeText={(text) =>
-          setEditedValue((prev) => ({ ...prev, [field]: text }))
-        }
-      />
-    </View>
+      <Grid item xs={6}>
+        <Typography>{label}:</Typography>
+      </Grid>
+      <Grid item xs={6}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          value={value}
+          onChange={(e) =>
+            setEditedValue((prev) => ({ ...prev, [field]: e.target.value }))
+          }
+        />
+      </Grid>
+    </Grid>
   );
 
   useEffect(() => {
     console.log("fixedAddress is", fixedAddress);
   }, [fixedAddress]);
-  // useEffect(() => {
-  //   const updateLocation = async () => {
-  //     console.log("Updating location:", location);
-  //     if (!user || !user.uid) {
-  //       console.error("User not authenticated.");
-  //       return;
-  //     }
-  //     console.log("this is happeninn 1");
-
-  //     const getAddressDetails = () => {
-  //       let streetAddress;
-  //       let localArea;
-  //       let localCity;
-  //       let zoneCity;
-  //       let countryOfCity;
-  //       let postalCode;
-
-  //       console.log("this is happeninn 2");
-  //       const length = address.address_components.length;
-
-  //       switch (length) {
-  //         case 1:
-  //           postalCode = address.address_components[0].long_name;
-  //           break;
-  //         case 2:
-  //           countryOfCity = address.address_components[0].short_name;
-  //           postalCode = address.address_components[1].long_name;
-  //           break;
-  //         case 3:
-  //           countryOfCity = address.address_components[1].short_name;
-  //           postalCode = address.address_components[2].long_name;
-  //           break;
-  //         case 4:
-  //           localCity = address.address_components[0].long_name;
-  //           countryOfCity = address.address_components[2].short_name;
-  //           postalCode = address.address_components[3].long_name;
-  //           break;
-  //         case 5:
-  //           localArea = address.address_components[0].long_name;
-  //           localCity = address.address_components[1].long_name;
-  //           countryOfCity = address.address_components[3].short_name;
-  //           postalCode = address.address_components[4].long_name;
-  //           break;
-  //         case 6:
-  //           localArea = address.address_components[0].long_name;
-  //           localCity = address.address_components[1].long_name;
-  //           zoneCity = address.address_components[2].long_name;
-  //           countryOfCity = address.address_components[3].short_name;
-  //           postalCode = address.address_components[4].long_name;
-  //           break;
-  //         case 7:
-  //           streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
-  //           localArea = address.address_components[2].long_name;
-  //           localCity = address.address_components[3].long_name;
-  //           zoneCity = address.address_components[4].long_name;
-  //           countryOfCity = address.address_components[5].short_name;
-  //           postalCode = address.address_components[6].long_name;
-  //           break;
-  //         case 8:
-  //           streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-  //           localArea = address.address_components[2].long_name;
-  //           localCity = address.address_components[4].long_name;
-  //           zoneCity = address.address_components[5].long_name;
-  //           countryOfCity = address.address_components[6].short_name;
-  //           postalCode = address.address_components[7].long_name;
-  //           break;
-  //         case 9:
-  //           streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-  //           localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
-  //           localCity = address.address_components[5].long_name;
-  //           zoneCity = address.address_components[6].long_name;
-  //           countryOfCity = address.address_components[7].short_name;
-  //           postalCode = address.address_components[8].long_name;
-  //           break;
-  //         default:
-  //           console.error("Invalid length of address components.");
-  //           return;
-  //       }
-
-  //       return {
-  //         streetAddress: streetAddress || "",
-  //         localArea: localArea || "",
-  //         localCity: localCity || "",
-  //         zoneCity: zoneCity || "",
-  //         countryOfCity: countryOfCity || "",
-  //         postalCode: postalCode || "",
-  //       };
-  //     };
-
-  //     const getAddressComponents = () => {
-  //       const addressDetails = getAddressDetails();
-  //       console.log("this is happeninn 3");
-  //       const {
-  //         streetAddress,
-  //         localArea,
-  //         localCity,
-  //         zoneCity,
-  //         countryOfCity,
-  //         postalCode,
-  //       } = addressDetails;
-
-  //       return {
-  //         type: "",
-  //         company: "",
-  //         street_address: streetAddress,
-  //         local_area: localArea,
-  //         city: localCity,
-  //         zone: zoneCity,
-  //         country: countryOfCity,
-  //         code: postalCode,
-  //         lat: coordinates.lat,
-  //         lng: coordinates.lng,
-  //       };
-  //     };
-  //     console.log("this is happeninn 4");
-  //     const cartCollectionRef = collection(firestore, "Users");
-  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
-
-  //     try {
-  //       const querySnapshot = await getDocs(q);
-
-  //       querySnapshot.forEach(async (doc) => {
-  //         const userDocRef = doc.ref;
-  //         const currentPastLocations = doc.data()?.pastLocations || [];
-
-  //         if (!currentPastLocations.includes(location)) {
-  //           const addressComponents = getAddressComponents();
-
-  //           // Update the pastLocations field with the new location
-  //           await updateDoc(userDocRef, {
-  //             pastLocations: arrayUnion(location),
-  //             pastPreciseLocation: arrayUnion(addressComponents),
-  //           });
-
-  //           console.log("Location updated successfully!");
-  //         } else {
-  //           console.log("Location already exists in pastLocations.");
-  //         }
-  //       });
-  //     } catch (error) {
-  //       console.error("Error fetching location details:", error);
-  //     }
-  //   };
-
-  //   if (location) {
-  //     updateLocation();
-  //   }
-  // }, [preciseLocation, location]);
-
+ 
+ 
   return (
     <>
       {addressCard ? (
-        <View
-          style={{
-            // top: 65,
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            zIndex: 9999,
-            alignSelf: "flex-end",
-          }}
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          position="absolute"
+          width="100%"
+          height="100%"
+          flex={1}
+          backgroundColor="rgba(0, 0, 0, 0.5)"
+          zIndex={9999}
+          //alignSelf="center"
         >
-          <View
-            style={{
-              height: "70vh",
-              width: "40vw",
-              backgroundColor: "white",
-              justifyContent: "center",
-            }}
+          <Box
+            height="auto"
+            width="90vw"
+            maxWidth={400}
+            backgroundColor="white"
+            justifyContent="center"
+            p={2} // Padding added for all sides
           >
             <View style={{ justifyContent: "center" }}>
               <View
@@ -1136,24 +908,23 @@ const DateSelectionAndCheckout = () => {
                   </>
                 )}
               </View>
+              <Button
+                variant="outlined"
+                sx={{
+                  width: "80%",
+                  alignSelf: "center",
+                  borderColor: "lightgrey",
+                  borderRadius: 15,
+                }}
+                onClick={() => handleFixAddress()}
+              >
+                <Typography sx={{ fontSize: 16, color: "#062338" }}>
+                  SUBMIT
+                </Typography>
+              </Button>
             </View>
-
-            <Button
-              variant="outlined"
-              sx={{
-                width: "80%",
-                alignSelf: "center",
-                borderColor: "lightgrey",
-                borderRadius: 15,
-              }}
-              onClick={() => handleFixAddress()}
-            >
-              <Typography sx={{ fontSize: 16, color: "#062338" }}>
-                SUBMIT
-              </Typography>
-            </Button>
-          </View>
-        </View>
+          </Box>
+        </Box>
       ) : null}
       <FollowUs />
       <Navbar />
@@ -1405,10 +1176,53 @@ const DateSelectionAndCheckout = () => {
                           backgroundColor: "white",
                         }}
                       >
-                        <PlaceAutocomplete
-                          style={{}}
-                          onPlaceSelect={handlePlaceSelect}
-                        />
+                        <PlacesAutocomplete
+                          value={address}
+                          onChange={setAddress}
+                          onSelect={handleSelect}
+                        >
+                          {({
+                            getInputProps,
+                            suggestions,
+                            getSuggestionItemProps,
+                            loading,
+                          }) => (
+                            <View>
+                              <TextField
+                                fullWidth
+                                id="places-autocomplete-input"
+                                placeholder="Type location"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                                {...getInputProps()}
+                              />
+                              <View>
+                                {loading && <Typography>Loading...</Typography>}
+                                {suggestions.map((suggestion) => (
+                                  <View
+                                    style={{ width: "20vw" }}
+                                    {...getSuggestionItemProps(suggestion)}
+                                    key={suggestion.placeId}
+                                  >
+                                    <Typography
+                                      style={{
+                                        width: "70%",
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        color: "gray",
+                                      }}
+                                    >
+                                      {suggestion.description}
+                                    </Typography>
+                                  </View>
+                                ))}
+                              </View>
+                              {error && (
+                                <Text style={{ color: "red" }}>{error}</Text>
+                              )}
+                            </View>
+                          )}
+                        </PlacesAutocomplete>
 
                         <TouchableOpacity
                           style={{
@@ -1454,53 +1268,58 @@ const DateSelectionAndCheckout = () => {
                             <Text
                               style={{ color: "white", paddingHorizontal: 10 }}
                             >
-                              View
+                              Type
                             </Text>
                           </TouchableOpacity>
                         </View>
 
-                        <View style={{ border: "1px white solid" }}>
+                        <View
+                          style={{
+                            borderBottom: "1px white solid",
+                            marginBottom: 15,
+                          }}
+                        >
                           <Typography variant="h6" style={{ color: "#FFFFFF" }}>
                             {location && location.slice(0, 30)}
                             {location && location.length < 50 ? "" : "..."}
                           </Typography>
-                          
-                          {/* 
-                          <View
-                            style={{
-                              marginTop: "10px",
-                              borderBottomWidth: 1,
-                              borderBottomColor: "lightgrey",
-                            }}
-                          ></View>
-                          <Typography
-                            variant="h5"
-                            sx={{
-                              color: "#B7B9BC",
-                              fontSize: 20,
-                              marginTop: 1,
-                            }}
-                          >
-                            Recent Addresses
-                          </Typography>
-                          <LocationList
-                            data={pastLocations}
-                            onLocationPress={(selectedItem, index) =>
-                              handleLocationPress(selectedItem, index)
-                            }
-                          /> */}
                         </View>
+                        <MapContainer
+                          center={[coordinates.lat, coordinates.lng]}
+                          zoom={13}
+                          ref={mapRef}
+                          style={{
+                            height: "20vh",
+                            width: "100%",
+                            borderRadius: "25px",
+                          }}
+                        >
+                          <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                          />
+                          <Marker position={[coordinates.lat, coordinates.lng]}>
+                            <Popup>
+                              <FontAwesomeIcon
+                                icon={faMapMarkerAlt}
+                                size="lg"
+                                color="black"
+                              />
+                            </Popup>
+                          </Marker>
+                          {/* Additional map layers or components can be added here */}
+                        </MapContainer>
                         <Typography
-                            style={{ color: "grey", marginTop: "14px" }}
-                          >
-                            Delivery Notes
-                          </Typography>
-                          <Typography style={{ color: "white" }}>
-                            In essence, AMS aims to not only help businesses
-                            grow but also make a positive image on society by
-                            nurturing local talent and fostering sustainable
-                            busibess growth.
-                          </Typography>
+                          style={{ color: "grey", marginTop: "14px" }}
+                        >
+                          Delivery Notes
+                        </Typography>
+                        <Typography style={{ color: "white" }}>
+                          In essence, AMS aims to not only help businesses grow
+                          but also make a positive image on society by nurturing
+                          local talent and fostering sustainable busibess
+                          growth.
+                        </Typography>
                       </>
                     )}
 

@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   Linking,
   ScrollView,
-  TextInput,
 } from "react-native";
 import {
   Container,
@@ -17,7 +16,6 @@ import {
   ImageList,
   ImageListItem,
   TextField,
-  InputLabel,
 } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import FollowUs from "../../Global/Header";
@@ -39,14 +37,11 @@ import {
 } from "firebase/firestore";
 
 import { auth } from "../../config";
-// import { timeStamp } from "console";
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
-import PlaceAutocomplete from "../../Global/PlaceAutocomplete";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { FontAwesome5 } from "@expo/vector-icons";
 import "leaflet/dist/leaflet.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
@@ -62,29 +57,18 @@ const DateSelectionAndCheckout = () => {
   const [user, setUser] = useState(null);
   const [rates, setRates] = useState([]);
   const [cartCount, setCartCount] = useState(2);
-  const [data, setData] = useState([
-    "Ben",
-    "Paul",
-    "Sibusiso",
-    "Mpho",
-    "Ristar",
-    "David",
-    "Tshepo",
-    "Linda",
-    "Thobile",
-  ]);
+
   const [newArr, setNewArr] = useState([]);
   const [userData, setUserData] = useState(null);
-  const [inputValue, setInputValue] = useState("");
   const [addressInput, setAddessInput] = useState(false);
-  
-  const mapRef = useRef(null);
-  // const latitude = -26.2609931;
-  // const longitude = 27.9502322;
 
+  const mapRef = useRef(null);
   const [address, setAddress] = useState({});
   const [error, setError] = useState(null);
-  const [coordinates, setCoordinates] = useState({lat:-26.2609931,lng:27.9502322,});
+  const [coordinates, setCoordinates] = useState({
+    lat: -26.2609931,
+    lng: 27.9502322,
+  });
   const [theBusinessName, setTheBusinessName] = useState("");
   const [trackingRef, setTrackingRef] = useState("");
   const [shipmentStatus, setShipmentStatus] = useState("");
@@ -263,72 +247,95 @@ const DateSelectionAndCheckout = () => {
   const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
 
   useEffect(() => {
+    // Set up an observer for changes in the authentication state
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
       if (user) {
+        // If the user is authenticated, set up listeners for user data and cart data
+
+        // Set up a query for the user's cart based on their UID
         const cartCollectionRef = firestore
           .collection("Cart")
           .where("uid", "==", user.uid);
 
+        // Set up a snapshot listener for changes in the user's cart
         const unsubscribeCartSnapshot = cartCollectionRef.onSnapshot(
           (snapshot) => {
+            // Update the cart count based on the number of items in the cart
             const itemCount = snapshot.docs.length;
             setCartCount(itemCount);
           }
         );
 
+        // Set up a reference to the user document in the "Users" collection
         const userDocRef = firestore.collection("Users").doc(user.uid);
+
+        // Set up a snapshot listener for changes in the user document
         const unsubscribeSnapshot = userDocRef.onSnapshot((doc) => {
           if (doc.exists) {
+            // If the user document exists, set the user data state
             setUserData(doc.data());
-            console.log("data from users : ", doc.data());
+            console.log("data from users: ", doc.data());
           } else {
             console.error("User data not found");
           }
         });
 
+        // Cleanup functions to unsubscribe from the snapshot listeners when the component unmounts
         return () => {
           unsubscribeCartSnapshot();
           unsubscribeSnapshot();
         };
       } else {
+        // If the user is not authenticated, reset user data and cart count
         setUserData(null);
-        setCartCount(0); // Reset cart count when user is not authenticated
+        setCartCount(0);
       }
     });
 
+    // Cleanup function to unsubscribe from the authentication state listener when the component unmounts
     return () => {
       unsubscribeAuth();
     };
   }, []);
 
+  // Function to navigate to the "Landing" screen
   const navigateToLanding = () => {
     navigation.navigate("Landing");
   };
 
+  // Function to navigate to the "OrderHistory" screen
   const navigateToOrderHistory = () => {
     navigation.navigate("OrderHistory");
   };
 
+  // useEffect hook to calculate various values based on changes in dependencies
   useEffect(() => {
+    // Calculate the total amount of items in the cart
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
 
+    // Calculate the referral amount as 10% of the total amount
     const calculatedReferral = totalAmount * 0.1;
     setAgentReferral(calculatedReferral);
 
+    // Calculate the tax amount as 15% of the total amount
     const taxAmount = totalAmount * 0.15;
     setTax(taxAmount);
 
+    // Calculate the delivery charge based on the selected index and rates
     const delivery =
       selectedIndex !== null ? rates[selectedIndex].base_rate.charge : 0;
 
+    // Calculate the final total by adding up the total, referral, tax, and delivery
     const finalTotal = totalAmount + calculatedReferral + taxAmount + delivery;
     setOrderTotal(finalTotal);
   }, [cartData, selectedIndex, rates]);
 
   useEffect(() => {
+    // Get the current date in ISO format
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0];
 
+    // Define common rates information
     const commonRates = {
       collection_address: {
         type: "business",
@@ -354,8 +361,8 @@ const DateSelectionAndCheckout = () => {
       collection_min_date: formattedDate,
       delivery_min_date: formattedDate,
     };
-    console.log("The courear fixedAddress is ", fixedAddress);
 
+    // Define delivery rates information based on fixedAddress and coordinates
     const deliveryRates = {
       delivery_address: {
         type: "",
@@ -371,8 +378,10 @@ const DateSelectionAndCheckout = () => {
       },
     };
 
+    // Combine commonRates and deliveryRates into a single object
     const theRates = { ...commonRates, ...deliveryRates };
 
+    // Function to make an API call to get rates from the courier
     const gettingRate = async () => {
       console.log("theRatesCollectionAdress ", theRates.collection_address);
       console.log("theRatesDeliverAdress ", theRates.delivery_address);
@@ -385,30 +394,36 @@ const DateSelectionAndCheckout = () => {
       };
 
       try {
+        // Make a POST request to the courier API to get rates
         const response = await axios.post(
           "https://api.shiplogic.com/v2/rates",
           theRates,
           config
         );
+
         console.log("Courier API rates response:", response.data);
+
         if (response.data.rates) {
+          // Update the component state with the received rates
           setRates(response.data.rates);
         } else {
           console.log("Rates not found in the response");
         }
       } catch (error) {
         console.error("Error getting rates", error);
+
         if (error.response) {
           console.log("Response data:", error.response.data);
         }
       }
     };
 
+    // Call the function to get rates when the component mounts or when fixedAddress or location changes
     gettingRate();
   }, [fixedAddress, location]);
 
   const creattingShipment = async () => {
-    //  console.log("the delivery address is ", preciseLocation);
+    // Define common shipment information
     const commonShipment = {
       collection_address: {
         type: "business",
@@ -427,7 +442,6 @@ const DateSelectionAndCheckout = () => {
         mobile_number: "",
         email: "cornel+sandy@uafrica.com",
       },
-
       delivery_contact: {
         name: "Boiketlo Mochochoko",
         mobile_number: "0734157351",
@@ -461,6 +475,7 @@ const DateSelectionAndCheckout = () => {
       mute_notifications: false,
     };
 
+    // Define delivery address information based on fixedAddress and coordinates
     const deliveryAddress = {
       delivery_address: {
         type: "",
@@ -476,8 +491,10 @@ const DateSelectionAndCheckout = () => {
       },
     };
 
+    // Combine commonShipment and deliveryAddress into a single object
     const shipment = { ...commonShipment, ...deliveryAddress };
 
+    // Set up the request headers for the courier API
     const config = {
       headers: {
         Authorization: `Bearer ${CourierAPIKey}`,
@@ -486,18 +503,19 @@ const DateSelectionAndCheckout = () => {
     };
 
     try {
+      // Make a POST request to create a shipment using the courier API
       const response = await axios.post(
         "https://api.shiplogic.com/v2/shipments",
         shipment,
         config
       );
-
-      console.log("Courier API creating shipment response:", response.data);
       setTrackingRef(response.data.short_tracking_reference);
       setDriver(response.data.delivery_agent_id);
-      console.log("driver is ", response.data.delivery_agent_id);
+
+      // Return the response data
       return response.data;
     } catch (error) {
+      // Handle errors during the API request
       console.error("Error creating shipment:", error);
 
       if (error.response) {
@@ -512,7 +530,9 @@ const DateSelectionAndCheckout = () => {
   };
 
   useEffect(() => {
+    // Function to track a shipment using the courier API
     const tackingShipment = async () => {
+      // Set up the request headers for the courier API
       const config = {
         headers: {
           Authorization: `Bearer ${CourierAPIKey}`,
@@ -521,12 +541,15 @@ const DateSelectionAndCheckout = () => {
       };
 
       try {
+        // Make a GET request to track the shipment using the tracking reference
         const response = await axios.get(
           `https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=${trackingRef}`,
           config
         );
+
+        // Log the response data and update component state with shipment status
         console.log(
-          "Courier API traking shipment response:",
+          "Courier API tracking shipment response:",
           response.data.shipments[0].status
         );
         console.log(
@@ -535,25 +558,30 @@ const DateSelectionAndCheckout = () => {
         );
         setShipmentStatus(response.data.shipments[0].tracking_events[0].status);
       } catch (error) {
+        // Handle errors during the API request
         console.error("Error getting shipments", error);
+
         if (error.response) {
           console.log("Response data:", error.response.data);
         }
+
+        // Return an empty array in case of an error
         return [];
       }
     };
+
+    // Call the function to track the shipment when the trackingRef changes
     tackingShipment();
   }, [trackingRef]);
 
   useEffect(() => {
+    // Function to handle adding an item to the cart in the Firestore database
     const handleAddToCart = async () => {
-      console.log("deliveryGuy : ", data[Math.floor(Math.random() * 10)]);
-      console.log("name : ", userData);
-
       try {
+        // Get a reference to the "Orders" collection in Firestore
         const cartCollectionRef = collection(firestore, "Orders");
 
-        // Add a new document with user information, product ID, product price, quantity, and image
+        // Add a new document to the "Orders" collection with order details
         await addDoc(cartCollectionRef, {
           createdAt: serverTimestamp(),
           trackingEventsRef: trackingRef,
@@ -571,25 +599,25 @@ const DateSelectionAndCheckout = () => {
           orderNumber: `#${
             userData?.uid?.slice(5, 15) + Math.floor(Math.random() * 10000)
           }`,
-          // orderSummary: 3000,
           totalAmount: orderTotal,
           items: [...newArr],
         });
 
+        // Log success message and proceed to handle payment
         console.log("Item added to the cart!");
         handlePayment();
         // navigation.navigate("DateSelectionAndCheckout");
       } catch (error) {
+        // Handle errors during the addition of the item to the cart
         console.error("Error adding item to cart:", error);
       }
     };
+
+    // Call the function to add the item to the cart when the shipmentStatus changes
     handleAddToCart();
   }, [shipmentStatus]);
 
   const handlePayment = () => {
-    // console.log(shipmentStatus)
-    //handleAddToCart();
-    // creattingShipment(); //create a shipment before goignt to pay fast
     // Construct the payment URL with the necessary parameters
     const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
     orderTotal.toFixed(2) + // Use the calculated orderTotal here
@@ -599,41 +627,54 @@ const DateSelectionAndCheckout = () => {
     Linking.openURL(paymentUrl);
   };
 
-  const handleInputChange = (text) => {
-    setInputValue(text);
-    handleSearch();
-  };
-
   const handleSelect = async (value) => {
     try {
+      // Use geocodeByAddress to get location details based on the selected address
       const results = await geocodeByAddress(value);
-      const latLng = await getLatLng(results[0]);
-      setError(null); // Reset error state
 
-      // Do whatever you want with the selected place details here
-      console.log("Selected place:", results[0]);
-      console.log("Latitude and Longitude:", latLng);
+      // Use getLatLng to extract latitude and longitude from the geocoded results
+      const latLng = await getLatLng(results[0]);
+
+      // Reset any previous error state
+      setError(null);
+
+      // Set the address state with the selected place details
       setAddress(results[0]);
+
+      // Set the coordinates state with the latitude and longitude
       setCoordinates(latLng);
+
+      // Trigger some action related to address card visibility
       setAddressCard(true);
     } catch (error) {
+      // Handle geocoding errors
       console.error("Geocoding error:", error);
-      setError("Geocoding error. Please try again."); // Set error state
+
+      // Set an error message in the state
+      setError("Geocoding error. Please try again.");
     }
   };
 
   useEffect(() => {
+    // Set the location state with the formatted address
     setLocation(address.formatted_address);
+
+    // Initialize variables for address components
     let streetAddress,
       localArea,
       localCity,
       zoneCity,
       countryOfCity,
       postalCode;
+
+    // Check if address has address components
     if (address.address_components) {
       const { address_components } = address;
       const length = address_components.length;
+
+      // Switch based on the length of address components
       switch (length) {
+        // ... cases for different lengths
         case 1:
           postalCode = address_components[0].long_name;
           break;
@@ -691,6 +732,7 @@ const DateSelectionAndCheckout = () => {
           console.error("Invalid length of address components.");
           return;
       }
+      // Set the fixedAddress state with extracted address components
       setFixedAddress({
         streetAddress,
         localArea,
@@ -703,6 +745,7 @@ const DateSelectionAndCheckout = () => {
   }, [address, isPicked]);
 
   const handleFixAddress = () => {
+    // Update the fixedAddress state based on edited values or maintain existing values
     setFixedAddress((prevAddress) => ({
       ...prevAddress,
       streetAddress: editedValue.streetAddress || prevAddress.streetAddress,
@@ -713,10 +756,14 @@ const DateSelectionAndCheckout = () => {
       postalCode: editedValue.postalCode || prevAddress.postalCode,
       // Update other fields similarly based on your requirements
     }));
-    setAddressCard(false); // Close the addressCard modal or handle other logic
+
+    // Close the addressCard modal or handle other logic
+    setAddressCard(false);
   };
 
+  // Function to render an address field component
   const renderAddressField = (label, value, field) => (
+    // Grid container for layout
     <Grid
       container
       justifyContent="space-between"
@@ -724,14 +771,18 @@ const DateSelectionAndCheckout = () => {
       spacing={1}
       style={{ padding: 10 }}
     >
+      {/* Grid item for displaying label */}
       <Grid item xs={6}>
         <Typography>{label}:</Typography>
       </Grid>
+
+      {/* Grid item for an editable text field */}
       <Grid item xs={6}>
         <TextField
           fullWidth
           variant="outlined"
           value={value}
+          // Handle onChange event to update editedValue state
           onChange={(e) =>
             setEditedValue((prev) => ({ ...prev, [field]: e.target.value }))
           }
@@ -740,14 +791,10 @@ const DateSelectionAndCheckout = () => {
     </Grid>
   );
 
-  useEffect(() => {
-    console.log("fixedAddress is", fixedAddress);
-  }, [fixedAddress]);
- 
- 
   return (
     <>
       {addressCard ? (
+        // If addressCard is true, display the following component
         <Box
           display="flex"
           justifyContent="center"
@@ -758,8 +805,8 @@ const DateSelectionAndCheckout = () => {
           flex={1}
           backgroundColor="rgba(0, 0, 0, 0.5)"
           zIndex={9999}
-          //alignSelf="center"
         >
+          {/* Container for the address card */}
           <Box
             height="auto"
             width="90vw"
@@ -768,7 +815,9 @@ const DateSelectionAndCheckout = () => {
             justifyContent="center"
             p={2} // Padding added for all sides
           >
+            {/* View for aligning content in the center */}
             <View style={{ justifyContent: "center" }}>
+              {/* Address field components */}
               <View
                 style={{
                   justifyContent: "space-between",
@@ -777,12 +826,14 @@ const DateSelectionAndCheckout = () => {
                 }}
               >
                 {editStreetAdress ? (
+                  // If editing street address, render address field component
                   renderAddressField(
                     "street_address",
                     editedValue.streetAddress,
                     "streetAddress"
                   )
                 ) : (
+                  // Display street address and option to edit
                   <>
                     <Text>street_address:</Text>
                     <Text>{fixedAddress.streetAddress}</Text>
@@ -792,6 +843,7 @@ const DateSelectionAndCheckout = () => {
                   </>
                 )}
               </View>
+              {/* Repeat similar blocks for other address fields */}
               <View
                 style={{
                   justifyContent: "space-between",
@@ -934,10 +986,14 @@ const DateSelectionAndCheckout = () => {
             <Grid item xs={12} md={8}>
               {/* Left Side Content */}
               <Box mt={2} pr={4}>
+                {/* Heading displaying the order number */}
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                   ORDER #ABC246
                 </Typography>
+
+                {/* Container for navigation links */}
                 <View style={{ display: "flex", flexDirection: "row" }}>
+                  {/* Account link */}
                   <Typography>
                     <TouchableOpacity
                       onPress={navigateToLanding}
@@ -946,6 +1002,8 @@ const DateSelectionAndCheckout = () => {
                       <Text>Acount /</Text>
                     </TouchableOpacity>
                   </Typography>
+
+                  {/* Cart link */}
                   <Typography>
                     <TouchableOpacity
                       onPress={navigateToOrderHistory}
@@ -955,22 +1013,30 @@ const DateSelectionAndCheckout = () => {
                     </TouchableOpacity>
                   </Typography>
                 </View>
+
+                {/* Heading for the cart section */}
                 <Typography
                   variant="h4"
                   style={{ marginTop: "50px", fontWeight: "bold" }}
                 >
                   CART
                 </Typography>
+                {/* ScrollView container with specific styles */}
                 <ScrollView
                   style={{ flex: 1, height: "50vh", alignSelf: "center" }}
                   showsVerticalScrollIndicator={false}
                 >
+                  {/* Grid container for displaying items in the cart */}
+
                   <Grid container spacing={2}>
                     {cartData.map((item, index) => (
+                      // Grid item for each item in the cart
                       <Grid item xs={12} key={index}>
+                        {/* Card component representing each item */}
                         <Card
                           sx={{ height: "auto", borderBottomColor: "black" }}
                         >
+                          {/* Box component for organizing content */}
                           <Box
                             display="flex"
                             flexDirection={{ xs: "column", md: "row" }}
@@ -978,12 +1044,15 @@ const DateSelectionAndCheckout = () => {
                             borderBottomWidth={2}
                             padding={2}
                           >
+                            {/* Box for displaying product image */}
                             <Box
                               width={{ xs: "100%", md: "30%" }}
                               marginBottom={{ xs: 2, md: 0 }}
                             >
+                              {/* ImageList for rendering product image */}
                               <ImageList cols={1} rowHeight="100%">
                                 <ImageListItem style={{ width: "100%" }}>
+                                  {/* Product image */}
                                   <img
                                     src={item.image}
                                     alt={item.name}
@@ -996,12 +1065,13 @@ const DateSelectionAndCheckout = () => {
                                 </ImageListItem>
                               </ImageList>
                             </Box>
-
+                            {/* Box for displaying product name */}
                             <Box
                               width={{ xs: "100%", md: "30%" }}
                               paddingLeft={{ xs: 0, md: 2 }}
                               marginBottom={{ xs: 2, md: 0 }}
                             >
+                              {/* Typography for the "Product" label */}
                               <Typography
                                 fontSize={16}
                                 fontWeight="bold"
@@ -1009,16 +1079,18 @@ const DateSelectionAndCheckout = () => {
                               >
                                 Product
                               </Typography>
+                              {/* Typography for displaying the product name */}
                               <Typography fontSize={18} fontWeight="bold">
                                 {item.name}
                               </Typography>
                             </Box>
-
+                            {/* Box for displaying quantity */}
                             <Box
                               width={{ xs: "100%", md: "30%" }}
                               paddingLeft={{ xs: 0, md: 2 }}
                               marginBottom={{ xs: 2, md: 0 }}
                             >
+                              {/* Typography for the "Quantity" label */}
                               <Typography
                                 fontSize={16}
                                 fontWeight="bold"
@@ -1026,15 +1098,17 @@ const DateSelectionAndCheckout = () => {
                               >
                                 Quantity
                               </Typography>
+                              {/* Typography for displaying the quantity */}
                               <Typography fontSize={18} fontWeight="bold">
                                 {item.quantity}
                               </Typography>
                             </Box>
-
+                            {/* Box for displaying amount */}
                             <Box
                               width={{ xs: "100%", md: "30%" }}
                               paddingLeft={{ xs: 0, md: 2 }}
                             >
+                              {/* Typography for the "Amount" label */}
                               <Typography
                                 fontSize={16}
                                 fontWeight="bold"
@@ -1042,6 +1116,7 @@ const DateSelectionAndCheckout = () => {
                               >
                                 Amount
                               </Typography>
+                              {/* Typography for displaying the amount */}
                               <Typography fontSize={18} fontWeight="bold">
                                 {item.amount}
                               </Typography>
@@ -1053,9 +1128,7 @@ const DateSelectionAndCheckout = () => {
                   </Grid>
                 </ScrollView>
 
-                {/* <View>
-                <Text>Hello world</Text>
-              </View> */}
+                
                 {cartData.length > 1 || cartData.length === 1 ? (
                   <>
                     <View

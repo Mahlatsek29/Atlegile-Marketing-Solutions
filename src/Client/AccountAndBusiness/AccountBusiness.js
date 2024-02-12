@@ -1,30 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import BlackSilk from "../../Global/images/blackSilk.jpg";
-// import { IoMdStopwatch } from "react-icons/io";
-//import { GoCheckCircleFill } from "react-icons/go";
-// import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import BusinessAccountPlus from "../../Global/images/BusinessPlus+.jpg";
-// import Card from "../../Components/Card/Card";
-// import FollowUs from "../../Global/Navbar/FollowUs/FollowUs";
 import NavBar from "../../Global/Navbar";
-// import "./businessAccount.css";
 import {
   View,
   TouchableOpacity,
   Image,
   Text,
-  TextInput,
   ScrollView,
-  FlatList,
 } from "react-native";
-// import { Modal, Title } from "react-native-paper";
 import { Footer } from "../../Global/Footer";
-import ProductCard from "../../Global/Card";
-const logo = require("../../Global/images/cropped-AMS-Shadow-Queen-Logo_BNY-1320x772 1.png");
-const bg = require("../../Global/images/blackSilk.jpg");
 import {
-  Container,
-  // Typography,
   Grid,
   TextField,
   Card,
@@ -37,69 +23,37 @@ import {
 import Typography from "@mui/joy/Typography";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Icon2 from "react-native-vector-icons/Feather";
-//import Button from '@mui/joy/Button';
-import FormControl from "@mui/joy/FormControl";
-import FormLabel from "@mui/joy/FormLabel";
-import Switch from "@mui/joy/Switch";
-import List from "@mui/joy/List";
-import ListItem from "@mui/joy/ListItem";
 import Modal from "@mui/joy/Modal";
 import ModalClose from "@mui/joy/ModalClose";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalOverflow from "@mui/joy/ModalOverflow";
-import Stack from "@mui/joy/Stack";
-import Paper from "@mui/material/Paper";
 import { AntDesign } from "@expo/vector-icons";
-//import logo from "../../Global/images/logo.png";
 import { COLORS } from "../../Global/Color";
 import Header from "../../Global/Header";
 import { Ionicons } from "@expo/vector-icons";
-import { height } from "@mui/system";
-import SideNav from "../../Global/SideNav";
 import { Dimensions } from "react-native";
-import Card2 from "../../Global/Card2";
-
-import background from "../../Global/images/Reed.jpg";
-
-import Banner from "../../Global/images/media bg-cover.png";
 import placeholder from "../../Global/images/login.jpg";
-import { useNavigation } from "@react-navigation/native";
 import { Linking } from "react-native";
-
 import { auth, firestore, storage } from "../../config";
 import firebase from "firebase/compat/app";
-
-import { PaperTextInput } from "react-native-paper";
-import { Flag } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
-
-import Icon from "react-native-vector-icons/Feather";
-import Icon1 from "react-native-vector-icons/FontAwesome";
-import Navbar from "../../Global/Navbar";
-import FollowUs from "../../Global/Header";
-
-import hdtv from "../../Global/images/hdtv.jpg";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import mapImage from "../../Global/images/mapImage.png";
-import axios from "axios";
 import sara from "../../Global/images/Sara.png";
 import Swal from "sweetalert2";
-import BusinessProductCard from "../../Global/businessCard";
-export default function BusinessAccount({ productsData }) {
+const logo = require("../../Global/images/cropped-AMS-Shadow-Queen-Logo_BNY-1320x772 1.png");
+
+export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
   const [businessAuthorization, setBusinessAuthorization] = useState(false);
-  const [subscreibed, setSubscreibed] = useState(false);
-  const [businessRegistered, setBusinessRegistered] = useState(true);
   const [landing, setLanding] = useState(true);
   const [productName, setProductName] = useState("");
   const [otherBanner, setOtherBanner] = useState("");
   const [priceOriginal, setPriceOriginal] = useState(0);
   const [priceDiscount, setPriceDiscount] = useState(0);
   const [quantity, setQuantity] = useState(0);
-  const [bannerListLength, setBannerListLength] = useState(0);
   const [image, setImage] = useState(null);
   const fileInputRef = useRef(null);
   const [name, setName] = useState("");
@@ -120,7 +74,6 @@ export default function BusinessAccount({ productsData }) {
   const [businessName, setBusinessName] = useState("");
   const [selectedProductCategory, setProductCategory] = useState("");
   const [brand, setBrand] = useState("");
-  const [showWebView, setShowWebView] = useState(false);
   const [cartData, setCartData] = useState([]);
   const [user, setUser] = useState(null);
   const [checkOrder, setCheckOrder] = useState(false);
@@ -132,13 +85,15 @@ export default function BusinessAccount({ productsData }) {
   const [height, setHeight] = useState(null);
   const [weight, setWeight] = useState(null);
   const [products, setProducts] = useState([]);
+  const [layout, setLayout] = React.useState("fullscreen");
+  const [scroll, setScroll] = React.useState(true);
+  const theme = useTheme();
 
   useEffect(() => {
-   // console.log("Product Data:", productData);
-    setLoading(false);  // Add this line to set loading to false
+    setLoading(false); // to set loading to false
   }, [products]);
   if (loading) {
-    // Render a loading state using Skeleton
+    // Render a loading state using Skeleton 
     return (
       <Card className="card-container">
         <Skeleton
@@ -158,54 +113,80 @@ export default function BusinessAccount({ productsData }) {
   }
 
   useEffect(() => {
+    // Define an asynchronous function to fetch product data
     const fetchProductData = async () => {
+      // Check if the user is authenticated
       if (!user) {
         console.error("User not authenticated.");
         return;
       }
 
+      // Get a reference to the "Products" collection in Firestore
       const cartCollectionRef = collection(firestore, "Products");
+
+      // Construct a query to filter products by businessName from userData
       const q = query(
         cartCollectionRef,
         where("businessName", "==", userData.businessName)
       );
 
       try {
+        // Execute the query and get a snapshot of the results
         const querySnapshot = await getDocs(q);
 
+        // Initialize an array to store fetched product data
         const productsData = [];
+
+        // Iterate through each document in the querySnapshot
         querySnapshot.forEach((doc) => {
+          // Push the data of each document into the productsData array
           productsData.push(doc.data());
         });
 
+        // Update the state with the fetched product data
         setProducts(productsData);
       } catch (error) {
+        // Handle errors that may occur during the data fetching process
         console.error("Error fetching product data:", error);
       }
     };
 
+    // Call the fetchProductData function when the userData dependency changes
     fetchProductData();
   }, [userData]);
 
   useEffect(() => {
+    // Get the authentication instance
     const auth = getAuth();
+
+    // Set up an event listener for changes in authentication state
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // Update the component's state with the current user
       setUser(user);
     });
 
+    // Return a cleanup function to unsubscribe when the component unmounts
     return () => {
-      unsubscribe(); // Unsubscribe from the auth state listener when component unmounts
+      unsubscribe(); // Unsubscribe from the auth state listener when the component unmounts
     };
   }, []);
+
   useEffect(() => {
+    // Set up an event listener for changes in authentication state
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
+      // Check if a user is authenticated
       if (user) {
+        // Get a reference to the user document in Firestore using the user's UID
         const userDocRef = firestore.collection("Users").doc(user.uid);
 
         // Fetch user details from Firestore
         try {
+          // Attempt to get the user document
           const userDoc = await userDocRef.get();
+
+          // Check if the user document exists
           if (userDoc.exists) {
+            // Update the component's state with the user data from the document
             setUserData(userDoc.data());
           } else {
             console.error("User document does not exist");
@@ -216,17 +197,23 @@ export default function BusinessAccount({ productsData }) {
       }
     });
 
+    // Return a cleanup function to unsubscribe when the component unmounts
     return () => {
       unsubscribeAuth();
     };
   }, []);
 
   useEffect(() => {
+    // Define a function to fetch banner data from Firestore
     const fetchBanner = async () => {
       try {
+        // Get a reference to the "Banner" collection in Firestore
         const bannerCollection = firestore.collection("Banner");
+
+        // Fetch the snapshot of documents in the "Banner" collection
         const snapshot = await bannerCollection.get();
 
+        // Map the snapshot documents to extract relevant data and create an array
         const bannerData = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
@@ -238,49 +225,57 @@ export default function BusinessAccount({ productsData }) {
             quantity: data.quantity,
           };
         });
+
+        // Log the fetched banner data to the console (for debugging purposes)
         console.log("bannerData is ", bannerData);
+
+        // Update the component's state with the fetched banner data
         setBanner(bannerData);
       } catch (error) {
+        // Handle errors that may occur during the data fetching process
         console.error("Error fetching banner images:", error);
       }
     };
 
+    // Call the fetchBanner function when the component mounts
     fetchBanner();
+
+    // The empty dependency array (`[]`) ensures that this effect runs only once when the component mounts
   }, []);
 
   useEffect(() => {
+    // Set up an interval to change the current index of the banner images
     const interval = setInterval(() => {
+      // Check if there are banner images available
       if (banner[0].bannerImage.length > 0) {
+        // Update the current index based on the length of the banner images array
         setCurrentIndex((prevIndex) =>
           prevIndex === banner[0].bannerImage.length - 1 ? 0 : prevIndex + 1
         );
       }
-    }, 10000);
+    }, 10000); // Set the interval to run every 10 seconds (10000 milliseconds)
 
+    // Clean up the interval when the component is unmounted or when the 'banner' dependency changes
     return () => {
       clearInterval(interval);
     };
   }, [banner]);
 
   const handlePrevClick = () => {
+    // Update the current index for the previous image
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? banner[0].bannerImage.length - 1 : prevIndex - 1
     );
   };
 
   const handleNextClick = () => {
+    // Update the current index for the next image
     setCurrentIndex((prevIndex) =>
       prevIndex === banner[0].bannerImage.length - 1 ? 0 : prevIndex + 1
     );
   };
 
-  const handlePaymentButtonPress = () => {
-    const paymentUrl =
-      "https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=https://atlegilemarketing.firebaseapp.com/&cancel_url=https://atlegilemarketing.firebaseapp.com/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct";
-
-    // Open the payment URL in the device's default browser
-    Linking.openURL(paymentUrl);
-  };
+  // Shows a pop-up dialog with contact information.
   const handlePress = () => {
     Swal.fire({
       icon: "info",
@@ -290,6 +285,7 @@ export default function BusinessAccount({ productsData }) {
     });
   };
 
+  // Asks for confirmation before signing out and navigates to the landing page if confirmed.
   const handleSignOut = () => {
     Swal.fire({
       title: "Are you sure you want to sign out?",
@@ -305,18 +301,22 @@ export default function BusinessAccount({ productsData }) {
     });
   };
 
+  // Sets the `checkOrder` state to `true`.
   const handleorders = () => {
     setCheckOrder(true);
   };
 
+  // Navigates to the "/termsandconditions" route.
   const handlefavorites = () => {
     navigate("/termsandconditions");
   };
 
+  // Navigates to the "/termsandconditions" route.
   const handleterms = () => {
     navigate("/termsandconditions");
   };
 
+  // Navigates to the "/privacypolicy" route.
   const handlepolicy = () => {
     navigate("/privacypolicy");
   };
@@ -332,21 +332,33 @@ export default function BusinessAccount({ productsData }) {
     };
   }, []);
 
+  // Function to fetch user's cart data from Firestore
   const fetchCartData = async () => {
+    // Check if the user is authenticated
     if (!user) {
       console.error("User not authenticated.");
       return;
     }
 
+    // Reference to the "Cart" collection in Firestore
     const cartCollectionRef = collection(firestore, "Cart");
+
+    // Query to get documents from the "Cart" collection where the "uid" matches the current user's UID
     const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
     try {
+      // Fetch documents based on the query
       const querySnapshot = await getDocs(q);
 
+      // Array to store cart items
       const cartItems = [];
+
+      // Iterate through each document in the query result
       querySnapshot.forEach((doc) => {
+        // Extract data from the document
         const data = doc.data();
+
+        // Push relevant data into the cartItems array
         cartItems.push({
           id: doc.id,
           product: data.product,
@@ -360,9 +372,13 @@ export default function BusinessAccount({ productsData }) {
         });
       });
 
+      // Set the state with the fetched cart items
       setCartData(cartItems);
+
+      // Log the cart data to the console (for debugging purposes)
       console.log("Cart Data : ", cartData);
     } catch (error) {
+      // Handle errors that may occur during the fetch process
       console.error("Error fetching cart data:", error);
     }
   };
@@ -374,8 +390,9 @@ export default function BusinessAccount({ productsData }) {
     }
   }, [user]); // Fetch cart data whenever the user changes
 
+  // Array representing product categories, including an empty option
   const productCategory = [
-    ...emptyOption,
+    ...emptyOption, // Spread the values from 'emptyOption'
     "Electronics",
     "Clothing and Apparel",
     "Home and Furniture",
@@ -398,75 +415,44 @@ export default function BusinessAccount({ productsData }) {
     "Electrical and Lighting",
   ];
 
-  const increment = () => {
-    if (bannerListIndex === bannerList.length - 1) {
-      bannerListIndex = 0;
-    }
-    if (bannerListIndex < bannerList.length - 1) {
-      bannerListIndex += 1;
-    }
-  };
-
-  const decrement = () => {
-    if (bannerListIndex === 0) {
-      bannerListIndex = bannerList.length - 1;
-    }
-    if (bannerListIndex > 0) {
-      bannerListIndex -= 1;
-    }
-  };
-
+  // Function to handle file input change
   const handleFileChange = (e) => {
+    // Get the selected image from the file input
     const selectedImage = e.target.files[0];
-    //console.log("selectedImage: ", selectedImage);
+
+    // Check if an image is selected
     if (selectedImage) {
+      // Create a FileReader to read the image data
       const reader = new FileReader();
+
+      // Set up a callback when the FileReader has loaded the image data
       reader.onload = (e) => {
+        // Set the image state with the data URL of the selected image
         setImage(e.target.result);
       };
+
+      // Read the selected image as a data URL
       reader.readAsDataURL(selectedImage);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (
-      !name ||
-      !price ||
-      !quantity ||
-      !description ||
-      !productType ||
-      !other
-    ) {
-      alert("Please fill in all fields before continuing.");
-      return;
-    }
-
-    console.log("Form submitted:", {
-      name,
-      price,
-      quantity,
-      description,
-      productType,
-      other,
-    });
-  };
-
-  const openFileInput = () => {
-    fileInputRef.current.click();
-  };
-
+  // Function to handle saving edited product (closing the edit modal)
   const handleSaveEditProduct = () => {
+    // Close the edit modal by setting its state to false
     setEditModal(false);
   };
 
+  // Function to handle saving a new banner
   const handleSaveAddBanner = async (e) => {
     e.preventDefault();
 
+    // Access the 'Banner' collection in Firestore
     const bannerCollection = firestore.collection("Banner");
+
+    // Generate a unique ID for the new banner
     const bannerId = bannerCollection.id;
-    // Create a document with the specified fields
+
+    // Create an object with the specified fields for the new banner
     const bannerData = {
       bannerImage: [], // Initialize an empty array to store image URLs
       discountPrice: parseFloat(priceDiscount), // Convert to number
@@ -477,58 +463,73 @@ export default function BusinessAccount({ productsData }) {
     };
 
     try {
-      // Upload images to Firebase Storage
+      // Upload each image in the 'images' array to Firebase Storage
       const uploadTasks = images.map((image, index) => {
         const imageRef = storage.ref(`banner_images/${bannerId}/image${index}`);
         return imageRef.put(image.file);
       });
 
-      await Promise.all(uploadTasks); // Wait for all images to be uploaded
+      // Wait for all image uploads to complete
+      await Promise.all(uploadTasks);
 
-      // Get download URLs of the images
+      // Get the download URLs of the uploaded images
       const downloadURLs = await Promise.all(
         uploadTasks.map((task) => task.snapshot.ref.getDownloadURL())
       );
 
-      // Update the bannerData with image URLs
+      // Update the 'bannerData' object with the image URLs
       bannerData.bannerImage = downloadURLs;
 
-      // Add the document to the 'Banner' collection
+      // Add the new banner document to the 'Banner' collection in Firestore
       await bannerCollection.add(bannerData);
 
       console.log("Banner data added successfully!");
+
+      // Close the modal after successful addition
       setBannerModal(false);
     } catch (error) {
       console.error("Error adding banner data: ", error);
     }
   };
 
+  // Function to handle saving payment information
   const handleSavePaymentInfo = (e) => {
     e.preventDefault();
+
+    // Close the payment modal
     setPaymentModal(false);
+
+    // Set the 'businessAuthorization' state to true, indicating successful authorization
     setBusinessAuthorization(true);
   };
 
-  const handlePopUp = () => {
-    setLanding(false);
-  };
+  // useEffect hook to simulate a button click when the component mounts
   useEffect(() => {
-    // Simulate a button click when the component mounts
+    // Retrieve the button element with the id 'businessPlusModal'
     const businessPlusModalButton =
       document.getElementById("businessPlusModal");
 
+    // Check if the button element exists
     if (businessPlusModalButton) {
+      // Simulate a click on the button when the component mounts
       businessPlusModalButton.click();
     }
   }, []);
 
+  // Function to handle the change of images in an input file element
   const handleImageChange = (e) => {
+    // Retrieve the selected files from the input element
     const files = e.target.files;
+
+    // Check if any files are selected
     if (files.length > 0) {
+      // Create an array of objects containing image URLs and file references
       const newImages = Array.from(files).map((file) => ({
-        url: URL.createObjectURL(file),
-        file,
+        url: URL.createObjectURL(file), // Generate a URL for the image
+        file, // Store the file reference
       }));
+
+      // Update the state by appending the new images to the existing images
       setImages((prevImages) => [...prevImages, ...newImages]);
     }
   };
@@ -563,10 +564,10 @@ export default function BusinessAccount({ productsData }) {
         description,
         selectedProductCategory,
         brand,
-        height: parseFloat(height), // Parse input as a float
-        length: parseFloat(length), // Parse input as a float
-        width: parseFloat(width), // Parse input as a float
-        weight: parseFloat(weight), // Parse input as a float
+        height: parseFloat(height), // convert from string typo to a number
+        length: parseFloat(length), // convert from string typo to a number
+        width: parseFloat(width), // convert from string typo to a number
+        weight: parseFloat(weight), // convert from string typo to a number
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         // ... (other fields)
       });
@@ -604,54 +605,40 @@ export default function BusinessAccount({ productsData }) {
       setLoading(false);
     }
   };
-  const [layout, setLayout] = React.useState("fullscreen");
-  const [scroll, setScroll] = React.useState(true);
-  const theme = useTheme();
 
   return (
     <>
       <React.Fragment>
+        {/* Main modal component */}
         <Modal
-          open={!!layout}
+          open={!!layout} // Modal opens when the layout exists
           onClose={() => {
-            setLayout(undefined);
+            setLayout(undefined); // Close the modal by setting layout to undefined
           }}
         >
+          {/* Overflow container for the modal */}
           <ModalOverflow>
+            {/* Modal dialog with specific styles */}
             <ModalDialog
               aria-labelledby="modal-dialog-overflow"
               layout={layout}
               sx={{ backgroundColor: "transparent" }}
             >
-              <ModalClose />
-              {/* <Typography id="modal-dialog-overflow" level="h2">
-              Overflow content
-            </Typography>
-            <FormControl
-              orientation="horizontal"
-              sx={{ bgcolor: 'background.level2', p: 1, borderRadius: 'sm' }}
-            >
-              <FormLabel>Long content</FormLabel>
-              <Switch
-                checked={scroll}
-                onChange={(event) => setScroll(event.target.checked)}
-                sx={{ ml: 'auto' }}
-              />
-            </FormControl> */}
+              <ModalClose /> {/* Close button for the modal */}
               {scroll && (
-                <Grid
+                <Grid // Grid container for the modal contents
                   container
                   justifyContent="center" // Center the contents horizontally
                   alignItems="center"
                   style={{
                     position: "absolute",
-                    //  top: 50,
-                    // backgroundColor: "rgba(0, 0, 0, 0.5)",
                     zIndex: 1000,
                   }}
                 >
+                  {/* Grid container for the modal contents */}
                   <Grid item xs={10} md={8} lg={8}>
                     <Box bgcolor="white" p={2}>
+                      {/* Logo section */}
                       <Box textAlign="center" mb={2}>
                         <img
                           src={logo}
@@ -659,6 +646,7 @@ export default function BusinessAccount({ productsData }) {
                           style={{ width: "60%", maxWidth: 200 }}
                         />
                       </Box>
+                      {/* Title section */}
                       <Typography
                         variant="h5"
                         fontWeight="bold"
@@ -667,6 +655,7 @@ export default function BusinessAccount({ productsData }) {
                       >
                         BUSINESS REGISTRATION AUTHORIZATION
                       </Typography>
+                      {/* Main content section */}
                       <Typography textAlign="center" paragraph marginBottom={5}>
                         Welcome to AMS, where we strive to ensure a secure and
                         trustworthy environment for
@@ -679,8 +668,10 @@ export default function BusinessAccount({ productsData }) {
                         legitimacy and authenticity of the <br />
                         businesses that join our community.
                       </Typography>
+                      {/* Grid for key points section */}
                       <Box maxWidth="80%" mx="auto" marginBottom={5}>
                         <Grid container spacing={2} textAlign="center">
+                          {/* Mapping through key points and displaying them in cards */}
                           {[
                             {
                               title: "Enhance Trust",
@@ -720,7 +711,9 @@ export default function BusinessAccount({ productsData }) {
                           ))}
                         </Grid>
                       </Box>
+                      {/* Additional information section */}
                       <Grid container spacing={2} justifyContent="center">
+                        {/* Timeframe information */}
                         <Grid item xs={12} sm={6} md={6} lg={5}>
                           <Box mb={2}>
                             <Typography variant="h6" fontWeight="bold">
@@ -734,6 +727,7 @@ export default function BusinessAccount({ productsData }) {
                             </Typography>
                           </Box>
                         </Grid>
+                        {/* Contact information */}
                         <Grid item xs={12} sm={6} md={6} lg={5}>
                           <Box mb={2}>
                             <Typography variant="h6" fontWeight="bold">
@@ -748,28 +742,27 @@ export default function BusinessAccount({ productsData }) {
                           </Box>
                         </Grid>
                       </Grid>
+                      {/* Business Plus Subscription section */}
                       <View style={{ marginBottom: 10, paddingBottom: "50px" }}>
                         <Card
                           sx={{
                             width: "80%",
                             p: 0,
                             alignSelf: "flex-end",
-                            mx: "auto", // Center the Card horizontally
+                            mx: "auto",
                             height: "auto",
                           }}
-                          //  style={{ marginBottom: 10 ,paddingBottom:10}}
-                          mb={10} // Add marginBottom directly in inline style
+                          mb={10}
                         >
                           <Box p={theme.spacing(2)}>
+                            {/* Business Plus Subscription image */}
                             <Image
                               source={BusinessAccountPlus}
                               alt="business plus logo"
                               p={theme.spacing(2)}
                               style={{
-                                width: "17vw", // Make the width 100% of the container
-                                height: "12vh", // Maintain the aspect ratio
-                                // maxWidth: "17vw", // Limit the maximum width if needed
-                                // maxHeight: "12vh", // Limit the maximum height if needed
+                                width: "17vw",
+                                height: "12vh",
                               }}
                             />
                           </Box>
@@ -782,6 +775,7 @@ export default function BusinessAccount({ productsData }) {
                               alignItems="center"
                               mb={theme.spacing(2)}
                             >
+                              {/* Business Plus Subscription title */}
                               <Typography
                                 style={{
                                   color: "#252b42",
@@ -793,7 +787,7 @@ export default function BusinessAccount({ productsData }) {
                                 BUSINESS PLUS <br />
                                 SUBSCRIPTION
                               </Typography>
-
+                              {/* Business Plus Subscription pricing */}
                               <Box
                                 textAlign="center"
                                 mb={{ xs: theme.spacing(2), md: 0 }}
@@ -818,12 +812,12 @@ export default function BusinessAccount({ productsData }) {
                                 </Typography>
                               </Box>
                             </Box>
-
+                            {/* Business Plus Subscription description */}
                             <Typography paragraph mb={theme.spacing(4)}>
                               Unlock More Opportunities with Business Plus
                               Subscription
                             </Typography>
-
+                            {/* Features of Business Plus Subscription */}
                             <Box mb={theme.spacing(2)}>
                               {[
                                 "List Unlimited Products",
@@ -861,42 +855,28 @@ export default function BusinessAccount({ productsData }) {
       </React.Fragment>
 
       {editModal ? (
+        // View for the edit modal overlay
         <View
-          // visible={true}
-          // onDismiss={() => setPaymentModal(false)}
           style={{
             top: 65,
             position: "absolute",
-            // width: "100%",
-            // height: "100%",
             flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
             display: "flex",
             justifyContent: "flex-end",
-            alignItems: "flex-end",
-            zIndex: 9999,
+            alignItems: "flex-end", //to be at the left side of the screen
+            zIndex: 9999, // for hovering over
             alignSelf: "flex-end",
           }}
         >
-          {/* <View
-                  style={{
-                    width: "33%",
-                  }}
-                  onTouchEnd={() => setEditModal(false)}
-                ></View>
-                <View
-                  style={{
-                    width: "33%",
-                  }}
-                  onTouchEnd={() => setEditModal(false)}
-                ></View> */}
+          {/* Main container for the edit modal */}
           <View
             style={{
               height: "100vh",
               backgroundColor: "white",
-              //   backgroundColor: "rgba(0, 0, 0, 0.5)",
             }}
           >
+            {/* Logo section */}
             <View
               style={{
                 display: "flex",
@@ -906,7 +886,7 @@ export default function BusinessAccount({ productsData }) {
               }}
             >
               <Image
-                source={require("../../Global/images/logo.svg")} // Make sure to provide the correct path to your logo
+                source={require("../../Global/images/logo.svg")}
                 style={{
                   width: "50%",
                   height: "30%",
@@ -914,7 +894,9 @@ export default function BusinessAccount({ productsData }) {
                 }}
               />
             </View>
+            {/* Form section for editing product details */}
             <View style={{ height: "60%", paddingRight: 40, paddingLeft: 40 }}>
+              {/* Title for the edit modal */}
               <Text
                 style={{
                   fontWeight: "600",
@@ -925,6 +907,7 @@ export default function BusinessAccount({ productsData }) {
                 EDIT PRODUCT
               </Text>
               <View>
+                {/* Image upload and display section */}
                 <div
                   className="uploadContainer"
                   style={{
@@ -933,6 +916,7 @@ export default function BusinessAccount({ productsData }) {
                     justifyContent: "center",
                   }}
                 >
+                  {/* Displaying uploaded images or a placeholder */}
                   {images.length > 0 ? (
                     images.map((image, index) => (
                       <img
@@ -960,6 +944,7 @@ export default function BusinessAccount({ productsData }) {
                     />
                   )}
 
+                  {/* Input for selecting images */}
                   <label
                     htmlFor="imageInput"
                     className="add"
@@ -967,7 +952,6 @@ export default function BusinessAccount({ productsData }) {
                       backgroundColor: "whitesmoke",
                       color: "#000",
                       padding: "25px",
-                      // paddingBottom:'20px',
                       width: "5%",
                       cursor: "pointer",
                       alignSelf: "center",
@@ -985,7 +969,9 @@ export default function BusinessAccount({ productsData }) {
                   />
                 </div>
 
+                {/* Form for editing product details */}
                 <form onSubmit={(e) => setEditModal(false)}>
+                  {/* Input for product name */}
                   <TextField
                     fullWidth
                     required
@@ -1000,6 +986,7 @@ export default function BusinessAccount({ productsData }) {
                     onChange={(e) => setProductName(e.target.value)}
                     style={{ width: "100%", marginTop: "10px" }}
                   />
+                  {/* Section for price and quantity inputs */}
                   <View
                     style={{
                       display: "flex",
@@ -1007,6 +994,7 @@ export default function BusinessAccount({ productsData }) {
                       justifyContent: "space-between",
                     }}
                   >
+                    {/* Input for product price */}
                     <View
                       style={{
                         display: "flex",
@@ -1027,11 +1015,13 @@ export default function BusinessAccount({ productsData }) {
                         onChange={(e) => setPrice(e.target.value)}
                         style={{ width: "100%", marginTop: "10px" }}
                       />
+                      {/* Information about additional fees */}
                       <Text style={{ fontSize: 12, paddingRight: 10 }}>
-                        There will be VAT, Service Fee and
-                        <br /> Delivery Fees added to this amount.
+                        There will be VAT, Service Fee and <br /> Delivery Fees
+                        added to this amount.
                       </Text>
                     </View>
+                    {/* Input for product quantity */}
                     <View>
                       <TextField
                         fullWidth
@@ -1047,10 +1037,10 @@ export default function BusinessAccount({ productsData }) {
                         onChange={(e) => setQuantity(e.target.value)}
                         style={{ width: "100%", marginTop: "10px" }}
                       />
-                      <Text></Text>
                     </View>
                   </View>
                   <br />
+                  {/* Input for product description */}
                   <TextField
                     fullWidth
                     required
@@ -1065,6 +1055,7 @@ export default function BusinessAccount({ productsData }) {
                     onChange={(e) => setDescription(e.target.value)}
                     style={{ width: "100%", marginTop: "10px" }}
                   />
+                  {/* Input for product type */}
                   <TextField
                     fullWidth
                     required
@@ -1079,7 +1070,7 @@ export default function BusinessAccount({ productsData }) {
                     onChange={(e) => setProductType(e.target.value)}
                     style={{ width: "100%", marginTop: "10px" }}
                   />
-
+                  {/* Input for any other relevant information */}
                   <TextField
                     fullWidth
                     required
@@ -1095,6 +1086,7 @@ export default function BusinessAccount({ productsData }) {
                     style={{ width: "100%", marginTop: "10px" }}
                   />
 
+                  {/* Button to save the edited product */}
                   <Button
                     onPress={handleSaveEditProduct}
                     style={{
@@ -1119,10 +1111,10 @@ export default function BusinessAccount({ productsData }) {
           </View>
         </View>
       ) : null}
+
       {addProduct ? (
+        // Overlay for the add product modal
         <View
-          // visible={true}
-          // onDismiss={() => setPaymentModal(false)}
           style={{
             position: "absolute",
             width: "100%",
@@ -1130,22 +1122,21 @@ export default function BusinessAccount({ productsData }) {
             backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
             display: "flex",
             alignItems: "center",
-            zIndex: 1000, // Adjust as needed
+            zIndex: 1000, // for hovering over
           }}
         >
+          {/* Container for the add product modal */}
           <View
             style={{
               flex: 1,
-              // justifyContent: "felx-end",
-              alignSelf: "flex-end",
+              alignSelf: "flex-end", //to be at the left side of the screen
               width: 50,
             }}
           >
+            {/* Modal for adding products */}
             <View
               style={{
                 position: "fixed",
-                // top: 0,
-                // left: 0,
                 width: "40vw",
                 height: "100vh",
                 backgroundColor: "white",
@@ -1155,6 +1146,7 @@ export default function BusinessAccount({ productsData }) {
                 zIndex: 999,
               }}
             >
+              {/* Grid for the logo */}
               <Grid style={{ alignSelf: "center" }}>
                 <img
                   src={logo}
@@ -1162,29 +1154,29 @@ export default function BusinessAccount({ productsData }) {
                 />
               </Grid>
 
+              {/* Container for the form */}
               <View
-                //className="form-container"
                 style={{
                   justifyContent: "center",
                   textAlign: "center",
                   alignItems: "center",
                   width: "75%",
-                  // backgroundColor: "red",
                   marginLeft: "80px",
                   marginBottom: "30px",
                 }}
               >
+                {/* Title for adding products */}
                 <h2
                   style={{
                     color: "#000",
-                    textAlign: "left",
                     fontSize: "25px",
                     textAlign: "center",
                   }}
                 >
                   ADD PRODUCTS + SERVICES
                 </h2>
-                {/* <h6>inputs will be stored here</h6> */}
+
+                {/* Container for image upload */}
                 <View
                   className="uploadContainer"
                   style={{
@@ -1196,6 +1188,7 @@ export default function BusinessAccount({ productsData }) {
                     height: "8vh",
                   }}
                 >
+                  {/* Display uploaded images */}
                   {images.length > 0 ? (
                     images.map((image, index) => (
                       <img
@@ -1211,6 +1204,7 @@ export default function BusinessAccount({ productsData }) {
                       />
                     ))
                   ) : (
+                    // Placeholder if no images uploaded
                     <img
                       src={placeholder}
                       alt="Placeholder"
@@ -1223,6 +1217,7 @@ export default function BusinessAccount({ productsData }) {
                     />
                   )}
 
+                  {/* Button to trigger file input */}
                   <label
                     htmlFor="imageInput"
                     className="add"
@@ -1230,7 +1225,6 @@ export default function BusinessAccount({ productsData }) {
                       backgroundColor: "whitesmoke",
                       color: "#000",
                       padding: "25px",
-                      // paddingBottom:'20px',
                       width: "5%",
                       cursor: "pointer",
                       alignSelf: "center",
@@ -1244,248 +1238,249 @@ export default function BusinessAccount({ productsData }) {
                     accept="image/*"
                     style={{ display: "none" }}
                     onChange={handleImageChange}
-                    multiple // Allow selecting multiple files
+                    multiple // Allow selecting multiple image files
                   />
                 </View>
-                {/* <form onSubmit={handleContinue}> */}
 
-                <View style={{ alignSelf: "center" }}>
-                  <form onSubmit={handleContinue}>
+                {/* Form for entering product details */}
+                <form onSubmit={handleContinue}>
+                  {/* Inputs for product details */}
+                  <TextField
+                    fullWidth
+                    id="outlined-number"
+                    label="Name"
+                    type="text"
+                    variant="standard"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    style={{ width: "100%" }}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)} //imput the name of the product
+                    required
+                  />
+                  <TextField
+                    fullWidth
+                    id="outlined-number"
+                    label="Business Name"
+                    type="text"
+                    variant="standard"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    style={{ width: "100%", marginTop: "10px" }}
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)} //the name of the bussiness
+                    required
+                  />
+                  {/* Inputs for price and quantity */}
+                  <View style={{ display: "flex", flexDirection: "row" }}>
                     <TextField
                       fullWidth
                       id="outlined-number"
-                      label="Name"
-                      type="text"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{ width: "100%" }}
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                    />
-                    <TextField
-                      fullWidth
-                      id="outlined-number"
-                      label="Business Name"
-                      type="text"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{ width: "100%", marginTop: "10px" }}
-                      value={businessName}
-                      onChange={(e) => setBusinessName(e.target.value)}
-                      required
-                    />
-                    <View style={{ display: "flex", flexDirection: "row" }}>
-                      <TextField
-                        fullWidth
-                        id="outlined-number"
-                        label="Price"
-                        type="text"
-                        variant="standard"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        style={{
-                          width: "45%",
-                          marginRight: "10px",
-                          marginTop: "10px",
-                        }}
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                        required
-                      />
-                      <TextField
-                        fullWidth
-                        id="outlined-number"
-                        label="Quantity"
-                        type="text"
-                        variant="standard"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        style={{ width: "45%", marginTop: "10px" }}
-                        value={quantity}
-                        onChange={(e) => setQuantity(e.target.value)}
-                        required
-                      />
-                    </View>
-                    <bd />
-                    <View style={{ display: "flex", flexDirection: "row" }}>
-                      <TextField
-                        fullWidth
-                        id="outlined-number"
-                        label="length_cm"
-                        type="number"
-                        variant="standard"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        style={{
-                          width: "45%",
-                          marginRight: "10px",
-                          marginTop: "10px",
-                        }}
-                        value={length}
-                        onChange={(e) => setLength(e.target.value)}
-                        required
-                      />
-                      <TextField
-                        fullWidth
-                        id="outlined-number"
-                        label="width_cm"
-                        type="number"
-                        variant="standard"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        style={{
-                          width: "45%",
-                          marginTop: "10px",
-                          marginRight: "10px",
-                        }}
-                        value={width}
-                        onChange={(e) => setWidth(e.target.value)}
-                        required
-                      />
-                      <TextField
-                        fullWidth
-                        id="outlined-number"
-                        label="height_cm"
-                        type="number"
-                        variant="standard"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        style={{
-                          width: "45%",
-                          marginTop: "10px",
-                          marginRight: "10px",
-                        }}
-                        value={height}
-                        onChange={(e) => setHeight(e.target.value)}
-                        required
-                      />
-                      <TextField
-                        fullWidth
-                        id="outlined-number"
-                        label="weight_kg"
-                        type="number"
-                        variant="standard"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        style={{ width: "45%", marginTop: "10px" }}
-                        value={weight}
-                        onChange={(e) => setWeight(e.target.value)}
-                        required
-                      />
-                    </View>
-                    <br />
-                    <TextField
-                      fullWidth
-                      id="outlined-number"
-                      label="Description"
+                      label="Price"
                       type="text"
                       variant="standard"
                       InputLabelProps={{
                         shrink: true,
                       }}
                       style={{
-                        //   backgroundColor: "dodgerblue",
-                        width: "100%",
-                        marginBottom: "10px",
-                        marginTop: "10px",
-                      }}
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      required
-                    />
-                    <TextField
-                      fullWidth
-                      id="outlined-select-currency"
-                      select
-                      label="product Category"
-                      variant="standard"
-                      value={selectedProductCategory}
-                      onChange={(e) => setProductCategory(e.target.value)}
-                      style={{
-                        width: "100%",
-                        // marginTop: "5px",
+                        width: "45%",
                         marginRight: "10px",
-                        textAlign: "left",
+                        marginTop: "10px",
                       }}
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)} //the ptrice of the product
                       required
-                    >
-                      {productCategory.map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-
+                    />
                     <TextField
                       fullWidth
                       id="outlined-number"
-                      label="Brand"
+                      label="Quantity"
                       type="text"
                       variant="standard"
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      style={{
-                        width: "100%",
-                        marginLeft: "5px",
-                        marginTop: "10px",
-                      }}
-                      value={brand}
-                      onChange={(e) => setBrand(e.target.value)}
+                      style={{ width: "45%", marginTop: "10px" }}
+                      value={quantity}
+                      onChange={(e) => setQuantity(e.target.value)} //the quantity of sales
                       required
                     />
+                  </View>
+                  <br />
 
-                    {/* <Typography variant="caption" color="error" style={{ marginBottom: "10px" }}>
-              {nameError || businessNameError || priceError || quantityError || brandError || categoryError}
-             </Typography> */}
+                  {/* Inputs for dimensions and weight */}
+                  <View style={{ display: "flex", flexDirection: "row" }}>
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Length (cm)"
+                      type="number"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{
+                        width: "45%",
+                        marginRight: "10px",
+                        marginTop: "10px",
+                      }}
+                      value={length}
+                      onChange={(e) => setLength(e.target.value)}
+                      required
+                    />
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Width (cm)"
+                      type="number"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{
+                        width: "45%",
+                        marginTop: "10px",
+                        marginRight: "10px",
+                      }}
+                      value={width}
+                      onChange={(e) => setWidth(e.target.value)}
+                      required
+                    />
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Height (cm)"
+                      type="number"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{
+                        width: "45%",
+                        marginTop: "10px",
+                        marginRight: "10px",
+                      }}
+                      value={height}
+                      onChange={(e) => setHeight(e.target.value)}
+                      required
+                    />
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Weight (kg)"
+                      type="number"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{ width: "45%", marginTop: "10px" }}
+                      value={weight}
+                      onChange={(e) => setWeight(e.target.value)}
+                      required
+                    />
+                  </View>
 
-                    {loading ? (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          height: "1vh",
-                        }}
-                      >
-                        <CircularProgress />
-                      </Box>
-                    ) : (
-                      <Button
-                        variant="contained"
-                        style={{
-                          width: "80%",
-                          height: "10%",
-                          margin: "20px 0px",
-                          background: "#072840",
-                          borderRadius: "30px",
-                        }}
-                        type="submit"
-                      >
-                        continue
-                      </Button>
-                    )}
-                    {/* </View> */}
-                  </form>
-                </View>
+                  <br />
+
+                  {/* Inputs for description, product category, and brand */}
+                  <TextField
+                    fullWidth
+                    id="outlined-number"
+                    label="Description"
+                    type="text"
+                    variant="standard"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    style={{
+                      width: "100%",
+                      marginBottom: "10px",
+                      marginTop: "10px",
+                    }}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    required
+                  />
+                  <TextField
+                    fullWidth
+                    id="outlined-select-currency"
+                    select
+                    label="Product Category"
+                    variant="standard"
+                    value={selectedProductCategory}
+                    onChange={(e) => setProductCategory(e.target.value)}
+                    style={{
+                      width: "100%",
+                      marginRight: "10px",
+                      textAlign: "left",
+                    }}
+                    required
+                  >
+                    {/* Options for product category */}
+                    {productCategory.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+
+                  <TextField
+                    fullWidth
+                    id="outlined-number"
+                    label="Brand"
+                    type="text"
+                    variant="standard"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    style={{
+                      width: "100%",
+                      marginLeft: "5px",
+                      marginTop: "10px",
+                    }}
+                    value={brand}
+                    onChange={(e) => setBrand(e.target.value)}
+                    required
+                  />
+
+                  {/* Loading spinner or continue button based on the loading state */}
+                  {loading ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: "1vh",
+                      }}
+                    >
+                      <CircularProgress />
+                    </Box>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      style={{
+                        width: "80%",
+                        height: "10%",
+                        margin: "20px 0px",
+                        background: "#072840",
+                        borderRadius: "30px",
+                      }}
+                      type="submit"
+                    >
+                      Continue
+                    </Button>
+                  )}
+                </form>
               </View>
-              {/* </Box> */}
             </View>
           </View>
         </View>
       ) : null}
+
       {paymentModal ? (
+        // Overlay for the payment modal
         <View
           style={{
             position: "absolute",
@@ -1494,17 +1489,19 @@ export default function BusinessAccount({ productsData }) {
             backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
             display: "flex",
             alignItems: "center",
-            zIndex: 1000, // Adjust as needed
+            zIndex: 1000, // for hovering over
           }}
         >
+          {/* Container for the payment modal */}
           <View
             style={{
               flex: 1,
-              justifyContent: "felx-end",
+              justifyContent: "felx-end", // Should be "flex-end" instead of "felx-end"
               alignItems: "center",
-              width: 50,
+              width: 50, // Adjust as needed
             }}
           >
+            {/* Card component for the payment modal */}
             <Card
               style={{
                 position: "fixed",
@@ -1514,11 +1511,11 @@ export default function BusinessAccount({ productsData }) {
                 height: "100vh",
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
                 display: "flex",
-                //alignItems: "center",
                 justifyContent: "flex-end",
                 zIndex: 999,
               }}
             >
+              {/* Inner container for the payment modal content */}
               <View
                 style={{
                   width: "34%",
@@ -1527,6 +1524,7 @@ export default function BusinessAccount({ productsData }) {
                   justifyContent: "space-between",
                 }}
               >
+                {/* Logo section */}
                 <View
                   style={{
                     height: "50vh",
@@ -1547,6 +1545,7 @@ export default function BusinessAccount({ productsData }) {
                   />
                 </View>
 
+                {/* Payment information form */}
                 <View
                   style={{
                     justifyContent: "center",
@@ -1556,6 +1555,7 @@ export default function BusinessAccount({ productsData }) {
                     marginBottom: 30,
                   }}
                 >
+                  {/* Title for the payment modal */}
                   <Text
                     style={{
                       color: "#000",
@@ -1567,7 +1567,9 @@ export default function BusinessAccount({ productsData }) {
                     PAYMENT INFO
                   </Text>
 
+                  {/* Form for entering payment details */}
                   <form onSubmit={handleSavePaymentInfo}>
+                    {/* Input for Card Holder's name */}
                     <TextField
                       id="standard-basic"
                       label="Card Holder"
@@ -1578,6 +1580,7 @@ export default function BusinessAccount({ productsData }) {
                       onChange={(e) => setCardHolder(e.target.value)}
                       style={{ width: "100%" }}
                     />
+                    {/* Input for Card Number */}
                     <TextField
                       id="standard-basic"
                       label="Card Number"
@@ -1589,10 +1592,11 @@ export default function BusinessAccount({ productsData }) {
                       onChange={(e) => setCardNumber(e.target.value)}
                       style={{ width: "100%" }}
                     />
+                    {/* Inputs for Expiry and CVV */}
                     <View style={{ display: "flex", flexDirection: "row" }}>
                       <TextField
                         id="standard-basic"
-                        label="Expiary"
+                        label="Expiry"
                         variant="standard"
                         fullWidth
                         value={expiery}
@@ -1613,6 +1617,7 @@ export default function BusinessAccount({ productsData }) {
                         style={{ width: "45%", marginRight: "15px" }}
                       />
                     </View>
+                    {/* Continue button */}
                     <Button
                       mode="contained"
                       type="submit"
@@ -1634,7 +1639,9 @@ export default function BusinessAccount({ productsData }) {
           </View>
         </View>
       ) : null}
+
       {bannerModal ? (
+        // Overlay for the banner modal
         <View
           style={{
             position: "absolute",
@@ -1643,17 +1650,19 @@ export default function BusinessAccount({ productsData }) {
             backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
             display: "flex",
             alignItems: "center",
-            zIndex: 1000, // Adjust as needed
+            zIndex: 1000,
           }}
         >
+          {/* Container for the banner modal */}
           <View
             style={{
               flex: 1,
-              justifyContent: "felx-end",
+              justifyContent: "flex-end",
               alignItems: "center",
               width: 50,
             }}
           >
+            {/* Card representing the banner modal */}
             <Card
               style={{
                 position: "fixed",
@@ -1668,6 +1677,7 @@ export default function BusinessAccount({ productsData }) {
                 zIndex: 999,
               }}
             >
+              {/* Empty views to allow closing the modal when touched outside */}
               <View
                 style={{
                   height: "100%",
@@ -1682,6 +1692,7 @@ export default function BusinessAccount({ productsData }) {
                 }}
                 onTouchEnd={() => setBannerModal(false)}
               ></View>
+              {/* Container for the actual content of the banner modal */}
               <View
                 style={{
                   width: "34%",
@@ -1689,6 +1700,7 @@ export default function BusinessAccount({ productsData }) {
                   backgroundColor: "white",
                 }}
               >
+                {/* Logo and title section */}
                 <View
                   style={{
                     display: "flex",
@@ -1697,8 +1709,9 @@ export default function BusinessAccount({ productsData }) {
                     height: "40%",
                   }}
                 >
+                  {/*logo image*/}
                   <Image
-                    source={require("../../Global/images/logo.svg")} // Make sure to provide the correct path to your logo
+                    source={require("../../Global/images/logo.svg")}
                     style={{
                       width: "20%",
                       height: "20%",
@@ -1706,6 +1719,7 @@ export default function BusinessAccount({ productsData }) {
                     }}
                   />
                 </View>
+                {/* Form for adding a banner */}
                 <View
                   style={{ height: "60%", paddingRight: 40, paddingLeft: 40 }}
                 >
@@ -1719,6 +1733,7 @@ export default function BusinessAccount({ productsData }) {
                     ADD BANNER
                   </Text>
                   <View>
+                    {/* Container for uploaded images and file input */}
                     <div
                       className="uploadContainer"
                       style={{
@@ -1727,6 +1742,7 @@ export default function BusinessAccount({ productsData }) {
                         justifyContent: "center",
                       }}
                     >
+                      {/* Display uploaded images */}
                       {images.length > 0 ? (
                         images.map((image, index) => (
                           <img
@@ -1742,6 +1758,7 @@ export default function BusinessAccount({ productsData }) {
                           />
                         ))
                       ) : (
+                        // Placeholder if no images uploaded
                         <img
                           src={placeholder}
                           alt="Placeholder"
@@ -1753,7 +1770,7 @@ export default function BusinessAccount({ productsData }) {
                           }}
                         />
                       )}
-
+                      {/* Button to trigger file input */}
                       <label
                         htmlFor="imageInput"
                         className="add"
@@ -1761,7 +1778,6 @@ export default function BusinessAccount({ productsData }) {
                           backgroundColor: "whitesmoke",
                           color: "#000",
                           padding: "25px",
-                          // paddingBottom:'20px',
                           width: "5%",
                           cursor: "pointer",
                           alignSelf: "center",
@@ -1778,8 +1794,10 @@ export default function BusinessAccount({ productsData }) {
                         multiple // Allow selecting multiple files
                       />
                     </div>
+                    {/* Form for entering banner details */}
                     <View style={{ display: "flex", justifyContent: "center" }}>
                       <form onSubmit={handleSaveAddBanner}>
+                        {/* Inputs for banner details */}
                         <TextField
                           fullWidth
                           required
@@ -1795,6 +1813,7 @@ export default function BusinessAccount({ productsData }) {
                           style={{ width: "100%", marginTop: "10px" }}
                         />
                         <br />
+                        {/* Inputs for discount price, quantity, original price, and other details */}
                         <View
                           style={{
                             display: "flex",
@@ -1842,7 +1861,6 @@ export default function BusinessAccount({ productsData }) {
                           onChange={(e) => setPriceOriginal(e.target.value)}
                           style={{ width: "100%", marginTop: "10px" }}
                         />
-
                         <TextField
                           fullWidth
                           required
@@ -1853,6 +1871,7 @@ export default function BusinessAccount({ productsData }) {
                           onChange={(e) => setOtherBanner(e.target.value)}
                           style={{ width: "100%", marginTop: "10px" }}
                         />
+                        {/* Submit button */}
                         <Button
                           variant="contained"
                           style={{
@@ -1882,14 +1901,13 @@ export default function BusinessAccount({ productsData }) {
           </View>
         </View>
       ) : null}
+
       {businessAuthorization ? null : (
+        // Displayed when businessAuthorization is false whicn is when not subscibed
         <View
-          // visible={true}
-          // onDismiss={() => setPaymentModal(false)}
           style={{
             top: 400,
             position: "absolute",
-            
             flex: 1,
             backgroundColor: "white",
             display: "flex",
@@ -1899,6 +1917,7 @@ export default function BusinessAccount({ productsData }) {
             alignSelf: "flex-end",
           }}
         >
+          {/* Container for the subscription details */}
           <View
             style={{
               width: "25vw",
@@ -1910,9 +1929,7 @@ export default function BusinessAccount({ productsData }) {
               zIndex: 500,
             }}
           >
-            {/* <TouchableOpacity
-                 // onPress={setBusinessAuthorization(true)}
-                  > */}
+            {/* Business Plus logo */}
             <Image
               source={require("../../Global/images/BusinessPlus+.jpg")}
               alt="business plus logo"
@@ -1922,8 +1939,6 @@ export default function BusinessAccount({ productsData }) {
                 marginBottom: 5,
               }}
             />
-            {/* </TouchableOpacity> */}
-
             <Text
               style={{
                 color: "#252b42",
@@ -1932,6 +1947,7 @@ export default function BusinessAccount({ productsData }) {
                 textAlign: "center",
               }}
             >
+              {/* Business Plus subscription title */}
               <TouchableOpacity onPress={() => setPaymentModal(true)}>
                 <Text>BUSINESS PLUS SUBSCRIPTION</Text>
               </TouchableOpacity>
@@ -1946,8 +1962,10 @@ export default function BusinessAccount({ productsData }) {
                 paddingBottom: 10,
               }}
             >
+              {/* Subscription description */}
               Unlock More Opportunities with Business Plus Subscription
             </Text>
+            {/* Subscription pricing details */}
             <View
               style={{
                 flexDirection: "column",
@@ -1975,6 +1993,7 @@ export default function BusinessAccount({ productsData }) {
                 Per Month
               </Text>
             </View>
+            {/* Subscription features */}
             <View style={{ flexDirection: "column" }}>
               <Text
                 style={{
@@ -1986,6 +2005,7 @@ export default function BusinessAccount({ productsData }) {
                 }}
               >
                 {" "}
+                {/* Checkmark and feature */}
                 <Ionicons
                   name="checkmark-circle"
                   size={30}
@@ -2003,6 +2023,7 @@ export default function BusinessAccount({ productsData }) {
                 }}
               >
                 {" "}
+                {/* Checkmark and feature */}
                 <Ionicons
                   name="checkmark-circle"
                   size={30}
@@ -2020,6 +2041,7 @@ export default function BusinessAccount({ productsData }) {
                 }}
               >
                 {" "}
+                {/* Checkmark and feature */}
                 <Ionicons
                   name="checkmark-circle"
                   size={30}
@@ -2031,6 +2053,7 @@ export default function BusinessAccount({ productsData }) {
           </View>
         </View>
       )}
+
       <Header />
       <NavBar />
       <View
@@ -2047,12 +2070,14 @@ export default function BusinessAccount({ productsData }) {
             alignItems: "flex-start",
           }}
         >
+          {/* Container for user profile information */}
           <Box
             display="flex"
             justifyContent="flex-start"
             alignItems="center"
             paddingRight={2}
           >
+            {/* Card for user details */}
             <View
               elevation={3}
               style={{
@@ -2063,6 +2088,7 @@ export default function BusinessAccount({ productsData }) {
                 backgroundColor: "whitesmoke",
               }}
             >
+              {/* User profile image */}
               <Box textAlign="center">
                 <img
                   src={sara}
@@ -2074,6 +2100,7 @@ export default function BusinessAccount({ productsData }) {
                     marginTop: "80%",
                   }}
                 />
+                {/* User details */}
                 <Box sx={{ marginTop: "10%" }}>
                   <Typography variant="h6">
                     {userData?.name} {userData?.surname}
@@ -2083,12 +2110,14 @@ export default function BusinessAccount({ productsData }) {
                 </Box>
               </Box>
 
+              {/* User location */}
               <Box>
                 <Typography sx={{ textAlign: "center" }}>
                   {userData?.location}
                 </Typography>
               </Box>
 
+              {/* Various buttons for user actions to navigae to*/}
               <Box style={{ marginTop: "50%" }}>
                 <Ionicons name="ios-timer-outline" size={15} color="gray" />
                 <Button
@@ -2129,6 +2158,7 @@ export default function BusinessAccount({ productsData }) {
                 </Button>
               </Box>
 
+              {/* Contact information */}
               <Box
                 sx={{
                   marginTop: "40px",
@@ -2156,6 +2186,7 @@ export default function BusinessAccount({ productsData }) {
                 </Button>
               </Box>
 
+              {/* Sign-out button */}
               <Box textAlign="center" marginTop="10%">
                 <Button onClick={handleSignOut} style={{ color: "red" }}>
                   SIGN OUT
@@ -2169,11 +2200,11 @@ export default function BusinessAccount({ productsData }) {
           <View
             style={{
               height: "150px",
-              // backgroundColor: "black",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
+            {/* Displaying an image of the blacksilk */}
             <Image
               source={BlackSilk}
               style={{
@@ -2183,6 +2214,7 @@ export default function BusinessAccount({ productsData }) {
               }}
             />
           </View>
+
           <View
             style={{
               height: "110px",
@@ -2191,6 +2223,7 @@ export default function BusinessAccount({ productsData }) {
               paddingLeft: 30,
             }}
           >
+            {/* Text information about the business */}
             <Text
               style={{
                 display: "flex",
@@ -2198,436 +2231,268 @@ export default function BusinessAccount({ productsData }) {
                 flexDirection: "column",
               }}
             >
+              {/* Business name */}
               <Text
                 style={{ fontWeight: "600", fontSize: 18, marginBottom: -5 }}
               >
                 BUSINESS
               </Text>
+              {/* Business name or slogan */}
               <Text
                 style={{ fontWeight: "600", fontSize: 30, marginBottom: 5 }}
               >
                 SECURETECH SOLUTIONS
               </Text>
+              {/* Business website or domain */}
               <Text style={{ fontWeight: "600", fontSize: 14 }}>
                 secure.tech.co.za
               </Text>
             </Text>
           </View>
-          {checkOrder ? (
-            <View>
-              <Container fixed sx={{ height: "85vh" }}>
-                <View
-                  style={{
-                    marginTop: 50,
-                    padding: 10,
-                    height: 100,
-                    display: "flex",
-                    flexDirection: "row",
-                  }}
-                >
-                  <Typography
-                    variant="h5"
-                    style={{
-                      height: 80,
-                      width: 200,
-                      marginRight: 12,
-                      display: "flex",
-                      alignItems: "center",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    ORDERS
-                  </Typography>
-                  <Typography
-                    style={{
-                      height: 80,
-                      width: 200,
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <TextInput
-                      style={{
-                        borderBottomWidth: 2,
-                        borderBottomColor: "lightgray",
-                        color: "gray",
-                      }}
-                      placeholder="Search"
-                      placeholderTextColor="gray"
-                    />
-                  </Typography>
-                  <Typography
-                    style={{
-                      height: 80,
-                      width: 200,
-                      marginRight: "10px",
-                    }}
-                  >
-                    <View
-                      style={{
-                        color: "gray",
-                        borderBottomWidth: 2,
-                        borderBottomColor: "lightgray",
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Text style={{ color: "gray", marginTop: 25 }}>
-                        Please Select
-                      </Text>
-                      <Icon1
-                        name="angle-down"
-                        size={20}
-                        style={{ marginTop: "28px" }}
-                      />
-                    </View>
-                  </Typography>
-                  <Typography
-                    style={{
-                      height: 50,
-                      width: 50,
-                      marginTop: 15,
-                    }}
-                  >
-                    <TouchableOpacity>
-                      <Icon name="search" size={20} />
-                    </TouchableOpacity>
-                  </Typography>
-                </View>
 
-                <View>
-                  {cartData.map((item, index) => (
-                    <TouchableOpacity
-                      onPress={() =>
-                        navigateToDeliveryAndChatSystem(item.status)
-                      }
-                      key={index}
-                    >
-                      <View
-                        style={{
-                          width: "100%",
-                          height: 80,
-                          borderBottomWidth: 2,
-                          borderBottomColor: "#1D1D1D",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          paddingTop: 2,
-                        }}
-                      >
-                        <Image
-                          source={{ uri: item?.image }}
-                          alt="product-image"
-                          style={{
-                            width: "20%",
-                            height: "100%",
-                            // backgroundColor: "#000026",
-                            // backgroundImage: `url(${hdtv})`,
-                          }}
-                        />
-                        <View style={{ width: "30%", paddingLeft: 10 }}>
-                          <Text
-                            style={{
-                              fontSize: 16,
-                              fontWeight: "bold",
-                              color: "gray",
-                            }}
-                          >
-                            #
-                            {item?.orderId.slice(0, 4) +
-                              Math.floor(Math.random() * 10000)}
-                          </Text>
-                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                            {item?.timestamp.toDateString()}
-                          </Text>
-                        </View>
-                        <View style={{ width: "30%", paddingLeft: 10 }}>
-                          <Text
-                            style={{
-                              fontSize: 16,
-                              fontWeight: "bold",
-                              color: "gray",
-                            }}
-                          >
-                            Delivered by
-                          </Text>
-                          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                            Dilivery Guy
-                          </Text>
-                        </View>
-                        <View style={{ width: "30%", paddingLeft: 10 }}>
-                          <Text
-                            style={{
-                              fontSize: 16,
-                              fontWeight: "bold",
-                              color: "gray",
-                            }}
-                          >
-                            Status
-                          </Text>
-                          <Text
-                            style={{
-                              fontSize: 18,
-                              fontWeight: "bold",
-                              color:
-                                item.status === "DELIVERED"
-                                  ? "green"
-                                  : item.status === "ONGOING"
-                                  ? "orange"
-                                  : "black",
-                            }}
-                          >
-                            {/* {item?.status} */}
-                            Delivered
-                          </Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </Container>
-            </View>
-          ) : (
+          <View>
             <View
-            // style={{backgroundColor:"white"}}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                paddingRight: 30,
+                paddingBottom: 30,
+                paddingTop: 30,
+                paddingLeft: 30,
+              }}
             >
               <View
                 style={{
                   display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
                   justifyContent: "space-between",
-
-                  paddingRight: 30,
-                  paddingBottom: 30,
-                  paddingTop: 30,
-                  paddingLeft: 30,
-                  // height: "100px",
                 }}
               >
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <View>
-                    <Text style={{ fontWeight: "700", fontSize: 30 }}>
-                      PRODUCTS & SERVICES
-                    </Text>
-                    <Text
-                      style={{
-                        display: businessAuthorization ? "none" : "",
-                        fontWeight: 600,
-                        fontSize: 14,
-                      }}
-                    >
-                      Please add a minimum of 3 products
-                    </Text>
-                  </View>
+                <View>
+                  {/* Heading for Products & Services */}
+                  <Text style={{ fontWeight: "700", fontSize: 30 }}>
+                    PRODUCTS & SERVICES
+                  </Text>
+                  {/* Additional information displayed conditionally */}
                   <Text
                     style={{
-                      color: "white",
+                      display: businessAuthorization ? "none" : "", //when the user is subcscribed
                       fontWeight: 600,
                       fontSize: 14,
-                      backgroundColor: "#072840",
-                      paddingTop: 10,
-                      paddingBottom: 10,
-                      paddingLeft: 25,
-                      paddingRight: 25,
-                      borderRadius: 20,
                     }}
                   >
-                    BUSINESS PLUS R150/PM
+                    Please add a minimum of 3 products
                   </Text>
                 </View>
-
-                <View
+                {/* Business Plus subscription information */}
+                <Text
                   style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
+                    color: "white",
+                    fontWeight: 600,
+                    fontSize: 14,
+                    backgroundColor: "#072840",
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    paddingLeft: 25,
+                    paddingRight: 25,
+                    borderRadius: 20,
                   }}
                 >
-                  <Text
-                    style={{
-                      color: "white",
-                      fontWeight: 600,
-                      fontSize: 14,
-                      backgroundColor: "#fe951c",
-                      paddingTop: 10,
-                      paddingBottom: 10,
-                      borderRadius: 20,
-                      display: businessAuthorization ? "none" : "flex",
-                      marginTop: 5,
-                      justifyContent: "center",
-                      paddingLeft: 25,
-                      paddingRight: 25,
-                    }}
-                  >
-                    AUTHORIZATION PENDING
-                  </Text>
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <TouchableOpacity onPress={() => setAddProduct(true)}>
-                      <Text
-                        style={{
-                          color: "white",
-                          fontWeight: 600,
-                          fontSize: 14,
-                          backgroundColor: "#072840",
-                          paddingTop: 10,
-                          paddingBottom: 10,
-                          paddingLeft: 25,
-                          paddingRight: 25,
-                          borderRadius: 20,
-                          display: !businessAuthorization ? "none" : "flex",
-                          marginRight: 20,
-                        }}
-                      >
-                        ADD PRODUCT
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                  BUSINESS PLUS R150/PM
+                </Text>
               </View>
 
-              {businessAuthorization ? (
-                <Card
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                {/* Conditional display for Authorization Pending message */}
+                <Text
                   style={{
-                    width: "100%",
-                    // height: "80px",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    // paddingLeft: 10,
-                    // paddingBottom: 30,
-                    // paddingTop: 30,
-                    display: "flex",
+                    color: "white",
+                    fontWeight: 600,
+                    fontSize: 14,
+                    backgroundColor: "#fe951c",
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    borderRadius: 20,
+                    display: businessAuthorization ? "none" : "flex",
+                    marginTop: 5,
+                    justifyContent: "center",
+                    paddingLeft: 25,
+                    paddingRight: 25,
                   }}
                 >
-                  {banner.length > 0 ? (
-                    <View
+                  AUTHORIZATION PENDING
+                </Text>
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {/* Button to add a product */}
+                  <TouchableOpacity onPress={() => setAddProduct(true)}>
+                    <Text
                       style={{
-                        backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
-                        backgroundColor: "gray",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: 15,
-                        flex: 1,
-                        transition: "0.5s ease-in-out",
+                        color: "white",
+                        fontWeight: 600,
+                        fontSize: 14,
+                        backgroundColor: "#072840",
+                        paddingTop: 10,
+                        paddingBottom: 10,
+                        paddingLeft: 25,
+                        paddingRight: 25,
+                        borderRadius: 20,
+                        display: !businessAuthorization ? "none" : "flex",
+                        marginRight: 20,
                       }}
                     >
-                      <TouchableOpacity
-                        onPress={handlePrevClick}
-                        style={{ marginRight: 20 }}
-                      >
-                        <AntDesign name="left" size={24} color="white" />
-                      </TouchableOpacity>
-                      <View
+                      ADD PRODUCT
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+
+            {businessAuthorization ? ( //the usre must be subscribed
+              // Card component containing business banners and add banner option
+              <Card
+                style={{
+                  width: "100%",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  display: "flex",
+                }}
+              >
+                {banner.length > 0 ? (
+                  // View displaying the current banner with background image and details
+                  <View
+                    style={{
+                      backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
+                      backgroundColor: "gray",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: 15,
+                      flex: 1,
+                      transition: "0.5s ease-in-out",
+                    }}
+                  >
+                    {/* Navigation button to go to the previous banner */}
+                    <TouchableOpacity
+                      onPress={handlePrevClick}
+                      style={{ marginRight: 20 }}
+                    >
+                      <AntDesign name="left" size={24} color="white" />
+                    </TouchableOpacity>
+                    {/* Details of the current banner */}
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: "column",
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <Text
                         style={{
-                          flex: 1,
-                          flexDirection: "column",
-                          alignItems: "flex-start",
+                          fontSize: 15,
+                          fontWeight: 600,
+                          color: "white",
                         }}
                       >
+                        {banner[0].other}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 25,
+                          fontWeight: 700,
+                          color: "white",
+                        }}
+                      >
+                        {banner[0].productName}
+                      </Text>
+                      <Text>
+                        {/* Displaying discount and original prices */}
+                        <Text
+                          style={{
+                            fontSize: 18,
+                            fontWeight: 700,
+                            color: "#c29920",
+                          }}
+                        >
+                          R{banner[0].discountPrice}
+                        </Text>{" "}
                         <Text
                           style={{
                             fontSize: 15,
-                            fontWeight: 600,
+                            fontWeight: 400,
                             color: "white",
                           }}
                         >
-                          {banner[0].other}
+                          R{banner[0].originalPrice}
                         </Text>
-                        <Text
-                          style={{
-                            fontSize: 25,
-                            fontWeight: 700,
-                            color: "white",
-                          }}
-                        >
-                          {banner[0].productName}
-                        </Text>
-                        <Text>
-                          <Text
-                            style={{
-                              fontSize: 18,
-                              fontWeight: 700,
-                              color: "#c29920",
-                            }}
-                          >
-                            R{banner[0].discountPrice}
-                          </Text>{" "}
-                          <Text
-                            style={{
-                              fontSize: 15,
-                              fontWeight: 400,
-                              color: "white",
-                            }}
-                          >
-                            R{banner[0].originalPrice}
-                          </Text>
-                        </Text>
-                      </View>
-
-                      <TouchableOpacity onPress={handleNextClick}>
-                        <AntDesign name="right" size={24} color="white" />
-                      </TouchableOpacity>
+                      </Text>
                     </View>
-                  ) : null}
+                    {/* Navigation button to go to the next banner */}
+                    <TouchableOpacity onPress={handleNextClick}>
+                      <AntDesign name="right" size={24} color="white" />
+                    </TouchableOpacity>
+                  </View>
+                ) : null}
 
-                  <TouchableOpacity
-                    style={{
-                      display: "flex",
-                      cursor: "pointer",
-                      width: "15%",
-                      borderRadius: 20,
-                      border: "1px gray dashed",
-                      height: "100%",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 20,
-                      fontWeight: 700,
-                      marginLeft: 10,
-                    }}
-                    onPress={() => setBannerModal(true)}
-                  >
-                    <Text>ADD BANNER</Text>
-                  </TouchableOpacity>
-                </Card>
-              ) : null}
-
-              <ScrollView style={{ width: "100%" }}>
-                <View
+                {/* Option to add a new banner */}
+                <TouchableOpacity
                   style={{
-                    // flexDirection: "row",
-                    paddingRight: 10,
-                    marginBottom: 20,
+                    display: "flex",
+                    cursor: "pointer",
+                    width: "15%",
+                    borderRadius: 20,
+                    border: "1px gray dashed",
+                    height: "100%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 20,
+                    fontWeight: 700,
+                    marginLeft: 10,
                   }}
+                  onPress={() => setBannerModal(true)}
                 >
-                  <View style={{ flex: 1 }}>
-                    <View
-                      style={{
-                        //margin: 50,
-                        flexDirection: "row",
-                        flexWrap: "wrap",
-                       // backgroundColor: "red",
-                      }}
-                    >
-                      {products.map((product, index) => (
-                        
-                       
-                       
-                        <Card
+                  <Text>ADD BANNER</Text>
+                </TouchableOpacity>
+              </Card>
+            ) : null}
+
+            {/* ScrollView to allow vertical scrolling */}
+            <ScrollView style={{ width: "100%" }}>
+              {/* Container view for the product cards */}
+              <View
+                style={{
+                  paddingRight: 10,
+                  marginBottom: 20,
+                }}
+              >
+                {/* Flex container for the product cards */}
+                <View style={{ flex: 1 }}>
+                  {/* Flex container for wrapping the product cards */}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    {/* Mapping through products to display individual product cards */}
+
+                    {products.map((product, index) => (
+                      <Card // Card component for each product
                         key={index}
                         sx={{
                           width: {
@@ -2637,18 +2502,18 @@ export default function BusinessAccount({ productsData }) {
                             lg: "35%",
                           },
                           margin: 2,
-                         
                         }}
                       >
+                        {/* Container for the product image and details */}
                         <View
                           style={{
-                            // backgroundColor: "purple",
                             justifyContent: "center",
                             alignItems: "center",
                             paddingHorizontal: 16,
                             height: "70vh",
                           }}
                         >
+                          {/* Box component for styling the product image container */}
                           <Box
                             style={{
                               borderRadius: "16px",
@@ -2666,6 +2531,7 @@ export default function BusinessAccount({ productsData }) {
                               justifyContent: "center",
                             }}
                           >
+                            {/* CardMedia component for displaying the product image */}
                             <CardMedia
                               component="img"
                               height="140"
@@ -2684,41 +2550,29 @@ export default function BusinessAccount({ productsData }) {
                                 alignSelf: "center",
                               }}
                             />
-                
-                            <Box
-                              style={{
-                                paddingHorizontal: 10,
-                                position: "absolute",
-                                bottom: 30,
-                                left: 80,
-                                width: "6vw",
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                alignSelf: "center",
-                              }}
-                            ></Box>
-                            {/* </Container> */}
                           </Box>
+                          {/* Container for the product details */}
                           <View
                             style={{
                               width: "100%",
                               justifyContent: "space-between",
                               marginTop: 16,
-                              //  backgroundColor:'red',
                               height: "25vh",
                             }}
                           >
+                            {/* Flex container for the product category and rating */}
                             <View>
+                              {/* Flex container for product category and rating */}
+
                               <View
                                 style={{
                                   flexDirection: "row",
                                   justifyContent: "center",
                                   alignItems: "center",
-                                  //     backgroundColor:'green',
                                   flexWrap: "wrap",
                                 }}
                               >
+                                {/* Text component for displaying product category */}
                                 <Text
                                   style={{
                                     flex: 1,
@@ -2729,6 +2583,7 @@ export default function BusinessAccount({ productsData }) {
                                 >
                                   {product.selectedProductCategory}
                                 </Text>
+                                {/* View for displaying star rating */}
                                 <View
                                   style={{
                                     backgroundColor: "#072840",
@@ -2737,16 +2592,21 @@ export default function BusinessAccount({ productsData }) {
                                     borderRadius: 15,
                                   }}
                                 >
+                                  {/* Text for displaying star icon and rating */}
                                   <Text style={{}}>
-                                    ⭐ <Text style={{ color: "white" }}> 4.9</Text>
+                                    ⭐{" "}
+                                    <Text style={{ color: "white" }}> 4.9</Text>
                                   </Text>
                                 </View>
                               </View>
-                
+                              {/* Typography component for displaying product name */}
                               <Typography variant="h5" component="h5">
                                 {product.name && product.name.slice(0, 20)}
-                                {product.name && product.name.length < 50 ? "" : "..."}
+                                {product.name && product.name.length < 50
+                                  ? ""
+                                  : "..."}
                               </Typography>
+                              {/* Typography component for displaying product description */}
                               <Typography
                                 variant="subtitle2"
                                 component="p"
@@ -2754,16 +2614,19 @@ export default function BusinessAccount({ productsData }) {
                               >
                                 {product.description &&
                                   product.description.slice(0, 50)}
-                                {product.description && product.description.length < 50
+                                {product.description &&
+                                product.description.length < 50
                                   ? ""
                                   : "..."}
                               </Typography>
+                              {/* Box component for additional details and pricing */}
                               <Box
                                 display="flex"
                                 flexDirection="column"
                                 alignItems="flex-start"
                                 justifyContent="space-between"
                               >
+                                {/* Typography component for displaying sales count */}
                                 <Typography
                                   variant="body2"
                                   component="p"
@@ -2771,7 +2634,14 @@ export default function BusinessAccount({ productsData }) {
                                 >
                                   <Icon2 name="download" size={20} /> 15 Sales
                                 </Typography>
-                                <View style={{ display: "flex", flexDirection: "row" }}>
+                                {/* Flex container for displaying prices */}
+                                <View
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                  }}
+                                >
+                                  {/* Typography component for original price */}
                                   <Typography
                                     variant="subtitle2"
                                     component="p"
@@ -2784,6 +2654,7 @@ export default function BusinessAccount({ productsData }) {
                                   >
                                     R{product.price}
                                   </Typography>
+                                  {/* Typography component for discounted price */}
                                   <Typography
                                     variant="subtitle2"
                                     component="p"
@@ -2801,18 +2672,15 @@ export default function BusinessAccount({ productsData }) {
                           </View>
                         </View>
                       </Card>
-                      ))}
-                    </View>
+                    ))}
                   </View>
-                  {/* <weight></weight>nvjmv mhv vkhb bv jb jvjhvjhvjvjhvjvjvjvjvvjvvjvjvvjhvjvjvjvjvjhvhv */}
                 </View>
-              </ScrollView>
-            </View>
-          )}
+              </View>
+            </ScrollView>
+          </View>
         </View>
       </View>
       <Footer />
-      {/* <div style={{ marginTop: "40vh" }}></div> */}
     </>
   );
 }

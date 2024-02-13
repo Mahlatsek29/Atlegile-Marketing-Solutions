@@ -6,13 +6,27 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import { auth, firestore } from "../config";
 import { ShoppingCart } from "@mui/icons-material";
 
+// ... (previous imports)
+
 const Navbar = () => {
   const navigation = useNavigation();
   const imageLogo = require("../../assets/logo.png");
   const [userData, setUserData] = useState(null);
   const [cartCount, setCartCount] = useState(2);
   const [showMenu, setShowMenu] = useState(false);
-  const { width } = Dimensions.get("window");
+  const [width, setWidth] = useState(Dimensions.get("window").width);
+
+  useEffect(() => {
+    const handleDimensionsChange = ({ window }) => {
+      setWidth(window.width);
+    };
+
+    Dimensions.addEventListener("change", handleDimensionsChange);
+
+    return () => {
+      Dimensions.removeEventListener("change", handleDimensionsChange);
+    };
+  }, []);
 
   useEffect(() => {
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
@@ -43,7 +57,7 @@ const Navbar = () => {
         };
       } else {
         setUserData(null);
-        setCartCount(0); // Reset cart count when user is not authenticated
+        setCartCount(0); // Reset cart count when the user is not authenticated
       }
     });
 
@@ -56,11 +70,10 @@ const Navbar = () => {
     setShowMenu(!showMenu);
   };
 
-  const navigateTo = (screen) => {
-    if (width < 600) {
-      toggleMenu();
-    }
+  const navigateAndCloseMenu = (screen) => {
+    console.log("screen is ", screen);
     navigation.navigate(screen);
+    setShowMenu(false);
   };
 
   return (
@@ -93,23 +106,25 @@ const Navbar = () => {
         >
           {userData ? (
             <>
-              <Button onClick={() => navigateTo("Landing")} color="inherit">
-                Shop
-              </Button>
-              <Button onClick={() => navigateTo("AboutUs")} color="inherit">
-                About Us
-              </Button>
-              <Box onClick={() => navigateTo("DateSelectionAndCheckout")}>
-                <Badge
-                  badgeContent={cartCount}
-                  color="primary"
-                  style={{ margin: "0px 15px" }}
-                >
-                  <ShoppingCart color="action" style={{ color: "black" }} />
-                </Badge>
-              </Box>
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
+                <Button color="inherit">Shop</Button>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
+                <Button color="inherit">About Us</Button>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("DateSelectionAndCheckout")}>
+                <Box>
+                  <Badge
+                    badgeContent={cartCount}
+                    color="primary"
+                    style={{ margin: "0px 15px" }}
+                  >
+                    <ShoppingCart color="action" style={{ color: "black" }} />
+                  </Badge>
+                </Box>
+              </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigateTo("UserProfile")}
+                onPress={() => navigateAndCloseMenu("UserProfile")}
                 style={{
                   display: "flex",
                   flexDirection: "row",
@@ -149,16 +164,16 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Button onClick={() => navigateTo("Landing")} color="inherit">
-                Shop
-              </Button>
-              <Button onClick={() => navigateTo("AboutUs")} color="inherit">
-                About Us
-              </Button>
-              <TouchableOpacity onPress={() => navigateTo("SignIn")}>
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
+                <Button color="inherit">Shop</Button>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
+                <Button color="inherit">About Us</Button>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("SignIn")}>
                 <Button color="inherit">Sign In</Button>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigateTo("SignUp")}>
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("SignUp")}>
                 <Button color="inherit">Sign Up</Button>
               </TouchableOpacity>
             </>
@@ -177,32 +192,31 @@ const Navbar = () => {
             zIndex: 999,
           }}
         >
-          <Button onPress={() => navigateTo("Landing")} color="inherit">
-            Shop
-          </Button>
-          <Button onPress={() => navigateTo("AboutUs")} color="inherit">
-            About Us
-          </Button>
+          <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
+            <Button color="inherit">Shop</Button>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
+            <Button color="inherit">About Us</Button>
+          </TouchableOpacity>
           {userData ? (
             <>
-              <Button onPress={() => navigateTo("UserProfile")} color="inherit">
-                Profile
-              </Button>
-              <Button
-                onPress={() => navigateTo("DateSelectionAndCheckout")}
-                color="inherit"
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("UserProfile")}>
+                <Button color="inherit">Profile</Button>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigateAndCloseMenu("DateSelectionAndCheckout")}
               >
-                Cart
-              </Button>
+                <Button color="inherit">Cart</Button>
+              </TouchableOpacity>
             </>
           ) : (
             <>
-              <Button onPress={() => navigateTo("SignIn")} color="inherit">
-                Sign In
-              </Button>
-              <Button onPress={() => navigateTo("SignUp")} color="inherit">
-                Sign Up
-              </Button>
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("SignIn")}>
+                <Button color="inherit">Sign In</Button>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("SignUp")}>
+                <Button color="inherit">Sign Up</Button>
+              </TouchableOpacity>
             </>
           )}
         </View>

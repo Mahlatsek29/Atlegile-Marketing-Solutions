@@ -112,8 +112,7 @@ const styles = StyleSheet.create({
   },
   section2ImageContainer: {
     flex: 2,
-    backgroundColor: "red",
-    //backgroundColor: "#070F18",
+    backgroundColor: "#070F18",
     opacity: 0.3,
   },
   section2Image: {

@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Button, Toolbar, Typography, Box, Badge } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
-import { View, Image, TouchableOpacity,Text } from "react-native";
+import { View, Image, TouchableOpacity, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { auth, firestore } from "../config";
 import { ShoppingCart } from "@mui/icons-material";
 
-import { AntDesign } from "@expo/vector-icons";
 const Navbar = () => {
   const navigation = useNavigation();
   const imageLogo = require("../../assets/logo.png");
   const [userData, setUserData] = useState(null);
   const [cartCount, setCartCount] = useState(2);
+  const [showMenu, setShowMenu] = useState(false);
+  const { width } = Dimensions.get("window");
 
-  
   useEffect(() => {
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -52,21 +52,15 @@ const Navbar = () => {
     };
   }, []);
 
-  const navigateToSignIn = () => {
-    navigation.navigate("SignIn");
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
   };
-  const navigateToSignUp = () => {
-    navigation.navigate("SignUp");
-  };
-  const navigateAboutUs = () => {
-    navigation.navigate("AboutUs");
-  };
-  const navigateLanding = () => {
-    navigation.navigate("Landing");
-  };
-  const goBack = () => {
-    console.log('the goBack button is called')
-    navigation.goBack();
+
+  const navigateTo = (screen) => {
+    if (width < 600) {
+      toggleMenu();
+    }
+    navigation.navigate(screen);
   };
 
   return (
@@ -75,190 +69,146 @@ const Navbar = () => {
         color: "#252B42",
         display: "flex",
         flexDirection: "row",
-      }}>
-         <TouchableOpacity onPress={goBack}>
-         <AntDesign name="arrowleft" size={24} color="black" />
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <TouchableOpacity onPress={() => navigation.navigate("Landing")}>
+        <Image
+          source={imageLogo}
+          style={{ width: 120, height: 60, resizeMode: "contain" }}
+        />
       </TouchableOpacity>
-      <View>
-        <TouchableOpacity onPress={() => navigation.navigate("Landing")}>
-          <Image
-            source={require("../../assets/logo.png")}
-            style={{ width: 120, height: 60, resizeMode: "contain" }}
-          />
+      {width < 600 ? (
+        <TouchableOpacity onPress={toggleMenu}>
+          <Icon name={showMenu ? "times" : "bars"} size={20} color="#252B42" />
         </TouchableOpacity>
-      </View>
-      <View
-        style={{ marginLeft: "auto", display: "flex", flexDirection: "row" }}>
-        {userData ? (
-          <View
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "row",
-            }}>
-            <Button
-              sx={{
-                borderRadius: "25px",
-                "&:hover": {
-                  backgroundColor: "#252B42",
-                  borderRadius: "25px",
-                  color: "white",
-                },
-              }}
-              onClick={() => {
-                navigation.navigate("Landing");
-              }}
-              color="inherit">
-              Shop
-            </Button>
-            <Button
-              sx={{
-                borderRadius: "25px",
-                "&:hover": {
-                  backgroundColor: "#252B42",
-                  borderRadius: "25px",
-                  color: "white",
-                },
-              }}
-              color="inherit"
-              onClick={() => navigation.navigate("AboutUs")}>
-              About Us
-            </Button>
-            <Box
-              onClick={() => {
-                navigation.navigate("DateSelectionAndCheckout");
-              }}
-              sx={{
-                "&:hover": {
-                  cursor: "pointer",
-                },
-              }}>
-              <Badge
-                badgeContent={cartCount}
-                color="primary"
-                style={{ margin: "0px 15px" }}>
-                <ShoppingCart color="action" style={{ color: "black" }} />
-              </Badge>
-            </Box>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                cursor: "pointer",
-                marginLeft: "10px",
-              }}
-              onClick={() => navigation.navigate("UserProfile")}>
-              <View
+      ) : (
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          {userData ? (
+            <>
+              <Button onClick={() => navigateTo("Landing")} color="inherit">
+                Shop
+              </Button>
+              <Button onClick={() => navigateTo("AboutUs")} color="inherit">
+                About Us
+              </Button>
+              <Box onClick={() => navigateTo("DateSelectionAndCheckout")}>
+                <Badge
+                  badgeContent={cartCount}
+                  color="primary"
+                  style={{ margin: "0px 15px" }}
+                >
+                  <ShoppingCart color="action" style={{ color: "black" }} />
+                </Badge>
+              </Box>
+              <TouchableOpacity
+                onPress={() => navigateTo("UserProfile")}
                 style={{
-                  width: "40px",
-                  height: "40px",
-                  backgroundColor: "gray",
-                  borderRadius: "8%",
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "center",
-                }}>
-                <Typography
-                  style={{
-                    fontSize: "1.4rem",
-                    color: "white",
-                    padding: "10px",
-                  }}>
-                  AS
-                </Typography>
-              </View>
-              <View
-                style={{ marginLeft: "10px" }}
-                onClick={() => {
-                  navigation.navigate("UserProfile");
-                }}>
-                <Typography variant="subtitle1">
-                  Welcome, {userData.name}
-                </Typography>
-                <Typography
-                  style={{
-                    fontSize: "0.8rem",
-                  }}>
-                  {userData.username}
-                </Typography>
-              </View>
-            </View>
-          </View>
-        ) : (
-          <View
-            style={{
-              marginLeft: "auto",
-              display: "flex",
-              flexDirection: "row",
-            }}>
-            <Button
-              onClick={navigateLanding}
-              sx={{
-                borderRadius: "25px",
-                "&:hover": {
-                  backgroundColor: "#252B42",
-                  borderRadius: "25px",
-                  color: "white",
-                },
-              }}
-              color="inherit">
-              Shop
-            </Button>
-            <Button
-              onClick={navigateAboutUs}
-              sx={{
-                borderRadius: "25px",
-                "&:hover": {
-                  backgroundColor: "#252B42",
-                  borderRadius: "25px",
-                  color: "white",
-                },
-              }}
-              color="inherit">
-              About Us
-            </Button>
-            <TouchableOpacity>
-              <Button
-                onClick={navigateToSignIn}
-                sx={{
-                  transition: "backgroundCcolor 0.3s, color 0.3s",
-                  border: "1px solid #252B42",
-                  borderRadius: "25px",
-                  marginLeft: "10px",
-                  "&:hover": {
-                    backgroundColor: "#252B42",
-                    borderRadius: "25px",
-                    color: "white",
-                  },
+                  marginLeft: 10,
                 }}
-                color="inherit">
+              >
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    backgroundColor: "gray",
+                    borderRadius: "8%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography
+                    style={{
+                      fontSize: 16,
+                      color: "white",
+                      padding: 10,
+                    }}
+                  >
+                    AS
+                  </Typography>
+                </View>
+                <View style={{ marginLeft: 10 }}>
+                  <Typography variant="subtitle1">
+                    Welcome, {userData.name}
+                  </Typography>
+                  <Typography style={{ fontSize: 12 }}>
+                    {userData.username}
+                  </Typography>
+                </View>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <Button onClick={() => navigateTo("Landing")} color="inherit">
+                Shop
+              </Button>
+              <Button onClick={() => navigateTo("AboutUs")} color="inherit">
+                About Us
+              </Button>
+              <TouchableOpacity onPress={() => navigateTo("SignIn")}>
+                <Button color="inherit">Sign In</Button>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigateTo("SignUp")}>
+                <Button color="inherit">Sign Up</Button>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      )}
+      {showMenu && width < 600 && (
+        <View
+          style={{
+            position: "absolute",
+            top: 60,
+            right: 10,
+            backgroundColor: "#fff",
+            padding: 10,
+            borderRadius: 5,
+            zIndex: 999,
+          }}
+        >
+          <Button onPress={() => navigateTo("Landing")} color="inherit">
+            Shop
+          </Button>
+          <Button onPress={() => navigateTo("AboutUs")} color="inherit">
+            About Us
+          </Button>
+          {userData ? (
+            <>
+              <Button onPress={() => navigateTo("UserProfile")} color="inherit">
+                Profile
+              </Button>
+              <Button
+                onPress={() => navigateTo("DateSelectionAndCheckout")}
+                color="inherit"
+              >
+                Cart
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button onPress={() => navigateTo("SignIn")} color="inherit">
                 Sign In
               </Button>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Button
-                onClick={navigateToSignUp}
-                sx={{
-                  transition: "backgroundCcolor 0.3s, color 0.3s",
-                  border: "1px solid #252B42",
-                  borderRadius: "25px",
-                  marginLeft: "10px",
-                  "&:hover": {
-                    backgroundColor: "#252B42",
-                    borderRadius: "25px",
-                    color: "white",
-                  },
-                }}
-                color="inherit">
+              <Button onPress={() => navigateTo("SignUp")} color="inherit">
                 Sign Up
               </Button>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
+            </>
+          )}
+        </View>
+      )}
     </Toolbar>
   );
 };
+
 export default Navbar;

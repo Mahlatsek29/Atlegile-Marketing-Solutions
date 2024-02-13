@@ -15,10 +15,6 @@ const FollowUs = () => {
     navigation.navigate("https://www.youtube.com/");
   };
 
-  if (!isLargeDevice) {
-    return null; // Return null if device width is small
-  }
-
   return (
     <Box
       sx={{
@@ -37,16 +33,20 @@ const FollowUs = () => {
         <Typography variant="subtitle2">(225) 555-0118</Typography>
       </Box>
 
-      <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-        <Icon3 name="envelope" size={20} color="white" />
-        <Typography variant="subtitle2">michelle.rivera@example.com</Typography>
-      </Box>
+      {isLargeDevice && (
+        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+          <Icon3 name="envelope" size={20} color="white" />
+          <Typography variant="subtitle2">michelle.rivera@example.com</Typography>
+        </Box>
+      )}
 
-      <Box sx={{ display: "flex", flexDirection: "row" }}>
-        <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-          Follow us and get a chance to win 80% off
-        </Typography>
-      </Box>
+      {isLargeDevice && (
+        <Box sx={{ display: "flex", flexDirection: "row" }}>
+          <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+            Follow us and get a chance to win 80% off
+          </Typography>
+        </Box>
+      )}
       
       <Box
         sx={{
@@ -68,18 +68,22 @@ const FollowUs = () => {
           color="white"
           style={{ paddingHorizontal: 10 }}
         />
-        <Icon
-          name="facebook"
-          size={16}
-          color="white"
-          style={{ paddingHorizontal: 10 }}
-        />
-        <Icon
-          name="twitter"
-          size={16}
-          color="white"
-          style={{ paddingHorizontal: 10 }}
-        />
+        {isLargeDevice && (
+          <>
+            <Icon
+              name="facebook"
+              size={16}
+              color="white"
+              style={{ paddingHorizontal: 10 }}
+            />
+            <Icon
+              name="twitter"
+              size={16}
+              color="white"
+              style={{ paddingHorizontal: 10 }}
+            />
+          </>
+        )}
       </Box>
     </Box>
   );

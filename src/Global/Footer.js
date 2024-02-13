@@ -6,10 +6,6 @@ import shadowLogo from "./images/Shadow_Logo.png";
 const { width } = Dimensions.get('window');
 
 export function Footer() {
-  if (width <= 600) {
-    return null; // Return null if device width is smaller or equal to 600
-  }
-
   return (
     <View style={styles.container}>
       <View style={styles.section1}>
@@ -34,20 +30,22 @@ export function Footer() {
         </View>
         <View style={styles.section1Image}></View>
       </View>
-      <View style={styles.section2}>
-        <View style={styles.section2TextContainer}>
-          <Text style={styles.section2Text}>
-            Atlegile Marketing Solutions (Pty) Ltd eCommerce 2023
-          </Text>
+      {width > 600 && (
+        <View style={styles.section2}>
+          <View style={styles.section2TextContainer}>
+            <Text style={styles.section2Text}>
+              Atlegile Marketing Solutions (Pty) Ltd eCommerce 2023
+            </Text>
+          </View>
+          <View style={styles.section2ImageContainer}>
+            <Image
+              source={lionImage}
+              style={styles.section2Image}
+              resizeMode="cover"
+            />
+          </View>
         </View>
-        <View style={styles.section2ImageContainer}>
-          <Image
-            source={lionImage}
-            style={styles.section2Image}
-            resizeMode="cover"
-          />
-        </View>
-      </View>
+      )}
     </View>
   );
 }

@@ -68,7 +68,7 @@ const Signin = () => {
     <ImageBackground
       source={require("../../Global/images/Reed.jpg")} // Background image
       style={styles.background}>
-      <View style={{...styles.container, width: containerWidth, height: containerHeight}}>
+      <View style={{...styles.container, width: containerWidth, height: "95%"}}>
 
         {/* Logo image container */}
         <View style={{}}>
@@ -79,12 +79,12 @@ const Signin = () => {
         </View>
 
         {/* Sign-in text container */}
-        <View style={{ width: "120%", flexDirection: "row", justifyContent: "space-around" }}>
+        <View style={{ width: "110%", flexDirection: "row", justifyContent: "space-around" }}>
           <Text style={styles.title}>SIGN IN </Text>
 
           {/* Insert arrow logo */}
           <TouchableOpacity onPress={handleShop}>
-            <Text style={{ fontSize: 14, marginBottom: -20 }}>
+            <Text style={{ fontSize: 14, marginBottom: -20 ,fontWeight: "500",}}>
               SHOP <AntDesign style={styles.arrow} name="right" size={20} color="#072840" />
             </Text>
           </TouchableOpacity>
@@ -107,13 +107,16 @@ const Signin = () => {
             secureTextEntry={true}
           />
         </View>
-        <View>
+        <View style= {{width:"70%",paddingLeft:2}}>
           <Text
             style={{
               position: "relative",
               left: 10,
               marginVertical: 10,
               cursor: "pointer",
+              alignSelf:'flex-end',
+              fontWeight: "500",
+              color: "#072840",
             }}>
             FORGOT PASSWORD?
           </Text>
@@ -127,7 +130,20 @@ const Signin = () => {
             <Text style={styles.buttonText}>SIGN IN</Text> // Sign-in text
           )}
         </TouchableOpacity>
-
+        <View style= {{width:"70%"}}>
+          <Text
+            style={{
+              position: "relative",
+              left: 10,
+              marginVertical: 10,
+              cursor: "pointer",
+              alignSelf:'center',
+              fontWeight: "500",
+              color: "#072840",
+            }}>
+            DON'T HAVE AN ACCOUNT?
+          </Text>
+        </View>
         {/* Google sign-in button */}
         <TouchableOpacity onPress={handleGoogleSignIn}>
           <Text style={styles.linkText1}>
@@ -143,12 +159,15 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-end",
   },
   container: {
     backgroundColor: "#FFFFFF",
-    padding: 20,
-    borderRadius: 10,
+  //  padding: 20,
+    // borderRadius: 10,
+   // width: "30%",
+    margin: "3%",
+   // height: "95vh",
     alignItems: "center",
     justifyContent: "center",
   },

@@ -6,13 +6,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-
+  Dimensions,
 } from "react-native";
 import { firebase, firestore } from "../../config";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
-
 
 const TellUsAboutYourself = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -20,12 +19,12 @@ const TellUsAboutYourself = ({ navigation }) => {
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
-  const [location, setLocation] = useState("");
+  //const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const window = Dimensions.get("window");
   const user = firebase.auth().currentUser;
 
-  const handleContinue =  async (e) => {
+  const handleContinue = async (e) => {
     e.preventDefault();
 
     if (!name || !surname || !phone || !gender || !email || !location) {
@@ -45,7 +44,7 @@ const TellUsAboutYourself = ({ navigation }) => {
         phone,
         gender,
         email,
-        location,
+        //location,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         uid: user.uid,
       });
@@ -56,11 +55,15 @@ const TellUsAboutYourself = ({ navigation }) => {
     } catch (error) {
       console.error("Error submitting user information:", error.message);
       alert("Error submitting user information. Please try again.");
-    }finally {
-      setLoading(true)}
+    } finally {
+      setLoading(true);
+    }
   };
   const emptyOption = [""];
   const genderOptions = ["Male", "Female", "Other"];
+  // Calculate container width and height dynamically
+  const containerWidth = window.width > 400 ? 400 : window.width * 0.9;
+  const containerHeight = window.height > 600 ? 600 : window.height * 0.9;
 
   return (
     <ImageBackground
@@ -71,137 +74,121 @@ const TellUsAboutYourself = ({ navigation }) => {
         <Image
           source={require("../../Global/images/logo.png")}
           style={styles.logo}
-        />
-        <Text style={styles.title}>MAIN ACCOUNT HOLDER</Text>
-        <Text style={styles.subtitle}>TELL US ABOUT YOURSELF</Text>
-
+        />{" "}
         <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      width: "75%",
-                    }}>
-        <TextField
-           id="outlined-number"
-           label="Name"
-           type="text"
-           variant="standard"
-           InputLabelProps={{
-             shrink: true,
-           }}
-          
-           value={name}
-           onChange={(e) => setName(e.target.value)}
-           style={{
-            width: "48%",
-
-            marginRight: "5px",
-           
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            width: "75%",
+            flexDirection: "column",
           }}
-          />
-        
-              <TextField
-              id="outlined-number"
-              label="Surname"
-              type="text"
-              variant="standard"
-              InputLabelProps={{
-                shrink: true,
-              }}
-             
-              value={surname}
-              onChange={(e) => setSurname(e.target.value)}
-               style={{
-            width: "48%",
-            // marginTop: "5px",
-            // marginRight: "10px",
-            // textAlign: "left",
-          }}
-             />
+        >
+          {" "}
+          <Text style={styles.title}>MAIN ACCOUNT HOLDER</Text>
+          <Text style={styles.subtitle}>TELL US ABOUT YOURSELF</Text>
         </View>
-
-        <TextField
-           id="outlined-number"
-           label="Phone"
-           type="text"
-           variant="standard"
-           InputLabelProps={{
-             shrink: true,
-           }}
-          
-           value={phone}
-           onChange={(e) => setPhone(e.target.value)}
-           style={{
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
             width: "75%",
-            marginTop: "5px",
-            textAlign: "left",
           }}
-          />
-            <br />
-     <TextField
-                    id="outlined"
-                    select
-                    label="Gender"
-                    variant="standard"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                    style={{
-                      width: "75%",
-                      textAlign: "left",
-                      marginTop: "10px",
-                    }}>
-                    {genderOptions.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                  <br />
-        <TextField
-           id="outlined-number"
-           label="Email"
-           type="text"
-           variant="standard"
-           InputLabelProps={{
-             shrink: true,
-           }}
-          
-           value={email}
-           onChange={(e) => setEmail(e.target.value)}
+        >
+          <TextField
+            id="outlined-number"
+            label="Name"
+            type="text"
+            variant="standard"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             style={{
+              width: "48%",
+
+              marginRight: "5px",
+            }}
+          />
+
+          <TextField
+            id="outlined-number"
+            label="Surname"
+            type="text"
+            variant="standard"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={surname}
+            onChange={(e) => setSurname(e.target.value)}
+            style={{
+              width: "48%",
+              // marginTop: "5px",
+              // marginRight: "10px",
+              // textAlign: "left",
+            }}
+          />
+        </View>
+        <TextField
+          id="outlined-number"
+          label="Phone"
+          type="text"
+          variant="standard"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          style={{
             width: "75%",
             marginTop: "5px",
             textAlign: "left",
           }}
-          />
-
-       
-           <TextField
-           id="outlined-number"
-           label="Location"
-           type="text"
-           variant="standard"
-           InputLabelProps={{
-             shrink: true,
-           }}
-          
-           value={location}
-           onChange={(e) => setLocation(e.target.value)}
-           style={{
+        />
+        <br />
+        <TextField
+          id="outlined"
+          select
+          label="Gender"
+          variant="standard"
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}
+          style={{
+            width: "75%",
+            textAlign: "left",
+            marginTop: "10px",
+          }}
+        >
+          {genderOptions.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </TextField>
+        <br />
+        <TextField
+          id="outlined-number"
+          label="Email"
+          type="text"
+          variant="standard"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{
             width: "75%",
             marginTop: "5px",
             textAlign: "left",
           }}
-          />
-
-<TouchableOpacity style={styles.button} onPress={handleContinue}>
-  {loading ? (
-    <CircularProgress size={25} />
-  ) : (
-    <Text style={styles.buttonText}>CONTINUE</Text>
-  )}
-</TouchableOpacity>
-
+        />
+        <TouchableOpacity style={styles.button} onPress={handleContinue}>
+          {loading ? (
+            <CircularProgress size={25} />
+          ) : (
+            <Text style={styles.buttonText}>CONTINUE</Text>
+          )}
+        </TouchableOpacity>
       </View>
     </ImageBackground>
   );
@@ -211,19 +198,15 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-end",
   },
   container: {
     backgroundColor: "#FFFFFF",
-    padding: 20,
-    borderRadius: 10,
-    width: "30%",
-    marginLeft: "69%",
     height: "95%",
+    margin: "3%",
+
     alignItems: "center",
     justifyContent: "center",
-  
-    // alignItems: "center",
   },
   logo: {
     width: 150,
@@ -233,14 +216,15 @@ const styles = StyleSheet.create({
     // marginLeft: "29%",
   },
   title: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 10,
+    marginBottom: 2,
     fontWeight: "bold",
-    textAlign: "left",
+    alignSelf: "flex-start",
   },
   subtitle: {
     fontSize: 20,
     fontWeight: "bold",
+    alignSelf: "flex-start",
   },
   input: {
     height: 40,
@@ -252,7 +236,6 @@ const styles = StyleSheet.create({
   },
   pickerItem: {
     color: "#072840",
-
   },
   button: {
     backgroundColor: "#072840",
@@ -260,8 +243,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: 10,
     width: "75%",
-    display:'flex',
-    alignItems:'center'
+    display: "flex",
+    alignItems: "center",
   },
   buttonText: {
     color: "white",

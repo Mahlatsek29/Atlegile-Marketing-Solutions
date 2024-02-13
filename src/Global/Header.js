@@ -1,46 +1,39 @@
-// import React from "react";
-import { Box, Typography, IconButton } from "@mui/material";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import {
-//   faYoutube,
-//   faTwitter,
-//   faInstagram,
-//   faFacebook,
-// } from "@fortawesome/free-brands-svg-icons";
-// import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
-// import { faPhone } from "@fortawesome/free-solid-svg-icons";
+import React from "react";
+import { Box, Typography } from "@mui/material";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import Icon2 from "react-native-vector-icons/Feather";
 import Icon3 from "react-native-vector-icons/EvilIcons";
 import { useNavigation } from '@react-navigation/native';
-
-
+import { Dimensions } from 'react-native';
 
 const FollowUs = () => {
   const navigation = useNavigation();
-
+  const { width } = Dimensions.get('window');
+  const isLargeDevice = width > 600;
 
   const openYouTube = () => {
-    navigate.navigation("https://www.youtube.com/");
+    navigation.navigate("https://www.youtube.com/");
   };
+
+  if (!isLargeDevice) {
+    return null; // Return null if device width is small
+  }
 
   return (
     <Box
       sx={{
         backgroundColor: "#252b42",
-        // width: "100%",
         color: "white",
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
         padding: "20px",
-        paddingInline: 20,
+        paddingHorizontal: 20,
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
         <Icon2 name="phone" size={16} color="white" />
-
         <Typography variant="subtitle2">(225) 555-0118</Typography>
       </Box>
 
@@ -54,10 +47,11 @@ const FollowUs = () => {
           Follow us and get a chance to win 80% off
         </Typography>
       </Box>
+      
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
+          flexDirection: "row",
           alignItems: "center",
         }}
       >
@@ -74,14 +68,12 @@ const FollowUs = () => {
           color="white"
           style={{ paddingHorizontal: 10 }}
         />
-
         <Icon
           name="facebook"
           size={16}
           color="white"
           style={{ paddingHorizontal: 10 }}
         />
-
         <Icon
           name="twitter"
           size={16}

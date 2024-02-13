@@ -1,9 +1,15 @@
-// import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import React from "react";
+import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 import lionImage from "../Global/images/BigLion..png"; // Make sure the path is correct
 import shadowLogo from "./images/Shadow_Logo.png";
 
+const { width } = Dimensions.get('window');
+
 export function Footer() {
+  if (width <= 600) {
+    return null; // Return null if device width is smaller or equal to 600
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.section1}>
@@ -113,7 +119,6 @@ const styles = StyleSheet.create({
   },
   section2Image: {
     width: "100%",
-    // opacity: 0.3,
     height: 210,
     position: "relative",
     top: -50,

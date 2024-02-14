@@ -1,76 +1,46 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import Plane from "../../Global/images/plane.svg";
-import Lion from "../../Global/images/bigger-lion.png";
+import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
+import { Video } from "expo-av";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
-import { yellow } from "@mui/material/colors";
 import { COLORS } from "../../Global/Color";
-import { useNavigation } from "@react-navigation/native";
-import { Video } from "expo-av";
 
 export default function AboutUs() {
+  const { width, height } = Dimensions.get("window");
+
   const amsArr = [];
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
+
   return (
-    <View style={{ Width: "100vw" }}>
-      {/* <StatusBar style="auto" /> */}
+    <View style={{ width: "100%" }}>
       <FollowUs />
       <Navbar />
-      <View
-        style={{
-          //width: "100vw",
-          alignItems: "center",
-          justifyContent: "center",
-          display: "flex",
-        }}
-      >
+      <View style={{ alignItems: "center", justifyContent: "center", display: "flex" }}>
+
         <View
           style={{
-            width: "66%",
+            width: width * 0.66,
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
             display: "flex",
-            //backgroundColor: "red",
           }}
         >
           <View>
-            <Image
-              source={require("../../Global/images/logo.svg")}
-              style={{ width: 120, height: 60, resizeMode: "contain" }}
-            />
+            <Image source={require("../../Global/images/logo.svg")} style={{ width: 120, height: 60, resizeMode: "contain" }} />
           </View>
           <View style={styles.aboutTextSection}>
-            <Text
-              style={{
-                color: COLORS.darkBlue,
-                textAlign: "center",
-                fontWeight: "bold",
-                fontSize: "2rem",
-              }}
-            >
+            <Text style={{ color: COLORS.darkBlue, textAlign: "center", fontWeight: "bold", fontSize: 20 }}>
               ATTLEGILE MARKETING SOLUTIONS
             </Text>
 
             <Text style={{ textAlign: "center", paddingTop: 10 }}>
-              Welcome to Atlegile Marketing Solutions (Pty) Ltd, where passion,
-              purpose, and expertise collide to create exceptional Marketing
-              strategies. Our Youth Woman-owned and led Business, based in South
-              Africa, was founded in 2015, and we’ve been on an exciting journey
-              with our Partners ever since. From ground level to the Digital
-              space, we’re committed to building strong Brands, effectively
-              Communicating products + service offerings, and transferring our
-              Skills to help you engage with the Online Market Successfully.
+              Welcome to Atlegile Marketing Solutions (Pty) Ltd, where passion, purpose, and expertise collide to create exceptional Marketing strategies. Our Youth Woman-owned and led Business, based in South Africa, was founded in 2015, and we’ve been on an exciting journey with our Partners ever since. From ground level to the Digital space, we’re committed to building strong Brands, effectively Communicating products + service offerings, and transferring our Skills to help you engage with the Online Market Successfully.
             </Text>
             <Text style={{ textAlign: "center", paddingTop: 10 }}>
-              AMS is dedicated to helping African businesses succeed by
-              developing strong brands, marketing their products and services
-              effectively, and connecting them with a global customer base. They
-              aim to drive sales, increase revenue, and create a lasting impact.
+              AMS is dedicated to helping African businesses succeed by developing strong brands, marketing their products and services effectively, and connecting them with a global customer base. They aim to drive sales, increase revenue, and create a lasting impact.
             </Text>
           </View>
 
@@ -86,7 +56,8 @@ export default function AboutUs() {
               style={{
                 height: "auto",
                 width: "33%",
-                border: "1px solid grey",
+                borderWidth: 1,
+                borderColor: "grey",
                 margin: 1,
               }}
             >
@@ -95,25 +66,22 @@ export default function AboutUs() {
                   color: COLORS.darkBlue,
                   textAlign: "center",
                   fontWeight: "bold",
-                  fontSize: "1.2rem",
+                  fontSize: 16,
                   paddingTop: 10,
                 }}
               >
                 WHAT WE OFFER
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
-                Ams creates strong influential brands, by applying tailored
-                market approaches + using compelling content, to effectively
-                communicate, build and manage good relationships with online
-                communities. We support ESD + marketing departments and
-                agencies.
+                Ams creates strong influential brands, by applying tailored market approaches + using compelling content, to effectively communicate, build and manage good relationships with online communities. We support ESD + marketing departments and agencies.
               </Text>
             </View>
             <View
               style={{
                 height: "auto",
                 width: "33%",
-                border: "1px solid grey",
+                borderWidth: 1,
+                borderColor: "grey",
                 margin: 1,
               }}
             >
@@ -122,24 +90,22 @@ export default function AboutUs() {
                   color: COLORS.darkBlue,
                   textAlign: "center",
                   fontWeight: "bold",
-                  fontSize: "1.2rem",
+                  fontSize: 16,
                   paddingTop: 10,
                 }}
               >
                 ABOUT AMS
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
-                Atlegile Marketing Solutions (Pty) Ltd is a 360 creative brand
-                marketing company that assists African businesses to reach their
-                intended audience from online to offline. We are located in
-                Pimville, Soweto, and service our partners online.
+                Atlegile Marketing Solutions (Pty) Ltd is a 360 creative brand marketing company that assists African businesses to reach their intended audience from online to offline. We are located in Pimville, Soweto, and service our partners online.
               </Text>
             </View>
             <View
               style={{
                 height: "auto",
                 width: "33.5%",
-                border: "1px solid grey",
+                borderWidth: 1,
+                borderColor: "grey",
                 margin: 1,
               }}
             >
@@ -148,23 +114,21 @@ export default function AboutUs() {
                   color: COLORS.darkBlue,
                   textAlign: "center",
                   fontWeight: "bold",
-                  fontSize: "1.2rem",
+                  fontSize: 16,
                   paddingTop: 10,
                 }}
               >
                 OUR USP
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
-                We use a unique strategic brand approach that is coupled with
-                creativity, while transferring 8 years of professional quality
-                service.
+                We use a unique strategic brand approach that is coupled with creativity, while transferring 8 years of professional quality service.
               </Text>
               <Text
                 style={{
                   color: "black",
                   textAlign: "center",
                   fontWeight: "medium",
-                  fontSize: "1rem",
+                  fontSize: 14,
                   padding: 10,
                   textAlign: "start",
                 }}
@@ -178,7 +142,6 @@ export default function AboutUs() {
             style={{
               height: "50vh",
               width: "80%",
-              // backgroundColor: "red",
               display: "flex",
               justifyContent:"center"
             }}
@@ -198,14 +161,6 @@ export default function AboutUs() {
               isLooping
               onPlaybackStatusUpdate={setStatus}
             />
-            {/* <Image
-            source={require("../../Global/images/plane.svg")}
-            style={{
-              minHeight: "70vh",
-              minWidth: "100%",
-              resizeMode: "contain",
-            }}
-          /> */}
             <Text style={{  alignSelf: "flex-start" }}>
               Business Research and Youth Development Project
             </Text>
@@ -217,121 +172,98 @@ export default function AboutUs() {
                 color: COLORS.darkBlue,
                 textAlign: "center",
                 fontWeight: "bold",
-                fontSize: "1.2rem",
+                fontSize: 16,
                 paddingTop: 10,
               }}
             >
-              AMS IS GUIDED BY SEVERAL CORE VALURES
+              AMS IS GUIDED BY SEVERAL CORE VALUES
             </Text>
             <View
               style={{
                 display: "flex",
-                flexDirection: "colunm",
-                width: 1020,
-                paddingTop: 10,
+                flexDirection: "row",
+                flexWrap: "wrap",
+                justifyContent: "center",
               }}
             >
-              <View
+              <Text
                 style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
+                  color: "white",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 20,
+                  margin: 5,
+                  backgroundColor: COLORS.darkBlue,
+                  fontSize: 16,
                 }}
               >
-                <Text
-                  style={{
-                    color: "white",
-                    alignItems: "cernter",
-                    paddingTop: 5,
-                    paddingHorizontal: 20,
-                    paddingBottom: 5,
-                    margin: 5,
-                    backgroundColor: COLORS.darkBlue,
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  PASSION
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    alignItems: "cernter",
-                    paddingTop: 5,
-                    paddingHorizontal: 20,
-                    margin: 5,
-                    paddingBottom: 5,
-                    backgroundColor: COLORS.darkBlue,
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  INNOVTION
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    alignItems: "cernter",
-                    paddingTop: 5,
-                    paddingHorizontal: 20,
-                    margin: 5,
-                    paddingBottom: 5,
-                    backgroundColor: COLORS.darkBlue,
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  GLOBAL CONNECTION
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    alignItems: "cernter",
-                    paddingTop: 5,
-                    paddingBottom: 5,
-                    paddingHorizontal: 20,
-                    margin: 5,
-                    backgroundColor: COLORS.darkBlue,
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  SOCIAL IMPACT
-                </Text>
-              </View>
-
-              <View
+                PASSION
+              </Text>
+              <Text
                 style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
+                  color: "white",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 20,
+                  margin: 5,
+                  backgroundColor: COLORS.darkBlue,
+                  fontSize: 16,
                 }}
               >
-                <Text
-                  style={{
-                    color: "white",
-                    alignItems: "cernter",
-                    paddingTop: 5,
-                    paddingBottom: 5,
-                    paddingHorizontal: 20,
-                    margin: 5,
-                    backgroundColor: COLORS.darkBlue,
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  SKILLS DEVELOPMENT
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    alignItems: "cernter",
-                    paddingTop: 5,
-                    paddingHorizontal: 20,
-                    margin: 5,
-                    paddingBottom: 5,
-                    backgroundColor: COLORS.darkBlue,
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  CREATIVITY
-                </Text>
-              </View>
+                INNOVATION
+              </Text>
+              <Text
+                style={{
+                  color: "white",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 20,
+                  margin: 5,
+                  backgroundColor: COLORS.darkBlue,
+                  fontSize: 16,
+                }}
+              >
+                GLOBAL CONNECTION
+              </Text>
+              <Text
+                style={{
+                  color: "white",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 20,
+                  margin: 5,
+                  backgroundColor: COLORS.darkBlue,
+                  fontSize: 16,
+                }}
+              >
+                SOCIAL IMPACT
+              </Text>
+              <Text
+                style={{
+                  color: "white",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 20,
+                  margin: 5,
+                  backgroundColor: COLORS.darkBlue,
+                  fontSize: 16,
+                }}
+              >
+                SKILLS DEVELOPMENT
+              </Text>
+              <Text
+                style={{
+                  color: "white",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 20,
+                  margin: 5,
+                  backgroundColor: COLORS.darkBlue,
+                  fontSize: 16,
+                }}
+              >
+                CREATIVITY
+              </Text>
             </View>
           </View>
           <View style={styles.amsText}>
@@ -340,34 +272,32 @@ export default function AboutUs() {
                 color: COLORS.darkBlue,
                 textAlign: "center",
                 fontWeight: "bold",
-                fontSize: "2rem",
+                fontSize: 20,
                 paddingTop: 20,
                 paddingBottom: 30,
               }}
             >
               AMS AIMS TO NOT ONLY HELP BUSINESSES GROW BUT TO ALSO MAKE A
-              POSITIVE IMPACT ON SOCIETY BY NUTURING LOCAL TALENT AND FOSTRING
-              SUSTAINABLE BUSINESSES GROWTH.
+              POSITIVE IMPACT ON SOCIETY BY NURTURING LOCAL TALENT AND FOSTERING
+              SUSTAINABLE BUSINESS GROWTH.
             </Text>
           </View>
         </View>
       </View>
 
       <Image
-        source={require("../../Global/images/big-lion.svg")}
-        style={{
-          minHeight: "99vh",
-          minWidth: "100%",
-          resizeMode: "contain",
-          // backgroundColor: "red",
-        }}
+         source={require("../../Global/images/big-lion.svg")}
+         style={{
+           minHeight: height * 0.99,
+           minWidth: width,
+           resizeMode: "contain",
+         }}
       />
 
       <Footer />
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -398,6 +328,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     justifyContent: "center",
+    paddingHorizontal: 20,
   },
   aboutPlane: {
     marginTop: 50,

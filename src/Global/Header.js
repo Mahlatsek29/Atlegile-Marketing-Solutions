@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import Icon2 from "react-native-vector-icons/Feather";
@@ -8,12 +8,24 @@ import { Dimensions } from 'react-native';
 
 const FollowUs = () => {
   const navigation = useNavigation();
-  const { width } = Dimensions.get('window');
-  const isLargeDevice = width > 600;
+  const [width, setWidth] = useState(Dimensions.get('window').width);
+  const isLargeDevice = width > 911;
 
   const openYouTube = () => {
     navigation.navigate("https://www.youtube.com/");
   };
+
+  useEffect(() => {
+    const handleDimensionsChange = ({ window }) => {
+      setWidth(window.width);
+    };
+
+    Dimensions.addEventListener("change", handleDimensionsChange);
+
+    return () => {
+      Dimensions.removeEventListener("change", handleDimensionsChange);
+    };
+  }, []);
 
   return (
     <Box

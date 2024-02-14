@@ -57,11 +57,9 @@ const DateSelectionAndCheckout = () => {
   const [user, setUser] = useState(null);
   const [rates, setRates] = useState([]);
   const [cartCount, setCartCount] = useState(2);
-
   const [newArr, setNewArr] = useState([]);
   const [userData, setUserData] = useState(null);
   const [addressInput, setAddessInput] = useState(false);
-
   const mapRef = useRef(null);
   const [address, setAddress] = useState({});
   const [error, setError] = useState(null);
@@ -75,10 +73,10 @@ const DateSelectionAndCheckout = () => {
   const [location, setLocation] = useState("");
   const [isPicked, setIsPicked] = useState(false);
   const [driver, setDriver] = useState("");
-  const [length, setLength] = useState(null);
-  const [width, setWidth] = useState(null);
-  const [height, setHeight] = useState(null);
-  const [weight, setWeight] = useState(null);
+  const [totalLength, setTotalLength] = useState(0);
+  const [totalWidth, setTotalWidth] = useState(0);
+  const [totalHeight, setTotalHeight] = useState(0);
+  const [totalWeight, setTotalWeight] = useState(0);
   const [addressCard, setAddressCard] = useState(false);
   const [fixedAddress, setFixedAddress] = useState({});
   const [editedValue, setEditedValue] = useState("");
@@ -156,6 +154,10 @@ const DateSelectionAndCheckout = () => {
           amount: data.price * data.quantity,
           image: data.image,
           name: data.name,
+          length: data.length,
+          width: data.width,
+          height: data.height,
+          weight: data.weight,
           // Add other relevant fields from your Cart collection
         });
       });
@@ -186,43 +188,58 @@ const DateSelectionAndCheckout = () => {
       // Reference to the 'Products' collection in Firestore
       const cartCollectionRef = collection(firestore, "Products");
 
-      // Get the productId from the first product in the cart
-      const docId = newArr[0]?.productId;
+      // Arrays to store dimensions and weight for all products
+      const allLengths = [];
+      const allWidths = [];
+      const allHeights = [];
+      const allWeights = [];
 
-      // Get a reference to the document using the productId
-      const docRef = doc(cartCollectionRef, docId);
+      // Iterate through each product in the cart
+      for (const product of newArr) {
+        const docId = product.productId;
 
-      // Fetch the document snapshot
-      const docSnapshot = await getDoc(docRef);
+        // Get a reference to the document using the productId
+        const docRef = doc(cartCollectionRef, docId);
 
-      // Check if the document exists
-      if (docSnapshot.data()) {
-        // Extract relevant data from the document
-        const businessName = docSnapshot.data().businessName;
-        const length = docSnapshot.data().length;
-        const width = docSnapshot.data().width;
-        const height = docSnapshot.data().height;
-        const weight = docSnapshot.data().weight;
+        // Fetch the document snapshot
+        const docSnapshot = await getDoc(docRef);
 
-        // Log and set the extracted data in the component state
-        console.log("Business Name:", businessName);
-        setTheBusinessName(businessName);
-        setLength(length);
-        setWeight(weight);
-        setWidth(width);
-        setHeight(height);
-      } else {
-        console.log("Document not found.");
+        // Check if the document exists
+        if (docSnapshot.data()) {
+          // Extract relevant data from the document
+          const length = docSnapshot.data().length;
+          const width = docSnapshot.data().width;
+          const height = docSnapshot.data().height;
+          const weight = docSnapshot.data().weight;
+
+          // Add dimensions and weight to the arrays
+          allLengths.push(length);
+          allWidths.push(width);
+          allHeights.push(height);
+          allWeights.push(weight);
+        } else {
+          console.log("Document not found.");
+        }
       }
+
+      // Calculate the sum of dimensions and weight
+      const sumLength = allLengths.reduce((acc, val) => acc + val, 0);
+      const sumWidth = allWidths.reduce((acc, val) => acc + val, 0);
+      const sumHeight = allHeights.reduce((acc, val) => acc + val, 0);
+      const sumWeight = allWeights.reduce((acc, val) => acc + val, 0);
+
+      setTotalLength(sumLength);
+      setTotalWidth(sumWidth);
+      setTotalHeight(sumHeight);
+      setTotalWeight(sumWeight);
     };
 
-    // Ensure that cartData is defined before invoking fetchCompanyData
-    if (cartData) {
+    // Ensure that newArr is defined before invoking fetchCompanyData
+    if (newArr.length > 0) {
       fetchCompanyData();
     }
-  }, [cartData, newArr, firestore, user]);
+  }, [newArr]);
 
-  // Effect hook to calculate the order total based on cart items, tax, and delivery amount
   useEffect(() => {
     // Calculate the total amount of all items in the cart
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
@@ -351,10 +368,10 @@ const DateSelectionAndCheckout = () => {
       },
       parcels: [
         {
-          submitted_length_cm: length,
-          submitted_width_cm: width,
-          submitted_height_cm: height,
-          submitted_weight_kg: weight,
+          submitted_length_cm: totalLength,
+          submitted_width_cm: totalWidth,
+          submitted_height_cm: totalHeight,
+          submitted_weight_kg: totalWeight,
         },
       ],
       declared_value: cartData.price,
@@ -450,10 +467,10 @@ const DateSelectionAndCheckout = () => {
       parcels: [
         {
           parcel_description: "Standard flyer",
-          submitted_length_cm: length,
-          submitted_width_cm: width,
-          submitted_height_cm: height,
-          submitted_weight_kg: weight,
+          submitted_length_cm: totalLength,
+          submitted_width_cm: totalWidth,
+          submitted_height_cm: totalHeight,
+          submitted_weight_kg: totalWeight,
         },
       ],
       opt_in_rates: [],
@@ -1128,7 +1145,6 @@ const DateSelectionAndCheckout = () => {
                   </Grid>
                 </ScrollView>
 
-                
                 {cartData.length > 1 || cartData.length === 1 ? (
                   <>
                     <View

@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,15 +6,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Dimensions,
 } from "react-native";
 import { firebase, firestore } from "../../config";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
-import ReactDOM from "react-dom";
-import App from "../../../App";
-import PlaceAutocomplete from "../../Global/PlaceAutocomplete";
-const AppDiscreiption = "Atlegile Markwting Solutions"; // Add your actual description here
 
 const TellUsAboutYourself = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -22,17 +19,15 @@ const TellUsAboutYourself = ({ navigation }) => {
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
-  const [location, setLocation] = useState("");
+  //const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const window = Dimensions.get("window");
   const user = firebase.auth().currentUser;
-  const [address, setAddress] = useState({});
-  const [coordinates, setCoordinates] = useState({});
 
   const handleContinue = async (e) => {
     e.preventDefault();
-    
-    if (!name || !surname || !phone || !gender || !email ) {
+
+    if (!name || !surname || !phone || !gender || !email || !location) {
       alert("Please fill in all fields before continuing.");
       return;
     }
@@ -48,9 +43,10 @@ const TellUsAboutYourself = ({ navigation }) => {
         surname,
         phone,
         gender,
-        email,      
+        email,
+        //location,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        uid: user.uid,       
+        uid: user.uid,
       });
 
       console.log("User information successfully submitted to Firestore.");
@@ -65,7 +61,9 @@ const TellUsAboutYourself = ({ navigation }) => {
   };
   const emptyOption = [""];
   const genderOptions = ["Male", "Female", "Other"];
-
+  // Calculate container width and height dynamically
+  const containerWidth = window.width > 400 ? 400 : window.width * 0.9;
+  const containerHeight = window.height > 600 ? 600 : window.height * 0.9;
 
   return (
     <ImageBackground
@@ -76,10 +74,19 @@ const TellUsAboutYourself = ({ navigation }) => {
         <Image
           source={require("../../Global/images/logo.png")}
           style={styles.logo}
-        />
-        <Text style={styles.title}>MAIN ACCOUNT HOLDER</Text>
-        <Text style={styles.subtitle}>TELL US ABOUT YOURSELF</Text>
-
+        />{" "}
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            width: "75%",
+            flexDirection: "column",
+          }}
+        >
+          {" "}
+          <Text style={styles.title}>MAIN ACCOUNT HOLDER</Text>
+          <Text style={styles.subtitle}>TELL US ABOUT YOURSELF</Text>
+        </View>
         <View
           style={{
             display: "flex",
@@ -122,7 +129,6 @@ const TellUsAboutYourself = ({ navigation }) => {
             }}
           />
         </View>
-
         <TextField
           id="outlined-number"
           label="Phone"
@@ -176,12 +182,6 @@ const TellUsAboutYourself = ({ navigation }) => {
             textAlign: "left",
           }}
         />
-
-        {/* <PlaceAutocomplete
-          style={{ width: "25vw" }}
-          onPlaceSelect={handlePlaceSelect}
-        /> */}
-
         <TouchableOpacity style={styles.button} onPress={handleContinue}>
           {loading ? (
             <CircularProgress size={25} />
@@ -198,19 +198,15 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-end",
   },
   container: {
     backgroundColor: "#FFFFFF",
-    padding: 20,
-    borderRadius: 10,
-    width: "30%",
-    marginLeft: "69%",
     height: "95%",
+    margin: "3%",
+
     alignItems: "center",
     justifyContent: "center",
-
-    // alignItems: "center",
   },
   logo: {
     width: 150,
@@ -220,14 +216,15 @@ const styles = StyleSheet.create({
     // marginLeft: "29%",
   },
   title: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 10,
+    marginBottom: 2,
     fontWeight: "bold",
-    textAlign: "left",
+    alignSelf: "flex-start",
   },
   subtitle: {
     fontSize: 20,
     fontWeight: "bold",
+    alignSelf: "flex-start",
   },
   input: {
     height: 40,

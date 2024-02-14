@@ -180,28 +180,12 @@ const [shipmentStatus,setShipmentStatus] = useState('')
     tackingShipment();
   }, [cartData]);
   
-  // const data = [
-  //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "ONGOING" },
-  //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
-  //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
-  //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
-  // ];
-
-  // const navigateToDeliveryAndChatSystem = (status) => {
-  //   if (status === "DELIVERED") {
-  //     navigation.navigate("DeliveryAndChatSystem");
-  //   } else if (status === "ONGOING") {
-  //     navigation.navigate("DeliveryOngoing");
-  //   }
-  // };
-  console.log("Cart Data 1 : ", cartData);
-  console.log("Cart Data timeStamp : ", cartData[0]?.timestamp.toString());
-
+ 
   return (
     <View style={{ backgroundColor: "white" }}>
       <FollowUs />
       <Navbar />
-      {/* <ScrollView style={{ flexDirection: "column", backgroundColor: "white" }}> */}
+      <ScrollView style={{ flexDirection: "column", backgroundColor: "white" }}> 
       <Container fixed sx={{ height: "85vh" }}>
         <Grid container spacing={2} xs={12} mx="auto">
           <View
@@ -388,7 +372,7 @@ const [shipmentStatus,setShipmentStatus] = useState('')
           </Grid>
         </Grid>
       </Container>
-      {/* </ScrollView> */}
+      </ScrollView> 
 
       <Footer />
     </View>

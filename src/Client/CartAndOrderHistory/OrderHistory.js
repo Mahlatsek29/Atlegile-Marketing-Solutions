@@ -141,6 +141,7 @@ const OrderHistory = () => {
             height: 100,
             display: "flex",
             flexDirection: "row",
+           
           }}
         >
           <Typography
@@ -220,10 +221,10 @@ const OrderHistory = () => {
             alignItems: "center",
             justifyContent: "center",
             width: "100%",
-         //   backgroundColor: "red",
+          
           }}
         >
-          <Grid container spacing={2} alignSelf={'center'}>
+          <Grid >
             {cartData.map((item, index) => (
               <TouchableOpacity
                 onPress={() => navigateToDeliveryAndChatSystem(item.status)}

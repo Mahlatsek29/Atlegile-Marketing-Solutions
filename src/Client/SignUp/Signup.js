@@ -15,45 +15,54 @@ import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import CircularProgress from "@mui/material/CircularProgress";
 
+// Define the Signup component
 const Signup = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation(); 
 
+  // Initialize state variables
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nameAlternative, setNameAlternative] = useState(null);
   const [phoneAlternative, setPhoneAlternative] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const window = Dimensions.get("window"); // Getting window dimensions
+  const window = Dimensions.get("window"); 
 
+  // Function to navigate to business registration screen
   const navigateSignUpBussiness = () => {
     navigation.navigate("BusinessRegistration");
   };
 
+  // Function to navigate to landing screen
   const navigateToShop = () => {
     navigation.navigate("Landing");
   };
 
+  // Function to navigate to sign-in screen
   const navigatealreadyhaveaccount = () => {
     navigation.navigate("SignIn");
   };
 
+  // Function to handle signup process
   const handleSignup = async (e) => {
     e.preventDefault();
 
+    // Validate input fields
     if (email.trim() === "" || password.trim() === "") {
       alert("Please fill in all fields before signing in.");
       return;
     }
 
     try {
-      setLoading(true);
+      setLoading(true); 
       const userCredential = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
 
       if (userCredential.user) {
         console.log("User signed up:", userCredential.user);
+
+        // Save user data in Firestore
         await firestore
           .collection("Users")
           .doc(userCredential.user.uid)
@@ -65,13 +74,13 @@ const Signup = () => {
             },
           });
 
-        navigation.navigate("TellUsAboutYourself");
+        navigation.navigate("TellUsAboutYourself"); 
       }
     } catch (error) {
       console.error("Error signing up:", error.message);
       alert("Error signing up. Please try again.");
     } finally {
-      setLoading(false); // Set loading back to false after the sign-up process completes
+      setLoading(false); 
     }
   };
 
@@ -79,6 +88,7 @@ const Signup = () => {
   const containerWidth = window.width > 400 ? 400 : window.width * 0.9;
   const containerHeight = window.height > 600 ? 600 : window.height * 0.9;
 
+  // Render the component
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground
@@ -88,9 +98,7 @@ const Signup = () => {
         <View
           style={{ ...styles.container, width: containerWidth, height: "95%" }}
         >
-          <View>
-            
-          </View>
+          <View></View>
           <Image
             source={require("../../Global/images/logo.png")}
             style={styles.logo}
@@ -196,6 +204,7 @@ const Signup = () => {
   );
 };
 
+// Define styles for the component
 const styles = StyleSheet.create({
   background: {
     flex: 1,
@@ -204,9 +213,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: "#FFFFFF",
-
     margin: "3%",
-
     alignItems: "center",
     justifyContent: "center",
   },

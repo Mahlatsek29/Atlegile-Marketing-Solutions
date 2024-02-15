@@ -12,32 +12,33 @@ import { firebase, firestore } from "../../config";
 import TextField from "@mui/material/TextField";
 import { useNavigation } from "@react-navigation/native";
 import CircularProgress from "@mui/material/CircularProgress";
-import FontAwesome from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome
+import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
 
+// Define the component
 const AlternativeContact = () => {
-  const user = firebase.auth().currentUser;
-  const navigation = useNavigation();
+  const user = firebase.auth().currentUser; 
+  const navigation = useNavigation(); 
 
+  // Initialize state variables
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [loading, setLoading] = useState(false); // New state for loading
-  const window = Dimensions.get("window"); // Getting window dimensions
+  const [loading, setLoading] = useState(false); 
+  const window = Dimensions.get("window"); 
 
+  // Function to handle form submission
   const handleContinue = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
 
+    // Validate input fields
     if (name.trim() === "" || phone.trim() === "") {
       alert("Please fill in all fields before continuing.");
       return;
     }
 
     try {
-      setLoading(true); // Set loading to true when the request starts
+      setLoading(true); 
 
-      const userRef = firestore.collection("Users").doc(user.uid);
-
-      // Get the existing user data
-      const userData = await userRef.get();
+      const userRef = firestore.collection("Users").doc(user.uid); 
 
       // Update the user data with alternative contact information
       await userRef.set(
@@ -50,7 +51,7 @@ const AlternativeContact = () => {
         { merge: true }
       );
 
-      navigation.navigate("Landing");
+      navigation.navigate("Landing"); 
 
       console.log(
         "Alternative contact information submitted to 'Users' collection in Firestore."
@@ -61,17 +62,20 @@ const AlternativeContact = () => {
         error.message
       );
     } finally {
-      setLoading(false); // Set loading to false when the request completes
+      setLoading(false); 
     }
   };
 
+  // Function to handle 'Not Now' button press
   const handleNotNow = () => {
     console.log("Not Now button clicked");
   };
-  // Calculate container width and height dynamically
+
+  // Calculate container width and height dynamically based on window dimensions
   const containerWidth = window.width > 400 ? 400 : window.width * 0.9;
   const containerHeight = window.height > 600 ? 600 : window.height * 0.9;
 
+  // Render the component
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground
@@ -118,7 +122,7 @@ const AlternativeContact = () => {
               onChange={(e) => setPhone(e.target.value)}
             />
           </View>
-          <TouchableOpacity style={styles.button}  onPress={handleContinue}>
+          <TouchableOpacity style={styles.button} onPress={handleContinue}>
             {loading ? (
               <CircularProgress size={25} />
             ) : (
@@ -128,11 +132,10 @@ const AlternativeContact = () => {
 
           <TouchableOpacity
             style={styles.businessButton}
-            onPress={handleContinue}
+            onPress={handleNotNow}
           >
             <Text style ={styles.buttonText1}>
               NOT NOW
-              
             </Text>
           </TouchableOpacity>
         </View>
@@ -141,6 +144,7 @@ const AlternativeContact = () => {
   );
 };
 
+// Define styles for the component
 const styles = StyleSheet.create({
   background: {
     flex: 1,
@@ -149,9 +153,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: "#FFFFFF",
-
     margin: "3%",
-
     alignItems: "center",
     justifyContent: "center",
   },

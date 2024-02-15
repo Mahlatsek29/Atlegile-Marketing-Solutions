@@ -11,20 +11,20 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
-import CircularProgress from "@mui/material/CircularProgress"; // This import might cause an issue in a React Native project. Make sure you're using a proper CircularProgress component for React Native.
-import { firebase } from "../../config"; // Assuming firebase import is correct
+import CircularProgress from "@mui/material/CircularProgress";
+import { firebase } from "../../config"; 
 
 const Signin = () => {
-  const navigation = useNavigation(); // React Navigation hook for navigation
-  const [email, setEmail] = useState(""); // State variable for email input
-  const [password, setPassword] = useState(""); // State variable for password input
-  const [loading, setLoading] = useState(false); // State variable for loading indicator
-  const window = Dimensions.get('window'); // Getting window dimensions
+  const navigation = useNavigation(); 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState(""); 
+  const [loading, setLoading] = useState(false);
+  const window = Dimensions.get('window'); 
 
   // Function to handle sign-in
   const handleSignin = async () => {
     try {
-      setLoading(true); // Set loading state to true
+      setLoading(true); 
       // Validate email and password
       if (email.trim() === "" || password.trim() === "") {
         alert("Please fill in all fields before signing in.");
@@ -37,13 +37,13 @@ const Signin = () => {
 
       if (userCredential.user) {
         console.log("User signed in:", userCredential.user);
-        navigation.navigate("Landing"); // Navigate to Landing screen upon successful sign-in
+        navigation.navigate("Landing"); 
       }
     } catch (error) {
       console.error("Error signing in:", error.message);
-      alert("Error signing in. Please try again."); // Alert user if sign-in fails
+      alert("Error signing in. Please try again."); 
     } finally {
-      setLoading(false); // Set loading state to false after sign-in attempt
+      setLoading(false); 
     }
   };
 
@@ -57,7 +57,7 @@ const Signin = () => {
   };
 
   const handleShop = () => {
-    navigation.navigate("Landing"); // Navigate to Landing screen when user wants to shop
+    navigation.navigate("Landing"); 
   };
 
   // Calculate container width and height dynamically
@@ -66,7 +66,7 @@ const Signin = () => {
 
   return (
     <ImageBackground
-      source={require("../../Global/images/Reed.jpg")} // Background image
+      source={require("../../Global/images/Reed.jpg")}
       style={styles.background}>
       <View style={{...styles.container, width: containerWidth, height: "95%"}}>
 
@@ -125,9 +125,9 @@ const Signin = () => {
         {/* Sign-in button */}
         <TouchableOpacity style={styles.button} onPress={handleSignin}>
           {loading ? (
-            <CircularProgress size={25} /> // Loading indicator
+            <CircularProgress size={25} /> 
           ) : (
-            <Text style={styles.buttonText}>SIGN IN</Text> // Sign-in text
+            <Text style={styles.buttonText}>SIGN IN</Text> 
           )}
         </TouchableOpacity>
         <View style= {{width:"70%"}}>
@@ -163,11 +163,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: "#FFFFFF",
-  //  padding: 20,
-    // borderRadius: 10,
-   // width: "30%",
     margin: "3%",
-   // height: "95vh",
     alignItems: "center",
     justifyContent: "center",
   },

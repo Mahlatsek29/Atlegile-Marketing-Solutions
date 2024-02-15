@@ -139,7 +139,7 @@ const DeliveryOngoing = () => {
       return [];
     }
   };
-  useEffect(() => {
+ 
     const tackingShipment = async () => {
       const config = {
         headers: {
@@ -167,9 +167,8 @@ const DeliveryOngoing = () => {
 
     tackingShipment();
     console.log("shipmentTrack:", shipmentTrack.shipments);
-    //console.log("tracking_events:", shipmentTrack.shipments[0].tracking_events);
-    //console.log("status:", shipmentTrack.shipments[0].tracking_events[0].status);
-  }, []);
+  
+
   return (
     <>
       {chatmodelVisble && (
@@ -394,7 +393,6 @@ const DeliveryOngoing = () => {
                       height: "100%",
                       borderBottomWidth: 2,
                       borderBottomColor: "#1D1D1D",
-                      // backgroundColor:'yellow',
                       flexDirection: "row",
                       alignItems: "center",
                       paddingTop: 2,
@@ -406,11 +404,10 @@ const DeliveryOngoing = () => {
                         width: "25%",
                         height: "100%",
                         backgroundColor: "#000026",
-                        // backgroundColor:'red'
                       }}
                     >
                       <Image
-                        source={{ uri: item.image }} // Assuming image is stored as a URL in Firebase
+                        source={{ uri: item.image }} 
                         style={{
                           width: "100%",
                           height: "15vh",
@@ -598,7 +595,7 @@ const DeliveryOngoing = () => {
                       backgroundColor: "grey",
                       height: 14,
                       width: 14,
-                      borderRadius: 7, // Adjusted the borderRadius to a number
+                      borderRadius: 7, 
                       marginRight: 8,
                     }}
                   ></View>
@@ -728,8 +725,6 @@ const DeliveryOngoing = () => {
                   variant="outlined"
                   style={{
                     marginTop: 60,
-                    // width: 350,
-                    // height: 30,
                     borderWidth: 1,
                     borderColor: "lightgrey",
                     borderRadius: 15,
@@ -743,8 +738,6 @@ const DeliveryOngoing = () => {
                     style={{
                       fontSize: 16,
                       color: "lightgrey",
-                      // margin: 0,
-                      // marginLeft: 5,
                     }}
                   >
                     ONGOING

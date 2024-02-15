@@ -13,45 +13,49 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
 
+// Define the TellUsAboutYourself component
 const TellUsAboutYourself = ({ navigation }) => {
+  // Initialize state variables
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
-  //const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
-  const window = Dimensions.get("window");
+  const window = Dimensions.get("window"); 
   const user = firebase.auth().currentUser;
 
+  // Function to handle form submission
   const handleContinue = async (e) => {
     e.preventDefault();
 
-    if (!name || !surname || !phone || !gender || !email || !location) {
+    // Validate input fields
+    if (!name || !surname || !phone || !gender || !email) {
       alert("Please fill in all fields before continuing.");
       return;
     }
 
+    // Save user ID to local storage
     localStorage.setItem("user", user.uid);
 
     try {
-      setLoading(true);
+      setLoading(true); 
       const userRef = firestore.collection("Users").doc(user.uid);
 
+      // Save user information to Firestore
       await userRef.set({
         name,
         surname,
         phone,
         gender,
         email,
-        //location,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         uid: user.uid,
       });
 
       console.log("User information successfully submitted to Firestore.");
 
-      navigation.navigate("AlternativeContact");
+      navigation.navigate("AlternativeContact"); 
     } catch (error) {
       console.error("Error submitting user information:", error.message);
       alert("Error submitting user information. Please try again.");
@@ -59,12 +63,15 @@ const TellUsAboutYourself = ({ navigation }) => {
       setLoading(true);
     }
   };
-  const emptyOption = [""];
+
+  // Gender options
   const genderOptions = ["Male", "Female", "Other"];
+
   // Calculate container width and height dynamically
   const containerWidth = window.width > 400 ? 400 : window.width * 0.9;
   const containerHeight = window.height > 600 ? 600 : window.height * 0.9;
 
+  // Render the component
   return (
     <ImageBackground
       source={require("../../Global/images/Reed.jpg")}
@@ -74,7 +81,7 @@ const TellUsAboutYourself = ({ navigation }) => {
         <Image
           source={require("../../Global/images/logo.png")}
           style={styles.logo}
-        />{" "}
+        />
         <View
           style={{
             display: "flex",
@@ -83,7 +90,6 @@ const TellUsAboutYourself = ({ navigation }) => {
             flexDirection: "column",
           }}
         >
-          {" "}
           <Text style={styles.title}>MAIN ACCOUNT HOLDER</Text>
           <Text style={styles.subtitle}>TELL US ABOUT YOURSELF</Text>
         </View>
@@ -94,6 +100,7 @@ const TellUsAboutYourself = ({ navigation }) => {
             width: "75%",
           }}
         >
+          {/* Name and Surname fields */}
           <TextField
             id="outlined-number"
             label="Name"
@@ -106,11 +113,9 @@ const TellUsAboutYourself = ({ navigation }) => {
             onChange={(e) => setName(e.target.value)}
             style={{
               width: "48%",
-
               marginRight: "5px",
             }}
           />
-
           <TextField
             id="outlined-number"
             label="Surname"
@@ -123,12 +128,10 @@ const TellUsAboutYourself = ({ navigation }) => {
             onChange={(e) => setSurname(e.target.value)}
             style={{
               width: "48%",
-              // marginTop: "5px",
-              // marginRight: "10px",
-              // textAlign: "left",
             }}
           />
         </View>
+        {/* Phone field */}
         <TextField
           id="outlined-number"
           label="Phone"
@@ -146,6 +149,7 @@ const TellUsAboutYourself = ({ navigation }) => {
           }}
         />
         <br />
+        {/* Gender selection */}
         <TextField
           id="outlined"
           select
@@ -166,6 +170,7 @@ const TellUsAboutYourself = ({ navigation }) => {
           ))}
         </TextField>
         <br />
+        {/* Email field */}
         <TextField
           id="outlined-number"
           label="Email"
@@ -182,6 +187,7 @@ const TellUsAboutYourself = ({ navigation }) => {
             textAlign: "left",
           }}
         />
+        {/* Continue button */}
         <TouchableOpacity style={styles.button} onPress={handleContinue}>
           {loading ? (
             <CircularProgress size={25} />
@@ -194,6 +200,7 @@ const TellUsAboutYourself = ({ navigation }) => {
   );
 };
 
+// Define styles for the component
 const styles = StyleSheet.create({
   background: {
     flex: 1,
@@ -204,7 +211,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     height: "95%",
     margin: "3%",
-
     alignItems: "center",
     justifyContent: "center",
   },
@@ -213,7 +219,6 @@ const styles = StyleSheet.create({
     height: 50,
     marginBottom: 150,
     resizeMode: "contain",
-    // marginLeft: "29%",
   },
   title: {
     fontSize: 10,
@@ -225,17 +230,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     alignSelf: "flex-start",
-  },
-  input: {
-    height: 40,
-    // marginBottom: 10,
-    width: "100%",
-    borderBottomWidth: 1,
-    borderBottomColor: "gray",
-    marginVertical: 15,
-  },
-  pickerItem: {
-    color: "#072840",
   },
   button: {
     backgroundColor: "#072840",
@@ -250,9 +244,6 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     fontWeight: "bold",
-  },
-  row: {
-    flexDirection: "row",
   },
 });
 

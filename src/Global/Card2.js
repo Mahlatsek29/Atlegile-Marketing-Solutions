@@ -13,14 +13,13 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
 import { TouchableOpacity } from "react-native";
 
-const ProductCard = ({item} ) => {
+const ProductCard = ({ item }) => {
   const [isRed, setIsRed] = React.useState(true);
 
   const toggleHeart = () => {
     console.log("toggleHeart Clicked");
     setIsRed((prevState) => !prevState);
   };
-  console.log(item)
 
   return (
     <Card
@@ -175,7 +174,7 @@ const ProductCard = ({item} ) => {
                   fontWeight: "700",
                   marginRight: "10px",
                 }}>
-                R{item?.price}
+                R{item?.price}700
               </Typography>
 
               <Typography
@@ -186,7 +185,7 @@ const ProductCard = ({item} ) => {
                   fontSize: "18px",
                   fontWeight: "700",
                 }}>
-                R{item?.price}
+                R{item?.price}500
               </Typography>
             </Box>
           </Box>

@@ -28,7 +28,7 @@ import axios from "axios";
 import { firestore } from "../../config";
 
 const OrderHistory = () => {
-  const [cartData, setCartData] = useState([]);
+  const [order, setOrder] = useState([]);
   const [user, setUser] = useState(null);
   const [shipmentStatus, setShipmentStatus] = useState("");
   const { navigate } = useNavigation();
@@ -44,22 +44,22 @@ const OrderHistory = () => {
     };
   }, []);
 
-  const fetchCartData = async () => {
+  const fetchOrder= async () => {
     if (!user) {
       console.error("User not authenticated.");
       return;
     }
 
-    const cartCollectionRef = collection(firestore, "Orders");
-    const q = query(cartCollectionRef, where("userId", "==", user.uid));
+    const orderCollectionRef = collection(firestore, "Orders");
+    const q = query(orderCollectionRef, where("userId", "==", user.uid));
 
     try {
       const querySnapshot = await getDocs(q);
 
-      const cartItems = [];
+      const orderItems = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        cartItems.push({
+        orderItems.push({
           id: doc.id,
           DeliveryStatus: data.DeliveryStatus,
           image: data.items[0].image,
@@ -70,15 +70,15 @@ const OrderHistory = () => {
         });
       });
 
-      setCartData(cartItems);
+      setOrder(orderItems);
     } catch (error) {
-      console.error("Error fetching cart data:", error);
+      console.error("Error fetching orders:", error);
     }
   };
 
   useEffect(() => {
     if (user) {
-      fetchCartData();
+      fetchOrder();
     }
   }, [user]);
 
@@ -86,7 +86,7 @@ const OrderHistory = () => {
 
   useEffect(() => {
     const trackingShipment = async () => {
-      if (cartData.length > 0 && cartData[0].trackingRef) {
+      if (order.length > 0 && order[0].trackingRef) {
         const config = {
           headers: {
             Authorization: `Bearer ${CourierAPIKey}`,
@@ -96,7 +96,7 @@ const OrderHistory = () => {
 
         try {
           const response = await axios.get(
-            `https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=${cartData[0].trackingRef}`,
+            `https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=${order[0].trackingRef}`,
             config
           );
 
@@ -107,17 +107,18 @@ const OrderHistory = () => {
           console.error("Error getting shipments", error);
         }
       } else {
-        console.error("Tracking reference not available in cartData");
+        console.error("Tracking reference not available in order");
       }
     };
 
     trackingShipment();
-  }, [cartData]);
+  }, [order]);
 
-  const navigateToDeliveryAndChatSystem = (status) => {
+  const navigateToDeliveryAndChatSystem = (id) => {
     // Implement navigation logic based on the status or any other condition
     // For example, navigate to a specific screen based on the status
-    navigate("DeliveryAndChatSystem", { status });
+    
+    navigate("DeliveryAndChatSystem", { id });
   };
 
   return (
@@ -225,9 +226,9 @@ const OrderHistory = () => {
           }}
         >
           <Grid >
-            {cartData.map((item, index) => (
+            {order.map((item, index) => (
               <TouchableOpacity
-                onPress={() => navigateToDeliveryAndChatSystem(item.status)}
+                onPress={() => navigateToDeliveryAndChatSystem(item.id)}
                 key={index}
               >
                 <Grid item xs={10} md={8} key={item.id}>

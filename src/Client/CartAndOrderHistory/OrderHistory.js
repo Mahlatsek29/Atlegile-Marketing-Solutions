@@ -65,7 +65,7 @@ const OrderHistory = () => {
           image: data.items[0].image,
           deliveryGuy: data.deliveryGuy,
           orderNumber: data.orderNumber,
-          timestamp: data.deliveryDate.toDate(),
+          timestamp: data.deliveryDate,
           trackingRef: data.trackingEventsRef,
         });
       });

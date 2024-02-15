@@ -153,11 +153,7 @@ const DateSelectionAndCheckout = () => {
           quantity: data.quantity,
           amount: data.price * data.quantity,
           image: data.image,
-          name: data.name,
-          length: data.length,
-          width: data.width,
-          height: data.height,
-          weight: data.weight,
+          name: data.name,         
           // Add other relevant fields from your Cart collection
         });
       });
@@ -597,13 +593,29 @@ const DateSelectionAndCheckout = () => {
       try {
         // Get a reference to the "Orders" collection in Firestore
         const cartCollectionRef = collection(firestore, "Orders");
+       console.log("serverTimestamp is ",serverTimestamp())
+       console.log('trackingRef is ',trackingRef)
+       console.log('location is ',location)
+       console.log( "deliveryDate: ",rates[selectedIndex].service_level.delivery_date_from) 
+       console.log("deliveryGuy: ",driver)
+       console.log("name: ",userData?.name)
+       console.log("invoiceNumber: ",`#${Math.floor(
+        Math.random() * 10000000
+      )}555${Math.floor(Math.random() * 100000000)}`)
+       console.log("DeliveryStatus: ",shipmentStatus)
+       console.log("userId: ",userData?.uid)
+       console.log("orderNumber: ",`#${
+        userData?.uid?.slice(5, 15) + Math.floor(Math.random() * 10000)
+      }`)
+       console.log("totalAmount: ",orderTotal)
+       console.log(' items: ',[...newArr])
 
         // Add a new document to the "Orders" collection with order details
         await addDoc(cartCollectionRef, {
           createdAt: serverTimestamp(),
           trackingEventsRef: trackingRef,
           deliveryAddress: location,
-          deliveryDate: serverTimestamp(),
+          deliveryDate: rates[selectedIndex].service_level.delivery_date_from,
           deliveryFee: rates[selectedIndex].base_rate.charge,
           deliveryGuy: driver,
           name: userData?.name,

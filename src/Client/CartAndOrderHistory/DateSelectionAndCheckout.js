@@ -21,7 +21,6 @@ import { useNavigation } from "@react-navigation/native";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
-
 import axios from "axios";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firestore } from "../../config";
@@ -831,7 +830,7 @@ const DateSelectionAndCheckout = () => {
             maxWidth={400}
             backgroundColor="white"
             justifyContent="center"
-            p={2} 
+            p={2} // Padding added for all sides
           >
             {/* View for aligning content in the center */}
             <View style={{ justifyContent: "center" }}>
@@ -1320,10 +1319,11 @@ const DateSelectionAndCheckout = () => {
                             border: "2px #062338 solid",
                             padding: 10,
                             borderRadius: 30,
+                            //marginLeft:10
                             height: "6.5vh",
-                           
+                            //backgroundColor: "#062338",
                           }}
-                          onPress={() => setAddessInput(false)} 
+                          onPress={() => setAddessInput(false)} // Assuming setAddessInput is a function
                         >
                           <Text
                             style={{ color: "#062338", paddingHorizontal: 8 }}
@@ -1352,7 +1352,7 @@ const DateSelectionAndCheckout = () => {
                               padding: 10,
                               borderRadius: 30,
                             }}
-                            onPress={() => setAddessInput(true)}
+                            onPress={() => setAddessInput(true)} // Assuming setAddessInput is a function
                           >
                             <Text
                               style={{ color: "white", paddingHorizontal: 10 }}
@@ -1425,7 +1425,7 @@ const DateSelectionAndCheckout = () => {
                               display: "flex",
                               flexDirection: "row",
                               justifyContent: "flex-start",
-                              flexWrap: "wrap", 
+                              flexWrap: "wrap", // Added flexWrap to allow wrapping
                               width: "100%",
                             }}
                           >

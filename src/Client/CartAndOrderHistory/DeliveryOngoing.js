@@ -169,8 +169,8 @@ const DeliveryOngoing = () => {
     navigation.navigate("Landing");
   };
 
-  const navigateToDeliveryOngoing = () => {
-    navigation.navigate("DeliveryOngoing", { orderId });
+  const navigateToOrderHistory = () => {
+    navigation.navigate("OrderHistory", { orderId });
   };
 
   // const getShipment = async () => {
@@ -423,9 +423,7 @@ const DeliveryOngoing = () => {
                 {/* Left Side Content */}
                 <Box mt={2} pr={4}>
                   {/* Heading displaying the order number */}
-                  <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                    ORDER #ABC246
-                  </Typography>
+                  
 
                   {/* Container for navigation links */}
                   <View style={{ display: "flex", flexDirection: "row" }}>
@@ -442,17 +440,23 @@ const DeliveryOngoing = () => {
                     {/* Cart link */}
                     <Typography>
                       <TouchableOpacity
-                        onPress={navigateToDeliveryOngoing}
+                        onPress={navigateToOrderHistory}
                         style={{ color: "grey" }}
                       >
-                        Cart
+                        Order History /
                       </TouchableOpacity>
+                      
+                    </Typography>
+                    <Typography>
+                      {order.orderNumber}
                     </Typography>
                   </View>
-
+                  <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                    ORDER {order.orderNumber}
+                  </Typography>
                   {/* Heading for the cart section */}
                   <Typography variant="h4" style={{ fontWeight: "bold" }}>
-                    CART
+                    PRODUCTS
                   </Typography>
                   {/* ScrollView container with specific styles */}
                   <ScrollView

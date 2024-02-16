@@ -618,21 +618,7 @@ const DateSelectionAndCheckout = () => {
       try {
         // Get a reference to the "Orders" collection in Firestore
         const cartCollectionRef = collection(firestore, "Orders");
-        console.log("authPin ",authPin)
-        console.log("items is ",[...newArr])
-        console.log('trackingRef is ',trackingRef)
-        console.log('location is',location)
-        console.log('rates[selectedIndex].service_level.delivery_date_from is ',rates[selectedIndex].service_level.delivery_date_from)
-        console.log("rates[selectedIndex].base_rate.charge is ",rates[selectedIndex].base_rate.charge )
-        console.log("driver is ",driver )
-        console.log("coordinates is ", coordinates)
-        console.log("userData?.name is ",userData?.name )
-        console.log("invoiceNumber is ",`#${Math.floor(
-          Math.random() * 10000000
-        )}555${Math.floor(Math.random() * 100000000)}`, )
-        console.log("orderTotal is ", orderTotal)
-        console.log("agentReferral is ",agentReferral )
-        console.log("Tax is ", tax)
+       
        
         // Add a new document to the "Orders" collection with order details
         await addDoc(cartCollectionRef, {
@@ -1045,9 +1031,9 @@ const DateSelectionAndCheckout = () => {
               {/* Left Side Content */}
               <Box mt={2} pr={4}>
                 {/* Heading displaying the order number */}
-                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                {/* <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                   ORDER #ABC246
-                </Typography>
+                </Typography> */}
 
                 {/* Container for navigation links */}
                 <View style={{ display: "flex", flexDirection: "row" }}>
@@ -1067,9 +1053,10 @@ const DateSelectionAndCheckout = () => {
                       onPress={navigateToOrderHistory}
                       style={{ color: "grey" }}
                     >
-                      Cart
+                      Cart /
                     </TouchableOpacity>
                   </Typography>
+                  
                 </View>
 
                 {/* Heading for the cart section */}
@@ -1079,6 +1066,9 @@ const DateSelectionAndCheckout = () => {
                 >
                   CART
                 </Typography>
+                {/* <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                    ORDER {order.orderNumber}
+                </Typography> */}
                 {/* ScrollView container with specific styles */}
                 <ScrollView
                   style={{ flex: 1, height: "50vh", alignSelf: "center" }}

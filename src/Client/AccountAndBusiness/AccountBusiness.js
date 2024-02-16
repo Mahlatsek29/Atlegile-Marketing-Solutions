@@ -2,13 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import BlackSilk from "../../Global/images/blackSilk.jpg";
 import BusinessAccountPlus from "../../Global/images/BusinessPlus+.jpg";
 import NavBar from "../../Global/Navbar";
-import {
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-  ScrollView,
-} from "react-native";
+import { View, TouchableOpacity, Image, Text, ScrollView } from "react-native";
 import { Footer } from "../../Global/Footer";
 import {
   Grid,
@@ -88,12 +82,29 @@ export default function BusinessAccount() {
   const [layout, setLayout] = React.useState("fullscreen");
   const [scroll, setScroll] = React.useState(true);
   const theme = useTheme();
+  const [isMobile, setIsMobile] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1080); // Adjust the breakpoint as needed
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Initial check
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
 
   useEffect(() => {
     setLoading(false); // to set loading to false
   }, [products]);
   if (loading) {
-    // Render a loading state using Skeleton 
+    // Render a loading state using Skeleton
     return (
       <Card className="card-container">
         <Skeleton
@@ -1902,158 +1913,6 @@ export default function BusinessAccount() {
         </View>
       ) : null}
 
-      {businessAuthorization ? null : (
-        // Displayed when businessAuthorization is false whicn is when not subscibed
-        <View
-          style={{
-            top: 400,
-            position: "absolute",
-            flex: 1,
-            backgroundColor: "white",
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "flex-end",
-            zIndex: 100,
-            alignSelf: "flex-end",
-          }}
-        >
-          {/* Container for the subscription details */}
-          <View
-            style={{
-              width: "25vw",
-              flexDirection: "column",
-              border: "1px lightgray solid",
-              padding: 40,
-              alignItems: "center",
-              height: 500,
-              zIndex: 500,
-            }}
-          >
-            {/* Business Plus logo */}
-            <Image
-              source={require("../../Global/images/BusinessPlus+.jpg")}
-              alt="business plus logo"
-              style={{
-                width: "10vw",
-                height: "7vh",
-                marginBottom: 5,
-              }}
-            />
-            <Text
-              style={{
-                color: "#252b42",
-                fontWeight: "700",
-                fontSize: 32,
-                textAlign: "center",
-              }}
-            >
-              {/* Business Plus subscription title */}
-              <TouchableOpacity onPress={() => setPaymentModal(true)}>
-                <Text>BUSINESS PLUS SUBSCRIPTION</Text>
-              </TouchableOpacity>
-            </Text>
-            <Text
-              style={{
-                color: "#9e9e9e",
-                fontWeight: "700",
-                fontSize: 16,
-                textAlign: "center",
-                paddingTop: 10,
-                paddingBottom: 10,
-              }}
-            >
-              {/* Subscription description */}
-              Unlock More Opportunities with Business Plus Subscription
-            </Text>
-            {/* Subscription pricing details */}
-            <View
-              style={{
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: "#23a6f0",
-                  fontWeight: "700",
-                  fontSize: 40,
-                  marginBottom: -10,
-                }}
-              >
-                R150
-              </Text>
-              <Text
-                style={{
-                  color: "#b8d9f7",
-                  fontWeight: "700",
-                  fontSize: 20,
-                }}
-              >
-                Per Month
-              </Text>
-            </View>
-            {/* Subscription features */}
-            <View style={{ flexDirection: "column" }}>
-              <Text
-                style={{
-                  marginTop: 15,
-                  fontWeight: "700",
-                  fontSize: 18,
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                {" "}
-                {/* Checkmark and feature */}
-                <Ionicons
-                  name="checkmark-circle"
-                  size={30}
-                  color="#2dc071"
-                />{" "}
-                List Unlimited Products
-              </Text>
-              <Text
-                style={{
-                  fontWeight: "700",
-                  fontSize: 18,
-                  marginTop: 15,
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                {" "}
-                {/* Checkmark and feature */}
-                <Ionicons
-                  name="checkmark-circle"
-                  size={30}
-                  color="#2dc071"
-                />{" "}
-                Priority Support
-              </Text>
-              <Text
-                style={{
-                  fontWeight: "700",
-                  fontSize: 18,
-                  marginTop: 15,
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                {" "}
-                {/* Checkmark and feature */}
-                <Ionicons
-                  name="checkmark-circle"
-                  size={30}
-                  color="#2dc071"
-                />{" "}
-                Exclusive Promotions
-              </Text>
-            </View>
-          </View>
-        </View>
-      )}
-
       <Header />
       <NavBar />
       <View
@@ -2063,138 +1922,258 @@ export default function BusinessAccount() {
           backgroundColor: "#FFFFFF",
         }}
       >
-        <View
-          style={{
-            paddingLeft: 30,
-            backgroundColor: "whitesmoke",
-            alignItems: "flex-start",
-          }}
-        >
-          {/* Container for user profile information */}
-          <Box
-            display="flex"
-            justifyContent="flex-start"
-            alignItems="center"
-            paddingRight={2}
+        {!isMobile && (
+          <View
+            style={{
+              paddingLeft: 30,
+              backgroundColor: "whitesmoke",
+              alignItems: "flex-start",
+            }}
           >
-            {/* Card for user details */}
-            <View
-              elevation={3}
-              style={{
-                padding: "20px",
-                height: "100%",
-                width: "300px",
-                margin: "auto",
-                backgroundColor: "whitesmoke",
-              }}
+            <Box
+              display="flex"
+              justifyContent="flex-start"
+              alignItems="center"
+              paddingRight={2}
             >
-              {/* User profile image */}
-              <Box textAlign="center">
-                <img
-                  src={sara}
-                  alt="User Image"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    borderRadius: "50%",
-                    marginTop: "80%",
-                  }}
-                />
-                {/* User details */}
-                <Box sx={{ marginTop: "10%" }}>
-                  <Typography variant="h6">
-                    {userData?.name} {userData?.surname}
-                  </Typography>
-                  <Typography variant="subtitle1">{userData?.phone}</Typography>
-                  <Typography variant="subtitle2">{userData?.email}</Typography>
-                </Box>
-              </Box>
-
-              {/* User location */}
-              <Box>
-                <Typography sx={{ textAlign: "center" }}>
-                  {userData?.location}
-                </Typography>
-              </Box>
-
-              {/* Various buttons for user actions to navigae to*/}
-              <Box style={{ marginTop: "50%" }}>
-                <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                <Button
-                  style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handleorders}
-                >
-                  Orders
-                </Button>
-              </Box>
-
-              <Box>
-                <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                <Button
-                  style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handlefavorites}
-                >
-                  Favorites
-                </Button>
-              </Box>
-
-              <Box>
-                <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                <Button
-                  style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handleterms}
-                >
-                  Terms and Conditions
-                </Button>
-              </Box>
-
-              <Box sx={{}}>
-                <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                <Button
-                  style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handlepolicy}
-                >
-                  Privacy Policy
-                </Button>
-              </Box>
-
-              {/* Contact information */}
-              <Box
-                sx={{
-                  marginTop: "40px",
-                  backgroundColor: "rgba(266, 255, 255, 0.9)",
-                  textAlign: "center",
-                  padding: {
-                    xs: "10px",
-                    sm: "20px",
-                  },
+              <View
+                elevation={3}
+                style={{
+                  padding: "20px",
+                  height: "100%",
+                  width: "300px",
+                  margin: "auto",
+                  backgroundColor: "whitesmoke",
                 }}
               >
-                <Button
+                <Box textAlign="center">
+                  <img
+                    src={sara}
+                    alt="User Image"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      borderRadius: "50%",
+                      marginTop: "80%",
+                    }}
+                  />
+                  <Box sx={{ marginTop: "10%" }}>
+                    <Typography variant="h6">
+                      {userData?.name} {userData?.surname}
+                    </Typography>
+                    <Typography variant="subtitle1">
+                      {userData?.phone}
+                    </Typography>
+                    <Typography variant="subtitle2">
+                      {userData?.email}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box>
+                  <Typography sx={{ textAlign: "center" }}>
+                    {userData?.location}
+                  </Typography>
+                </Box>
+
+                <Box style={{ marginTop: "50%" }}>
+                  <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                  <Button
+                    style={{ marginLeft: 5, color: "gray" }}
+                    onClick={handleorders}
+                  >
+                    Orders
+                  </Button>
+                </Box>
+
+                <Box>
+                  <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                  <Button
+                    style={{ marginLeft: 5, color: "gray" }}
+                    onClick={handlefavorites}
+                  >
+                    Favorites
+                  </Button>
+                </Box>
+
+                <Box>
+                  <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                  <Button
+                    style={{ marginLeft: 5, color: "gray" }}
+                    onClick={handleterms}
+                  >
+                    Terms and Conditions
+                  </Button>
+                </Box>
+
+                <Box sx={{}}>
+                  <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                  <Button
+                    style={{ marginLeft: 5, color: "gray" }}
+                    onClick={handlepolicy}
+                  >
+                    Privacy Policy
+                  </Button>
+                </Box>
+
+                <Box
                   sx={{
-                    fontWeight: "bolder",
-                    color: "black",
-                    marginTop: "10%",
+                    marginTop: "40px",
+                    backgroundColor: "rgba(266, 255, 255, 0.9)",
+                    textAlign: "center",
+                    padding: {
+                      xs: "10px",
+                      sm: "20px",
+                    },
                   }}
-                  onClick={handlePress}
                 >
-                  Julian James
-                </Button>
+                  <Button
+                    sx={{
+                      fontWeight: "bolder",
+                      color: "black",
+                      marginTop: "10%",
+                    }}
+                    onClick={handlePress}
+                  >
+                    Julian James
+                  </Button>
 
-                <Button sx={{ color: "gray", mt: 1, marginTop: "10%" }}>
-                  Alternative Contact
-                </Button>
-              </Box>
+                  <Button sx={{ color: "gray", mt: 1, marginTop: "10%" }}>
+                    Alternative Contact
+                  </Button>
+                </Box>
 
-              {/* Sign-out button */}
-              <Box textAlign="center" marginTop="10%">
-                <Button onClick={handleSignOut} style={{ color: "red" }}>
-                  SIGN OUT
-                </Button>
-              </Box>
-            </View>
+                <Box textAlign="center" marginTop="10%">
+                  <Button onClick={handleSignOut} style={{ color: "red" }}>
+                    SIGN OUT
+                  </Button>
+                </Box>
+              </View>
+            </Box>
+          </View>
+        )}
+        {isMobile && (
+          <Box style={{ textAlign: "center", padding: "10px" }}>
+            <Ionicons
+              name="ios-menu"
+              size={30}
+              color="black"
+              onClick={toggleDropdown}
+            />
           </Box>
-        </View>
+        )}
+        {isMobile && showDropdown && (
+          <Box
+            style={{
+              position: "absolute",
+              top: "60px", // Adjust the top position as needed
+              right: "20px",
+              backgroundColor: "whitesmoke",
+              padding: "10px",
+              zIndex: 999,
+            }}
+          >
+            {/* Your dropdown content here */}
+            <Box textAlign="center">
+              <img
+                src={sara}
+                alt="User Image"
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  borderRadius: "50%",
+                  marginTop: "80%",
+                }}
+              />
+              <Box sx={{ marginTop: "10%" }}>
+                <Typography variant="h6">
+                  {userData?.name} {userData?.surname}
+                </Typography>
+                <Typography variant="subtitle1">{userData?.phone}</Typography>
+                <Typography variant="subtitle2">{userData?.email}</Typography>
+              </Box>
+            </Box>
+            <Box>
+              <Typography sx={{ textAlign: "center" }}>
+                {userData?.location}
+              </Typography>
+            </Box>
+
+            <Box style={{ marginTop: "50%" }}>
+              <Ionicons name="ios-timer-outline" size={15} color="gray" />
+              <Button
+                style={{ marginLeft: 5, color: "gray" }}
+                onClick={handleorders}
+              >
+                Orders
+              </Button>
+            </Box>
+
+            <Box>
+              <Ionicons name="ios-timer-outline" size={15} color="gray" />
+              <Button
+                style={{ marginLeft: 5, color: "gray" }}
+                onClick={handlefavorites}
+              >
+                Favorites
+              </Button>
+            </Box>
+
+            <Box>
+              <Ionicons name="ios-timer-outline" size={15} color="gray" />
+              <Button
+                style={{ marginLeft: 5, color: "gray" }}
+                onClick={handleterms}
+              >
+                Terms and Conditions
+              </Button>
+            </Box>
+
+            <Box sx={{}}>
+              <Ionicons name="ios-timer-outline" size={15} color="gray" />
+              <Button
+                style={{ marginLeft: 5, color: "gray" }}
+                onClick={handlepolicy}
+              >
+                Privacy Policy
+              </Button>
+            </Box>
+
+            <Box
+              sx={{
+                marginTop: "40px",
+                backgroundColor: "rgba(266, 255, 255, 0.9)",
+                textAlign: "center",
+                padding: {
+                  xs: "10px",
+                  sm: "20px",
+                },
+              }}
+            >
+              <Button
+                sx={{
+                  fontWeight: "bolder",
+                  color: "black",
+                  marginTop: "10%",
+                }}
+                onClick={handlePress}
+              >
+                Julian James
+              </Button>
+
+              <Button sx={{ color: "gray", mt: 1, marginTop: "10%" }}>
+                Alternative Contact
+              </Button>
+            </Box>
+
+            <Box textAlign="center" marginTop="10%">
+              <Button onClick={handleSignOut} style={{ color: "red" }}>
+                SIGN OUT
+              </Button>
+            </Box>
+            {/* Add the rest of your dropdown components */}
+          </Box>
+        )}
 
         <View style={{ flex: 1 }}>
           <View
@@ -2251,226 +2230,386 @@ export default function BusinessAccount() {
           </View>
 
           <View>
-            <View
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                paddingRight: 30,
-                paddingBottom: 30,
-                paddingTop: 30,
-                paddingLeft: 30,
-              }}
-            >
+            <View>
               <View
                 style={{
                   display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
                   justifyContent: "space-between",
+                  paddingRight: 30,
+                  paddingBottom: 30,
+                  paddingTop: 30,
+                  paddingLeft: 30,
+                  
                 }}
               >
-                <View>
-                  {/* Heading for Products & Services */}
-                  <Text style={{ fontWeight: "700", fontSize: 30 }}>
-                    PRODUCTS & SERVICES
-                  </Text>
-                  {/* Additional information displayed conditionally */}
-                  <Text
-                    style={{
-                      display: businessAuthorization ? "none" : "", //when the user is subcscribed
-                      fontWeight: 600,
-                      fontSize: 14,
-                    }}
-                  >
-                    Please add a minimum of 3 products
-                  </Text>
-                </View>
-                {/* Business Plus subscription information */}
-                <Text
-                  style={{
-                    color: "white",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    backgroundColor: "#072840",
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                    paddingLeft: 25,
-                    paddingRight: 25,
-                    borderRadius: 20,
-                  }}
-                >
-                  BUSINESS PLUS R150/PM
-                </Text>
-              </View>
+                 <View
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap', // Allow items to wrap to the next line
+        padding: 20, // Add padding for better spacing
+      }}
+    >
+      <View style={{ marginBottom: 10 ,flexWrap: 'wrap'}}>
+        {/* Heading for Products & Services */}
+        <Text style={{ fontWeight: '700', fontSize: 20 }}>
+          PRODUCTS & SERVICES
+        </Text>
+        {/* Additional information displayed conditionally */}
+        <Text
+          style={{
+            display: businessAuthorization ? 'none' : 'flex', // Adjust based on user subscription
+            fontWeight: 600,
+            fontSize: 14,
+            flexWrap: 'wrap'
+          }}
+        >
+          Please add a minimum of 3 products
+        </Text>
+      </View>
+      {/* Business Plus subscription information */}
+      <Text
+        style={{
+          color: 'white',
+          fontWeight: 600,
+          fontSize: 14,
+          backgroundColor: '#072840',
+          paddingTop: 10,
+          paddingBottom: 10,
+          paddingLeft: 25,
+          paddingRight: 25,
+          borderRadius: 20,
+          marginTop: businessAuthorization ? 0 : 10, // Adjust spacing based on condition
+        }}
+      >
+        BUSINESS PLUS R150/PM
+      </Text>
+    </View>
 
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                {/* Conditional display for Authorization Pending message */}
-                <Text
-                  style={{
-                    color: "white",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    backgroundColor: "#fe951c",
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                    borderRadius: 20,
-                    display: businessAuthorization ? "none" : "flex",
-                    marginTop: 5,
-                    justifyContent: "center",
-                    paddingLeft: 25,
-                    paddingRight: 25,
-                  }}
-                >
-                  AUTHORIZATION PENDING
-                </Text>
                 <View
                   style={{
                     display: "flex",
                     flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    justifyContent: "space-between",
                   }}
                 >
-                  {/* Button to add a product */}
-                  <TouchableOpacity onPress={() => setAddProduct(true)}>
-                    <Text
-                      style={{
-                        color: "white",
-                        fontWeight: 600,
-                        fontSize: 14,
-                        backgroundColor: "#072840",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        paddingLeft: 25,
-                        paddingRight: 25,
-                        borderRadius: 20,
-                        display: !businessAuthorization ? "none" : "flex",
-                        marginRight: 20,
-                      }}
-                    >
-                      ADD PRODUCT
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-
-            {businessAuthorization ? ( //the usre must be subscribed
-              // Card component containing business banners and add banner option
-              <Card
-                style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  display: "flex",
-                }}
-              >
-                {banner.length > 0 ? (
-                  // View displaying the current banner with background image and details
-                  <View
+                  {/* Conditional display for Authorization Pending message */}
+                  <Text
                     style={{
-                      backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
-                      backgroundColor: "gray",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: 15,
-                      flex: 1,
-                      transition: "0.5s ease-in-out",
+                      color: "white",
+                      fontWeight: 600,
+                      fontSize: 14,
+                      backgroundColor: "#fe951c",
+                      paddingTop: 10,
+                      paddingBottom: 10,
+                      borderRadius: 20,
+                      display: businessAuthorization ? "none" : "flex",
+                      marginTop: 5,
+                      justifyContent: "center",
+                      paddingLeft: 25,
+                      paddingRight: 25,
                     }}
                   >
-                    {/* Navigation button to go to the previous banner */}
-                    <TouchableOpacity
-                      onPress={handlePrevClick}
-                      style={{ marginRight: 20 }}
-                    >
-                      <AntDesign name="left" size={24} color="white" />
+                    AUTHORIZATION PENDING
+                  </Text>
+
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {/* Button to add a product */}
+                    <TouchableOpacity onPress={() => setAddProduct(true)}>
+                      <Text
+                        style={{
+                          color: "white",
+                          fontWeight: 600,
+                          fontSize: 14,
+                          backgroundColor: "#072840",
+                          paddingTop: 10,
+                          paddingBottom: 10,
+                          paddingLeft: 25,
+                          paddingRight: 25,
+                          borderRadius: 20,
+                          display: !businessAuthorization ? "none" : "flex",
+                          marginRight: 20,
+                        }}
+                      >
+                        ADD PRODUCT
+                      </Text>
                     </TouchableOpacity>
-                    {/* Details of the current banner */}
+                  </View>
+                </View>
+              </View>
+              
+              {businessAuthorization ? ( //the usre must be subscribed
+                // Card component containing business banners and add banner option
+                <Card
+                  style={{
+                    width: "100%",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    display: "flex",
+                  }}
+                >
+                  {banner.length > 0 ? (
+                    // View displaying the current banner with background image and details
                     <View
                       style={{
+                        backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
+                        backgroundColor: "gray",
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: 15,
                         flex: 1,
-                        flexDirection: "column",
-                        alignItems: "flex-start",
+                        transition: "0.5s ease-in-out",
                       }}
                     >
-                      <Text
+                      {/* Navigation button to go to the previous banner */}
+                      <TouchableOpacity
+                        onPress={handlePrevClick}
+                        style={{ marginRight: 20 }}
+                      >
+                        <AntDesign name="left" size={24} color="white" />
+                      </TouchableOpacity>
+                      {/* Details of the current banner */}
+                      <View
                         style={{
-                          fontSize: 15,
-                          fontWeight: 600,
-                          color: "white",
+                          flex: 1,
+                          flexDirection: "column",
+                          alignItems: "flex-start",
                         }}
                       >
-                        {banner[0].other}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 25,
-                          fontWeight: 700,
-                          color: "white",
-                        }}
-                      >
-                        {banner[0].productName}
-                      </Text>
-                      <Text>
-                        {/* Displaying discount and original prices */}
-                        <Text
-                          style={{
-                            fontSize: 18,
-                            fontWeight: 700,
-                            color: "#c29920",
-                          }}
-                        >
-                          R{banner[0].discountPrice}
-                        </Text>{" "}
                         <Text
                           style={{
                             fontSize: 15,
-                            fontWeight: 400,
+                            fontWeight: 600,
                             color: "white",
                           }}
                         >
-                          R{banner[0].originalPrice}
+                          {banner[0].other}
                         </Text>
+                        <Text
+                          style={{
+                            fontSize: 25,
+                            fontWeight: 700,
+                            color: "white",
+                          }}
+                        >
+                          {banner[0].productName}
+                        </Text>
+                        <Text>
+                          {/* Displaying discount and original prices */}
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: 700,
+                              color: "#c29920",
+                            }}
+                          >
+                            R{banner[0].discountPrice}
+                          </Text>{" "}
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              fontWeight: 400,
+                              color: "white",
+                            }}
+                          >
+                            R{banner[0].originalPrice}
+                          </Text>
+                        </Text>
+                      </View>
+                      {/* Navigation button to go to the next banner */}
+                      <TouchableOpacity onPress={handleNextClick}>
+                        <AntDesign name="right" size={24} color="white" />
+                      </TouchableOpacity>
+                    </View>
+                  ) : null}
+
+                  {/* Option to add a new banner */}
+                  <TouchableOpacity
+                    style={{
+                      display: "flex",
+                      cursor: "pointer",
+                      width: "15%",
+                      borderRadius: 20,
+                      border: "1px gray dashed",
+                      height: "100%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 20,
+                      fontWeight: 700,
+                      marginLeft: 10,
+                    }}
+                    onPress={() => setBannerModal(true)}
+                  >
+                    <Text>ADD BANNER</Text>
+                  </TouchableOpacity>
+                </Card>
+              ) : null}
+            </View>
+            {businessAuthorization ? null : (
+                // Displayed when businessAuthorization is false whicn is when not subscibed
+                <View
+                  style={{
+                    top: "20%", // Use percentages for responsiveness
+                    position: "absolute",
+                    flex: 1,
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "flex-end",
+                    zIndex: 100,
+                    alignSelf: "flex-end",
+                    backgroundColor: "red",
+                  }}
+                >
+                  {/* Container for the subscription details */}
+                  <View
+                    style={{
+                      width: "auto", // Use percentages for responsiveness
+                      flexDirection: "column",
+                      borderWidth: 1,
+                      backgroundColor: "white",
+                      borderColor: "lightgray",
+                      padding: 20,
+                      alignItems: "center",
+                      minHeight: "50%", // Use percentages for responsiveness
+                      zIndex: 500,
+                    }}
+                  >
+                    {/* Business Plus logo */}
+
+                    <Image
+                      source={require("../../Global/images/BusinessPlus+.jpg")}
+                      alt="business plus logo"
+                      style={{
+                        width: "120px", // Use percentages for responsiveness
+                        aspectRatio: 10 / 7, // Maintain the aspect ratio
+                        marginBottom: 5,
+                        height: "40px",
+                      }}
+                    />
+
+                    <Text
+                      style={{
+                        color: "#252b42",
+                        fontWeight: "700",
+                        fontSize: 16, // Adjust font size as needed
+                        textAlign: "center",
+                      }}
+                    >
+                      {/* Business Plus subscription title */}
+                      <TouchableOpacity onPress={() => setPaymentModal(true)}>
+                        <Text>BUSINESS PLUS SUBSCRIPTION</Text>
+                      </TouchableOpacity>
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#9e9e9e",
+                        fontWeight: "700",
+                        fontSize: 12, // Adjust font size as needed
+                        textAlign: "center",
+                        paddingTop: 10,
+                        paddingBottom: 10,
+                      }}
+                    >
+                      {/* Subscription description */}
+                      Unlock More Opportunities with Business Plus Subscription
+                    </Text>
+                    {/* Subscription pricing details */}
+                    <View
+                      style={{
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "#23a6f0",
+                          fontWeight: "700",
+                          fontSize: 24, // Adjust font size as needed
+                          marginBottom: -5,
+                        }}
+                      >
+                        R150
+                      </Text>
+                      <Text
+                        style={{
+                          color: "#b8d9f7",
+                          fontWeight: "700",
+                          fontSize: 14, // Adjust font size as needed
+                        }}
+                      >
+                        Per Month
                       </Text>
                     </View>
-                    {/* Navigation button to go to the next banner */}
-                    <TouchableOpacity onPress={handleNextClick}>
-                      <AntDesign name="right" size={24} color="white" />
-                    </TouchableOpacity>
+                    {/* Subscription features */}
+                    <View style={{ flexDirection: "column" }}>
+                      <Text
+                        style={{
+                          marginTop: 10,
+                          fontWeight: "700",
+                          fontSize: 12, // Adjust font size as needed
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        {/* Checkmark and feature */}
+                        <Ionicons
+                          name="checkmark-circle"
+                          size={20}
+                          color="#2dc071"
+                        />
+                        {"  "}List Unlimited Products
+                      </Text>
+                      <Text
+                        style={{
+                          fontWeight: "700",
+                          fontSize: 12, // Adjust font size as needed
+                          marginTop: 10,
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        {/* Checkmark and feature */}
+                        <Ionicons
+                          name="checkmark-circle"
+                          size={20}
+                          color="#2dc071"
+                        />
+                        {"  "}Priority Support
+                      </Text>
+                      <Text
+                        style={{
+                          fontWeight: "700",
+                          fontSize: 12, // Adjust font size as needed
+                          marginTop: 10,
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        {/* Checkmark and feature */}
+                        <Ionicons
+                          name="checkmark-circle"
+                          size={20}
+                          color="#2dc071"
+                        />
+                        {"  "}Exclusive Promotions
+                      </Text>
+                    </View>
                   </View>
-                ) : null}
-
-                {/* Option to add a new banner */}
-                <TouchableOpacity
-                  style={{
-                    display: "flex",
-                    cursor: "pointer",
-                    width: "15%",
-                    borderRadius: 20,
-                    border: "1px gray dashed",
-                    height: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 20,
-                    fontWeight: 700,
-                    marginLeft: 10,
-                  }}
-                  onPress={() => setBannerModal(true)}
-                >
-                  <Text>ADD BANNER</Text>
-                </TouchableOpacity>
-              </Card>
-            ) : null}
-
+                </View>
+              )}
             {/* ScrollView to allow vertical scrolling */}
             <ScrollView style={{ width: "100%" }}>
               {/* Container view for the product cards */}

@@ -49,7 +49,24 @@ const Favourites = ({ item }) => {
   const [uid, setUid] = useState(null);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [showSnackbar1, setShowSnackbar1] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1080); // Adjust the breakpoint as needed
+    };
 
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Initial check
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+  
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -291,6 +308,7 @@ const Favourites = ({ item }) => {
           backgroundColor: "white",
         }}
       >
+         {!isMobile && (
         <View
           style={{
             paddingLeft: 30,
@@ -415,289 +433,399 @@ const Favourites = ({ item }) => {
             </View>
           </Box>
         </View>
-       
-          <ScrollView>
-            <Typography
-              variant="h4"
+         )}
+         {isMobile && (
+        <Box style={{ textAlign: 'center', padding: '10px' }}>
+          <Ionicons name="ios-menu" size={30} color="black" onClick={toggleDropdown} />
+        </Box>
+      )}
+      {isMobile && showDropdown && (
+        <Box
+          style={{
+            position: 'absolute',
+            top: '60px', // Adjust the top position as needed
+            right: '20px',
+            backgroundColor: 'whitesmoke',
+            padding: '10px',
+            zIndex: 999,
+          }}
+        >
+          {/* Your dropdown content here */}
+          <Box textAlign="center">
+            <img
+              src={sara}
+              alt="User Image"
               style={{
-                fontWeight: "bold",
-                marginTop: "20px",
-                marginBottom: "40px",
-                padding: "10px",
+                width: '100px',
+                height: '100px',
+                borderRadius: '50%',
+                marginTop: '80%',
               }}
-            >
-              FAVOURITES
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                margin: 2,
-                //  justifyContent: 'space-around',
-              }}
-            >
-              {products.map((product, index) => (
-                <Card
-                  key={product.id}
+            />
+            <Box sx={{ marginTop: '10%' }}>
+              <Typography variant="h6">
+                {userData?.name} {userData?.surname}
+              </Typography>
+              <Typography variant="subtitle1">{userData?.phone}</Typography>
+              <Typography variant="subtitle2">{userData?.email}</Typography>
+            </Box>
+          </Box>
+          <Box>
+                <Typography sx={{ textAlign: "center" }}>
+                  {userData?.location}
+                </Typography>
+              </Box>
+
+              <Box style={{ marginTop: "50%" }}>
+                <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                <Button
+                  style={{ marginLeft: 5, color: "gray" }}
+                  onClick={handleorders}
+                >
+                  Orders
+                </Button>
+              </Box>
+
+              <Box>
+                <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                <Button
+                  style={{ marginLeft: 5, color: "gray" }}
+                  onClick={handlefavorites}
+                >
+                  Favorites
+                </Button>
+              </Box>
+
+              <Box>
+                <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                <Button
+                  style={{ marginLeft: 5, color: "gray" }}
+                  onClick={handleterms}
+                >
+                  Terms and Conditions
+                </Button>
+              </Box>
+
+              <Box sx={{}}>
+                <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                <Button
+                  style={{ marginLeft: 5, color: "gray" }}
+                  onClick={handlepolicy}
+                >
+                  Privacy Policy
+                </Button>
+              </Box>
+
+              <Box
+                sx={{
+                  marginTop: "40px",
+                  backgroundColor: "rgba(266, 255, 255, 0.9)",
+                  textAlign: "center",
+                  padding: {
+                    xs: "10px",
+                    sm: "20px",
+                  },
+                }}
+              >
+                <Button
                   sx={{
-                    width: {
-                      xs: "100%",
-                      sm: "45%",
-                      md: "35%",
-                      lg: "35%",
-                    },
-                    margin: 2,
-                   
+                    fontWeight: "bolder",
+                    color: "black",
+                    marginTop: "10%",
+                  }}
+                  onClick={handlePress}
+                >
+                  Julian James
+                </Button>
+
+                <Button sx={{ color: "gray", mt: 1, marginTop: "10%" }}>
+                  Alternative Contact
+                </Button>
+              </Box>
+
+              <Box textAlign="center" marginTop="10%">
+                <Button onClick={handleSignOut} style={{ color: "red" }}>
+                  SIGN OUT
+                </Button>
+              </Box>
+          {/* Add the rest of your dropdown components */}
+        </Box>
+      )}
+        <ScrollView>
+          <Typography
+            variant="h4"
+            style={{
+              fontWeight: "bold",
+              marginTop: "20px",
+              marginBottom: "40px",
+              padding: "10px",
+            }}
+          >
+            FAVOURITES
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              margin: 2,
+              //  justifyContent: 'space-around',
+            }}
+          >
+            {products.map((product, index) => (
+              <Card
+                key={product.id}
+                sx={{
+                  width: {
+                    xs: "100%",
+                    sm: "45%",
+                    md: "35%",
+                    lg: "35%",
+                  },
+                  margin: 2,
+                }}
+              >
+                <View
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    paddingHorizontal: "5%", // Adjust as needed
+                    paddingTop: 10,
                   }}
                 >
-                  <View
+                  <Box
                     style={{
+                      borderRadius: "16px",
+                      objectFit: "cover",
+                      position: "relative",
+                      backgroundColor: "whitesmoke",
+                      width: "250px",
+                      height: "250px",
+                      borderRadius: "50%",
+                      alignself: "center",
                       justifyContent: "center",
-                      alignItems: "center",
-                      paddingHorizontal: "5%", // Adjust as needed
-                      paddingTop: 10,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignSelf: "center",
+                      justifyContent: "center",
                     }}
                   >
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={
+                        product.image && product.image.length > 0
+                          ? product.image
+                          : "../../assets/image/headsets.png"
+                      }
+                      alt={product.name}
+                      style={{
+                        position: "relative",
+                        borderRadius: "100px",
+                        objectFit: "cover",
+                        width: 220,
+                        height: 220,
+                        alignSelf: "center",
+                      }}
+                    />
                     <Box
                       style={{
-                        borderRadius: "16px",
-                        objectFit: "cover",
-                        position: "relative",
-                        backgroundColor: "whitesmoke",
-                        width: "250px",
-                        height: "250px",
-                        borderRadius: "50%",
-                        alignself: "center",
-                        justifyContent: "center",
-                        display: "flex",
-                        flexDirection: "column",
+                        backgroundColor: "#E74040",
+                        position: "absolute",
+                        bottom: 200,
+                        padding: 2,
+                        width: "22%",
+                        borderRadius: "8%",
                         alignSelf: "center",
-                        justifyContent: "center",
                       }}
                     >
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image={
-                          product.image && product.image.length > 0
-                            ? product.image
-                            : "../../assets/image/headsets.png"
-                        }
-                        alt={product.name}
-                        style={{
-                          position: "relative",
-                          borderRadius: "100px",
-                          objectFit: "cover",
-                          width: 220,
-                          height: 220,
-                          alignSelf: "center",
-                        }}
-                      />
-                      <Box
-                        style={{
-                          backgroundColor: "#E74040",
-                          position: "absolute",
-                          bottom: 200,
-                          padding: 2,
-                          width: "22%",
-                          borderRadius: "8%",
-                          alignSelf: "center",
-                        }}
+                      <Typography
+                        variant="h5"
+                        style={{ color: "#fff", textAlign: "center" }}
                       >
-                        <Typography
-                          variant="h5"
-                          style={{ color: "#fff", textAlign: "center" }}
-                        >
-                          sale
-                        </Typography>
-                      </Box>
-                      {/* <Container> */}
-                      <Snackbar
-                        open={showSnackbar}
-                        autoHideDuration={3000} // Adjust as needed
-                        onClose={handleSnackbarClose}
-                        anchorOrigin={{
-                          vertical: "top",
-                          horizontal: "center",
-                        }} // Set position to top center
-                      >
-                        <MuiAlert
-                          onClose={handleSnackbarClose}
-                          severity="success"
-                          sx={{ width: "100%" }}
-                        >
-                          Product added to favorites!
-                        </MuiAlert>
-                      </Snackbar>
-                      <Box
-                        style={{
-                          paddingHorizontal: 10,
-                          position: "absolute",
-                          bottom: 30,
-                          left: 80,
-                          width: "6vw",
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignSelf: "center",
-                        }}
-                      >
-                        <TouchableOpacity>
-                          <Icon
-                            name={isRed ? "heart" : "heart-o"}
-                            size={20}
-                            style={{
-                              padding: 10,
-                              backgroundColor: "white",
-                              borderRadius: "50%",
-                            }}
-                            onClick={toggleHeart}
-                            color={isRed ? "red" : "black"}
-                          />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={addToCart}>
-                          <Snackbar
-                            open={showSnackbar1}
-                            autoHideDuration={3000} // Adjust as needed
-                            onClose={handleSnackbarClose1}
-                            anchorOrigin={{
-                              vertical: "top",
-                              horizontal: "center",
-                            }} // Set position to top center
-                          >
-                            <MuiAlert
-                              onClose={handleSnackbarClose1}
-                              severity="success"
-                              sx={{ width: "100%" }}
-                            >
-                              Product added to Cart!
-                            </MuiAlert>
-                          </Snackbar>
-                          <Icon
-                            name="shopping-cart"
-                            size={20}
-                            style={{
-                              padding: 10,
-                              backgroundColor: "white",
-                              borderRadius: "50%",
-                            }}
-                            color="black"
-                          />
-                        </TouchableOpacity>
-                      </Box>
-
-                      {/* </Container> */}
+                        sale
+                      </Typography>
                     </Box>
-                    <View
+                    {/* <Container> */}
+                    <Snackbar
+                      open={showSnackbar}
+                      autoHideDuration={3000} // Adjust as needed
+                      onClose={handleSnackbarClose}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "center",
+                      }} // Set position to top center
+                    >
+                      <MuiAlert
+                        onClose={handleSnackbarClose}
+                        severity="success"
+                        sx={{ width: "100%" }}
+                      >
+                        Product added to favorites!
+                      </MuiAlert>
+                    </Snackbar>
+                    <Box
                       style={{
-                        width: "100%",
+                        paddingHorizontal: 10,
+                        position: "absolute",
+                        bottom: 30,
+                        left: 80,
+                        width: "6vw",
+                        display: "flex",
+                        flexDirection: "row",
                         justifyContent: "space-between",
-                        marginTop: "5%",
-                        //  backgroundColor:'red',
-                        // height: "25vh",
+                        alignSelf: "center",
                       }}
                     >
-                      <View>
-                        <View
+                      <TouchableOpacity>
+                        <Icon
+                          name={isRed ? "heart" : "heart-o"}
+                          size={20}
                           style={{
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            //     backgroundColor:'green',
-                            flexWrap: "wrap",
+                            padding: 10,
+                            backgroundColor: "white",
+                            borderRadius: "50%",
+                          }}
+                          onClick={toggleHeart}
+                          color={isRed ? "red" : "black"}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={addToCart}>
+                        <Snackbar
+                          open={showSnackbar1}
+                          autoHideDuration={3000} // Adjust as needed
+                          onClose={handleSnackbarClose1}
+                          anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "center",
+                          }} // Set position to top center
+                        >
+                          <MuiAlert
+                            onClose={handleSnackbarClose1}
+                            severity="success"
+                            sx={{ width: "100%" }}
+                          >
+                            Product added to Cart!
+                          </MuiAlert>
+                        </Snackbar>
+                        <Icon
+                          name="shopping-cart"
+                          size={20}
+                          style={{
+                            padding: 10,
+                            backgroundColor: "white",
+                            borderRadius: "50%",
+                          }}
+                          color="black"
+                        />
+                      </TouchableOpacity>
+                    </Box>
+
+                    {/* </Container> */}
+                  </Box>
+                  <View
+                    style={{
+                      width: "100%",
+                      justifyContent: "space-between",
+                      marginTop: "5%",
+                      //  backgroundColor:'red',
+                      // height: "25vh",
+                    }}
+                  >
+                    <View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          //     backgroundColor:'green',
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            flex: 1,
+                            fontSize: "15px",
+                            color: "#4FC3F7",
+                            fontWeight: "bold",
                           }}
                         >
-                          <Text
-                            style={{
-                              flex: 1,
-                              fontSize: "15px",
-                              color: "#4FC3F7",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {product.selectedProductCategory}
+                          {product.selectedProductCategory}
+                        </Text>
+                        <View
+                          style={{
+                            backgroundColor: "#072840",
+                            paddingHorizontal: 5,
+                            paddingVertical: 3,
+                            borderRadius: 15,
+                          }}
+                        >
+                          <Text style={{}}>
+                            ⭐ <Text style={{ color: "white" }}> 4.9</Text>
                           </Text>
-                          <View
-                            style={{
-                              backgroundColor: "#072840",
-                              paddingHorizontal: 5,
-                              paddingVertical: 3,
-                              borderRadius: 15,
-                            }}
-                          >
-                            <Text style={{}}>
-                              ⭐ <Text style={{ color: "white" }}> 4.9</Text>
-                            </Text>
-                          </View>
                         </View>
+                      </View>
 
-                        <Typography variant="h5" component="h5">
-                          {product.name && product.name.slice(0, 20)}
-                          {product.name && product.name.length < 50
-                            ? ""
-                            : "..."}
-                        </Typography>
+                      <Typography variant="h5" component="h5">
+                        {product.name && product.name.slice(0, 20)}
+                        {product.name && product.name.length < 50 ? "" : "..."}
+                      </Typography>
+                      <Typography
+                        variant="subtitle2"
+                        component="p"
+                        style={{ color: "gray" }}
+                      >
+                        {product.description &&
+                          product.description.slice(0, 50)}
+                        {product.description && product.description.length < 50
+                          ? ""
+                          : "..."}
+                      </Typography>
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="flex-start"
+                        justifyContent="space-between"
+                      >
                         <Typography
-                          variant="subtitle2"
+                          variant="body2"
                           component="p"
                           style={{ color: "gray" }}
                         >
-                          {product.description &&
-                            product.description.slice(0, 50)}
-                          {product.description &&
-                          product.description.length < 50
-                            ? ""
-                            : "..."}
+                          <Icon2 name="download" size={20} /> 15 Sales
                         </Typography>
-                        <Box
-                          display="flex"
-                          flexDirection="column"
-                          alignItems="flex-start"
-                          justifyContent="space-between"
-                        >
+                        <View style={{ display: "flex", flexDirection: "row" }}>
                           <Typography
-                            variant="body2"
+                            variant="subtitle2"
                             component="p"
-                            style={{ color: "gray" }}
+                            style={{
+                              color: "#BDBDBD",
+                              fontSize: "18px",
+                              fontWeight: "700",
+                              marginRight: "10px",
+                            }}
                           >
-                            <Icon2 name="download" size={20} /> 15 Sales
+                            R{product.price}
                           </Typography>
-                          <View
-                            style={{ display: "flex", flexDirection: "row" }}
+                          <Typography
+                            variant="subtitle2"
+                            component="p"
+                            style={{
+                              color: "rgb(97, 151, 97)",
+                              fontSize: "18px",
+                              fontWeight: "700",
+                            }}
                           >
-                            <Typography
-                              variant="subtitle2"
-                              component="p"
-                              style={{
-                                color: "#BDBDBD",
-                                fontSize: "18px",
-                                fontWeight: "700",
-                                marginRight: "10px",
-                              }}
-                            >
-                              R{product.price}
-                            </Typography>
-                            <Typography
-                              variant="subtitle2"
-                              component="p"
-                              style={{
-                                color: "rgb(97, 151, 97)",
-                                fontSize: "18px",
-                                fontWeight: "700",
-                              }}
-                            >
-                              R{product.price}
-                            </Typography>
-                          </View>
-                        </Box>
-                      </View>
+                            R{product.price}
+                          </Typography>
+                        </View>
+                      </Box>
                     </View>
                   </View>
-                </Card>
-              ))}
-            </Box>
-          </ScrollView>
-       
+                </View>
+              </Card>
+            ))}
+          </Box>
+        </ScrollView>
       </View>
       <Footer />
     </View>

@@ -34,6 +34,7 @@ import {
   getDocs,
   serverTimestamp,
   addDoc,
+  deleteDoc
 } from "firebase/firestore";
 
 import { auth } from "../../config";
@@ -86,7 +87,7 @@ const DateSelectionAndCheckout = () => {
   const [editLocalArea, setEditLocalArea] = useState(false);
   const [editCode, setEditCode] = useState(false);
   const [editCounty, setEditCountry] = useState(false);
-
+  const [authPin,setAuthPIn] = useState('')
   // useEffect hook to listen for changes in authentication state
   useEffect(() => {
     // Get the authentication instance
@@ -177,6 +178,29 @@ const DateSelectionAndCheckout = () => {
     }
   }, [user]); // Trigger the effect whenever the user changes
 
+  const deleteCartCollection = async (firestore, userUid) => {
+    try {
+      // Create a reference to the 'Cart' collection
+      const cartCollectionRef = collection(firestore, 'Cart');
+  
+      // Create a query to get documents where the 'uid' field matches userUid
+      const q = query(cartCollectionRef, where('uid', '==', userUid));
+  
+      // Get the documents that match the query
+      const querySnapshot = await getDocs(q);
+  
+      // Delete each document in the result set
+      querySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+        console.log(`Document with ID ${doc.id} successfully deleted.`);
+      });
+  
+      console.log('Cart collection deleted successfully.');
+    } catch (error) {
+      console.error('Error deleting Cart collection:', error);
+    }
+  };
+  
   // Effect hook to fetch company data based on the first product in the cart
   useEffect(() => {
     // Function to fetch company data
@@ -522,9 +546,10 @@ const DateSelectionAndCheckout = () => {
         shipment,
         config
       );
+      console.log('response.data.customer_reference is ',response.data.customer_reference)
       setTrackingRef(response.data.short_tracking_reference);
       setDriver(response.data.delivery_agent_id);
-
+      setAuthPIn(response.data.customer_reference)
       // Return the response data
       return response.data;
     } catch (error) {
@@ -593,31 +618,32 @@ const DateSelectionAndCheckout = () => {
       try {
         // Get a reference to the "Orders" collection in Firestore
         const cartCollectionRef = collection(firestore, "Orders");
-       console.log("serverTimestamp is ",serverTimestamp())
-       console.log('trackingRef is ',trackingRef)
-       console.log('location is ',location)
-       console.log( "deliveryDate: ",rates[selectedIndex].service_level.delivery_date_from) 
-       console.log("deliveryGuy: ",driver)
-       console.log("name: ",userData?.name)
-       console.log("invoiceNumber: ",`#${Math.floor(
-        Math.random() * 10000000
-      )}555${Math.floor(Math.random() * 100000000)}`)
-       console.log("DeliveryStatus: ",shipmentStatus)
-       console.log("userId: ",userData?.uid)
-       console.log("orderNumber: ",`#${
-        userData?.uid?.slice(5, 15) + Math.floor(Math.random() * 10000)
-      }`)
-       console.log("totalAmount: ",orderTotal)
-       console.log(' items: ',[...newArr])
-
+        console.log("authPin ",authPin)
+        console.log("items is ",[...newArr])
+        console.log('trackingRef is ',trackingRef)
+        console.log('location is',location)
+        console.log('rates[selectedIndex].service_level.delivery_date_from is ',rates[selectedIndex].service_level.delivery_date_from)
+        console.log("rates[selectedIndex].base_rate.charge is ",rates[selectedIndex].base_rate.charge )
+        console.log("driver is ",driver )
+        console.log("coordinates is ", coordinates)
+        console.log("userData?.name is ",userData?.name )
+        console.log("invoiceNumber is ",`#${Math.floor(
+          Math.random() * 10000000
+        )}555${Math.floor(Math.random() * 100000000)}`, )
+        console.log("orderTotal is ", orderTotal)
+        console.log("agentReferral is ",agentReferral )
+        console.log("Tax is ", tax)
+       
         // Add a new document to the "Orders" collection with order details
         await addDoc(cartCollectionRef, {
           createdAt: serverTimestamp(),
           trackingEventsRef: trackingRef,
+          Pin:authPin,
           deliveryAddress: location,
           deliveryDate: rates[selectedIndex].service_level.delivery_date_from,
           deliveryFee: rates[selectedIndex].base_rate.charge,
           deliveryGuy: driver,
+          coordinates:coordinates,
           name: userData?.name,
           userName: userData?.name,
           invoiceNumber: `#${Math.floor(
@@ -629,6 +655,8 @@ const DateSelectionAndCheckout = () => {
             userData?.uid?.slice(5, 15) + Math.floor(Math.random() * 10000)
           }`,
           totalAmount: orderTotal,
+          agentReferralAmount:agentReferral,          
+          Tax:tax,
           items: [...newArr],
         });
 
@@ -647,6 +675,7 @@ const DateSelectionAndCheckout = () => {
   }, [shipmentStatus]);
 
   const handlePayment = () => {
+    deleteCartCollection(firestore, user.uid);
     // Construct the payment URL with the necessary parameters
     const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
     orderTotal.toFixed(2) + // Use the calculated orderTotal here
@@ -1010,7 +1039,7 @@ const DateSelectionAndCheckout = () => {
       <FollowUs />
       <Navbar />
       <ScrollView style={{ flexDirection: "column", backgroundColor: "white" }}>
-        <Container sx={{ minHeight: "90vh" }}>
+        <Container sx={{ minHeight: "90vh"}}>
           <Grid container spacing={2} mx="auto">
             <Grid item xs={12} md={8}>
               {/* Left Side Content */}
@@ -1046,7 +1075,7 @@ const DateSelectionAndCheckout = () => {
                 {/* Heading for the cart section */}
                 <Typography
                   variant="h4"
-                  style={{ marginTop: "50px", fontWeight: "bold" }}
+                  style={{ fontWeight: "bold" }}
                 >
                   CART
                 </Typography>

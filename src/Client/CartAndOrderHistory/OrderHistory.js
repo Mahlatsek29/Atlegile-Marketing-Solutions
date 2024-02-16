@@ -114,11 +114,10 @@ const OrderHistory = () => {
     trackingShipment();
   }, [order]);
 
-  const navigateToDeliveryAndChatSystem = (id) => {
-    // Implement navigation logic based on the status or any other condition
-    // For example, navigate to a specific screen based on the status
+  const navigateToDeliveryAndChatSystem = (orderId) => {
     
-    navigate("DeliveryAndChatSystem", { id });
+    
+    navigate("DeliveryAndChatSystem", { orderId });
   };
 
   return (

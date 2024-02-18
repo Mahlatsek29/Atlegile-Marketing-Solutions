@@ -844,11 +844,16 @@ const DateSelectionAndCheckout = () => {
           justifyContent="center"
           alignItems="center"
           position="absolute"
-          width="100%"
-          height="100%"
+         // position = "fixed"
+          //top={0}
+          //left={0}
+          width = "100vw"
+          height ="100vh"
+         // backgroundColor= "rgba(0, 0, 0, 0.5)"
           flex={1}
-          backgroundColor="rgba(0, 0, 0, 0.5)"
+         
           zIndex={9999}
+          
         >
           {/* Container for the address card */}
           <Box
@@ -856,6 +861,7 @@ const DateSelectionAndCheckout = () => {
             width="90vw"
             maxWidth={400}
             backgroundColor="white"
+            border= "2px lightgrey solid"
             justifyContent="center"
             p={2} // Padding added for all sides
           >
@@ -1009,12 +1015,13 @@ const DateSelectionAndCheckout = () => {
                 sx={{
                   width: "80%",
                   alignSelf: "center",
-                  borderColor: "lightgrey",
+                  
                   borderRadius: 15,
+                  backgroundColor:"#062338"
                 }}
                 onClick={() => handleFixAddress()}
               >
-                <Typography sx={{ fontSize: 16, color: "#062338" }}>
+                <Typography sx={{ fontSize: 16, color: "lightgray" }}>
                   SUBMIT
                 </Typography>
               </Button>
@@ -1509,17 +1516,19 @@ const DateSelectionAndCheckout = () => {
                     ) : null}
                   </View>
                 </Box>
+              
                 <Button
                   variant="outlined"
                   sx={{
                     width: "80%",
                     alignSelf: "center",
-                    borderColor: "lightgrey",
+                    
                     borderRadius: 15,
+                    backgroundColor:"#062338"
                   }}
                   onClick={creattingShipment}
                 >
-                  <Typography sx={{ fontSize: 16, color: "#FFFFFF" }}>
+                  <Typography sx={{ fontSize: 16, color: "lightgray" }}>
                     CHECKOUT
                   </Typography>
                 </Button>
@@ -1527,9 +1536,7 @@ const DateSelectionAndCheckout = () => {
             </Grid>
           </Grid>
         </Container>
-
         <Footer />
-        {/* <View style={{backgroundColor: 'blue', width: '100%', height: 200 }}></View> */}
       </ScrollView>
     </>
   );

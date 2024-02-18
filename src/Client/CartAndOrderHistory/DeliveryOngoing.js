@@ -68,34 +68,7 @@ const DeliveryOngoing = () => {
     };
   }, []);
   const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
-  // const fetchCartData = async () => {
-  //   const userId = "52TkIacrD4ermeLEhLU6udYXnhQ2";
-
-  //   const cartCollectionRef = collection(firestore, "Cart");
-  //   const q = query(cartCollectionRef, where("uid", "==", userId));
-
-  //   const querySnapshot = await getDocs(q);
-
-  //   const cartItems = [];
-  //   querySnapshot.forEach((doc) => {
-  //     const data = doc.data();
-  //     cartItems.push({
-  //       id: doc.id,
-  //       product: data.product,
-  //       quantity: data.quantity,
-  //       amount: data.price * data.quantity,
-  //       image: data.image,
-  //       // Add other relevant fields from your Cart collection
-  //     });
-  //   });
-
-  //   setCartData(cartItems);
-  // };
-
-  // useEffect(() => {
-  //   fetchCartData();
-  // }, []);
-
+ 
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -157,13 +130,7 @@ const DeliveryOngoing = () => {
     setChatmodelVisible(!chatmodelVisble);
   };
 
-  // const navigateToLanding = () => {
-  //   navigation.navigate("Landing");
-  // };
-
-  // const navigateToOrderHistory = () => {
-  //   navigation.navigate("OrderHistory");
-  // };
+  
 
   const navigateToLanding = () => {
     navigation.navigate("Landing");
@@ -173,30 +140,7 @@ const DeliveryOngoing = () => {
     navigation.navigate("OrderHistory", { orderId });
   };
 
-  // const getShipment = async () => {
-  //   const config = {
-  //     headers: {
-  //       Authorization: `Bearer ${CourierAPIKey}`,
-  //       "Content-Type": "application/json",
-  //     },
-  //   };
-
-  //   try {
-  //     const response = await axios.get(
-  //       "https://api.shiplogic.com/v2/shipments?tracking_reference=TN7PRG",
-  //       config
-  //     );
-  //     console.log("Courier API shipment No response:", response.data);
-  //     return response.data.shipments;
-  //   } catch (error) {
-  //     console.error("Error getting shipments", error);
-  //     if (error.response) {
-  //       console.log("Response data:", error.response.data);
-  //     }
-  //     return [];
-  //   }
-  // };
-  const tackingShipment = useCallback(async () => {
+   const tackingShipment = useCallback(async () => {
     const config = {
       headers: {
         Authorization: `Bearer ${CourierAPIKey}`,
@@ -228,19 +172,8 @@ const DeliveryOngoing = () => {
     }
   }, [order]);
 
-  useEffect(() => {
-    const cleanup = tackingShipment();
-
-    return () => {
-      // Perform cleanup if necessary
-      // For example, if you have any subscriptions or timers, clear them here.
-    };
-  }, [order, tackingShipment]);
-  // tackingShipment();
-  // console.log("shipmentTrack:", shipmentTrack.shipments);
-  // //console.log("tracking_events:", shipmentTrack.shipments[0].tracking_events);
-  // //console.log("status:", shipmentTrack.shipments[0].tracking_events[0].status);
-
+  
+ 
   return (
     <>
       {chatmodelVisble && (

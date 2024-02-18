@@ -7,7 +7,7 @@ import {
   Image,
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
-import SideNav from "../../Global/SideNav";
+
 import { Footer } from "../../Global/Footer";
 import Navbar from "../../Global/Navbar";
 import {
@@ -56,17 +56,17 @@ const Favourites = ({ item }) => {
       setIsMobile(window.innerWidth <= 1080); // Adjust the breakpoint as needed
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     handleResize(); // Initial check
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
-  
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -308,249 +308,259 @@ const Favourites = ({ item }) => {
           backgroundColor: "white",
         }}
       >
-         {!isMobile && (
-        <View
-          style={{
-            paddingLeft: 30,
-            backgroundColor: "whitesmoke",
-            alignItems: "flex-start",
-          }}
-        >
-          <Box
-            display="flex"
-            justifyContent="flex-start"
-            alignItems="center"
-            paddingRight={2}
+        {!isMobile && (
+          <View
+            style={{
+              paddingLeft: 30,
+              backgroundColor: "whitesmoke",
+              alignItems: "flex-start",
+            }}
           >
-            <View
-              elevation={3}
-              style={{
-                padding: "20px",
-                height: "100%",
-                width: "300px",
-                margin: "auto",
-                backgroundColor: "whitesmoke",
+            <Box
+              display="flex"
+              justifyContent="flex-start"
+              alignItems="center"
+              paddingRight={2}
+            >
+              <View
+                elevation={3}
+                style={{
+                  padding: "20px",
+                  height: "100%",
+                  width: "300px",
+                  margin: "auto",
+                  backgroundColor: "whitesmoke",
+                }}
+              >
+                <Box textAlign="center">
+                  <img
+                    src={sara}
+                    alt="User Image"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      borderRadius: "50%",
+                      marginTop: "80%",
+                    }}
+                  />
+                  <Box sx={{ marginTop: "10%" }}>
+                    <Typography variant="h6">
+                      {userData?.name} {userData?.surname}
+                    </Typography>
+                    <Typography variant="subtitle1">
+                      {userData?.phone}
+                    </Typography>
+                    <Typography variant="subtitle2">
+                      {userData?.email}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box>
+                  <Typography sx={{ textAlign: "center" }}>
+                    {userData?.location}
+                  </Typography>
+                </Box>
+
+                <Box style={{ marginTop: "50%" }}>
+                  <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                  <Button
+                    style={{ marginLeft: 5, color: "gray" }}
+                    onClick={handleorders}
+                  >
+                    Orders
+                  </Button>
+                </Box>
+
+                <Box>
+                  <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                  <Button
+                    style={{ marginLeft: 5, color: "gray" }}
+                    onClick={handlefavorites}
+                  >
+                    Favorites
+                  </Button>
+                </Box>
+
+                <Box>
+                  <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                  <Button
+                    style={{ marginLeft: 5, color: "gray" }}
+                    onClick={handleterms}
+                  >
+                    Terms and Conditions
+                  </Button>
+                </Box>
+
+                <Box sx={{}}>
+                  <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                  <Button
+                    style={{ marginLeft: 5, color: "gray" }}
+                    onClick={handlepolicy}
+                  >
+                    Privacy Policy
+                  </Button>
+                </Box>
+
+                <Box
+                  sx={{
+                    marginTop: "40px",
+                    backgroundColor: "rgba(266, 255, 255, 0.9)",
+                    textAlign: "center",
+                    padding: {
+                      xs: "10px",
+                      sm: "20px",
+                    },
+                  }}
+                >
+                  <Button
+                    sx={{
+                      fontWeight: "bolder",
+                      color: "black",
+                      marginTop: "10%",
+                    }}
+                    onClick={handlePress}
+                  >
+                    Julian James
+                  </Button>
+
+                  <Button sx={{ color: "gray", mt: 1, marginTop: "10%" }}>
+                    Alternative Contact
+                  </Button>
+                </Box>
+
+                <Box textAlign="center" marginTop="10%">
+                  <Button onClick={handleSignOut} style={{ color: "red" }}>
+                    SIGN OUT
+                  </Button>
+                </Box>
+              </View>
+            </Box>
+          </View>
+        )}
+        {isMobile && (
+          <Box style={{ textAlign: "center", padding: "10px" }}>
+            
+            <Ionicons
+              name="ios-menu"
+              size={30}
+              color="black"
+              onClick={toggleDropdown}
+            />
+          </Box>
+        )}
+        {isMobile && showDropdown && (
+          <Box
+            style={{
+              position: "absolute",
+              top: "60px", // Adjust the top position as needed
+              right: "20px",
+              backgroundColor: "whitesmoke",
+              padding: "10px",
+              zIndex: 999,
+            }}
+          >
+            {/* Your dropdown content here */}
+            <Box textAlign="center">
+              <img
+                src={sara}
+                alt="User Image"
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  borderRadius: "50%",
+                  marginTop: "80%",
+                }}
+              />
+              <Box sx={{ marginTop: "10%" }}>
+                <Typography variant="h6">
+                  {userData?.name} {userData?.surname}
+                </Typography>
+                <Typography variant="subtitle1">{userData?.phone}</Typography>
+                <Typography variant="subtitle2">{userData?.email}</Typography>
+              </Box>
+            </Box>
+            <Box>
+              <Typography sx={{ textAlign: "center" }}>
+                {userData?.location}
+              </Typography>
+            </Box>
+
+            <Box style={{ marginTop: "50%" }}>
+              <Ionicons name="ios-timer-outline" size={15} color="gray" />
+              <Button
+                style={{ marginLeft: 5, color: "gray" }}
+                onClick={handleorders}
+              >
+                Orders
+              </Button>
+            </Box>
+
+            <Box>
+              <Ionicons name="ios-timer-outline" size={15} color="gray" />
+              <Button
+                style={{ marginLeft: 5, color: "gray" }}
+                onClick={handlefavorites}
+              >
+                Favorites
+              </Button>
+            </Box>
+
+            <Box>
+              <Ionicons name="ios-timer-outline" size={15} color="gray" />
+              <Button
+                style={{ marginLeft: 5, color: "gray" }}
+                onClick={handleterms}
+              >
+                Terms and Conditions
+              </Button>
+            </Box>
+
+            <Box sx={{}}>
+              <Ionicons name="ios-timer-outline" size={15} color="gray" />
+              <Button
+                style={{ marginLeft: 5, color: "gray" }}
+                onClick={handlepolicy}
+              >
+                Privacy Policy
+              </Button>
+            </Box>
+
+            <Box
+              sx={{
+                marginTop: "40px",
+                backgroundColor: "rgba(266, 255, 255, 0.9)",
+                textAlign: "center",
+                padding: {
+                  xs: "10px",
+                  sm: "20px",
+                },
               }}
             >
-              <Box textAlign="center">
-                <img
-                  src={sara}
-                  alt="User Image"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    borderRadius: "50%",
-                    marginTop: "80%",
-                  }}
-                />
-                <Box sx={{ marginTop: "10%" }}>
-                  <Typography variant="h6">
-                    {userData?.name} {userData?.surname}
-                  </Typography>
-                  <Typography variant="subtitle1">{userData?.phone}</Typography>
-                  <Typography variant="subtitle2">{userData?.email}</Typography>
-                </Box>
-              </Box>
-
-              <Box>
-                <Typography sx={{ textAlign: "center" }}>
-                  {userData?.location}
-                </Typography>
-              </Box>
-
-              <Box style={{ marginTop: "50%" }}>
-                <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                <Button
-                  style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handleorders}
-                >
-                  Orders
-                </Button>
-              </Box>
-
-              <Box>
-                <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                <Button
-                  style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handlefavorites}
-                >
-                  Favorites
-                </Button>
-              </Box>
-
-              <Box>
-                <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                <Button
-                  style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handleterms}
-                >
-                  Terms and Conditions
-                </Button>
-              </Box>
-
-              <Box sx={{}}>
-                <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                <Button
-                  style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handlepolicy}
-                >
-                  Privacy Policy
-                </Button>
-              </Box>
-
-              <Box
+              <Button
                 sx={{
-                  marginTop: "40px",
-                  backgroundColor: "rgba(266, 255, 255, 0.9)",
-                  textAlign: "center",
-                  padding: {
-                    xs: "10px",
-                    sm: "20px",
-                  },
+                  fontWeight: "bolder",
+                  color: "black",
+                  marginTop: "10%",
                 }}
+                onClick={handlePress}
               >
-                <Button
-                  sx={{
-                    fontWeight: "bolder",
-                    color: "black",
-                    marginTop: "10%",
-                  }}
-                  onClick={handlePress}
-                >
-                  Julian James
-                </Button>
+                Julian James
+              </Button>
 
-                <Button sx={{ color: "gray", mt: 1, marginTop: "10%" }}>
-                  Alternative Contact
-                </Button>
-              </Box>
-
-              <Box textAlign="center" marginTop="10%">
-                <Button onClick={handleSignOut} style={{ color: "red" }}>
-                  SIGN OUT
-                </Button>
-              </Box>
-            </View>
-          </Box>
-        </View>
-         )}
-         {isMobile && (
-        <Box style={{ textAlign: 'center', padding: '10px' }}>
-          <Ionicons name="ios-menu" size={30} color="black" onClick={toggleDropdown} />
-        </Box>
-      )}
-      {isMobile && showDropdown && (
-        <Box
-          style={{
-            position: 'absolute',
-            top: '60px', // Adjust the top position as needed
-            right: '20px',
-            backgroundColor: 'whitesmoke',
-            padding: '10px',
-            zIndex: 999,
-          }}
-        >
-          {/* Your dropdown content here */}
-          <Box textAlign="center">
-            <img
-              src={sara}
-              alt="User Image"
-              style={{
-                width: '100px',
-                height: '100px',
-                borderRadius: '50%',
-                marginTop: '80%',
-              }}
-            />
-            <Box sx={{ marginTop: '10%' }}>
-              <Typography variant="h6">
-                {userData?.name} {userData?.surname}
-              </Typography>
-              <Typography variant="subtitle1">{userData?.phone}</Typography>
-              <Typography variant="subtitle2">{userData?.email}</Typography>
+              <Button sx={{ color: "gray", mt: 1, marginTop: "10%" }}>
+                Alternative Contact
+              </Button>
             </Box>
+
+            <Box textAlign="center" marginTop="10%">
+              <Button onClick={handleSignOut} style={{ color: "red" }}>
+                SIGN OUT
+              </Button>
+            </Box>
+            {/* Add the rest of your dropdown components */}
           </Box>
-          <Box>
-                <Typography sx={{ textAlign: "center" }}>
-                  {userData?.location}
-                </Typography>
-              </Box>
-
-              <Box style={{ marginTop: "50%" }}>
-                <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                <Button
-                  style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handleorders}
-                >
-                  Orders
-                </Button>
-              </Box>
-
-              <Box>
-                <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                <Button
-                  style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handlefavorites}
-                >
-                  Favorites
-                </Button>
-              </Box>
-
-              <Box>
-                <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                <Button
-                  style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handleterms}
-                >
-                  Terms and Conditions
-                </Button>
-              </Box>
-
-              <Box sx={{}}>
-                <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                <Button
-                  style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handlepolicy}
-                >
-                  Privacy Policy
-                </Button>
-              </Box>
-
-              <Box
-                sx={{
-                  marginTop: "40px",
-                  backgroundColor: "rgba(266, 255, 255, 0.9)",
-                  textAlign: "center",
-                  padding: {
-                    xs: "10px",
-                    sm: "20px",
-                  },
-                }}
-              >
-                <Button
-                  sx={{
-                    fontWeight: "bolder",
-                    color: "black",
-                    marginTop: "10%",
-                  }}
-                  onClick={handlePress}
-                >
-                  Julian James
-                </Button>
-
-                <Button sx={{ color: "gray", mt: 1, marginTop: "10%" }}>
-                  Alternative Contact
-                </Button>
-              </Box>
-
-              <Box textAlign="center" marginTop="10%">
-                <Button onClick={handleSignOut} style={{ color: "red" }}>
-                  SIGN OUT
-                </Button>
-              </Box>
-          {/* Add the rest of your dropdown components */}
-        </Box>
-      )}
+        )}
         <ScrollView>
           <Typography
             variant="h4"

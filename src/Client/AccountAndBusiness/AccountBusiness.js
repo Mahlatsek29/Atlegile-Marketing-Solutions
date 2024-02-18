@@ -8,8 +8,6 @@ import {
   Image,
   Text,
   ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
 import { Footer } from "../../Global/Footer";
 import {
@@ -31,7 +29,6 @@ import ModalClose from "@mui/joy/ModalClose";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalOverflow from "@mui/joy/ModalOverflow";
 import { AntDesign } from "@expo/vector-icons";
-import { COLORS } from "../../Global/Color";
 import Header from "../../Global/Header";
 import { Ionicons } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
@@ -45,7 +42,6 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import sara from "../../Global/images/Sara.png";
 import Swal from "sweetalert2";
 const logo = require("../../Global/images/cropped-AMS-Shadow-Queen-Logo_BNY-1320x772 1.png");
-import Banner from "../../Global/images/media bg-cover.png";
 export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);

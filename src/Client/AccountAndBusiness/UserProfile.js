@@ -1,4 +1,10 @@
-import { View, TouchableOpacity, Image, Text, Modal } from "react-native";
+// Importing necessary components and libraries
+import {
+  View,
+  TouchableOpacity,
+  Image,
+  Text,
+} from "react-native";
 import { Typography, Button } from "@mui/material";
 import Icon from "react-native-vector-icons/Fontisto";
 import React, { useState, useEffect } from "react";
@@ -9,17 +15,21 @@ import { useNavigation } from "@react-navigation/native";
 import sara from "../../Global/images/Sara.png";
 import { firebase } from "../../config";
 import { signOut } from "firebase/auth";
-// import { auth } from "react-native-firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs } from "firebase/firestore";
 import { auth, firestore } from "../../config";
+
+// Functional component for user profile
 const UserProfile = () => {
+  // Initializing navigation
   const navigation = useNavigation();
+  
+  // State variables for user data, order history, and others
   const [userData, setUserData] = useState(null);
   const [orderHistory, setOrderHistory] = useState([]);
   const [showOrderHistory, setShowOrderHistory] = useState(true);
   const [user, setUser] = useState(null);
 
+  // Effect hook to listen for changes in authentication state
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -31,6 +41,7 @@ const UserProfile = () => {
     };
   }, []);
 
+  // Effect hook to fetch user details from Firestore when user is authenticated
   useEffect(() => {
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -55,26 +66,30 @@ const UserProfile = () => {
     };
   }, []);
 
- 
+  // Navigation function to handle moving to the Order History screen
   const handleOrderHistoryNav = () => {
     navigation.navigate("OrderHistory");
   };
 
+  // Navigation function to handle moving to the Business Registration screen
   const handleBusiness = () => {
     navigation.navigate("BusinessRegistration");
-    // alert('button clicked!')
   };
 
+  // Navigation function to handle moving to the Favourites screen
   const handleFavourites = () => {
     navigation.navigate("Favourites");
-    // alert('button clicked!')
   };
 
   return (
+    // Main container view
     <View>
+      {/* Included FollowUs component */}
       <FollowUs />
+      {/* Included Navbar component */}
       <Navbar />
 
+      {/* User profile view */}
       <View
         style={{
           height: "800px",
@@ -84,6 +99,7 @@ const UserProfile = () => {
           flexDirection: "column",
         }}
       >
+        {/* Profile picture */}
         <View>
           <View
             style={{
@@ -103,20 +119,17 @@ const UserProfile = () => {
                 alignItems: "center",
                 borderRadius: "50%",
                 justifyContent: "center",
-                // backgroundColor: "red",
               }}
             />
           </View>
 
-          
+          {/* User details section */}
           <View
             style={{
               marginTop: 30,
               textAlign: "center",
             }}
-          >
-            
-          </View>
+          ></View>
           <View
             style={{
               padding: 30,
@@ -127,17 +140,21 @@ const UserProfile = () => {
               flexDirection: "column",
             }}
           >
+            {/* User name and contact information */}
             <Typography
               style={{ color: "#072840", fontWeight: 600 }}
               variant="h6"
             >
-             {userData?.name} {userData?.surname}
+              {userData?.name} {userData?.surname}
             </Typography>
             <Typography style={{ color: "gray", fontWeight: 600 }} variant="h7">
-          {userData?.alternativeContact.name}  {userData?.alternativeContact.phone}
+              {userData?.alternativeContact.name} {userData?.alternativeContact.phone}
             </Typography>
           </View>
+
+          {/* Order history and navigation buttons */}
           <View>
+            {/* Order History button */}
             <View
               style={{
                 border: "none",
@@ -158,6 +175,8 @@ const UserProfile = () => {
                 <Text>ORDER HISTORY</Text>
               </TouchableOpacity>
             </View>
+            
+            {/* Display order history if available */}
             {showOrderHistory && (
               <View>
                 {/* Map out order history here */}
@@ -172,6 +191,9 @@ const UserProfile = () => {
                 ))}
               </View>
             )}
+
+            {/* Other navigation buttons */}
+            {/* Favourites button */}
             <View
               style={{
                 border: "none",
@@ -195,6 +217,8 @@ const UserProfile = () => {
                 <Text>FAVOURITES </Text>
               </TouchableOpacity>
             </View>
+            
+            {/* Terms & Conditions button */}
             <View
               style={{
                 border: "none",
@@ -217,6 +241,8 @@ const UserProfile = () => {
                 <Text>TERMS & CONDITIONS </Text>
               </TouchableOpacity>
             </View>
+            
+            {/* Privacy Policy button */}
             <View
               style={{
                 border: "none",
@@ -241,6 +267,8 @@ const UserProfile = () => {
               </TouchableOpacity>
             </View>
           </View>
+
+          {/* Action buttons */}
           <View
             style={{
               marginTop: 10,
@@ -249,6 +277,7 @@ const UserProfile = () => {
               justifyContent: "center",
             }}
           >
+            {/* Register Business button */}
             <Button
               style={{
                 color: "#072840",
@@ -260,6 +289,8 @@ const UserProfile = () => {
             >
               REGISTER BUSINESS
             </Button>
+            
+            {/* Register as a Talent button */}
             <Button
               style={{
                 color: "#072840",
@@ -271,6 +302,8 @@ const UserProfile = () => {
             >
               REGISTER AS A TALENT
             </Button>
+            
+            {/* Sign Out button */}
             <Button
               style={{
                 color: "#072840",
@@ -279,12 +312,12 @@ const UserProfile = () => {
                 marginRight: "5px",
               }}
               variant="outlined"
-              
               onClick={() => signOut(firebase.auth())}
-              >
-            
+            >
               Sign Out
             </Button>
+            
+            {/* Manage Business button */}
             <Button
               style={{
                 color: "#072840",
@@ -302,6 +335,8 @@ const UserProfile = () => {
           </View>
         </View>
       </View>
+      
+      {/* Included Footer component */}
       <Footer />
     </View>
   );

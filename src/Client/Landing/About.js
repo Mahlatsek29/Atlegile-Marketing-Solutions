@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Image, Dimensions, StyleSheet } from "react-native";
+import { View, Text, Image, Dimensions} from "react-native";
 import { Video } from "expo-av";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";

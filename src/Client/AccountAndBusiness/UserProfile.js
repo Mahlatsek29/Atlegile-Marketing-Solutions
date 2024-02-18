@@ -55,49 +55,7 @@ const UserProfile = () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       // Assuming you have the user's UID (replace 'userId' with the actual UID)
-  //       const userId = "dGHFGyde9e37r084rdP7";
-  //       const userRef = firebase.firestore().collection("Users").doc(userId);
-  //       const doc = await userRef.get();
-
-  //       if (doc.exists) {
-  //         setUserData(doc.data());
-  //       } else {
-  //         console.log("No such document!");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //     }
-  //   };
-
-  //   const fetchOrderHistory = async () => {
-  //     try {
-  //       // Assuming you have the user's UID (replace 'userId' with the actual UID)
-  //       const userId2 = "YI6BJyHCjgObep37vdDr";
-  //       const orderHistoryRef = firebase
-  //         .firestore()
-  //         .collection("OrderHistory")
-  //         .where("userId", "==", userId2);
-  //       const querySnapshot = await orderHistoryRef.get();
-
-  //       const orders = [];
-  //       querySnapshot.forEach((doc) => {
-  //         orders.push(doc.data());
-  //       });
-
-  //       setOrderHistory(orders);
-  //     } catch (error) {
-  //       console.error("Error fetching order history:", error);
-  //     }
-  //   };
-
-  //   fetchUserData();
-  //   fetchOrderHistory();
-  // }, []);
-
+ 
   const handleOrderHistoryNav = () => {
     navigation.navigate("OrderHistory");
   };
@@ -150,39 +108,14 @@ const UserProfile = () => {
             />
           </View>
 
-          {/* <View
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
-          >
-            <Typography style={{ fontWeight: 700 }} variant="h4">
-              {userData && userData.name}
-            </Typography>
-            <Typography style={{ fontWeight: 700 }} variant="h7">
-              {userData && userData.phone}
-            </Typography>
-            <Typography style={{ fontWeight: 700 }} variant="h7">
-              {userData && userData.email}
-            </Typography>
-          </View> */}
+          
           <View
             style={{
               marginTop: 30,
               textAlign: "center",
             }}
           >
-            {/* {userData && (
-              <View
-                style={{
-                  marginTop: 30,
-                  textAlign: "center",
-                }}
-              >
-                <Typography variant="h6">{userData.location}</Typography>
-              </View>
-            )} */}
+            
           </View>
           <View
             style={{

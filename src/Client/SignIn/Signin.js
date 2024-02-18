@@ -131,7 +131,8 @@ const Signin = () => {
           )}
         </TouchableOpacity>
         <View style= {{width:"70%"}}>
-          <Text
+          <TouchableOpacity
+          onPress={()=> navigation.navigate('SignUp')}
             style={{
               position: "relative",
               left: 10,
@@ -141,8 +142,9 @@ const Signin = () => {
               fontWeight: "500",
               color: "#072840",
             }}>
+              
             DON'T HAVE AN ACCOUNT?
-          </Text>
+          </TouchableOpacity>
         </View>
         {/* Google sign-in button */}
         <TouchableOpacity onPress={handleGoogleSignIn}>

@@ -68,137 +68,6 @@ const BusinessRegistration = () => {
   // Function to handle form submission
   const handlechange = async (event) => {
     event.preventDefault();
-
-    let streetAddress;
-
-    if (
-      address.address_components.length === 5 ||
-      address.address_components.length === 4 ||
-      address.address_components.length === 3 ||
-      address.address_components.length === 2 ||
-      address.address_components.length === 1
-    ) {
-      streetAddress = " ";
-    } else if (address.address_components.length === 6) {
-      streetAddress = address.address_components[0].long_name;
-    } else if (address.address_components.length === 7) {
-      streetAddress = address.address_components[0].long_name;
-    } else if (address.address_components.length === 8) {
-      streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-    } else if (address.address_components.length === 9) {
-      streetAddress = ` ${address.address_components[1].long_name} ${address.address_components[2].long_name} `;
-    }
-
-    let localArea;
-
-    if (
-      address.address_components.length === 4 ||
-      address.address_components.length === 3 ||
-      address.address_components.length === 2 ||
-      address.address_components.length === 1
-    ) {
-      localArea = " ";
-    } else if (address.address_components.length === 5) {
-      localArea = address.address_components[0].long_name;
-    } else if (address.address_components.length === 6) {
-      localArea = address.address_components[1].long_name;
-    } else if (address.address_components.length === 7) {
-      localArea = address.address_components[1].long_name;
-    } else if (address.address_components.length === 8) {
-      localArea = address.address_components[2].long_name;
-    } else if (address.address_components.length === 9) {
-      localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
-    }
-
-    let localCity;
-
-    if (
-      address.address_components.length === 3 ||
-      address.address_components.length === 2 ||
-      address.address_components.length === 1
-    ) {
-      localCity = "";
-    } else if (address.address_components.length === 4) {
-      localCity = address.address_components[0].long_name;
-    } else if (address.address_components.length === 5) {
-      localCity = address.address_components[1].long_name;
-    } else if (address.address_components.length === 6) {
-      localCity = address.address_components[2].long_name;
-    } else if (address.address_components.length === 7) {
-      localCity = address.address_components[3].long_name;
-    } else if (address.address_components.length === 8) {
-      localCity = address.address_components[4].long_name;
-    } else if (address.address_components.length === 9) {
-      localCity = address.address_components[5].long_name;
-    }
-
-    let zoneCity;
-
-    if (
-      address.address_components.length === 2 ||
-      address.address_components.length === 1
-    ) {
-      zoneCity = " ";
-    } else if (address.address_components.length === 3) {
-      zoneCity = address.address_components[0].long_name;
-    } else if (address.address_components.length === 4) {
-      zoneCity = address.address_components[1].long_name;
-    } else if (address.address_components.length === 5) {
-      zoneCity = address.address_components[2].long_name;
-    } else if (address.address_components.length === 6) {
-      zoneCity = address.address_components[3].long_name;
-    } else if (address.address_components.length === 7) {
-      zoneCity = address.address_components[4].long_name;
-    } else if (address.address_components.length === 8) {
-      zoneCity = address.address_components[5].long_name;
-    } else if (address.address_components.length === 9) {
-      zoneCity = address.address_components[6].long_name;
-    }
-
-    let countryOfCity;
-
-    if (address.address_components.length === 1) {
-      countryOfCity = " ";
-    } else if (address.address_components.length === 2) {
-      countryOfCity = address.address_components[0].short_name;
-    } else if (address.address_components.length === 3) {
-      countryOfCity = address.address_components[1].short_name;
-    } else if (address.address_components.length === 4) {
-      countryOfCity = address.address_components[2].short_name;
-    } else if (address.address_components.length === 5) {
-      countryOfCity = address.address_components[3].short_name;
-    } else if (address.address_components.length === 6) {
-      countryOfCity = address.address_components[4].short_name;
-    } else if (address.address_components.length === 7) {
-      countryOfCity = address.address_components[5].short_name;
-    } else if (address.address_components.length === 8) {
-      countryOfCity = address.address_components[6].short_name;
-    } else if (address.address_components.length === 9) {
-      countryOfCity = address.address_components[7].short_name;
-    }
-
-    let postalCode;
-
-    if (address.address_components.length === 1) {
-      postalCode = address.address_components[0].long_name;
-    } else if (address.address_components.length === 2) {
-      postalCode = address.address_components[1].long_name;
-    } else if (address.address_components.length === 3) {
-      postalCode = address.address_components[2].long_name;
-    } else if (address.address_components.length === 4) {
-      postalCode = address.address_components[3].long_name;
-    } else if (address.address_components.length === 5) {
-      postalCode = address.address_components[4].long_name;
-    } else if (address.address_components.length === 6) {
-      postalCode = address.address_components[5].long_name;
-    } else if (address.address_components.length === 7) {
-      postalCode = address.address_components[6].long_name;
-    } else if (address.address_components.length === 8) {
-      postalCode = address.address_components[7].long_name;
-    } else if (address.address_components.length === 9) {
-      postalCode = address.address_components[8].long_name;
-    }
-
     try {
       setLoading(true);
 
@@ -249,38 +118,14 @@ const BusinessRegistration = () => {
   const industryOptions = [
     ...emptyOption,
     "Technology",
-    "Energy",
-    "Telecommunications",
-    "Healthcare",
-    "Finance",
-    "Education",
-    "Entertainment",
-    "Manufacturing",
-    "Retail",
-    "Transportation",
-    "Agriculture",
-    "Real Estate",
-    "Hospitality",
-    "Construction",
-    "Automotive",
-    "Media",
-    "Aerospace",
-    "Biotechnology",
-    "Pharmaceutical",
-    "Fashion",
+    // Add other industries here
   ];
 
-  useEffect(() => {
-    setLocation(address.formatted_address);
-  }, [address]);
+  // Calculate container width and height dynamically
+  const containerWidth = window.width > 400 ? 400 : window.width * 0.9;
+  const containerHeight = window.height > 600 ? 600 : window.height * 0.9;
 
-  const handlePlaceSelect = ({ place, latLng }) => {
-    // Do something with the selected place details and latitude/longitude
-    console.log("Selected place:", place.address_components);
-    console.log("Latitude and Longitude:", latLng);
-    setAddress(place);
-    setCoordinates(latLng);
-  };
+  // Return the component JSX
   return (
     <View
       style={{
@@ -357,188 +202,199 @@ const BusinessRegistration = () => {
                   BUSINESS REGISTRATION
                 </Typography>
 
+                {/* Business Name input */}
+                <TextField
+                  id="outlined-number"
+                  label="Business Name"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%" }}
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                />
+                <br />
+
+                {/* Role select */}
+                <TextField
+                  id="outlined"
+                  select
+                  label="Role"
+                  variant="standard"
+                  value={selectedRole}
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                  style={{
+                    width: "100%",
+                    textAlign: "left",
+                    marginTop: "10px",
+                  }}
+                >
+                  {roleOptions.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <br />
+
+                {/* Registration Number input */}
+                <TextField
+                  id="outlined-number"
+                  label="Reg Number"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%", marginTop: "10px" }}
+                  value={regNumber}
+                  onChange={(e) => setRegNumber(e.target.value)}
+                  required
+                />
+                <br />
+
+                {/* Website input */}
+                <TextField
+                  id="outlined-number"
+                  label="Website"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%", marginTop: "10px" }}
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+
+                {/* Location input */}
+                <TextField
+                  id="outlined-number"
+                  label="Location"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%", marginTop: "10px" }}
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  required
+                />
+
+                {/* Type of Business and Industry selects */}
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    width: "100%",
+                  }}
+                >
                   <TextField
-                    id="outlined-number"
-                    label="Business Name"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    // style={{ width: "100%" ,height:"5vh"}}
-                    value={businessName}
-                    onChange={(e) => setBusinessName(e.target.value)}
-                  />
-                  <br />
-                  <TextField
-                    id="outlined"
+                    id="outlined-select-currency"
                     select
-                    label="Role"
+                    label="Type of business"
                     variant="standard"
-                    value={selectedRole}
-                    onChange={(e) => setSelectedRole(e.target.value)}
-                    // style={{
-                    //   width: "100%",
-                    //   textAlign: "left",
-                    //  // marginTop: "10px",
-                    // }}
+                    value={selectedBusinessType}
+                    onChange={(e) =>
+                      setSelectedBusinessType(e.target.value)
+                    }
+                    style={{
+                      width: "48%",
+                      marginTop: "5px",
+                      marginRight: "10px",
+                      textAlign: "left",
+                    }}
+                    required
                   >
-                    {roleOptions.map((option) => (
+                    {businessTypeOptions.map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
                       </MenuItem>
                     ))}
                   </TextField>
-                  <br />
-
                   <TextField
-                    id="outlined-number"
-                    label="Reg Number"
-                    type="text"
+                    id="outlined-select-currency"
+                    select
+                    label="Industry"
                     variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    // style={{
-                    //   width: "100%",
-                    //  // marginTop: "10px",
-                    // }}
-                    value={regNumber}
-                    onChange={(e) => setRegNumber(e.target.value)}
-                    required
-                  />
-                  <br />
-
-                  <TextField
-                    id="outlined-number"
-                    label="Website"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    // style={{ width: "100%",
-                    //  //marginTop: "10px"
-                    //  }}
-                    value={website}
-                    onChange={(e) => setWebsite(e.target.value)}
-                  />
-                  <PlaceAutocomplete
-                    style={{ width: "25vw" }}
-                    onPlaceSelect={handlePlaceSelect}
-                  />
-
-                  <View
+                    value={selectedIndustry}
+                    onChange={(e) => setSelectedIndustry(e.target.value)}
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      width: "100%",
+                      width: "48%",
+                      marginTop: "5px",
+                      textAlign: "left",
                     }}
+                    required
                   >
-                    <TextField
-                      id="outlined-select-currency"
-                      select
-                      label="Type of business"
-                      variant="standard"
-                      value={selectedBusinessType}
-                      onChange={(e) => setSelectedBusinessType(e.target.value)}
-                      style={{
-                        width: "48%",
-                        //marginTop: "5px",
-                        marginRight: "10px",
-                        textAlign: "left",
-                      }}
-                      required
-                    >
-                      {businessTypeOptions.map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                    <TextField
-                      id="outlined-select-currency"
-                      select
-                      label="Industry"
-                      variant="standard"
-                      value={selectedIndustry}
-                      onChange={(e) => setSelectedIndustry(e.target.value)}
-                      style={{
-                        width: "48%",
-                        // marginTop: "5px",
-                        textAlign: "left",
-                      }}
-                      required
-                    >
-                      {industryOptions.map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </View>
-                  <TextField
-                    id="outlined-number"
-                    label="Phone Number"
-                    type="number"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{
-                      width: "100%",
-                      //  marginTop: "10px"
-                    }}
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    required
-                  />
-                  <TextField
-                    id="outlined-number"
-                    label="Bio"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{
-                      width: "100%",
-                      // marginTop: "10px"
-                    }}
-                    value={bio}
-                    onChange={(e) => setBio(e.target.value)}
-                    required
-                  />
-                  <Button
-                    // onClick={navigateaddproduct}
-                    variant="contained"
-                    style={{
-                      width: "100%",
-                      height: "10%",
-                      marginTop: "3vh",
-                      background: "#072840",
-                      borderRadius: "30px",
-                    }}
-                    type="submit"
-                  >
-                    {loading ? (
-                      <Box sx={{ display: "flex" }}>
-                        <CircularProgress />
-                      </Box>
-                    ) : (
-                      "Continue"
-                    )}
-                  </Button>
+                    {industryOptions.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 </View>
-              </form>
-              {/* Display the success alert when showSuccessAlert is true */}
-            </div>
+
+                {/* Phone Number input */}
+                <TextField
+                  id="outlined-number"
+                  label="Phone Number"
+                  type="number"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%", marginTop: "10px" }}
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  required
+                />
+
+                {/* Bio input */}
+                <TextField
+                  id="outlined-number"
+                  label="Bio"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%", marginTop: "10px" }}
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  required
+                />
+
+                {/* Continue Button */}
+                <Button
+                  variant="contained"
+                  style={{
+                    width: "100%",
+                    height: "10%",
+                    marginTop: "5%",
+                    background: "#072840",
+                    borderRadius: "30px",
+                  }}
+                  type="submit"
+                >
+                  {loading ? (
+                    <Box sx={{ display: "flex" }}>
+                      <CircularProgress />
+                    </Box>
+                  ) : (
+                    "Continue"
+                  )}
+                </Button>
+              </View>
+            </form>
+            {/* Display the success alert when showSuccessAlert is true */}
           </View>
         </View>
       </View>
     </View>
   );
 };
-
 
 export default BusinessRegistration;  

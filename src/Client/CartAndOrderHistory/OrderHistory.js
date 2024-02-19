@@ -103,7 +103,6 @@ const OrderHistory = () => {
           setShipmentStatus(
             response.data.shipments[0].tracking_events[0].status
           );
-          setShipmentStatus(response.data.shipments[0].tracking_events[0].status);
         } catch (error) {
           console.error("Error getting shipments", error);
         }
@@ -111,16 +110,9 @@ const OrderHistory = () => {
         console.error("Tracking reference not available in order");
       }
     };
-  
-    tackingShipment();
-  }, [cartData]);
-  
-  // const data = [
-  //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "ONGOING" },
-  //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
-  //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
-  //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
-  // ];
+
+    trackingShipment();
+  }, [order]);
 
   const navigateToDeliveryAndChatSystem = (orderId) => {
     
@@ -132,88 +124,96 @@ const OrderHistory = () => {
     <View style={{ flex: 1 }}>
       <FollowUs />
       <Navbar />
-      {/* <ScrollView style={{ flexDirection: "column", backgroundColor: "white" }}> */}
-      <Container fixed sx={{ height: "85vh" }}>
-        <Grid container spacing={2} xs={12} mx="auto">
-          <View
+      <Container
+        fixed
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+        }}
+      >
+        <View
+          style={{
+            marginTop: 50,
+            padding: 10,
+            height: 100,
+            display: "flex",
+            flexDirection: "row",
+           
+          }}
+        >
+          <Typography
+            variant="h5"
             style={{
-              marginTop: 50,
-              padding: 10,
-              height: 100,
+              height: 80,
+              width: "100%",
+              marginRight: 12,
               display: "flex",
-              flexDirection: "row",
+              alignItems: "center",
+              fontWeight: "bold",
             }}
           >
-            <Typography
-              variant="h5"
+            ORDER HISTORY
+          </Typography>
+          <Typography
+            style={{
+              height: 80,
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <TextInput
               style={{
-                height: 80,
-                width: 200,
-                marginRight: 12,
+                borderBottomWidth: 2,
+                borderBottomColor: "lightgray",
+                color: "gray",
+              }}
+              placeholder="Search"
+              placeholderTextColor="gray"
+            />
+          </Typography>
+          <Typography
+            style={{
+              height: 80,
+              width: "100%",
+              marginRight: "10px",
+            }}
+          >
+            <View
+              style={{
+                color: "gray",
+                borderBottomWidth: 2,
+                borderBottomColor: "lightgray",
                 display: "flex",
-                alignItems: "center",
-                fontWeight: "bold",
+                flexDirection: "row",
+                justifyContent: "space-between",
               }}
             >
-              ORDER HISTORY
-            </Typography>
-            <Typography
-              style={{
-                height: 80,
-                width: 200,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <TextInput
-                style={{
-                  borderBottomWidth: 2,
-                  borderBottomColor: "lightgray",
-                  color: "gray",
-                }}
-                placeholder="Search"
-                placeholderTextColor="gray"
+              <Text style={{ color: "gray", marginTop: 25 }}>
+                Please Select
+              </Text>
+              <Icon1
+                name="angle-down"
+                size={20}
+                style={{ marginTop: "28px" }}
               />
-            </Typography>
-            <Typography
-              style={{
-                height: 80,
-                width: 200,
-                marginRight: "10px",
-              }}
-            >
-              <View
-                style={{
-                  color: "gray",
-                  borderBottomWidth: 2,
-                  borderBottomColor: "lightgray",
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text style={{ color: "gray", marginTop: 25 }}>
-                  Please Select
-                </Text>
-                <Icon1
-                  name="angle-down"
-                  size={20}
-                  style={{ marginTop: "28px" }}
-                />
-              </View>
-            </Typography>
-            <Typography
-              style={{
-                height: 50,
-                width: 50,
-                marginTop: 15,
-              }}
-            >
-              <TouchableOpacity>
-                <Icon name="search" size={20} />
-              </TouchableOpacity>
-            </Typography>
-          </View>
+            </View>
+          </Typography>
+          <Typography
+            style={{
+              height: 50,
+              width: 50,
+              marginTop: 15,
+            }}
+          >
+            <TouchableOpacity>
+              <Icon name="search" size={20} />
+            </TouchableOpacity>
+          </Typography>
+        </View>
 
         <Box
           style={{
@@ -227,21 +227,29 @@ const OrderHistory = () => {
           <Grid >
             {order.map((item, index) => (
               <TouchableOpacity
-                onPress={() => navigateToDeliveryAndChatSystem(item.status)}
+                onPress={() => navigateToDeliveryAndChatSystem(item.id)}
                 key={index}
               >
-                <Grid item xs={12} key={item.id}>
-                  <Card sx={{ height: "auto", borderBottomColor: "black" }}>
+                <Grid item xs={10} md={8} key={item.id}>
+                  <Card
+                    sx={{
+                      height: "auto",
+                      borderBottomColor: "black",
+                      marginBottom: 5,
+                    }}
+                  >
                     <Box
                       display="flex"
                       flexDirection={{ xs: "column", md: "row" }}
                       alignItems="center"
                       borderBottomWidth={2}
                       padding={2}
+                      marginBottom={{ xs: 2, md: 2 }}
                     >
                       <Box
                         width={{ xs: "100%", md: "30%" }}
-                        marginBottom={{ xs: 2, md: 0 }}>
+                        marginBottom={{ xs: 2, md: 0 }}
+                      >
                         <ImageList cols={1} rowHeight="100%">
                           <ImageListItem style={{ width: "100%" }}>
                             <img
@@ -259,31 +267,41 @@ const OrderHistory = () => {
                       <Box
                         width={{ xs: "100%", md: "30%" }}
                         paddingLeft={{ xs: 0, md: 2 }}
-                        marginBottom={{ xs: 2, md: 0 }}>
+                        marginBottom={{ xs: 2, md: 0 }}
+                      >
                         <Typography
                           fontSize={16}
                           fontWeight="bold"
-                          color="gray">
+                          color="gray"
+                        >
                           {item.orderNumber}
                         </Typography>
                         <Typography
-                          style={{ fontSize: 18, fontWeight: "bold" }}
+                          style={{
+                            fontSize: 18,
+                            fontWeight: "bold",
+                          }}
                         >
-                            {item.timestamp.toLocaleString()}
+                          {item.timestamp.toLocaleString()}
                         </Typography>
                       </Box>
                       <Box
                         width={{ xs: "100%", md: "30%" }}
                         paddingLeft={{ xs: 0, md: 2 }}
-                        marginBottom={{ xs: 2, md: 0 }}>
+                        marginBottom={{ xs: 2, md: 0 }}
+                      >
                         <Typography
                           fontSize={16}
                           fontWeight="bold"
-                          color="gray">
+                          color="gray"
+                        >
                           Delivered by
                         </Typography>
                         <Typography
-                          style={{ fontSize: 18, fontWeight: "bold" }}
+                          style={{
+                            fontSize: 18,
+                            fontWeight: "bold",
+                          }}
                         >
                           {item.deliveryGuy}
                         </Typography>
@@ -291,11 +309,13 @@ const OrderHistory = () => {
                       <Box
                         width={{ xs: "100%", md: "30%" }}
                         paddingLeft={{ xs: 0, md: 2 }}
-                        marginBottom={{ xs: 2, md: 0 }}>
+                        marginBottom={{ xs: 2, md: 0 }}
+                      >
                         <Typography
                           fontSize={16}
                           fontWeight="bold"
-                          color="gray">
+                          color="gray"
+                        >
                           Status
                         </Typography>
                         <Typography
@@ -308,7 +328,8 @@ const OrderHistory = () => {
                                 : item.DeliveryStatus !== "delivered"
                                 ? "orange"
                                 : "black",
-                          }}>
+                          }}
+                        >
                           {shipmentStatus}
                         </Typography>
                       </Box>

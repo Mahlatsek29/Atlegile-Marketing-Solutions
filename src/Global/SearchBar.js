@@ -65,6 +65,7 @@ export default function SearchBar() {
             marginBottom: "50px",
             width: 150,
             height: 50,
+            zIndex:9000
           }}
         />
         <Box
@@ -75,6 +76,7 @@ export default function SearchBar() {
             display: "flex",
             flexDirection: "row",
             height: "40px",
+            zIndex:9000
           }}
         >
           <TextField
@@ -84,7 +86,7 @@ export default function SearchBar() {
             variant="standard"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            sx={{  }}
+            sx={{}}
           />
           <Box
             className="icons-container"

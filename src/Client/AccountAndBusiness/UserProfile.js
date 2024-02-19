@@ -1,4 +1,10 @@
-import { View, TouchableOpacity, Image, Text, Modal } from "react-native";
+// Importing necessary components and libraries
+import {
+  View,
+  TouchableOpacity,
+  Image,
+  Text,
+} from "react-native";
 import { Typography, Button } from "@mui/material";
 import Icon from "react-native-vector-icons/Fontisto";
 import React, { useState, useEffect } from "react";
@@ -9,17 +15,21 @@ import { useNavigation } from "@react-navigation/native";
 import sara from "../../Global/images/Sara.png";
 import { firebase } from "../../config";
 import { signOut } from "firebase/auth";
-// import { auth } from "react-native-firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs } from "firebase/firestore";
 import { auth, firestore } from "../../config";
+
+// Functional component for user profile
 const UserProfile = () => {
+  // Initializing navigation
   const navigation = useNavigation();
+  
+  // State variables for user data, order history, and others
   const [userData, setUserData] = useState(null);
   const [orderHistory, setOrderHistory] = useState([]);
   const [showOrderHistory, setShowOrderHistory] = useState(true);
   const [user, setUser] = useState(null);
 
+  // Effect hook to listen for changes in authentication state
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -31,6 +41,7 @@ const UserProfile = () => {
     };
   }, []);
 
+  // Effect hook to fetch user details from Firestore when user is authenticated
   useEffect(() => {
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -55,61 +66,19 @@ const UserProfile = () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       // Assuming you have the user's UID (replace 'userId' with the actual UID)
-  //       const userId = "dGHFGyde9e37r084rdP7";
-  //       const userRef = firebase.firestore().collection("Users").doc(userId);
-  //       const doc = await userRef.get();
-
-  //       if (doc.exists) {
-  //         setUserData(doc.data());
-  //       } else {
-  //         console.log("No such document!");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //     }
-  //   };
-
-  //   const fetchOrderHistory = async () => {
-  //     try {
-  //       // Assuming you have the user's UID (replace 'userId' with the actual UID)
-  //       const userId2 = "YI6BJyHCjgObep37vdDr";
-  //       const orderHistoryRef = firebase
-  //         .firestore()
-  //         .collection("OrderHistory")
-  //         .where("userId", "==", userId2);
-  //       const querySnapshot = await orderHistoryRef.get();
-
-  //       const orders = [];
-  //       querySnapshot.forEach((doc) => {
-  //         orders.push(doc.data());
-  //       });
-
-  //       setOrderHistory(orders);
-  //     } catch (error) {
-  //       console.error("Error fetching order history:", error);
-  //     }
-  //   };
-
-  //   fetchUserData();
-  //   fetchOrderHistory();
-  // }, []);
-
+  // Navigation function to handle moving to the Order History screen
   const handleOrderHistoryNav = () => {
     navigation.navigate("OrderHistory");
   };
 
+  // Navigation function to handle moving to the Business Registration screen
   const handleBusiness = () => {
     navigation.navigate("BusinessRegistration");
-    // alert('button clicked!')
   };
 
+  // Navigation function to handle moving to the Favourites screen
   const handleFavourites = () => {
     navigation.navigate("Favourites");
-    // alert('button clicked!')
   };
 
   const handleSignOut = () => {
@@ -123,10 +92,14 @@ const UserProfile = () => {
   };
 
   return (
+    // Main container view
     <View>
+      {/* Included FollowUs component */}
       <FollowUs />
+      {/* Included Navbar component */}
       <Navbar />
 
+      {/* User profile view */}
       <View
         style={{
           height: "800px",
@@ -134,7 +107,9 @@ const UserProfile = () => {
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
-        }}>
+        }}
+      >
+        {/* Profile picture */}
         <View>
           <View
             style={{
@@ -153,33 +128,17 @@ const UserProfile = () => {
                 alignItems: "center",
                 borderRadius: "50%",
                 justifyContent: "center",
-                // backgroundColor: "red",
               }}
             />
           </View>
 
-          {/* <View
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
-          >
-            <Typography style={{ fontWeight: 700 }} variant="h4">
-              {userData && userData.name}
-            </Typography>
-            <Typography style={{ fontWeight: 700 }} variant="h7">
-              {userData && userData.phone}
-            </Typography>
-            <Typography style={{ fontWeight: 700 }} variant="h7">
-              {userData && userData.email}
-            </Typography>
-          </View> */}
+          {/* User details section */}
           <View
             style={{
               marginTop: 30,
               textAlign: "center",
-            }}>
+            }}
+          >
             {/* {userData && (
               <View
                 style={{
@@ -199,18 +158,22 @@ const UserProfile = () => {
               marginBottom: "5px",
               alignItems: "center",
               flexDirection: "column",
-            }}>
+            }}
+          >
             <Typography
               style={{ color: "#072840", fontWeight: 600 }}
-              variant="h6">
-              {userData?.name} {userData?.surname}
+              variant="h6"
+            >
+             {userData?.name} {userData?.surname}
             </Typography>
             <Typography style={{ color: "gray", fontWeight: 600 }} variant="h7">
-              {userData?.alternativeContact.name}{" "}
-              {userData?.alternativeContact.phone}
+          {userData?.alternativeContact.name}  {userData?.alternativeContact.phone}
             </Typography>
           </View>
+
+          {/* Order history and navigation buttons */}
           <View>
+            {/* Order History button */}
             <View
               style={{
                 border: "none",
@@ -229,6 +192,8 @@ const UserProfile = () => {
                 <Text>ORDER HISTORY</Text>
               </TouchableOpacity>
             </View>
+            
+            {/* Display order history if available */}
             {showOrderHistory && (
               <View>
                 {/* Map out order history here */}
@@ -243,6 +208,9 @@ const UserProfile = () => {
                 ))}
               </View>
             )}
+
+            {/* Other navigation buttons */}
+            {/* Favourites button */}
             <View
               style={{
                 border: "none",
@@ -264,6 +232,8 @@ const UserProfile = () => {
                 <Text>FAVOURITES </Text>
               </TouchableOpacity>
             </View>
+            
+            {/* Terms & Conditions button */}
             <View
               style={{
                 border: "none",
@@ -284,6 +254,8 @@ const UserProfile = () => {
                 <Text>TERMS & CONDITIONS </Text>
               </TouchableOpacity>
             </View>
+            
+            {/* Privacy Policy button */}
             <View
               style={{
                 border: "none",
@@ -306,13 +278,16 @@ const UserProfile = () => {
               </TouchableOpacity>
             </View>
           </View>
+
+          {/* Action buttons */}
           <View
             style={{
               marginTop: 10,
               display: "flex",
               flexDirection: "row",
               justifyContent: "center",
-            }}>
+            }}
+          >
             <Button
               style={{
                 color: "#072840",
@@ -323,6 +298,8 @@ const UserProfile = () => {
               onClick={handleBusiness}>
               REGISTER BUSINESS
             </Button>
+            
+            {/* Register as a Talent button */}
             <Button
               style={{
                 color: "#072840",
@@ -333,6 +310,8 @@ const UserProfile = () => {
               variant="outlined">
               REGISTER AS A TALENT
             </Button>
+            
+            {/* Sign Out button */}
             <Button
               style={{
                 color: "#072840",
@@ -341,9 +320,14 @@ const UserProfile = () => {
                 marginRight: "5px",
               }}
               variant="outlined"
-              onClick={() => handleSignOut()}>
+              
+              onClick={() => signOut(firebase.auth())}
+              >
+            
               Sign Out
             </Button>
+            
+            {/* Manage Business button */}
             <Button
               style={{
                 color: "#072840",
@@ -360,6 +344,8 @@ const UserProfile = () => {
           </View>
         </View>
       </View>
+      
+      {/* Included Footer component */}
       <Footer />
     </View>
   );

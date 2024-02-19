@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  TextInput,
+  Dimensions,
 } from "react-native";
 import { firebase, firestore } from "../../config";
 import TextField from "@mui/material/TextField";
 import { useNavigation } from "@react-navigation/native";
-import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
-
+import CircularProgress from "@mui/material/CircularProgress";
+import FontAwesome from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome
 
 const AlternativeContact = () => {
   const user = firebase.auth().currentUser;
@@ -21,7 +21,7 @@ const AlternativeContact = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false); // New state for loading
-
+  const window = Dimensions.get("window"); // Getting window dimensions
 
   const handleContinue = async (e) => {
     e.preventDefault();
@@ -59,35 +59,45 @@ const AlternativeContact = () => {
       console.error(
         "Error submitting alternative contact information:",
         error.message
-      )
-    }finally {
+      );
+    } finally {
       setLoading(false); // Set loading to false when the request completes
     }
   };
 
-
   const handleNotNow = () => {
     console.log("Not Now button clicked");
   };
+  // Calculate container width and height dynamically
+  const containerWidth = window.width > 400 ? 400 : window.width * 0.9;
+  const containerHeight = window.height > 600 ? 600 : window.height * 0.9;
 
   return (
-    <ImageBackground
-      source={require("../../Global/images/Reed.jpg")}
-      style={styles.background}>
-      <View style={styles.container}>
-        <View>
+    <View style={{ flex: 1 }}>
+      <ImageBackground
+        source={require("../../Global/images/Reed.jpg")}
+        style={styles.background}
+      >
+        <View
+          style={{ ...styles.container, width: containerWidth, height: "95%" }}
+        >
           <Image
             source={require("../../Global/images/logo.png")}
             style={styles.logo}
           />
-
-          <View>
-            <Text style={styles.subtitle}>ALTERNATIVE CONTACT</Text>
+          <View
+            style={{
+              width: "120%",
+              flexDirection: "row",
+              justifyContent: "space-around",
+            }}
+          >
+            <Text style={styles.title}>ALTERNATIVE CONTACTS</Text>
           </View>
           <View style={{ width: "75%" }}>
             <TextField
               id="outlined-number"
-              label="Name"
+              label="Email"
               type="text"
               variant="standard"
               InputLabelProps={{
@@ -108,27 +118,26 @@ const AlternativeContact = () => {
               onChange={(e) => setPhone(e.target.value)}
             />
           </View>
+          <TouchableOpacity style={styles.button}  onPress={handleContinue}>
+            {loading ? (
+              <CircularProgress size={25} />
+            ) : (
+              <Text style={styles.buttonText}>CONTINUE</Text>
+            )}
+          </TouchableOpacity>
 
-          <View>
-            <TouchableOpacity style={styles.button} onPress={handleContinue}>
-              {loading ? (
-                <CircularProgress size={25} />
-              ) : (
-                <Text style={styles.buttonText}>CONTINUE</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-
-          <View>
-            <TouchableOpacity
-              style={styles.buttonn}
-              onPress={() => navigation.navigate("Landing")}>
-              <Text style={styles.buttonTextt}>NOT NOW</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={styles.businessButton}
+            onPress={handleContinue}
+          >
+            <Text style ={styles.buttonText1}>
+              NOT NOW
+              
+            </Text>
+          </TouchableOpacity>
         </View>
-      </View>
-    </ImageBackground>
+      </ImageBackground>
+    </View>
   );
 };
 
@@ -136,64 +145,74 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-end",
   },
   container: {
     backgroundColor: "#FFFFFF",
-    padding: 20,
-    borderRadius: 10,
-    width: "30%",
-    marginLeft: "69%",
-    height: "95%",
+
+    margin: "3%",
+
     alignItems: "center",
     justifyContent: "center",
   },
   logo: {
     width: 150,
-    height: 50,
-    marginBottom: 150,
+    height: 100,
+    marginBottom: 30,
     resizeMode: "contain",
-    marginLeft: "20%",
   },
-  subtitle: {
-    fontSize: 20,
+  title: {
+    fontSize: 24,
+    marginBottom: 10,
     fontWeight: "bold",
+    textAlign: "left",
+  },
+  input: {
+    height: 40,
+    width: "100%",
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
+    marginVertical: 15,
   },
   button: {
     backgroundColor: "#072840",
     paddingVertical: 10,
     borderRadius: 30,
     marginTop: 10,
-    width: "120%",
-    display:'flex',
-    alignItems:'center'
+    width: "75%",
+    alignItems: "center",
   },
   buttonText: {
     color: "white",
     textAlign: "center",
     fontWeight: "bold",
   },
-  buttonn: {
+  linkText: {
+    color: "blue",
+    textAlign: "center",
+    marginTop: 20,
+  },
+  linkText1: {
+    color: "red",
+    textAlign: "center",
+    marginTop: 50,
+  },
+  businessButton: {
+    borderColor: "#072840",
     borderWidth: 1,
     paddingVertical: 10,
     borderRadius: 30,
-    marginTop: "10%",
-    width: "120%",
-    borderColor: "#072840",
+    marginTop: 10,
+    width: "75%",
+    alignItems: "center",
   },
-  buttonTextt: {
-    color: "#072840",
-    fontWeight: "bold",
+  buttonText1: {
     textAlign: "center",
+    fontWeight: "bold",
+    color: "#072840",
   },
-  input: {
-    // borderWidth: 1,
-    borderColor: "#ccc",
-    // borderRadius: 4,
-    borderBottomWidth: 1,
-    marginVertical: 8,
-    padding: 8,
-    width: "100%",
+  arrow: {
+    marginLeft: 10,
   },
 });
 

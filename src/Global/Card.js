@@ -9,7 +9,20 @@ import {
   Snackbar,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
-
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+  addDoc,
+  collection,
+  serverTimestamp,
+  query,
+  where,
+  limit,
+  getDocs,
+} from "firebase/firestore";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
 import Skeleton from "@mui/material/Skeleton";
@@ -75,7 +88,7 @@ const ProductCard = ({ productId }) => {
         quantity: 1,
         image:
           product.images && product.images.length > 0 ? product.images[0] : "",
-        // Add other relevant fields
+          timestamp: serverTimestamp(),
       });
       setShowSnackbar1(true);
     } catch (error) {

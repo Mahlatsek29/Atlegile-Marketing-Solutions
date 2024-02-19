@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,15 +6,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Dimensions,
 } from "react-native";
 import { firebase, firestore } from "../../config";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
-import ReactDOM from "react-dom";
-import App from "../../../App";
-import PlaceAutocomplete from "../../Global/PlaceAutocomplete";
-const AppDiscreiption = "Atlegile Markwting Solutions"; // Add your actual description here
 
 const TellUsAboutYourself = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -22,64 +19,15 @@ const TellUsAboutYourself = ({ navigation }) => {
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
-  const [location, setLocation] = useState("");
+  //const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
-  const [pastLocations, setPastLocations] = useState([]);
+  const window = Dimensions.get("window");
   const user = firebase.auth().currentUser;
-  const [address, setAddress] = useState({});
-  const [coordinates, setCoordinates] = useState({});
 
   const handleContinue = async (e) => {
     e.preventDefault();
     
-    let streetAddress;
-
-    if (address.address_components.length === 8) {
-      streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-    } else if (address.address_components.length === 9) {
-      streetAddress = ` ${address.address_components[1].long_name} ${address.address_components[2].long_name} `;
-    }
-
-    let localArea;
-
-    if (address.address_components.length === 8) {
-      localArea = `${address.address_components[2].long_name} `;
-    } else if (address.address_components.length === 9) {
-      localArea = `${address.address_components[3].long_name} ${address.address_components[0].long_name}`;
-    }
-    let localCity;
-
-    if (address.address_components.length === 8) {
-      localCity = `${address.address_components[4].long_name}`;
-    } else if (address.address_components.length === 9) {
-      localCity = `${address.address_components[5].long_name} `;
-    }
-
-    let zoneCity;
-
-    if (address.address_components.length === 8) {
-      zoneCity = `${address.address_components[5].long_name}`;
-    } else if (address.address_components.length === 9) {
-      zoneCity = `${address.address_components[6].long_name} `;
-    }
-
-    let countryOfCity;
-
-    if (address.address_components.length === 8) {
-      countryOfCity = `${address.address_components[6].long_name}`;
-    } else if (address.address_components.length === 9) {
-      countryOfCity = `${address.address_components[7].short_name} `;
-    }
-
-    let postalCode;
-
-    if (address.address_components.length === 8) {
-      postalCode = `${address.address_components[7].long_name}`;
-    } else if (address.address_components.length === 9) {
-      postalCode = `${address.address_components[8].long_name} `;
-    }
-
-    if (!name || !surname || !phone || !gender || !email || !location) {
+    if (!name || !surname || !phone || !gender || !email ) {
       alert("Please fill in all fields before continuing.");
       return;
     }
@@ -95,23 +43,9 @@ const TellUsAboutYourself = ({ navigation }) => {
         surname,
         phone,
         gender,
-        email,
-        location,
+        email,      
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        uid: user.uid,
-        locationDetails: {
-          type: "",
-          company: "",
-          street_address: streetAddress,
-          local_area: localArea,
-          city: localCity,
-          zone: zoneCity,
-          country: countryOfCity,
-          code: postalCode,
-          lat: coordinates.lat,
-          lng: coordinates.lng,
-        },
-        pastLocations
+        uid: user.uid,       
       });
 
       console.log("User information successfully submitted to Firestore.");
@@ -126,25 +60,7 @@ const TellUsAboutYourself = ({ navigation }) => {
   };
   const emptyOption = [""];
   const genderOptions = ["Male", "Female", "Other"];
-  
-  const handlePlaceSelect = ({ place, latLng }) => {
-    // Do something with the selected place details and latitude/longitude
-    console.log("Selected place:", place.address_components);
-    console.log("Latitude and Longitude:", latLng);
-    setAddress(place);
-    setCoordinates(latLng);
-  };
 
-  useEffect(() => {
-    if (address && address.formatted_address) {
-      setLocation(address.formatted_address);
-      setPastLocations((prevLocations) => [...prevLocations, address.formatted_address]);
-      console.log("address.formatted_address is ", address.formatted_address);
-    } else {
-      console.log("Address or address.formatted_address is undefined");
-    }
-  }, [address]);
-  
 
   return (
     <ImageBackground
@@ -155,10 +71,19 @@ const TellUsAboutYourself = ({ navigation }) => {
         <Image
           source={require("../../Global/images/logo.png")}
           style={styles.logo}
-        />
-        <Text style={styles.title}>MAIN ACCOUNT HOLDER</Text>
-        <Text style={styles.subtitle}>TELL US ABOUT YOURSELF</Text>
-
+        />{" "}
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            width: "75%",
+            flexDirection: "column",
+          }}
+        >
+          {" "}
+          <Text style={styles.title}>MAIN ACCOUNT HOLDER</Text>
+          <Text style={styles.subtitle}>TELL US ABOUT YOURSELF</Text>
+        </View>
         <View
           style={{
             display: "flex",
@@ -201,7 +126,6 @@ const TellUsAboutYourself = ({ navigation }) => {
             }}
           />
         </View>
-
         <TextField
           id="outlined-number"
           label="Phone"
@@ -256,10 +180,10 @@ const TellUsAboutYourself = ({ navigation }) => {
           }}
         />
 
-        <PlaceAutocomplete
+        {/* <PlaceAutocomplete
           style={{ width: "25vw" }}
           onPlaceSelect={handlePlaceSelect}
-        />
+        /> */}
 
         <TouchableOpacity style={styles.button} onPress={handleContinue}>
           {loading ? (
@@ -277,19 +201,15 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-end",
   },
   container: {
     backgroundColor: "#FFFFFF",
-    padding: 20,
-    borderRadius: 10,
-    width: "30%",
-    marginLeft: "69%",
     height: "95%",
+    margin: "3%",
+
     alignItems: "center",
     justifyContent: "center",
-
-    // alignItems: "center",
   },
   logo: {
     width: 150,
@@ -299,14 +219,15 @@ const styles = StyleSheet.create({
     // marginLeft: "29%",
   },
   title: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 10,
+    marginBottom: 2,
     fontWeight: "bold",
-    textAlign: "left",
+    alignSelf: "flex-start",
   },
   subtitle: {
     fontSize: 20,
     fontWeight: "bold",
+    alignSelf: "flex-start",
   },
   input: {
     height: 40,

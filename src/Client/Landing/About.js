@@ -1,28 +1,44 @@
-import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import Plane from "../../Global/images/plane.svg";
-import Lion from "../../Global/images/bigger-lion.png";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Text, Image, Dimensions} from "react-native";
+import { Video } from "expo-av";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
-import { yellow } from "@mui/material/colors";
 import { COLORS } from "../../Global/Color";
-import { useNavigation } from "@react-navigation/native";
-import { Video } from "expo-av";
 
 export default function AboutUs() {
-  const amsArr = [];
-  const video = React.useRef(null);
-  const [status, setStatus] = React.useState({});
+  // State to manage screen dimensions
+  const [dimensions, setDimensions] = useState(Dimensions.get("window"));
+  const { width, height } = dimensions;
+
+  // Ref for the video component
+  const video = useRef(null);
+  // State to manage video playback status
+  const [status, setStatus] = useState({});
+
+  useEffect(() => {
+    // Function to handle changes in screen dimensions
+    const handleDimensionChange = () => {
+      setDimensions(Dimensions.get("window"));
+    };
+
+    // Subscribe to dimension changes
+    Dimensions.addEventListener("change", handleDimensionChange);
+
+    // Clean up the subscription when the component unmounts
+    return () => {
+      Dimensions.removeEventListener("change", handleDimensionChange);
+    };
+  }, []); // Empty dependency array to run the effect only once during component mount
+
   return (
-    <View style={{ Width: "100vw" }}>
-      {/* <StatusBar style="auto" /> */}
+    <View style={{ flex: 1 }}>
+      {/* Included FollowUs component */}
       <FollowUs />
+      {/* Included Navbar component */}
       <Navbar />
       <View
         style={{
-          //width: "100vw",
           alignItems: "center",
           justifyContent: "center",
           display: "flex",
@@ -30,27 +46,36 @@ export default function AboutUs() {
       >
         <View
           style={{
-            width: "66%",
+            width: width * 0.66,
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
             display: "flex",
-            //backgroundColor: "red",
           }}
         >
+          {/* Logo section */}
           <View>
             <Image
               source={require("../../Global/images/logo.svg")}
               style={{ width: 120, height: 60, resizeMode: "contain" }}
             />
           </View>
-          <View style={styles.aboutTextSection}>
+          {/* About text section */}
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: "center",
+              display: "flex",
+              justifyContent: "center",
+              paddingHorizontal: 20,
+            }}
+          >
             <Text
               style={{
                 color: COLORS.darkBlue,
                 textAlign: "center",
                 fontWeight: "bold",
-                fontSize: "2rem",
+                fontSize: 20,
               }}
             >
               ATTLEGILE MARKETING SOLUTIONS
@@ -74,6 +99,7 @@ export default function AboutUs() {
             </Text>
           </View>
 
+          {/* Three sections with information */}
           <View
             style={{
               display: "flex",
@@ -82,11 +108,13 @@ export default function AboutUs() {
               paddingBottom: 30,
             }}
           >
+            {/* Section 1: What We Offer */}
             <View
               style={{
                 height: "auto",
                 width: "33%",
-                border: "1px solid grey",
+                borderWidth: 1,
+                borderColor: "grey",
                 margin: 1,
               }}
             >
@@ -95,7 +123,7 @@ export default function AboutUs() {
                   color: COLORS.darkBlue,
                   textAlign: "center",
                   fontWeight: "bold",
-                  fontSize: "1.2rem",
+                  fontSize: 16,
                   paddingTop: 10,
                 }}
               >
@@ -109,11 +137,13 @@ export default function AboutUs() {
                 agencies.
               </Text>
             </View>
+            {/* Section 2: About AMS */}
             <View
               style={{
                 height: "auto",
                 width: "33%",
-                border: "1px solid grey",
+                borderWidth: 1,
+                borderColor: "grey",
                 margin: 1,
               }}
             >
@@ -122,7 +152,7 @@ export default function AboutUs() {
                   color: COLORS.darkBlue,
                   textAlign: "center",
                   fontWeight: "bold",
-                  fontSize: "1.2rem",
+                  fontSize: 16,
                   paddingTop: 10,
                 }}
               >
@@ -135,11 +165,13 @@ export default function AboutUs() {
                 Pimville, Soweto, and service our partners online.
               </Text>
             </View>
+            {/* Section 3: Our USP */}
             <View
               style={{
                 height: "auto",
                 width: "33.5%",
-                border: "1px solid grey",
+                borderWidth: 1,
+                borderColor: "grey",
                 margin: 1,
               }}
             >
@@ -148,7 +180,7 @@ export default function AboutUs() {
                   color: COLORS.darkBlue,
                   textAlign: "center",
                   fontWeight: "bold",
-                  fontSize: "1.2rem",
+                  fontSize: 16,
                   paddingTop: 10,
                 }}
               >
@@ -164,7 +196,7 @@ export default function AboutUs() {
                   color: "black",
                   textAlign: "center",
                   fontWeight: "medium",
-                  fontSize: "1rem",
+                  fontSize: 14,
                   padding: 10,
                   textAlign: "start",
                 }}
@@ -174,13 +206,13 @@ export default function AboutUs() {
             </View>
           </View>
 
+          {/* Video section */}
           <View
             style={{
               height: "50vh",
               width: "80%",
-              // backgroundColor: "red",
               display: "flex",
-              justifyContent:"center"
+              justifyContent: "center",
             }}
           >
             <Video
@@ -188,7 +220,7 @@ export default function AboutUs() {
               style={{
                 height: "50vh",
                 width: "100%",
-                alignSelf: "center"
+                alignSelf: "center",
               }}
               source={{
                 uri: "http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
@@ -198,237 +230,154 @@ export default function AboutUs() {
               isLooping
               onPlaybackStatusUpdate={setStatus}
             />
-            {/* <Image
-            source={require("../../Global/images/plane.svg")}
-            style={{
-              minHeight: "70vh",
-              minWidth: "100%",
-              resizeMode: "contain",
-            }}
-          /> */}
-            <Text style={{  alignSelf: "flex-start" }}>
+            <Text style={{ alignSelf: "flex-start" }}>
               Business Research and Youth Development Project
             </Text>
           </View>
 
-          <View style={styles.amsContainer}>
+          {/* AMS core values section */}
+          <View style={{ marginTop: 20 }}>
             <Text
               style={{
                 color: COLORS.darkBlue,
                 textAlign: "center",
                 fontWeight: "bold",
-                fontSize: "1.2rem",
+                fontSize: 16,
                 paddingTop: 10,
               }}
             >
-              AMS IS GUIDED BY SEVERAL CORE VALURES
+              AMS IS GUIDED BY SEVERAL CORE VALUES
             </Text>
             <View
               style={{
                 display: "flex",
-                flexDirection: "colunm",
-                width: 1020,
-                paddingTop: 10,
+                flexDirection: "row",
+                flexWrap: "wrap",
+                justifyContent: "center",
               }}
             >
-              <View
+              {/* List of core values */}
+              <Text
                 style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
+                  color: "white",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 20,
+                  margin: 5,
+                  backgroundColor: COLORS.darkBlue,
+                  fontSize: 16,
                 }}
               >
-                <Text
-                  style={{
-                    color: "white",
-                    alignItems: "cernter",
-                    paddingTop: 5,
-                    paddingHorizontal: 20,
-                    paddingBottom: 5,
-                    margin: 5,
-                    backgroundColor: COLORS.darkBlue,
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  PASSION
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    alignItems: "cernter",
-                    paddingTop: 5,
-                    paddingHorizontal: 20,
-                    margin: 5,
-                    paddingBottom: 5,
-                    backgroundColor: COLORS.darkBlue,
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  INNOVTION
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    alignItems: "cernter",
-                    paddingTop: 5,
-                    paddingHorizontal: 20,
-                    margin: 5,
-                    paddingBottom: 5,
-                    backgroundColor: COLORS.darkBlue,
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  GLOBAL CONNECTION
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    alignItems: "cernter",
-                    paddingTop: 5,
-                    paddingBottom: 5,
-                    paddingHorizontal: 20,
-                    margin: 5,
-                    backgroundColor: COLORS.darkBlue,
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  SOCIAL IMPACT
-                </Text>
-              </View>
-
-              <View
+                PASSION
+              </Text>
+              <Text
                 style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
+                  color: "white",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 20,
+                  margin: 5,
+                  backgroundColor: COLORS.darkBlue,
+                  fontSize: 16,
                 }}
               >
-                <Text
-                  style={{
-                    color: "white",
-                    alignItems: "cernter",
-                    paddingTop: 5,
-                    paddingBottom: 5,
-                    paddingHorizontal: 20,
-                    margin: 5,
-                    backgroundColor: COLORS.darkBlue,
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  SKILLS DEVELOPMENT
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    alignItems: "cernter",
-                    paddingTop: 5,
-                    paddingHorizontal: 20,
-                    margin: 5,
-                    paddingBottom: 5,
-                    backgroundColor: COLORS.darkBlue,
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  CREATIVITY
-                </Text>
-              </View>
+                INNOVATION
+              </Text>
+              <Text
+                style={{
+                  color: "white",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 20,
+                  margin: 5,
+                  backgroundColor: COLORS.darkBlue,
+                  fontSize: 16,
+                }}
+              >
+                GLOBAL CONNECTION
+              </Text>
+              <Text
+                style={{
+                  color: "white",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 20,
+                  margin: 5,
+                  backgroundColor: COLORS.darkBlue,
+                  fontSize: 16,
+                }}
+              >
+                SOCIAL IMPACT
+              </Text>
+              <Text
+                style={{
+                  color: "white",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 20,
+                  margin: 5,
+                  backgroundColor: COLORS.darkBlue,
+                  fontSize: 16,
+                }}
+              >
+                SKILLS DEVELOPMENT
+              </Text>
+              <Text
+                style={{
+                  color: "white",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 20,
+                  margin: 5,
+                  backgroundColor: COLORS.darkBlue,
+                  fontSize: 16,
+                }}
+              >
+                CREATIVITY
+              </Text>
             </View>
           </View>
-          <View style={styles.amsText}>
+
+          {/* Additional text about AMS */}
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: "center",
+              marginTop: 50,
+            }}
+          >
             <Text
               style={{
                 color: COLORS.darkBlue,
                 textAlign: "center",
                 fontWeight: "bold",
-                fontSize: "2rem",
+                fontSize: 20,
                 paddingTop: 20,
                 paddingBottom: 30,
               }}
             >
               AMS AIMS TO NOT ONLY HELP BUSINESSES GROW BUT TO ALSO MAKE A
-              POSITIVE IMPACT ON SOCIETY BY NUTURING LOCAL TALENT AND FOSTRING
-              SUSTAINABLE BUSINESSES GROWTH.
+              POSITIVE IMPACT ON SOCIETY BY NURTURING LOCAL TALENT AND FOSTERING
+              SUSTAINABLE BUSINESS GROWTH.
             </Text>
           </View>
         </View>
       </View>
 
-      <Image
-        source={require("../../Global/images/big-lion.svg")}
-        style={{
-          minHeight: "99vh",
-          minWidth: "100%",
-          resizeMode: "contain",
-          // backgroundColor: "red",
-        }}
-      />
+      {/* Big lion image section */}
+      <View style={{ width: "100%", height: "100vh" }}>
+        <Image
+          source={require("../../Global/images/big-lion.svg")}
+          style={{
+            width: "100%",
+            height: "100%",
+            resizeMode: "contain",
+          }}
+        />
+      </View>
 
+      {/* Included Footer component */}
       <Footer />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  logo: {
-    minWidth: 250,
-    maxWidth: 400,
-  },
-  aboutLogo: {
-    marginTop: 100,
-  },
-  aboutContainer: {
-    width: "100%",
-    height: "auto",
-    alignItems: "center",
-    justifyContent: "center",
-    display: "flex",
-  },
-  aboutHeaderContainer: {
-    width: "65%",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    display: "flex",
-  },
-  aboutTextSection: {
-    flexDirection: "column",
-    alignItems: "center",
-    display: "flex",
-    justifyContent: "center",
-  },
-  aboutPlane: {
-    marginTop: 50,
-  },
-  plane: {},
-  amsContainer: {
-    marginTop: 20,
-  },
-  amsHeader: {
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 70,
-    marginBottom: 30,
-    fontSize: 30,
-  },
-  amsLists: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-  },
-  amsText: {
-    flexDirection: "column",
-    alignItems: "center",
-    marginTop: 50,
-  },
-  lionImagesContainer: {
-    position: "relative",
-  },
-  bigLion: {},
-  lion: {
-    width: "100%",
-  },
-});

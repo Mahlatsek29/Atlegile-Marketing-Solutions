@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -16,34 +17,22 @@ import {
   Grid,
 } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/Feather";
 import Icon1 from "react-native-vector-icons/FontAwesome";
 import Navbar from "../../Global/Navbar";
 import FollowUs from "../../Global/Header";
 import { Footer } from "../../Global/Footer";
-import hdtv from "../../Global/images/hdtv.jpg";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import mapImage from "../../Global/images/mapImage.png";
 import axios from "axios";
 import { firestore } from "../../config";
 
 const OrderHistory = () => {
-  const [cartData, setCartData] = useState([]);
+  const [order, setOrder] = useState([]);
   const [user, setUser] = useState(null);
-  const [data, setData] = useState([
-    "Ben",
-    "Paul",
-    "Sibusiso",
-    "Mpho",
-    "Ristar",
-    "David",
-    "Tshepo",
-    "Linda",
-    "Thobile",
-  ]);
   const [shipmentStatus, setShipmentStatus] = useState("");
+  const { navigate } = useNavigation();
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -51,99 +40,53 @@ const OrderHistory = () => {
     });
 
     return () => {
-      unsubscribe(); // Unsubscribe from the auth state listener when component unmounts
+      unsubscribe();
     };
   }, []);
-  // using local host URL for now which routes back to the initial screen but when hosted we will use the host URL
-  // const url = "http://localhost:19006";
-  // const url2 = "https://atlegile-marketing-solutions.vercel.app/Reciept";
 
-  // const fetchCartData = async () => {
-  //   if (!user) {
-  //     console.error("User not authenticated.");
-  //     return;
-  //   }
-
-  //   const cartCollectionRef = collection(firestore, "Cart");
-  //   const q = query(cartCollectionRef, where("uid", "==", user.uid));
-
-  //   try {
-  //     const querySnapshot = await getDocs(q);
-
-  //     const cartItems = [];
-  //     querySnapshot.forEach((doc) => {
-  //       const data = doc.data();
-  //       cartItems.push({
-  //         id: doc.id,
-  //         product: data.product,
-  //         quantity: data.quantity,
-  //         amount: data.price * data.quantity,
-  //         image: data.image,
-  //         name: data.name,
-  //         // Add other relevant fields from your Cart collection
-  //       });
-  //     });
-
-  //     setCartData(cartItems);
-  //   } catch (error) {
-  //     console.error("Error fetching cart data:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   // Fetch cart data when the user is authenticated
-  //   if (user) {
-  //     fetchCartData();
-  //   }
-  // }, [user]); // Fetch cart data whenever the user changes
-
-  const fetchCartData = async () => {
+  const fetchOrder= async () => {
     if (!user) {
       console.error("User not authenticated.");
       return;
     }
 
-    const cartCollectionRef = collection(firestore, "Orders");
-    const q = query(cartCollectionRef, where("userId", "==", user.uid));
+    const orderCollectionRef = collection(firestore, "Orders");
+    const q = query(orderCollectionRef, where("userId", "==", user.uid));
 
     try {
       const querySnapshot = await getDocs(q);
 
-      const cartItems = [];
+      const orderItems = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        cartItems.push({
+        orderItems.push({
           id: doc.id,
           DeliveryStatus: data.DeliveryStatus,
-          // quantity: data.quantity,
           image: data.items[0].image,
           deliveryGuy: data.deliveryGuy,
           orderNumber: data.orderNumber,
-          timestamp: data.deliveryDate.toDate(),
+          timestamp: data.deliveryDate,
           trackingRef: data.trackingEventsRef,
-
-          // Add other relevant fields from your Cart collection
         });
       });
 
-      setCartData(cartItems);
-      console.log("Cart Data is: ", cartData);
+      setOrder(orderItems);
     } catch (error) {
-      console.error("Error fetching cart data:", error);
+      console.error("Error fetching orders:", error);
     }
   };
 
   useEffect(() => {
-    // Fetch cart data when the user is authenticated
     if (user) {
-      fetchCartData();
+      fetchOrder();
     }
-  }, [user]); // Fetch cart data whenever the user changes
+  }, [user]);
+
   const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
+
   useEffect(() => {
-    const tackingShipment = async () => {
-      // Check if cartData is not empty and contains trackingRef
-      if (cartData.length > 0 && cartData[0].trackingRef) {
+    const trackingShipment = async () => {
+      if (order.length > 0 && order[0].trackingRef) {
         const config = {
           headers: {
             Authorization: `Bearer ${CourierAPIKey}`,
@@ -153,35 +96,25 @@ const OrderHistory = () => {
 
         try {
           const response = await axios.get(
-            `https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=${cartData[0].trackingRef}`,
+            `https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=${order[0].trackingRef}`,
             config
           );
-          console.log(
-            "Courier API tracking shipment response:",
-            response.data.shipments[0].status
-          );
-          console.log(
-            "shipmentStatus is ",
-            response.data.shipments[0].tracking_events[0].status
-          );
+
           setShipmentStatus(
             response.data.shipments[0].tracking_events[0].status
           );
+          setShipmentStatus(response.data.shipments[0].tracking_events[0].status);
         } catch (error) {
           console.error("Error getting shipments", error);
-          if (error.response) {
-            console.log("Response data:", error.response.data);
-          }
-          return [];
         }
       } else {
-        console.error("Tracking reference not available in cartData");
+        console.error("Tracking reference not available in order");
       }
     };
-
+  
     tackingShipment();
   }, [cartData]);
-
+  
   // const data = [
   //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "ONGOING" },
   //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
@@ -189,18 +122,14 @@ const OrderHistory = () => {
   //   { date: "27 JUL, 2023", name: "SIBUSISO", status: "DELIVERED" },
   // ];
 
-  // const navigateToDeliveryAndChatSystem = (status) => {
-  //   if (status === "DELIVERED") {
-  //     navigation.navigate("DeliveryAndChatSystem");
-  //   } else if (status === "ONGOING") {
-  //     navigation.navigate("DeliveryOngoing");
-  //   }
-  // };
-  console.log("Cart Data 1 : ", cartData);
-  console.log("Cart Data timeStamp : ", cartData[0]?.timestamp.toString());
+  const navigateToDeliveryAndChatSystem = (orderId) => {
+    
+    
+    navigate("DeliveryAndChatSystem", { orderId });
+  };
 
   return (
-    <View style={{ backgroundColor: "white" }}>
+    <View style={{ flex: 1 }}>
       <FollowUs />
       <Navbar />
       {/* <ScrollView style={{ flexDirection: "column", backgroundColor: "white" }}> */}
@@ -213,7 +142,8 @@ const OrderHistory = () => {
               height: 100,
               display: "flex",
               flexDirection: "row",
-            }}>
+            }}
+          >
             <Typography
               variant="h5"
               style={{
@@ -223,7 +153,8 @@ const OrderHistory = () => {
                 display: "flex",
                 alignItems: "center",
                 fontWeight: "bold",
-              }}>
+              }}
+            >
               ORDER HISTORY
             </Typography>
             <Typography
@@ -232,7 +163,8 @@ const OrderHistory = () => {
                 width: 200,
                 display: "flex",
                 alignItems: "center",
-              }}>
+              }}
+            >
               <TextInput
                 style={{
                   borderBottomWidth: 2,
@@ -248,7 +180,8 @@ const OrderHistory = () => {
                 height: 80,
                 width: 200,
                 marginRight: "10px",
-              }}>
+              }}
+            >
               <View
                 style={{
                   color: "gray",
@@ -257,7 +190,8 @@ const OrderHistory = () => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                }}>
+                }}
+              >
                 <Text style={{ color: "gray", marginTop: 25 }}>
                   Please Select
                 </Text>
@@ -273,18 +207,29 @@ const OrderHistory = () => {
                 height: 50,
                 width: 50,
                 marginTop: 15,
-              }}>
+              }}
+            >
               <TouchableOpacity>
                 <Icon name="search" size={20} />
               </TouchableOpacity>
             </Typography>
           </View>
 
-          <Grid container spacing={2}>
-            {cartData.map((item, index) => (
+        <Box
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+          
+          }}
+        >
+          <Grid >
+            {order.map((item, index) => (
               <TouchableOpacity
                 onPress={() => navigateToDeliveryAndChatSystem(item.status)}
-                key={index}>
+                key={index}
+              >
                 <Grid item xs={12} key={item.id}>
                   <Card sx={{ height: "auto", borderBottomColor: "black" }}>
                     <Box
@@ -292,7 +237,8 @@ const OrderHistory = () => {
                       flexDirection={{ xs: "column", md: "row" }}
                       alignItems="center"
                       borderBottomWidth={2}
-                      padding={2}>
+                      padding={2}
+                    >
                       <Box
                         width={{ xs: "100%", md: "30%" }}
                         marginBottom={{ xs: 2, md: 0 }}>
@@ -321,8 +267,9 @@ const OrderHistory = () => {
                           {item.orderNumber}
                         </Typography>
                         <Typography
-                          style={{ fontSize: 18, fontWeight: "bold" }}>
-                          {item.timestamp.toLocaleString()}
+                          style={{ fontSize: 18, fontWeight: "bold" }}
+                        >
+                            {item.timestamp.toLocaleString()}
                         </Typography>
                       </Box>
                       <Box
@@ -336,7 +283,8 @@ const OrderHistory = () => {
                           Delivered by
                         </Typography>
                         <Typography
-                          style={{ fontSize: 18, fontWeight: "bold" }}>
+                          style={{ fontSize: 18, fontWeight: "bold" }}
+                        >
                           {item.deliveryGuy}
                         </Typography>
                       </Box>
@@ -370,10 +318,8 @@ const OrderHistory = () => {
               </TouchableOpacity>
             ))}
           </Grid>
-        </Grid>
+        </Box>
       </Container>
-      {/* </ScrollView> */}
-
       <Footer />
     </View>
   );

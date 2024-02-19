@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Linking,
-  Image,
   ScrollView,
-  TextInput,
-  FlatList,
 } from "react-native";
 import {
   Container,
@@ -18,37 +15,37 @@ import {
   Card,
   ImageList,
   ImageListItem,
+  TextField,
 } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
-import mapImage from "../../Global/images/mapImage.png";
-import hdtv from "../../Global/images/hdtv.jpg";
 import axios from "axios";
-
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firestore } from "../../config";
 
 import {
   collection,
   query,
-  onSnapshot,
-  exists,
   doc,
   getDoc,
   where,
   getDocs,
   serverTimestamp,
   addDoc,
-  arrayUnion,
-  updateDoc,
+  deleteDoc
 } from "firebase/firestore";
 
-import { firebase, auth, db } from "../../config";
-// import { timeStamp } from "console";
-
-import PlaceAutocomplete from "../../Global/PlaceAutocomplete";
+import { auth } from "../../config";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
@@ -61,50 +58,26 @@ const DateSelectionAndCheckout = () => {
   const [user, setUser] = useState(null);
   const [rates, setRates] = useState([]);
   const [cartCount, setCartCount] = useState(2);
-  const [data, setData] = useState([
-    "Ben",
-    "Paul",
-    "Sibusiso",
-    "Mpho",
-    "Ristar",
-    "David",
-    "Tshepo",
-    "Linda",
-    "Thobile",
-  ]);
   const [newArr, setNewArr] = useState([]);
-  // const [user, setUser] = useState(null);
-  const [userId, setUserId] = useState(null);
-
-  // const [rates, setRates] = useState([]);
   const [userData, setUserData] = useState(null);
-  const [inputValue, setInputValue] = useState("");
-  const [predictions, setPredictions] = useState([]);
   const [addressInput, setAddessInput] = useState(false);
+  const mapRef = useRef(null);
   const [address, setAddress] = useState({});
-  const [coordinates, setCoordinates] = useState({});
-  const [preciseLocation, setPreciseLocation] = useState({});
-  const [pastLocations, setPastLocations] = useState([]);
-  const [initialAddress, setInitialAddress] = useState("");
-  const [company, setCompany] = useState([]);
+  const [error, setError] = useState(null);
+  const [coordinates, setCoordinates] = useState({
+    lat: -26.2609931,
+    lng: 27.9502322,
+  });
   const [theBusinessName, setTheBusinessName] = useState("");
-  const [collectionAdress, setCollecionadress] = useState({});
-  const [collectioPhoneNUmber, setCollectioPhoneNUmber] = useState();
-  const [loading, setLoading] = useState(false);
   const [trackingRef, setTrackingRef] = useState("");
   const [shipmentStatus, setShipmentStatus] = useState("");
   const [location, setLocation] = useState("");
-  const [pastPreciseLocation, setPastPreciseLocation] = useState([]);
   const [isPicked, setIsPicked] = useState(false);
-  const [arrayIndex, setArrayIndex] = useState(null);
-  const [forceUpdate, setForceUpdate] = useState(false);
-  const [isLocationSelected, setIsLocationSelected] = useState(false);
   const [driver, setDriver] = useState("");
-  const [minDeliveryDate, setMinDeliveryDate] = useState("");
-  const [length, setLength] = useState(null);
-  const [width, setWidth] = useState(null);
-  const [height, setHeight] = useState(null);
-  const [weight, setWeight] = useState(null);
+  const [totalLength, setTotalLength] = useState(0);
+  const [totalWidth, setTotalWidth] = useState(0);
+  const [totalHeight, setTotalHeight] = useState(0);
+  const [totalWeight, setTotalWeight] = useState(0);
   const [addressCard, setAddressCard] = useState(false);
   const [fixedAddress, setFixedAddress] = useState({});
   const [editedValue, setEditedValue] = useState("");
@@ -114,37 +87,55 @@ const DateSelectionAndCheckout = () => {
   const [editLocalArea, setEditLocalArea] = useState(false);
   const [editCode, setEditCode] = useState(false);
   const [editCounty, setEditCountry] = useState(false);
+  const [authPin,setAuthPIn] = useState('')
+  // useEffect hook to listen for changes in authentication state
   useEffect(() => {
+    // Get the authentication instance
     const auth = getAuth();
+
+    // Subscribe to the authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // Update the state with the current user
       setUser(user);
     });
 
+    // Cleanup function to unsubscribe when the component unmounts
     return () => {
       unsubscribe(); // Unsubscribe from the auth state listener when component unmounts
     };
   }, []);
+
   // using local host URL for now which routes back to the initial screen but when hosted we will use the host URL
   // const url = "http://localhost:19006";
   const url = "https://atlegile-marketing-solutions.vercel.app/Reciept";
 
+  // Function to fetch cart data for the authenticated user
   const fetchCartData = async () => {
+    // Check if the user is authenticated
     if (!user) {
       console.error("User not authenticated.");
       return;
     }
 
+    // Reference to the 'Cart' collection in Firestore
     const cartCollectionRef = collection(firestore, "Cart");
+
+    // Query to get the cart items for the current user
     const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
     try {
+      // Get a snapshot of the query results
       const querySnapshot = await getDocs(q);
 
+      // Arrays to store cart items and cart products separately
       const cartItems = [];
       const cartProducts = [];
 
+      // Iterate through each document in the query snapshot
       querySnapshot.forEach((doc) => {
         const data = doc.data();
+
+        // Add cart item details to the 'cartItems' array
         cartItems.push({
           id: doc.id,
           product: data.product,
@@ -152,9 +143,10 @@ const DateSelectionAndCheckout = () => {
           amount: data.price * data.quantity,
           image: data.image,
           name: data.name,
-
           // Add other relevant fields from your Cart collection
         });
+
+        // Add cart product details to the 'cartProducts' array
         cartProducts.push({
           id: doc.id,
           productId: data.productId,
@@ -162,103 +154,126 @@ const DateSelectionAndCheckout = () => {
           quantity: data.quantity,
           amount: data.price * data.quantity,
           image: data.image,
-          name: data.name,
-
+          name: data.name,         
           // Add other relevant fields from your Cart collection
         });
       });
-      console.log("cartProducts is ", cartProducts);
+
+      // Set the state with the fetched cart items and cart products
       setCartData(cartItems);
       setNewArr(cartProducts);
-      // setNewArr([...cartItems]);
-      console.log("cartData : ", cartData);
+
+      console.log("cartData: ", cartData);
     } catch (error) {
       console.error("Error fetching cart data:", error);
     }
   };
 
+  // Effect hook to fetch cart data when the user is authenticated
   useEffect(() => {
-    // Fetch cart data when the user is authenticated
+    // Check if the user is authenticated
     if (user) {
+      // Call the fetchCartData function to retrieve cart data
       fetchCartData();
     }
-  }, [user]); // Fetch cart data whenever the user changes
+  }, [user]); // Trigger the effect whenever the user changes
 
-  // ... Other imports and code ...
-
+  const deleteCartCollection = async (firestore, userUid) => {
+    try {
+      // Create a reference to the 'Cart' collection
+      const cartCollectionRef = collection(firestore, 'Cart');
+  
+      // Create a query to get documents where the 'uid' field matches userUid
+      const q = query(cartCollectionRef, where('uid', '==', userUid));
+  
+      // Get the documents that match the query
+      const querySnapshot = await getDocs(q);
+  
+      // Delete each document in the result set
+      querySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+        console.log(`Document with ID ${doc.id} successfully deleted.`);
+      });
+  
+      console.log('Cart collection deleted successfully.');
+    } catch (error) {
+      console.error('Error deleting Cart collection:', error);
+    }
+  };
+  
+  // Effect hook to fetch company data based on the first product in the cart
   useEffect(() => {
+    // Function to fetch company data
     const fetchCompanyData = async () => {
+      // Reference to the 'Products' collection in Firestore
       const cartCollectionRef = collection(firestore, "Products");
-      const docId = newArr[0]?.productId;
 
-      // Get a reference to the document
-      const docRef = doc(cartCollectionRef, docId);
+      // Arrays to store dimensions and weight for all products
+      const allLengths = [];
+      const allWidths = [];
+      const allHeights = [];
+      const allWeights = [];
 
-      // Fetch the document
-      const docSnapshot = await getDoc(docRef);
+      // Iterate through each product in the cart
+      for (const product of newArr) {
+        const docId = product.productId;
 
-      // Check if the document exists
-      if (docSnapshot.data()) {
-        // Accesswi the businessName field
-        const businessName = docSnapshot.data().businessName;
-        const length = docSnapshot.data().length;
-        const width = docSnapshot.data().width;
-        const height = docSnapshot.data().height;
-        const weight = docSnapshot.data().weight;
-        // Now you can use the businessName variable as needed
-        console.log("Business Name:", businessName);
-        setTheBusinessName(businessName);
-        setLength(length);
-        setWeight(weight);
-        setWidth(width);
-        setHeight(height);
-      } else {
-        console.log("Document not found.");
+        // Get a reference to the document using the productId
+        const docRef = doc(cartCollectionRef, docId);
+
+        // Fetch the document snapshot
+        const docSnapshot = await getDoc(docRef);
+
+        // Check if the document exists
+        if (docSnapshot.data()) {
+          // Extract relevant data from the document
+          const length = docSnapshot.data().length;
+          const width = docSnapshot.data().width;
+          const height = docSnapshot.data().height;
+          const weight = docSnapshot.data().weight;
+
+          // Add dimensions and weight to the arrays
+          allLengths.push(length);
+          allWidths.push(width);
+          allHeights.push(height);
+          allWeights.push(weight);
+        } else {
+          console.log("Document not found.");
+        }
       }
+
+      // Calculate the sum of dimensions and weight
+      const sumLength = allLengths.reduce((acc, val) => acc + val, 0);
+      const sumWidth = allWidths.reduce((acc, val) => acc + val, 0);
+      const sumHeight = allHeights.reduce((acc, val) => acc + val, 0);
+      const sumWeight = allWeights.reduce((acc, val) => acc + val, 0);
+
+      setTotalLength(sumLength);
+      setTotalWidth(sumWidth);
+      setTotalHeight(sumHeight);
+      setTotalWeight(sumWeight);
     };
 
-    // Ensure that cartData is defined before invoking fetchCompanyData
-    if (cartData) {
+    // Ensure that newArr is defined before invoking fetchCompanyData
+    if (newArr.length > 0) {
       fetchCompanyData();
     }
-  }, [cartData, newArr, firestore, user]);
-
-  // useEffect(() => {
-  //   const findBusinessByName = async () => {
-  //     console.log("theBusinessName is ", theBusinessName);
-
-  //     // Replace 'yourCollection' with the actual reference to your "Business" collection
-  //     const businessCollection = firebase.firestore().collection("Business");
-
-  //     try {
-  //       // Constructing the query
-  //       const querySnapshot = await businessCollection
-  //         .where("businessName", "==", theBusinessName)
-  //         .get();
-
-  //       querySnapshot.forEach((doc) => {
-  //         // Access the locationDetails field
-  //         const locationDetails = doc.data().locationDetails;
-  //         const collectionContacts = doc.data().phoneNumber;
-  //         console.log("Location Details:", locationDetails);
-  //         setCollecionadress(locationDetails);
-  //         setCollectioPhoneNUmber(collectionContacts);
-  //       });
-  //     } catch (error) {
-  //       console.error("Error getting documents: ", error);
-  //     }
-  //   };
-
-  //   // Call findBusinessByName whenever theBusinessName changes
-  //   findBusinessByName();
-  // }, [theBusinessName, user]);
+  }, [newArr]);
 
   useEffect(() => {
+    // Calculate the total amount of all items in the cart
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
+
+    // Calculate the referral amount as 10% of the total amount
     const calculatedReferral = totalAmount * 0.1;
+
+    // Set the calculated referral amount in the component state
     setAgentReferral(calculatedReferral);
 
+    // Calculate the final order total by adding the total amount, referral amount, tax, and delivery amount
     const finalTotal = totalAmount + calculatedReferral + tax + deliveryAmount;
+
+    // Set the final order total in the component state
     setOrderTotal(finalTotal);
   }, [cartData, tax, deliveryAmount]);
 
@@ -269,158 +284,95 @@ const DateSelectionAndCheckout = () => {
   const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
 
   useEffect(() => {
+    // Set up an observer for changes in the authentication state
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
       if (user) {
+        // If the user is authenticated, set up listeners for user data and cart data
+
+        // Set up a query for the user's cart based on their UID
         const cartCollectionRef = firestore
           .collection("Cart")
           .where("uid", "==", user.uid);
 
+        // Set up a snapshot listener for changes in the user's cart
         const unsubscribeCartSnapshot = cartCollectionRef.onSnapshot(
           (snapshot) => {
+            // Update the cart count based on the number of items in the cart
             const itemCount = snapshot.docs.length;
             setCartCount(itemCount);
           }
         );
 
+        // Set up a reference to the user document in the "Users" collection
         const userDocRef = firestore.collection("Users").doc(user.uid);
+
+        // Set up a snapshot listener for changes in the user document
         const unsubscribeSnapshot = userDocRef.onSnapshot((doc) => {
           if (doc.exists) {
+            // If the user document exists, set the user data state
             setUserData(doc.data());
-            console.log("data from users : ", doc.data());
+            console.log("data from users: ", doc.data());
           } else {
             console.error("User data not found");
           }
         });
 
+        // Cleanup functions to unsubscribe from the snapshot listeners when the component unmounts
         return () => {
           unsubscribeCartSnapshot();
           unsubscribeSnapshot();
         };
       } else {
+        // If the user is not authenticated, reset user data and cart count
         setUserData(null);
-        setCartCount(0); // Reset cart count when user is not authenticated
+        setCartCount(0);
       }
     });
 
+    // Cleanup function to unsubscribe from the authentication state listener when the component unmounts
     return () => {
       unsubscribeAuth();
     };
   }, []);
 
-  // useEffect(() => {
-  //   const fetchLocationDetails = async () => {
-  //     if (!user || !user.uid) {
-  //       console.error("User not authenticated.");
-  //       return;
-  //     }
-
-  //     const cartCollectionRef = collection(firestore, "Users");
-  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
-
-  //     try {
-  //       const querySnapshot = await getDocs(q);
-
-  //       querySnapshot.forEach((doc) => {
-  //         const data = doc.data();
-  //         // Assuming your inner object and array are inside the data.locationDetails
-  //         //const location = data.locationDetails;
-  //         const pastLocations = data.pastLocations;
-  //         const pastPreciseLocation = data.pastPreciseLocation;
-
-  //         // setPreciseLocation(location);
-  //         setPastLocations(pastLocations);
-  //         setPastPreciseLocation(pastPreciseLocation);
-  //       });
-  //     } catch (error) {
-  //       console.error("Error fetching location details:", error);
-  //     }
-  //   };
-
-  //   fetchLocationDetails();
-  // }, [user]);
-
-  // const LocationComponent = ({ address, onPress }) => (
-  //   <TouchableOpacity onPress={onPress}>
-  //     <View
-  //       style={{
-  //         width: "100%",
-  //         borderBottomWidth: 2,
-  //         borderBottomColor: "whitesmoke",
-  //         flexDirection: "row",
-  //         alignItems: "center",
-  //         justifyContent: "flex-start",
-  //         paddingTop: 2,
-  //         flexWrap: "wrap",
-  //         marginBottom: 15,
-  //       }}
-  //     >
-  //       <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
-  //         {address && address.slice(0, 40)}
-  //         {address && address.length < 50 ? "" : "..."}
-  //       </Text>
-  //     </View>
-  //   </TouchableOpacity>
-  // );
-
-  // const LocationList = ({ data, onLocationPress }) => (
-  //   <ScrollView
-  //     style={{ height: 250, padding: 10 }}
-  //     showsVerticalScrollIndicator={false}
-  //   >
-  //     {data && Array.isArray(data) ? (
-  //       data.map((item, index) => (
-  //         <LocationComponent
-  //           key={index}
-  //           address={item}
-  //           onPress={() => onLocationPress(item, index)}
-  //         />
-  //       ))
-  //     ) : (
-  //       <Text>No data available</Text>
-  //     )}
-  //   </ScrollView>
-  // );
-
-  // const handleLocationPress = (selectedItem, index) => {
-  //   //  setIsPicked(true)
-  //   setIsLocationSelected(true);
-  //   setLocation(selectedItem);
-  //   setArrayIndex(index);
-  // };
-
-  // useEffect(() => {
-  //   console.log("this is happening");
-  //   setPreciseLocation(pastPreciseLocation[arrayIndex]);
-  // }, [arrayIndex, isLocationSelected]);
-
+  // Function to navigate to the "Landing" screen
   const navigateToLanding = () => {
     navigation.navigate("Landing");
   };
 
+  // Function to navigate to the "OrderHistory" screen
   const navigateToOrderHistory = () => {
     navigation.navigate("OrderHistory");
   };
 
+  // useEffect hook to calculate various values based on changes in dependencies
   useEffect(() => {
+    // Calculate the total amount of items in the cart
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
 
+    // Calculate the referral amount as 10% of the total amount
     const calculatedReferral = totalAmount * 0.1;
     setAgentReferral(calculatedReferral);
 
+    // Calculate the tax amount as 15% of the total amount
     const taxAmount = totalAmount * 0.15;
     setTax(taxAmount);
 
+    // Calculate the delivery charge based on the selected index and rates
     const delivery =
       selectedIndex !== null ? rates[selectedIndex].base_rate.charge : 0;
 
+    // Calculate the final total by adding up the total, referral, tax, and delivery
     const finalTotal = totalAmount + calculatedReferral + taxAmount + delivery;
     setOrderTotal(finalTotal);
   }, [cartData, selectedIndex, rates]);
 
   useEffect(() => {
+    // Get the current date in ISO format
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0];
 
+    // Define common rates information
     const commonRates = {
       collection_address: {
         type: "business",
@@ -436,18 +388,18 @@ const DateSelectionAndCheckout = () => {
       },
       parcels: [
         {
-          submitted_length_cm: length,
-          submitted_width_cm: width,
-          submitted_height_cm: height,
-          submitted_weight_kg: weight,
+          submitted_length_cm: totalLength,
+          submitted_width_cm: totalWidth,
+          submitted_height_cm: totalHeight,
+          submitted_weight_kg: totalWeight,
         },
       ],
       declared_value: cartData.price,
       collection_min_date: formattedDate,
       delivery_min_date: formattedDate,
     };
-    console.log("The courear fixedAddress is ", fixedAddress);
 
+    // Define delivery rates information based on fixedAddress and coordinates
     const deliveryRates = {
       delivery_address: {
         type: "",
@@ -463,8 +415,10 @@ const DateSelectionAndCheckout = () => {
       },
     };
 
+    // Combine commonRates and deliveryRates into a single object
     const theRates = { ...commonRates, ...deliveryRates };
 
+    // Function to make an API call to get rates from the courier
     const gettingRate = async () => {
       console.log("theRatesCollectionAdress ", theRates.collection_address);
       console.log("theRatesDeliverAdress ", theRates.delivery_address);
@@ -473,26 +427,35 @@ const DateSelectionAndCheckout = () => {
       const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
       try {
-        const querySnapshot = await getDocs(q);
+        // Make a POST request to the courier API to get rates
+        const response = await axios.post(
+          "https://api.shiplogic.com/v2/rates",
+          theRates,
+          config
+        );
 
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          // Assuming your inner object and array are inside the data.locationDetails
-          const location = data.locationDetails;
-          const pastLocations = data.pastLocations;
-          setPreciseLocation(location);
-          setPastLocations(pastLocations);
-        });
+        console.log("Courier API rates response:", response.data);
+
+        if (response.data.rates) {
+          // Update the component state with the received rates
+          setRates(response.data.rates);
+        } else {
+          console.log("Rates not found in the response");
+        }
       } catch (error) {
-        console.error("Error fetching location details:", error);
+        console.error("Error getting rates", error);
+        if (error.response) {
+          console.log("Response data:", error.response.data);
+        }
       }
     };
 
+    // Call the function to get rates when the component mounts or when fixedAddress or location changes
     gettingRate();
   }, [fixedAddress, location]);
 
   const creattingShipment = async () => {
-    //  console.log("the delivery address is ", preciseLocation);
+    // Define common shipment information
     const commonShipment = {
       collection_address: {
         type: "business",
@@ -511,7 +474,6 @@ const DateSelectionAndCheckout = () => {
         mobile_number: "",
         email: "cornel+sandy@uafrica.com",
       },
-
       delivery_contact: {
         name: "Boiketlo Mochochoko",
         mobile_number: "0734157351",
@@ -520,10 +482,10 @@ const DateSelectionAndCheckout = () => {
       parcels: [
         {
           parcel_description: "Standard flyer",
-          submitted_length_cm: length,
-          submitted_width_cm: width,
-          submitted_height_cm: height,
-          submitted_weight_kg: weight,
+          submitted_length_cm: totalLength,
+          submitted_width_cm: totalWidth,
+          submitted_height_cm: totalHeight,
+          submitted_weight_kg: totalWeight,
         },
       ],
       opt_in_rates: [],
@@ -545,6 +507,7 @@ const DateSelectionAndCheckout = () => {
       mute_notifications: false,
     };
 
+    // Define delivery address information based on fixedAddress and coordinates
     const deliveryAddress = {
       delivery_address: {
         type: "",
@@ -560,8 +523,10 @@ const DateSelectionAndCheckout = () => {
       },
     };
 
+    // Combine commonShipment and deliveryAddress into a single object
     const shipment = { ...commonShipment, ...deliveryAddress };
 
+    // Set up the request headers for the courier API
     const config = {
       headers: {
         Authorization: `Bearer ${CourierAPIKey}`,
@@ -570,18 +535,20 @@ const DateSelectionAndCheckout = () => {
     };
 
     try {
+      // Make a POST request to create a shipment using the courier API
       const response = await axios.post(
         "https://api.shiplogic.com/v2/shipments",
         shipment,
         config
       );
-
-      console.log("Courier API creating shipment response:", response.data);
+      console.log('response.data.customer_reference is ',response.data.customer_reference)
       setTrackingRef(response.data.short_tracking_reference);
       setDriver(response.data.delivery_agent_id);
-      console.log("driver is ", response.data.delivery_agent_id);
+      setAuthPIn(response.data.customer_reference)
+      // Return the response data
       return response.data;
     } catch (error) {
+      // Handle errors during the API request
       console.error("Error creating shipment:", error);
 
       if (error.response) {
@@ -596,7 +563,9 @@ const DateSelectionAndCheckout = () => {
   };
 
   useEffect(() => {
+    // Function to track a shipment using the courier API
     const tackingShipment = async () => {
+      // Set up the request headers for the courier API
       const config = {
         headers: {
           Authorization: `Bearer ${CourierAPIKey}`,
@@ -605,12 +574,15 @@ const DateSelectionAndCheckout = () => {
       };
 
       try {
+        // Make a GET request to track the shipment using the tracking reference
         const response = await axios.get(
           `https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=${trackingRef}`,
           config
         );
+
+        // Log the response data and update component state with shipment status
         console.log(
-          "Courier API traking shipment response:",
+          "Courier API tracking shipment response:",
           response.data.shipments[0].status
         );
         console.log(
@@ -619,32 +591,40 @@ const DateSelectionAndCheckout = () => {
         );
         setShipmentStatus(response.data.shipments[0].tracking_events[0].status);
       } catch (error) {
+        // Handle errors during the API request
         console.error("Error getting shipments", error);
+
         if (error.response) {
           console.log("Response data:", error.response.data);
         }
+
+        // Return an empty array in case of an error
         return [];
       }
     };
+
+    // Call the function to track the shipment when the trackingRef changes
     tackingShipment();
   }, [trackingRef]);
 
   useEffect(() => {
+    // Function to handle adding an item to the cart in the Firestore database
     const handleAddToCart = async () => {
-      console.log("deliveryGuy : ", data[Math.floor(Math.random() * 10)]);
-      console.log("name : ", userData);
-
       try {
+        // Get a reference to the "Orders" collection in Firestore
         const cartCollectionRef = collection(firestore, "Orders");
-
-        // Add a new document with user information, product ID, product price, quantity, and image
+       
+       
+        // Add a new document to the "Orders" collection with order details
         await addDoc(cartCollectionRef, {
           createdAt: serverTimestamp(),
           trackingEventsRef: trackingRef,
+          Pin:authPin,
           deliveryAddress: location,
-          deliveryDate: serverTimestamp(),
+          deliveryDate: rates[selectedIndex].service_level.delivery_date_from,
           deliveryFee: rates[selectedIndex].base_rate.charge,
           deliveryGuy: driver,
+          coordinates:coordinates,
           name: userData?.name,
           userName: userData?.name,
           invoiceNumber: `#${Math.floor(
@@ -655,25 +635,28 @@ const DateSelectionAndCheckout = () => {
           orderNumber: `#${
             userData?.uid?.slice(5, 15) + Math.floor(Math.random() * 10000)
           }`,
-          // orderSummary: 3000,
           totalAmount: orderTotal,
+          agentReferralAmount:agentReferral,          
+          Tax:tax,
           items: [...newArr],
         });
 
+        // Log success message and proceed to handle payment
         console.log("Item added to the cart!");
         handlePayment();
         // navigation.navigate("DateSelectionAndCheckout");
       } catch (error) {
+        // Handle errors during the addition of the item to the cart
         console.error("Error adding item to cart:", error);
       }
     };
+
+    // Call the function to add the item to the cart when the shipmentStatus changes
     handleAddToCart();
   }, [shipmentStatus]);
 
   const handlePayment = () => {
-    // console.log(shipmentStatus)
-    //handleAddToCart();
-    // creattingShipment(); //create a shipment before goignt to pay fast
+    deleteCartCollection(firestore, user.uid);
     // Construct the payment URL with the necessary parameters
     const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
     orderTotal.toFixed(2) + // Use the calculated orderTotal here
@@ -683,32 +666,54 @@ const DateSelectionAndCheckout = () => {
     Linking.openURL(paymentUrl);
   };
 
-  const handleInputChange = (text) => {
-    setInputValue(text);
-    handleSearch();
-  };
+  const handleSelect = async (value) => {
+    try {
+      // Use geocodeByAddress to get location details based on the selected address
+      const results = await geocodeByAddress(value);
 
-  const handlePlaceSelect = ({ place, latLng }) => {
-    // Do something with the selected place details and latitude/longitude
-    console.log("Selected place:", place);
-    console.log("Latitude and Longitude:", latLng);
-    setAddress(place);
-    setCoordinates(latLng);
-    setAddressCard(true);
+      // Use getLatLng to extract latitude and longitude from the geocoded results
+      const latLng = await getLatLng(results[0]);
+
+      // Reset any previous error state
+      setError(null);
+
+      // Set the address state with the selected place details
+      setAddress(results[0]);
+
+      // Set the coordinates state with the latitude and longitude
+      setCoordinates(latLng);
+
+      // Trigger some action related to address card visibility
+      setAddressCard(true);
+    } catch (error) {
+      // Handle geocoding errors
+      console.error("Geocoding error:", error);
+
+      // Set an error message in the state
+      setError("Geocoding error. Please try again.");
+    }
   };
 
   useEffect(() => {
+    // Set the location state with the formatted address
     setLocation(address.formatted_address);
+
+    // Initialize variables for address components
     let streetAddress,
       localArea,
       localCity,
       zoneCity,
       countryOfCity,
       postalCode;
+
+    // Check if address has address components
     if (address.address_components) {
       const { address_components } = address;
       const length = address_components.length;
+
+      // Switch based on the length of address components
       switch (length) {
+        // ... cases for different lengths
         case 1:
           postalCode = address_components[0].long_name;
           break;
@@ -766,6 +771,7 @@ const DateSelectionAndCheckout = () => {
           console.error("Invalid length of address components.");
           return;
       }
+      // Set the fixedAddress state with extracted address components
       setFixedAddress({
         streetAddress,
         localArea,
@@ -778,6 +784,7 @@ const DateSelectionAndCheckout = () => {
   }, [address, isPicked]);
 
   const handleFixAddress = () => {
+    // Update the fixedAddress state based on edited values or maintain existing values
     setFixedAddress((prevAddress) => ({
       ...prevAddress,
       streetAddress: editedValue.streetAddress || prevAddress.streetAddress,
@@ -788,207 +795,74 @@ const DateSelectionAndCheckout = () => {
       postalCode: editedValue.postalCode || prevAddress.postalCode,
       // Update other fields similarly based on your requirements
     }));
-    setAddressCard(false); // Close the addressCard modal or handle other logic
+
+    // Close the addressCard modal or handle other logic
+    setAddressCard(false);
   };
 
+  // Function to render an address field component
   const renderAddressField = (label, value, field) => (
-    <View
-      style={{
-        justifyContent: "space-between",
-        flexDirection: "row",
-        padding: 10,
-      }}
+    // Grid container for layout
+    <Grid
+      container
+      justifyContent="space-between"
+      alignItems="center"
+      spacing={1}
+      style={{ padding: 10 }}
     >
-      <Text style={{ alignSelf: "flex-start" }}>{label}:</Text>
-      <TextInput
-        style={{ alignSelf: "flex-start", borderWidth: 1, padding: 5, flex: 1 }}
-        value={value}
-        onChangeText={(text) =>
-          setEditedValue((prev) => ({ ...prev, [field]: text }))
-        }
-      />
-    </View>
+      {/* Grid item for displaying label */}
+      <Grid item xs={6}>
+        <Typography>{label}:</Typography>
+      </Grid>
+
+      {/* Grid item for an editable text field */}
+      <Grid item xs={6}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          value={value}
+          // Handle onChange event to update editedValue state
+          onChange={(e) =>
+            setEditedValue((prev) => ({ ...prev, [field]: e.target.value }))
+          }
+        />
+      </Grid>
+    </Grid>
   );
-
-  useEffect(() => {
-    console.log("fixedAddress is", fixedAddress);
-  }, [fixedAddress]);
-  // useEffect(() => {
-  //   const updateLocation = async () => {
-  //     console.log("Updating location:", location);
-  //     if (!user || !user.uid) {
-  //       console.error("User not authenticated.");
-  //       return;
-  //     }
-  //     console.log("this is happeninn 1");
-
-  //     const getAddressDetails = () => {
-  //       let streetAddress;
-  //       let localArea;
-  //       let localCity;
-  //       let zoneCity;
-  //       let countryOfCity;
-  //       let postalCode;
-
-  //       console.log("this is happeninn 2");
-  //       const length = address.address_components.length;
-
-  //       switch (length) {
-  //         case 1:
-  //           postalCode = address.address_components[0].long_name;
-  //           break;
-  //         case 2:
-  //           countryOfCity = address.address_components[0].short_name;
-  //           postalCode = address.address_components[1].long_name;
-  //           break;
-  //         case 3:
-  //           countryOfCity = address.address_components[1].short_name;
-  //           postalCode = address.address_components[2].long_name;
-  //           break;
-  //         case 4:
-  //           localCity = address.address_components[0].long_name;
-  //           countryOfCity = address.address_components[2].short_name;
-  //           postalCode = address.address_components[3].long_name;
-  //           break;
-  //         case 5:
-  //           localArea = address.address_components[0].long_name;
-  //           localCity = address.address_components[1].long_name;
-  //           countryOfCity = address.address_components[3].short_name;
-  //           postalCode = address.address_components[4].long_name;
-  //           break;
-  //         case 6:
-  //           localArea = address.address_components[0].long_name;
-  //           localCity = address.address_components[1].long_name;
-  //           zoneCity = address.address_components[2].long_name;
-  //           countryOfCity = address.address_components[3].short_name;
-  //           postalCode = address.address_components[4].long_name;
-  //           break;
-  //         case 7:
-  //           streetAddress = `${address.address_components[1].long_name} ${address.address_components[0].long_name}`;
-  //           localArea = address.address_components[2].long_name;
-  //           localCity = address.address_components[3].long_name;
-  //           zoneCity = address.address_components[4].long_name;
-  //           countryOfCity = address.address_components[5].short_name;
-  //           postalCode = address.address_components[6].long_name;
-  //           break;
-  //         case 8:
-  //           streetAddress = `${address.address_components[0].long_name} ${address.address_components[1].long_name}`;
-  //           localArea = address.address_components[2].long_name;
-  //           localCity = address.address_components[4].long_name;
-  //           zoneCity = address.address_components[5].long_name;
-  //           countryOfCity = address.address_components[6].short_name;
-  //           postalCode = address.address_components[7].long_name;
-  //           break;
-  //         case 9:
-  //           streetAddress = `${address.address_components[1].long_name} ${address.address_components[2].long_name}`;
-  //           localArea = `${address.address_components[2].long_name} ${address.address_components[0].long_name}`;
-  //           localCity = address.address_components[5].long_name;
-  //           zoneCity = address.address_components[6].long_name;
-  //           countryOfCity = address.address_components[7].short_name;
-  //           postalCode = address.address_components[8].long_name;
-  //           break;
-  //         default:
-  //           console.error("Invalid length of address components.");
-  //           return;
-  //       }
-
-  //       return {
-  //         streetAddress: streetAddress || "",
-  //         localArea: localArea || "",
-  //         localCity: localCity || "",
-  //         zoneCity: zoneCity || "",
-  //         countryOfCity: countryOfCity || "",
-  //         postalCode: postalCode || "",
-  //       };
-  //     };
-
-  //     const getAddressComponents = () => {
-  //       const addressDetails = getAddressDetails();
-  //       console.log("this is happeninn 3");
-  //       const {
-  //         streetAddress,
-  //         localArea,
-  //         localCity,
-  //         zoneCity,
-  //         countryOfCity,
-  //         postalCode,
-  //       } = addressDetails;
-
-  //       return {
-  //         type: "",
-  //         company: "",
-  //         street_address: streetAddress,
-  //         local_area: localArea,
-  //         city: localCity,
-  //         zone: zoneCity,
-  //         country: countryOfCity,
-  //         code: postalCode,
-  //         lat: coordinates.lat,
-  //         lng: coordinates.lng,
-  //       };
-  //     };
-  //     console.log("this is happeninn 4");
-  //     const cartCollectionRef = collection(firestore, "Users");
-  //     const q = query(cartCollectionRef, where("uid", "==", user.uid));
-
-  //     try {
-  //       const querySnapshot = await getDocs(q);
-
-  //       querySnapshot.forEach(async (doc) => {
-  //         const userDocRef = doc.ref;
-  //         const currentPastLocations = doc.data()?.pastLocations || [];
-
-  //         if (!currentPastLocations.includes(location)) {
-  //           const addressComponents = getAddressComponents();
-
-  //           // Update the pastLocations field with the new location
-  //           await updateDoc(userDocRef, {
-  //             pastLocations: arrayUnion(location),
-  //             pastPreciseLocation: arrayUnion(addressComponents),
-  //           });
-
-  //           console.log("Location updated successfully!");
-  //         } else {
-  //           console.log("Location already exists in pastLocations.");
-  //         }
-  //       });
-  //     } catch (error) {
-  //       console.error("Error fetching location details:", error);
-  //     }
-  //   };
-
-  //   if (location) {
-  //     updateLocation();
-  //   }
-  // }, [preciseLocation, location]);
 
   return (
     <>
       {addressCard ? (
-        <View
-          style={{
-            // top: 65,
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            zIndex: 9999,
-            alignSelf: "flex-end",
-          }}
+        // If addressCard is true, display the following component
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          position="absolute"
+         // position = "fixed"
+          //top={0}
+          //left={0}
+          width = "100vw"
+          height ="100vh"
+         // backgroundColor= "rgba(0, 0, 0, 0.5)"
+          flex={1}
+         
+          zIndex={9999}
+          
         >
-          <View
-            style={{
-              height: "70vh",
-              width: "40vw",
-              backgroundColor: "white",
-              justifyContent: "center",
-            }}
+          {/* Container for the address card */}
+          <Box
+            height="auto"
+            width="90vw"
+            maxWidth={400}
+            backgroundColor="white"
+            border= "2px lightgrey solid"
+            justifyContent="center"
+            p={2} // Padding added for all sides
           >
+            {/* View for aligning content in the center */}
             <View style={{ justifyContent: "center" }}>
+              {/* Address field components */}
               <View
                 style={{
                   justifyContent: "space-between",
@@ -997,12 +871,14 @@ const DateSelectionAndCheckout = () => {
                 }}
               >
                 {editStreetAdress ? (
+                  // If editing street address, render address field component
                   renderAddressField(
                     "street_address",
                     editedValue.streetAddress,
                     "streetAddress"
                   )
                 ) : (
+                  // Display street address and option to edit
                   <>
                     <Text>street_address:</Text>
                     <Text>{fixedAddress.streetAddress}</Text>
@@ -1012,6 +888,7 @@ const DateSelectionAndCheckout = () => {
                   </>
                 )}
               </View>
+              {/* Repeat similar blocks for other address fields */}
               <View
                 style={{
                   justifyContent: "space-between",
@@ -1128,37 +1005,41 @@ const DateSelectionAndCheckout = () => {
                   </>
                 )}
               </View>
+              <Button
+                variant="outlined"
+                sx={{
+                  width: "80%",
+                  alignSelf: "center",
+                  
+                  borderRadius: 15,
+                  backgroundColor:"#062338"
+                }}
+                onClick={() => handleFixAddress()}
+              >
+                <Typography sx={{ fontSize: 16, color: "lightgray" }}>
+                  SUBMIT
+                </Typography>
+              </Button>
             </View>
-
-            <Button
-              variant="outlined"
-              sx={{
-                width: "80%",
-                alignSelf: "center",
-                borderColor: "lightgrey",
-                borderRadius: 15,
-              }}
-              onClick={() => handleFixAddress()}
-            >
-              <Typography sx={{ fontSize: 16, color: "#062338" }}>
-                SUBMIT
-              </Typography>
-            </Button>
-          </View>
-        </View>
+          </Box>
+        </Box>
       ) : null}
       <FollowUs />
       <Navbar />
       <ScrollView style={{ flexDirection: "column", backgroundColor: "white" }}>
-        <Container sx={{ minHeight: "90vh" }}>
+        <Container sx={{ minHeight: "90vh"}}>
           <Grid container spacing={2} mx="auto">
             <Grid item xs={12} md={8}>
               {/* Left Side Content */}
               <Box mt={2} pr={4}>
-                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                {/* Heading displaying the order number */}
+                {/* <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                   ORDER #ABC246
-                </Typography>
+                </Typography> */}
+
+                {/* Container for navigation links */}
                 <View style={{ display: "flex", flexDirection: "row" }}>
+                  {/* Account link */}
                   <Typography>
                     <TouchableOpacity
                       onPress={navigateToLanding}
@@ -1166,38 +1047,56 @@ const DateSelectionAndCheckout = () => {
                       <Text>Acount /</Text>
                     </TouchableOpacity>
                   </Typography>
+
+                  {/* Cart link */}
                   <Typography>
                     <TouchableOpacity
                       onPress={navigateToOrderHistory}
-                      style={{ color: "grey" }}>
+                      style={{ color: "grey" }}
+                    >
                       Cart
                     </TouchableOpacity>
                   </Typography>
+                  
                 </View>
+
+                {/* Heading for the cart section */}
                 <Typography
                   variant="h4"
-                  style={{ marginTop: "50px", fontWeight: "bold" }}>
+                  style={{ marginTop: "50px", fontWeight: "bold" }}
+                >
                   CART
                 </Typography>
+                {/* <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                    ORDER {order.orderNumber}
+                </Typography> */}
+                {/* ScrollView container with specific styles */}
                 <ScrollView
                   style={{ flex: 1, height: "50vh", alignSelf: "center" }}
-                  showsVerticalScrollIndicator={false}>
+                  showsVerticalScrollIndicator={false}
+                >
                   <Grid container spacing={2}>
                     {cartData.map((item, index) => (
+                      // Grid item for each item in the cart
                       <Grid item xs={12} key={index}>
+                        {/* Card component representing each item */}
                         <Card
-                          sx={{ height: "auto", borderBottomColor: "black" }}>
+                          sx={{ height: "auto", borderBottomColor: "black" }}
+                        >
                           <Box
                             display="flex"
                             flexDirection={{ xs: "column", md: "row" }}
                             alignItems="center"
                             borderBottomWidth={2}
-                            padding={2}>
+                            padding={2}
+                          >
                             <Box
                               width={{ xs: "100%", md: "30%" }}
-                              marginBottom={{ xs: 2, md: 0 }}>
+                              marginBottom={{ xs: 2, md: 0 }}
+                            >
                               <ImageList cols={1} rowHeight="100%">
                                 <ImageListItem style={{ width: "100%" }}>
+                                  {/* Product image */}
                                   <img
                                     src={item.image}
                                     alt={item.name}
@@ -1210,46 +1109,52 @@ const DateSelectionAndCheckout = () => {
                                 </ImageListItem>
                               </ImageList>
                             </Box>
-
+                            {/* Box for displaying product name */}
                             <Box
                               width={{ xs: "100%", md: "30%" }}
                               paddingLeft={{ xs: 0, md: 2 }}
-                              marginBottom={{ xs: 2, md: 0 }}>
+                              marginBottom={{ xs: 2, md: 0 }}
+                            >
                               <Typography
                                 fontSize={16}
                                 fontWeight="bold"
                                 color="gray">
                                 Product
                               </Typography>
+                              {/* Typography for displaying the product name */}
                               <Typography fontSize={18} fontWeight="bold">
                                 {item.name}
                               </Typography>
                             </Box>
-
+                            {/* Box for displaying quantity */}
                             <Box
                               width={{ xs: "100%", md: "30%" }}
                               paddingLeft={{ xs: 0, md: 2 }}
-                              marginBottom={{ xs: 2, md: 0 }}>
+                              marginBottom={{ xs: 2, md: 0 }}
+                            >
                               <Typography
                                 fontSize={16}
                                 fontWeight="bold"
                                 color="gray">
                                 Quantity
                               </Typography>
+                              {/* Typography for displaying the quantity */}
                               <Typography fontSize={18} fontWeight="bold">
                                 {item.quantity}
                               </Typography>
                             </Box>
-
+                            {/* Box for displaying amount */}
                             <Box
                               width={{ xs: "100%", md: "30%" }}
-                              paddingLeft={{ xs: 0, md: 2 }}>
+                              paddingLeft={{ xs: 0, md: 2 }}
+                            >
                               <Typography
                                 fontSize={16}
                                 fontWeight="bold"
                                 color="gray">
                                 Amount
                               </Typography>
+                              {/* Typography for displaying the amount */}
                               <Typography fontSize={18} fontWeight="bold">
                                 {item.amount}
                               </Typography>
@@ -1261,9 +1166,6 @@ const DateSelectionAndCheckout = () => {
                   </Grid>
                 </ScrollView>
 
-                {/* <View>
-                <Text>Hello world</Text>
-              </View> */}
                 {cartData.length > 1 || cartData.length === 1 ? (
                   <>
                     <View
@@ -1375,7 +1277,8 @@ const DateSelectionAndCheckout = () => {
                           width: "100%",
                           height: "80vh",
                           backgroundColor: "white",
-                        }}>
+                        }}
+                      >
                         <PlaceAutocomplete
                           style={{}}
                           onPlaceSelect={handlePlaceSelect}
@@ -1421,13 +1324,19 @@ const DateSelectionAndCheckout = () => {
                             onPress={() => setAddessInput(true)} // Assuming setAddessInput is a function
                           >
                             <Text
-                              style={{ color: "white", paddingHorizontal: 10 }}>
+                              style={{ color: "white", paddingHorizontal: 10 }}
+                            >
                               View
                             </Text>
                           </TouchableOpacity>
                         </View>
 
-                        <View style={{ border: "1px white solid" }}>
+                        <View
+                          style={{
+                            borderBottom: "1px white solid",
+                            marginBottom: 15,
+                          }}
+                        >
                           <Typography variant="h6" style={{ color: "#FFFFFF" }}>
                             {location && location.slice(0, 30)}
                             {location && location.length < 50 ? "" : "..."}
@@ -1439,14 +1348,16 @@ const DateSelectionAndCheckout = () => {
                               marginTop: "10px",
                               borderBottomWidth: 1,
                               borderBottomColor: "lightgrey",
-                            }}></View>
+                            }}
+                          ></View>
                           <Typography
                             variant="h5"
                             sx={{
                               color: "#B7B9BC",
                               fontSize: 20,
                               marginTop: 1,
-                            }}>
+                            }}
+                          >
                             Recent Addresses
                           </Typography>
                           <LocationList
@@ -1457,16 +1368,16 @@ const DateSelectionAndCheckout = () => {
                           /> */}
                         </View>
                         <Typography
-                            style={{ color: "grey", marginTop: "14px" }}
-                          >
-                            Delivery Notes
-                          </Typography>
-                          <Typography style={{ color: "white" }}>
-                            In essence, AMS aims to not only help businesses
-                            grow but also make a positive image on society by
-                            nurturing local talent and fostering sustainable
-                            busibess growth.
-                          </Typography>
+                          style={{ color: "grey", marginTop: "14px" }}
+                        >
+                          Delivery Notes
+                        </Typography>
+                        <Typography style={{ color: "white" }}>
+                          In essence, AMS aims to not only help businesses grow
+                          but also make a positive image on society by nurturing
+                          local talent and fostering sustainable busibess
+                          growth.
+                        </Typography>
                       </>
                     )}
 
@@ -1531,15 +1442,18 @@ const DateSelectionAndCheckout = () => {
                     ) : null}
                   </View>
                 </Box>
+              
                 <Button
                   variant="outlined"
                   sx={{
                     width: "80%",
                     alignSelf: "center",
-                    borderColor: "lightgrey",
+                    
                     borderRadius: 15,
+                    backgroundColor:"#062338"
                   }}
-                  onClick={creattingShipment}>
+                  onClick={creattingShipment}
+                >
                   <Typography sx={{ fontSize: 16, color: "#FFFFFF" }}>
                     CHECKOUT
                   </Typography>
@@ -1548,9 +1462,7 @@ const DateSelectionAndCheckout = () => {
             </Grid>
           </Grid>
         </Container>
-
         <Footer />
-        {/* <View style={{backgroundColor: 'blue', width: '100%', height: 200 }}></View> */}
       </ScrollView>
     </>
   );

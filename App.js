@@ -17,7 +17,6 @@ import AccountAndBusiness from "./src/Client/AccountAndBusiness/AccountBusiness"
 // import OrderHistory from "./src/Client/CartAndOrderHistory/OrderHistory";
 import OrderHistory from "./src/Client/CartAndOrderHistory/OrderHistory";
 import PayFast from "./src/Client/CartAndOrderHistory/PayFast";
-import CourierGuy from "./src/Client/CartAndOrderHistory/CourierGuy";
 import Reciept from "./src/Client/CartAndOrderHistory/Reciept";
 import DeliveryOngoing from "./src/Client/CartAndOrderHistory/DeliveryOngoing";
 import DeliveryAndChatSystem from "./src/Client/CartAndOrderHistory/DeliveryAndChatSystem";
@@ -92,7 +91,7 @@ function App() {
         />
         <Stack.Screen name="OrderHistory" component={OrderHistory} />
         <Stack.Screen name="PayFast" component={PayFast} />
-        <Stack.Screen name="CourierGuy" component={CourierGuy} />
+       
         <Stack.Screen
           name="DateSelectionAndCheckout"
           component={DateSelectionAndCheckout}

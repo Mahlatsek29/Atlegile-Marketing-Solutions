@@ -71,6 +71,7 @@ export default function BusinessAccount() {
   const [expiery, setExpiery] = useState();
   const [cvv, setCvv] = useState();
   const emptyOption = [""];
+  const [company,setCompany]= useState("");
   const [businessName, setBusinessName] = useState("");
   const [selectedProductCategory, setProductCategory] = useState("");
   const [brand, setBrand] = useState("");
@@ -576,6 +577,7 @@ export default function BusinessAccount() {
       await productRef.set({
         name,
         businessName,
+        company,
         price: parseFloat(price),
         quantity,
         description,
@@ -1285,7 +1287,82 @@ export default function BusinessAccount() {
               value={businessName}
               onChange={(e) => setBusinessName(e.target.value)}
               required
-            />
+            /><TextField
+            fullWidth
+            id="outlined-number"
+            label="Company Name"
+            type="text"
+            variant="standard"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            style={{ width: "100%", marginTop: "10px" }}
+            value={company}
+            onChange={(e) => setCompany(e.target.value)}
+            required
+          />
+            <View style={{ display: "flex", flexDirection: "row", flexWrap:'wrap' }}>
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="length_cm"
+                      type="number"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{
+                        width: "45%",
+                        marginRight: "10px",
+                        marginTop: "10px",
+                      }}
+                      value={length}
+                      onChange={(e) => setLength(e.target.value)}
+                      required
+                    />
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="width_cm"
+                      type="number"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{ width: "45%", marginTop: "10px", marginRight: "10px",}}
+                      value={width}
+                      onChange={(e) => setWidth(e.target.value)}
+                      required
+                    />
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="height_cm"
+                      type="number"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{ width: "45%", marginTop: "10px" ,marginRight: "10px",}}
+                      value={height}
+                      onChange={(e) => setHeight(e.target.value)}
+                      required
+                    />
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="weight_kg"
+                      type="number"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{ width: "45%", marginTop: "10px" }}
+                      value={weight}
+                      onChange={(e) => setWeight(e.target.value)}
+                      required
+                    />
+                  </View>
             {/* Price and Quantity inputs */}
             <View style={{ display: "flex", flexDirection: "row" }}>
               <TextField

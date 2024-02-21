@@ -4,6 +4,9 @@ import { firebase, firestore, auth } from "../../config"; // Adjust the path bas
 import ProductCard from "../../Global/Card";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+
 export default function BusinessCard({ business }) {
   
   const scrollViewRef = useRef(null);
@@ -119,13 +122,14 @@ export default function BusinessCard({ business }) {
               justifyContent: "space-between",
               alignItems: "center",
               flexDirection: "row",
+              
               }}>
             <TouchableOpacity onPress={scrollLeft}>
-              <AntDesign name="leftcircle" size={40} color="black" />
+              <ArrowBackIosIcon/>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={scrollRight}>
-              <AntDesign name="rightcircle" size={40} color="black" />
+              <ArrowForwardIosIcon/>
             </TouchableOpacity>
 
             <View
@@ -150,7 +154,6 @@ export default function BusinessCard({ business }) {
                   }}>
                   {business}
                 </Text>
-
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate("Products", { businessId: business })

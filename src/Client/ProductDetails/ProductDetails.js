@@ -396,9 +396,9 @@ export default function ProductDetails({ navigation, route }) {
   };
 
   return (
-    <>
+    <View style={{backgroundColor: "white"}}>
       <Navbar />
-      <Box sx={{ backgroundColor: "white", height: "100%", overflowY: "auto" }}>
+      <Box sx={{  height: "100%", overflowY: "auto" }}>
         <Container maxWidth="md">
           <Box sx={{ pl: 2, pb: 2, backgroundColor: "white" }}>
             <Breadcrumbs>
@@ -998,6 +998,6 @@ export default function ProductDetails({ navigation, route }) {
           </Box>
         </Container>
       </Box>
-    </>
+    </View>
   );
 }

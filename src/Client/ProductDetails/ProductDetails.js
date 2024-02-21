@@ -2,18 +2,13 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  ScrollView,
-  Image,
   TouchableOpacity,
-  FlatList,
-  StyleSheet,
 } from "react-native";
 import {
   Box,
   Typography,
   Button,
   IconButton,
-  Paper,
   Breadcrumbs,
   Link,
   Container,
@@ -23,30 +18,18 @@ import {
   CardMedia,
   Snackbar,
   Skeleton,
-  CardContent,
   Card,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
-import logo from "../../Global/images/logo.png";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import image from "../../Global/images/fixed-height.png";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
 import Rating from "@mui/material/Rating";
-import StarIcon from "@mui/icons-material/Star";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import fixed from "../../Global/images/fixed-height.png";
-import yellow from "../../Global/images/headphones.png";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
-import { useNavigation } from "@react-navigation/native";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import ReviewsCard from "./ReviewsCard";
-//import Card from "../../Global/Card2";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -64,7 +47,6 @@ import {
 } from "firebase/firestore";
 import firebaseConfig from "../../config";
 import { firebase, auth } from "../../config";
-
 import Navbar from "../../Global/Navbar";
 
 export default function ProductDetails({ navigation, route }) {
@@ -424,7 +406,6 @@ export default function ProductDetails({ navigation, route }) {
               </Typography>
             </Breadcrumbs>
           </Box>
-
           <Box sx={{ display: "flex", flexDirection: "row", mb: 10 }}>
             {/*START - Left side Panel */}
             <Box

@@ -155,7 +155,8 @@ const Signup = () => {
             )}
           </TouchableOpacity>
           <View style={{ width: "70%" }}>
-            <Text
+            <TouchableOpacity
+            onPress={()=> navigation.navigate("SignIn")}
               style={{
                 position: "relative",
                 left: 10,
@@ -167,7 +168,7 @@ const Signup = () => {
               }}
             >
               DON'T HAVE AN ACCOUNT?
-            </Text>
+            </TouchableOpacity>
           </View>
           <TouchableOpacity>
             <Text style={styles.linkText1}>

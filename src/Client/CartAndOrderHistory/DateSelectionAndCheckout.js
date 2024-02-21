@@ -106,8 +106,8 @@ const DateSelectionAndCheckout = () => {
   }, []);
 
   // using local host URL for now which routes back to the initial screen but when hosted we will use the host URL
-  // const url = "http://localhost:19006";
-  const url = "https://atlegile-marketing-solutions.vercel.app/Reciept";
+  const url = "http://localhost:19006";
+  // const url2 = "https://atlegile-marketing-solutions.vercel.app/Reciept";
 
   // Function to fetch cart data for the authenticated user
   const fetchCartData = async () => {
@@ -423,8 +423,12 @@ const DateSelectionAndCheckout = () => {
       console.log("theRatesCollectionAdress ", theRates.collection_address);
       console.log("theRatesDeliverAdress ", theRates.delivery_address);
 
-      const cartCollectionRef = collection(firestore, "Users");
-      const q = query(cartCollectionRef, where("uid", "==", user.uid));
+      const config = {
+        headers: {
+          Authorization: `Bearer ${CourierAPIKey}`,
+          "Content-Type": "application/json",
+        },
+      };
 
       try {
         // Make a POST request to the courier API to get rates
@@ -444,6 +448,7 @@ const DateSelectionAndCheckout = () => {
         }
       } catch (error) {
         console.error("Error getting rates", error);
+
         if (error.response) {
           console.log("Response data:", error.response.data);
         }
@@ -1043,7 +1048,8 @@ const DateSelectionAndCheckout = () => {
                   <Typography>
                     <TouchableOpacity
                       onPress={navigateToLanding}
-                      style={{ color: "grey" }}>
+                      style={{ color: "grey" }}
+                    >
                       <Text>Acount /</Text>
                     </TouchableOpacity>
                   </Typography>
@@ -1054,7 +1060,7 @@ const DateSelectionAndCheckout = () => {
                       onPress={navigateToOrderHistory}
                       style={{ color: "grey" }}
                     >
-                      Cart
+                      Cart /
                     </TouchableOpacity>
                   </Typography>
                   
@@ -1063,7 +1069,7 @@ const DateSelectionAndCheckout = () => {
                 {/* Heading for the cart section */}
                 <Typography
                   variant="h4"
-                  style={{ marginTop: "50px", fontWeight: "bold" }}
+                  style={{ fontWeight: "bold" }}
                 >
                   CART
                 </Typography>
@@ -1075,6 +1081,8 @@ const DateSelectionAndCheckout = () => {
                   style={{ flex: 1, height: "50vh", alignSelf: "center" }}
                   showsVerticalScrollIndicator={false}
                 >
+                  {/* Grid container for displaying items in the cart */}
+
                   <Grid container spacing={2}>
                     {cartData.map((item, index) => (
                       // Grid item for each item in the cart
@@ -1083,6 +1091,7 @@ const DateSelectionAndCheckout = () => {
                         <Card
                           sx={{ height: "auto", borderBottomColor: "black" }}
                         >
+                          {/* Box component for organizing content */}
                           <Box
                             display="flex"
                             flexDirection={{ xs: "column", md: "row" }}
@@ -1090,10 +1099,12 @@ const DateSelectionAndCheckout = () => {
                             borderBottomWidth={2}
                             padding={2}
                           >
+                            {/* Box for displaying product image */}
                             <Box
                               width={{ xs: "100%", md: "30%" }}
                               marginBottom={{ xs: 2, md: 0 }}
                             >
+                              {/* ImageList for rendering product image */}
                               <ImageList cols={1} rowHeight="100%">
                                 <ImageListItem style={{ width: "100%" }}>
                                   {/* Product image */}
@@ -1115,10 +1126,12 @@ const DateSelectionAndCheckout = () => {
                               paddingLeft={{ xs: 0, md: 2 }}
                               marginBottom={{ xs: 2, md: 0 }}
                             >
+                              {/* Typography for the "Product" label */}
                               <Typography
                                 fontSize={16}
                                 fontWeight="bold"
-                                color="gray">
+                                color="gray"
+                              >
                                 Product
                               </Typography>
                               {/* Typography for displaying the product name */}
@@ -1132,10 +1145,12 @@ const DateSelectionAndCheckout = () => {
                               paddingLeft={{ xs: 0, md: 2 }}
                               marginBottom={{ xs: 2, md: 0 }}
                             >
+                              {/* Typography for the "Quantity" label */}
                               <Typography
                                 fontSize={16}
                                 fontWeight="bold"
-                                color="gray">
+                                color="gray"
+                              >
                                 Quantity
                               </Typography>
                               {/* Typography for displaying the quantity */}
@@ -1148,10 +1163,12 @@ const DateSelectionAndCheckout = () => {
                               width={{ xs: "100%", md: "30%" }}
                               paddingLeft={{ xs: 0, md: 2 }}
                             >
+                              {/* Typography for the "Amount" label */}
                               <Typography
                                 fontSize={16}
                                 fontWeight="bold"
-                                color="gray">
+                                color="gray"
+                              >
                                 Amount
                               </Typography>
                               {/* Typography for displaying the amount */}
@@ -1173,7 +1190,8 @@ const DateSelectionAndCheckout = () => {
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "space-between",
-                      }}>
+                      }}
+                    >
                       <Typography style={{ fontWeight: "bold" }}>
                         Order Summary
                       </Typography>
@@ -1184,7 +1202,8 @@ const DateSelectionAndCheckout = () => {
                         marginTop: "8px",
                         flexDirection: "row",
                         justifyContent: "space-between",
-                      }}>
+                      }}
+                    >
                       <Typography style={{ fontWeight: "bold" }}>
                         Delivery
                       </Typography>
@@ -1201,7 +1220,8 @@ const DateSelectionAndCheckout = () => {
                         marginTop: "8px",
                         flexDirection: "row",
                         justifyContent: "space-between",
-                      }}>
+                      }}
+                    >
                       <Typography style={{ fontWeight: "bold" }}>
                         {" "}
                         Agent Referral
@@ -1218,7 +1238,8 @@ const DateSelectionAndCheckout = () => {
                         marginTop: "8px",
                         flexDirection: "row",
                         justifyContent: "space-between",
-                      }}>
+                      }}
+                    >
                       <Typography style={{ fontWeight: "bold" }}>
                         {" "}
                         Tax{" "}
@@ -1234,7 +1255,8 @@ const DateSelectionAndCheckout = () => {
                         marginTop: "8px",
                         flexDirection: "row",
                         justifyContent: "space-between",
-                      }}>
+                      }}
+                    >
                       <Typography variant="h5" style={{ fontWeight: "bold" }}>
                         Total
                       </Typography>
@@ -1255,7 +1277,8 @@ const DateSelectionAndCheckout = () => {
                 display="flex"
                 flexDirection="column"
                 justifyContent="space-between"
-                mpr={4}>
+                mpr={4}
+              >
                 <Box mb={4}>
                   <View>
                     <Typography
@@ -1264,7 +1287,8 @@ const DateSelectionAndCheckout = () => {
                         color: "#FFFFFF",
                         marginBottom: "20px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       DELIVERY DETAILS
                     </Typography>
                     {addressInput ? (
@@ -1279,10 +1303,53 @@ const DateSelectionAndCheckout = () => {
                           backgroundColor: "white",
                         }}
                       >
-                        <PlaceAutocomplete
-                          style={{}}
-                          onPlaceSelect={handlePlaceSelect}
-                        />
+                        <PlacesAutocomplete
+                          value={address}
+                          onChange={setAddress}
+                          onSelect={handleSelect}
+                        >
+                          {({
+                            getInputProps,
+                            suggestions,
+                            getSuggestionItemProps,
+                            loading,
+                          }) => (
+                            <View>
+                              <TextField
+                                fullWidth
+                                id="places-autocomplete-input"
+                                placeholder="Type location"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                                {...getInputProps()}
+                              />
+                              <View>
+                                {loading && <Typography>Loading...</Typography>}
+                                {suggestions.map((suggestion) => (
+                                  <View
+                                    style={{ width: "20vw" }}
+                                    {...getSuggestionItemProps(suggestion)}
+                                    key={suggestion.placeId}
+                                  >
+                                    <Typography
+                                      style={{
+                                        width: "70%",
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        color: "gray",
+                                      }}
+                                    >
+                                      {suggestion.description}
+                                    </Typography>
+                                  </View>
+                                ))}
+                              </View>
+                              {error && (
+                                <Text style={{ color: "red" }}>{error}</Text>
+                              )}
+                            </View>
+                          )}
+                        </PlacesAutocomplete>
 
                         <TouchableOpacity
                           style={{
@@ -1297,7 +1364,8 @@ const DateSelectionAndCheckout = () => {
                           onPress={() => setAddessInput(false)} // Assuming setAddessInput is a function
                         >
                           <Text
-                            style={{ color: "#062338", paddingHorizontal: 8 }}>
+                            style={{ color: "#062338", paddingHorizontal: 8 }}
+                          >
                             Close
                           </Text>
                         </TouchableOpacity>
@@ -1310,7 +1378,8 @@ const DateSelectionAndCheckout = () => {
                             flexDirection: "row",
                             justifyContent: "space-between",
                             alignItems: "center",
-                          }}>
+                          }}
+                        >
                           <Typography style={{ color: "#B7B9BC" }}>
                             Delivery Address
                           </Typography>
@@ -1326,7 +1395,7 @@ const DateSelectionAndCheckout = () => {
                             <Text
                               style={{ color: "white", paddingHorizontal: 10 }}
                             >
-                              View
+                              Type
                             </Text>
                           </TouchableOpacity>
                         </View>
@@ -1341,32 +1410,32 @@ const DateSelectionAndCheckout = () => {
                             {location && location.slice(0, 30)}
                             {location && location.length < 50 ? "" : "..."}
                           </Typography>
-                          
-                          {/* 
-                          <View
-                            style={{
-                              marginTop: "10px",
-                              borderBottomWidth: 1,
-                              borderBottomColor: "lightgrey",
-                            }}
-                          ></View>
-                          <Typography
-                            variant="h5"
-                            sx={{
-                              color: "#B7B9BC",
-                              fontSize: 20,
-                              marginTop: 1,
-                            }}
-                          >
-                            Recent Addresses
-                          </Typography>
-                          <LocationList
-                            data={pastLocations}
-                            onLocationPress={(selectedItem, index) =>
-                              handleLocationPress(selectedItem, index)
-                            }
-                          /> */}
                         </View>
+                        <MapContainer
+                          center={[coordinates.lat, coordinates.lng]}
+                          zoom={13}
+                          ref={mapRef}
+                          style={{
+                            height: "20vh",
+                            width: "100%",
+                            borderRadius: "25px",
+                          }}
+                        >
+                          <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                          />
+                          <Marker position={[coordinates.lat, coordinates.lng]}>
+                            <Popup>
+                              <FontAwesomeIcon
+                                icon={faMapMarkerAlt}
+                                size="lg"
+                                color="black"
+                              />
+                            </Popup>
+                          </Marker>
+                          {/* Additional map layers or components can be added here */}
+                        </MapContainer>
                         <Typography
                           style={{ color: "grey", marginTop: "14px" }}
                         >
@@ -1384,7 +1453,8 @@ const DateSelectionAndCheckout = () => {
                     {cartData.length > 1 || cartData.length === 1 ? (
                       <View>
                         <Typography
-                          style={{ color: "#FFFFFF", marginTop: "14px" }}>
+                          style={{ color: "#FFFFFF", marginTop: "14px" }}
+                        >
                           Select Delivery date
                         </Typography>
                         {location ? (
@@ -1395,7 +1465,8 @@ const DateSelectionAndCheckout = () => {
                               justifyContent: "flex-start",
                               flexWrap: "wrap", // Added flexWrap to allow wrapping
                               width: "100%",
-                            }}>
+                            }}
+                          >
                             {rates.map((rate, index) => (
                               <View key={index}>
                                 <TouchableOpacity
@@ -1411,13 +1482,15 @@ const DateSelectionAndCheckout = () => {
                                       selectedIndex === index
                                         ? "#2E5A88"
                                         : "transparent",
-                                  }}>
+                                  }}
+                                >
                                   <View
                                     style={{
                                       display: "flex",
                                       alignItems: "center",
                                       marginTop: "20px",
-                                    }}>
+                                    }}
+                                  >
                                     <Typography style={{ color: "white" }}>
                                       {new Date(
                                         rate.service_level.delivery_date_to
@@ -1427,7 +1500,8 @@ const DateSelectionAndCheckout = () => {
                                     </Typography>
                                     <Typography
                                       variant="h5"
-                                      style={{ color: "white" }}>
+                                      style={{ color: "white" }}
+                                    >
                                       {new Date(
                                         rate.service_level.delivery_date_to
                                       ).getDate()}
@@ -1454,7 +1528,7 @@ const DateSelectionAndCheckout = () => {
                   }}
                   onClick={creattingShipment}
                 >
-                  <Typography sx={{ fontSize: 16, color: "#FFFFFF" }}>
+                  <Typography sx={{ fontSize: 16, color: "lightgray" }}>
                     CHECKOUT
                   </Typography>
                 </Button>

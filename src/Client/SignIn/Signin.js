@@ -165,11 +165,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: "#FFFFFF",
-  //  padding: 20,
-    // borderRadius: 10,
-   // width: "30%",
     margin: "3%",
-   // height: "95vh",
     alignItems: "center",
     justifyContent: "center",
   },

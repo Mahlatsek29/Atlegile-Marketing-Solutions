@@ -65,9 +65,7 @@ const AlternativeContact = () => {
     }
   };
 
-  const handleNotNow = () => {
-    console.log("Not Now button clicked");
-  };
+
   // Calculate container width and height dynamically
   const containerWidth = window.width > 400 ? 400 : window.width * 0.9;
   const containerHeight = window.height > 600 ? 600 : window.height * 0.9;

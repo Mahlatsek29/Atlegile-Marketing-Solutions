@@ -33,11 +33,7 @@ const Signup = () => {
   const navigateToShop = () => {
     navigation.navigate("Landing");
   };
-
-  const navigatealreadyhaveaccount = () => {
-    navigation.navigate("SignIn");
-  };
-
+ 
   const handleSignup = async (e) => {
     e.preventDefault();
 

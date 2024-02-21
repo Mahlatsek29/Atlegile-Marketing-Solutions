@@ -62,7 +62,6 @@ const Products = () => {
   const businessName = route.params?.businessId || null;
   const [collectionList, setCollectionList] = useState([]);
   const [firebaseCollection, setFirebaseCollection] = useState(null);
-  //   const navigation = useNavigation();
   const [isRed, setIsRed] = useState(false);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -146,10 +145,7 @@ const Products = () => {
     setShowSnackbar(false);
   };
 
-  const navigatebusinessproduct = () => {
-    navigation.navigate("BusinessProducts");
-  };
-
+ 
   useEffect(() => {
     const fetchProducts = async () => {
       const cartCollectionRef = collection(firestore, "Products");
@@ -179,17 +175,7 @@ const Products = () => {
     fetchProducts();
   }, []);
 
-  const scrollLeft = (scrollViewRef) => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ x: 0, animated: true });
-    }
-  };
-
-  const scrollRight = (scrollViewRef) => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: true });
-    }
-  };
+ 
 
   if (loading) {
     // Render a loading state using Skeleton

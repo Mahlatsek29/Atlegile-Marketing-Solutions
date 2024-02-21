@@ -19,7 +19,6 @@ const TellUsAboutYourself = ({ navigation }) => {
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
-  //const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
   const window = Dimensions.get("window");
   const user = firebase.auth().currentUser;
@@ -120,9 +119,6 @@ const TellUsAboutYourself = ({ navigation }) => {
             onChange={(e) => setSurname(e.target.value)}
             style={{
               width: "48%",
-              // marginTop: "5px",
-              // marginRight: "10px",
-              // textAlign: "left",
             }}
           />
         </View>
@@ -179,12 +175,6 @@ const TellUsAboutYourself = ({ navigation }) => {
             textAlign: "left",
           }}
         />
-
-        {/* <PlaceAutocomplete
-          style={{ width: "25vw" }}
-          onPlaceSelect={handlePlaceSelect}
-        /> */}
-
         <TouchableOpacity style={styles.button} onPress={handleContinue}>
           {loading ? (
             <CircularProgress size={25} />
@@ -216,7 +206,6 @@ const styles = StyleSheet.create({
     height: 50,
     marginBottom: 150,
     resizeMode: "contain",
-    // marginLeft: "29%",
   },
   title: {
     fontSize: 10,
@@ -231,7 +220,6 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    // marginBottom: 10,
     width: "100%",
     borderBottomWidth: 1,
     borderBottomColor: "gray",

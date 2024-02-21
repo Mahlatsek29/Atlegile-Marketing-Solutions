@@ -9,26 +9,21 @@ import {
 import {
   Container,
   Typography,
-  Button,
   Grid,
   Box,
   Card,
   ImageList,
   ImageListItem,
-  TextField,
 } from "@mui/material";
 
 import { useNavigation } from "@react-navigation/native";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
-import mapImage from "../../Global/images/mapImage.png";
-import hdtv from "../../Global/images/hdtv.jpg";
 import { firestore } from "../../config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRoute } from "@react-navigation/native";
 import {
-  
   doc,
   getDoc,
 } from "firebase/firestore";
@@ -43,15 +38,11 @@ const DeliveryAndChatSystem = () => {
   const { orderId } = route.params;
   //const { orderId } = route.params;
   console.log("orderId is ", orderId);
-  const [orderTotal, setOrderTotal] = useState(0);
   const [chatmodelVisble, setChatmodelVisible] = useState(false);
   const [message, setMessage] = useState("");
   const [order, setOrder] = useState({});
   const [user, setUser] = useState(null);
-  const [shipmentStatus, setShipmentStatus] = useState("");
-  const { navigate } = useNavigation();
   const [loading, setLoading] = useState(true);
-  
   const mapRef = useRef(null);
   
   const [chats, setChats] = useState([
@@ -124,8 +115,6 @@ const DeliveryAndChatSystem = () => {
   const navigateToDeliveryOngoing = () => {
     navigation.navigate("DeliveryOngoing",{ orderId });
   };
-
- 
 
   return (
     <>

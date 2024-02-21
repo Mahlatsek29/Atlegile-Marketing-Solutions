@@ -121,7 +121,7 @@ const OrderHistory = () => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1,backgroundColor:"white" }}>
       <FollowUs />
       <Navbar />
       <Container

@@ -35,9 +35,7 @@ import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 const DeliveryAndChatSystem = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { orderId } = route.params;
-  //const { orderId } = route.params;
-  console.log("orderId is ", orderId);
+  const { orderId } = route.params; 
   const [chatmodelVisble, setChatmodelVisible] = useState(false);
   const [message, setMessage] = useState("");
   const [order, setOrder] = useState({});
@@ -72,7 +70,7 @@ const DeliveryAndChatSystem = () => {
 
         if (orderDocSnapshot.exists()) {
           const orderData = orderDocSnapshot.data();
-          console.log("Fetched product data:", orderData);
+          
           setOrder(orderData);
         } else {
           console.log("Product not found");

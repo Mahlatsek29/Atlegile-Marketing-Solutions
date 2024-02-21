@@ -11,44 +11,16 @@ import {
 import { Container, Typography, Grid, Button } from "@mui/material";
 import Navbar from "../../Global/Navbar";
 import SearchBar from "../../Global/SearchBar";
-import ProductCard from "../../Global/Card";
 import FollowUs from "../../Global/Header";
 import { Footer } from "../../Global/Footer";
-import shop from "../../Global/images/svg_landing.svg";
-import shop2 from "../../Global/images/svg_landing.svg";
 import { firebase, firestore, auth } from "../../config";
-import { useNavigation } from "@react-navigation/native";
 import BusinessCard from "./BusinessCard";
-import { AntDesign } from "@expo/vector-icons";
-import {
-  setDoc,
-  doc,
-  getDoc,
-  getDocs,
-  addDoc,
-  query,
-  where,
-  collection,
-  onSnapshot,
-  Timestamp,
-  FieldPath,
-} from "firebase/firestore";
+
 
 const Landing = () => {
-  const navigation = useNavigation();
   const [businesses, setBusinesses] = useState([]);
-  const [products, setProducts] = useState([]);
-  const scrollViewRef1 = useRef(null);
-  const scrollViewRef2 = useRef(null);
-  const scrollViewRef3 = useRef(null);
-
-  const [collectionList, setCollectionList] = useState([]);
-  const [firebaseCollection, setFirebaseCollection] = useState(null);
-
-  const navigatebusinessproduct = () => {
-    navigation.navigate("BusinessProducts");
-  };
-
+  
+ 
   useEffect(() => {
     const fetchProducts = async () => {
       const productsRef = firebase.firestore().collection("Products");
@@ -57,13 +29,10 @@ const Landing = () => {
         const snapshot = await productsRef.get();
         const collection = [];
         const productsData = snapshot.docs.map((doc) => ({
-          // id: doc.id,
           ...doc.data(),
         }));
         productsData.map((item) => collection.push(item.company));
-        // setProducts(productsData);
-        console.log("collection", new Set(collection));
-        // alert('products fetched')
+       
         setBusinesses([...new Set(collection)]);
         console.log("businesses : ", businesses);
       } catch (error) {
@@ -74,18 +43,7 @@ const Landing = () => {
     fetchProducts();
   }, []);
 
-  const scrollLeft = (scrollViewRef) => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ x: 0, animated: true });
-    }
-  };
-
-  const scrollRight = (scrollViewRef) => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: true });
-    }
-  };
-
+  
   return (
     <>
       <View style={styles.container}>
@@ -98,14 +56,11 @@ const Landing = () => {
             justifyContent: "center",
             display: "flex",
             flexDirection: "column",
-            // backgroundColor: "red",
-            // position: "relative",
-          }}
+           }}
         >
           <Grid
             item
             xl={12}
-            // lg={12}
             style={{
               alignItems: "right",
               justifyContent: "right",

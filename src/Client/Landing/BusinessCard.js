@@ -5,7 +5,7 @@ import ProductCard from "../../Global/Card";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 export default function BusinessCard({ business }) {
-  console.log(business);
+  
   const scrollViewRef = useRef(null);
   const [products, setProducts] = useState([]);
   const [banner, setBanner] = useState([]);
@@ -66,7 +66,7 @@ export default function BusinessCard({ business }) {
             quantity: data.quantity,
           };
         });
-        console.log("bannerData is ", bannerData);
+       
         setBanner(bannerData);
       } catch (error) {
         console.error("Error fetching banner images:", error);
@@ -119,8 +119,7 @@ export default function BusinessCard({ business }) {
               justifyContent: "space-between",
               alignItems: "center",
               flexDirection: "row",
-              //backgroundColor:'red'
-            }}>
+              }}>
             <TouchableOpacity onPress={scrollLeft}>
               <AntDesign name="leftcircle" size={40} color="black" />
             </TouchableOpacity>
@@ -134,17 +133,13 @@ export default function BusinessCard({ business }) {
                 zIndex: -10,
                 width: "100%",
                 position: "absolute",
-                //marginVertical: 16,
-                //  backgroundColor:'red'
-              }}
+               }}
             >
               <View
                 style={{
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  //marginTop: 20,
-                  //  backgroundColor:'blue'
                 }}
               >
                 <Text

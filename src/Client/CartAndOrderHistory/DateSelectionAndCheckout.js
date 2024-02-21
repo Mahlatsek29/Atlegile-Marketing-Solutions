@@ -836,7 +836,7 @@ const DateSelectionAndCheckout = () => {
   );
 
   return (
-    <>
+    <View style={{backgroundColor:'white'}}>
       {addressCard ? (
         // If addressCard is true, display the following component
         <Box
@@ -844,14 +844,9 @@ const DateSelectionAndCheckout = () => {
           justifyContent="center"
           alignItems="center"
           position="absolute"
-         // position = "fixed"
-          //top={0}
-          //left={0}
           width = "100vw"
           height ="100vh"
-         // backgroundColor= "rgba(0, 0, 0, 0.5)"
           flex={1}
-         
           zIndex={9999}
           
         >
@@ -1538,7 +1533,7 @@ const DateSelectionAndCheckout = () => {
         </Container>
         <Footer />
       </ScrollView>
-    </>
+    </View>
   );
 };
 

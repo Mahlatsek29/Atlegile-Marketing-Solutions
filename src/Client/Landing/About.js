@@ -32,7 +32,7 @@ export default function AboutUs() {
   }, []); // Empty dependency array to run the effect only once during component mount
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1,backgroundColor:'white' }}>
       {/* Included FollowUs component */}
       <FollowUs />
       {/* Included Navbar component */}

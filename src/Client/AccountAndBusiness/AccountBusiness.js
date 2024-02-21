@@ -42,7 +42,6 @@ export default function BusinessAccount() {
   const [paymentModal, setPaymentModal] = React.useState(false);
 
   const [businessAuthorization, setBusinessAuthorization] = useState(false);
-  const [landing, setLanding] = useState(true);
   const [productName, setProductName] = useState("");
   const [otherBanner, setOtherBanner] = useState("");
   const [priceOriginal, setPriceOriginal] = useState(0);
@@ -1145,6 +1144,7 @@ export default function BusinessAccount() {
             item
             lg={3}
             md={3}
+            border= "2px lightgrey solid"
             style={{
               backgroundColor: "white",
               width: "100%",
@@ -1531,6 +1531,7 @@ export default function BusinessAccount() {
             item
             lg={3}
             md={3}
+            border= "2px lightgrey solid"
             style={{
               backgroundColor: "white",
               width: "100%",
@@ -1687,6 +1688,7 @@ export default function BusinessAccount() {
             item
             lg={3}
             md={3}
+            border= "2px lightgrey solid"
             style={{
               backgroundColor: "white",
               width: "100%",

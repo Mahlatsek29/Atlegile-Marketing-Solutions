@@ -373,44 +373,7 @@ export default function ProductDetails({ navigation, route }) {
     return <Typography>No Product Found</Typography>;
   }
 
-  // // Assuming the images are stored in an array field named 'images'
-
-  // const reviews = [
-  //   {
-  //     id: "XYZ123abc456def789",
-  //     createdAt: "2023-01-01T12:00:00Z",
-  //     comment: "This is a test comment for the product.",
-  //     userName: "John",
-  //     userSurname: "Doe",
-  //     userID: "ghIJKL123mnoPQR456",
-  //     productID: "78PQRstUvwXYZ90abc",
-  //     role: "Photographer",
-  //     ratings: 4.0,
-  //   },
-  //   {
-  //     id: "PQrs56tuVW78xyZ90",
-  //     createdAt: "2023-01-02T12:00:00Z",
-  //     comment: "Another test comment for the product.",
-  //     userName: "Jane",
-  //     userSurname: "Smith",
-  //     userID: "stuvwX789YZabc012D",
-  //     productID: "78PQRstUvwXYZ90abc",
-  //     role: "Designer",
-  //     ratings: 3.5,
-  //   },
-  //   {
-  //     id: "ABcde12FGhijk34LMno",
-  //     createdAt: "2023-01-03T12:00:00Z",
-  //     comment: "Yet another test comment for the product.",
-  //     userName: "Bob",
-  //     userSurname: "Johnson",
-  //     userID: "EFGhi123JKLMno456",
-  //     productID: "78PQRstUvwXYZ90abc",
-  //     role: "Carpenter",
-  //     ratings: 5.0,
-  //   },
-  // ];
-
+ 
   const handleNext = () => {
     setCurrentImage((prev) => (prev + 1) % product.images.length);
   };

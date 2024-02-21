@@ -82,6 +82,7 @@ const Navbar = () => {
 
   return (
     <Toolbar
+    
       sx={{
         color: "#252B42",
         display: "flex",

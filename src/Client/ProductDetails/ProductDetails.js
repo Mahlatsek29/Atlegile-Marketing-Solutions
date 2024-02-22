@@ -402,7 +402,7 @@ export default function ProductDetails({ navigation, route }) {
                 color="textPrimary"
                 sx={{ fontSize: 15, textDecoration: "none" }}
               >
-                Digital Marketing Solutions Mbali
+                Digital Marketing Solutions / {product.company}
               </Typography>
             </Breadcrumbs>
           </Box>

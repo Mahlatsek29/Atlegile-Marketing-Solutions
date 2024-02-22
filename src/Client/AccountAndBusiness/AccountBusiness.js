@@ -56,7 +56,7 @@ export default function BusinessAccount() {
   const [other, setOther] = useState("");
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [addProduct, setAddProduct] = useState("");
+  const [addProduct, setAddProduct] = useState(false);
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
   const [cardHolder, setCardHolder] = useState("");
@@ -1127,17 +1127,14 @@ export default function BusinessAccount() {
       {addProduct ? (
         // Overlay for the add product modal
         <View
-          style={{
-            top: 65,
-            position: "absolute",
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "flex-end",
-            zIndex: 9999,
-            alignSelf: "flex-end",
-          }}
+        style={{
+          top: 65,
+          position: "absolute",
+          flex: 1,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          zIndex: 9999,
+          alignSelf: "flex-end",
+        }}
         >
           {/* Modal content */}
           <Grid
@@ -1149,10 +1146,10 @@ export default function BusinessAccount() {
               backgroundColor: "white",
               width: "100%",
               height: "auto",
-              alignSelf: "flex-end",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
+              backgroundColor:'white'
             }}
           >
             {/* Close button */}
@@ -1173,14 +1170,13 @@ export default function BusinessAccount() {
 
             {/* Form container */}
             <View
-              className="form-container"
               style={{
+                height: "outo",
+                width: "100%",
+                display: "flex",
                 justifyContent: "center",
-                textAlign: "center",
                 alignItems: "center",
-                width: "75%",
-                marginLeft: "80px",
-                marginBottom: "30px",
+              
               }}
             >
               {/* Title of the perpose ffo the form */}
@@ -1262,7 +1258,7 @@ export default function BusinessAccount() {
               </View>
 
               {/* Form inputs */}
-              <View style={{ alignSelf: "center" }}>
+              <View style={{ width: "80%", alignSelf: "center"}}>
                 <form onSubmit={handleContinue}>
                   {/* Name input */}
                   <TextField

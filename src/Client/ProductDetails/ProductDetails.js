@@ -439,7 +439,7 @@ export default function ProductDetails({ navigation, route }) {
                   <ArrowForwardIosIcon />
                 </IconButton>
               </Box>
-              <Box sx={{ display: "flex", mt: 1 }}>
+              <Box sx={{ display: "flex", mt: 1 ,flexWrap:'wrap'}}>
                 {product.images.map((image, index) => (
                   <img
                     key={index}

@@ -26,11 +26,8 @@ import Icon2 from "react-native-vector-icons/Feather";
 import Skeleton from "@mui/material/Skeleton";
 import Navbar from "../../Global/Navbar";
 import SearchBar from "../../Global/SearchBar";
-import ProductCard from "../../Global/Card";
 import FollowUs from "../../Global/Header";
 import { Footer } from "../../Global/Footer";
-import shop from "../../Global/images/svg_landing.svg";
-import shop2 from "../../Global/images/svg_landing.svg";
 import { firebase, firestore, auth } from "../../config";
 import { useNavigation } from "@react-navigation/native";
 
@@ -180,19 +177,25 @@ const Products = () => {
   if (loading) {
     // Render a loading state using Skeleton
     return (
-      <Card className="card-container">
+      <Card sx={{
+        flex:1,
+        display:'flex',
+        justifyContent:'center',
+        alignItems:'center',
+        flexDirection:'column'
+      }}>
         <Skeleton
           variant="rectangular"
           width={270}
           height={270}
           animation="wave"
         />
-        <CardContent>
+       
           <Skeleton variant="text" width={100} height={20} animation="wave" />
           <Skeleton variant="text" width={200} height={16} animation="wave" />
           <Skeleton variant="text" width={200} height={16} animation="wave" />
           <Skeleton variant="text" width={80} height={14} animation="wave" />
-        </CardContent>
+    
       </Card>
     );
   }

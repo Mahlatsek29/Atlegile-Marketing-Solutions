@@ -106,19 +106,25 @@ export default function BusinessAccount() {
   if (loading) {
     // Render a loading state using Skeleton
     return (
-      <Card className="card-container">
+      <Card sx={{
+        flex:1,
+        display:'flex',
+        justifyContent:'center',
+        alignItems:'center',
+        flexDirection:'column'
+      }}>
         <Skeleton
           variant="rectangular"
           width={270}
           height={270}
           animation="wave"
         />
-        <CardContent>
+       
           <Skeleton variant="text" width={100} height={20} animation="wave" />
           <Skeleton variant="text" width={200} height={16} animation="wave" />
           <Skeleton variant="text" width={200} height={16} animation="wave" />
           <Skeleton variant="text" width={80} height={14} animation="wave" />
-        </CardContent>
+    
       </Card>
     );
   }

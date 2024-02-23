@@ -12,14 +12,14 @@ const Reciept = () => {
 
   const navigateToLanding = () => {
     // {alert("button clicked")}
-    navigation.navigate("Landing");
+    navigation.navigate("https://atlegile-marketing-solutions--client-x35upb5j.web.app/");
   };
 
   return (
     <View style={{backgroundColor:"white"}}>
       <FollowUs />
       <Navbar />
-      <Container fixed sx={{ height: "85vh" }}>
+      <Container fixed sx={{ height: "85vh",marginBottom:25 }}>
         <View
           style={{
             height: "800px",

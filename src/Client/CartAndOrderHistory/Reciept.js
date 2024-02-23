@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View,Linking } from "react-native";
 import { Container, Typography, Button } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -12,7 +12,8 @@ const Reciept = () => {
 
   const navigateToLanding = () => {
     // {alert("button clicked")}
-    navigation.navigate("/https://atlegile-marketing-solutions--client-x35upb5j.web.app");
+    // navigation.navigate("https://atlegile-marketing-solutions--client-x35upb5j.web.app");
+    Linking.openURL("https://atlegile-marketing-solutions--client-x35upb5j.web.app")
   };
 
   return (

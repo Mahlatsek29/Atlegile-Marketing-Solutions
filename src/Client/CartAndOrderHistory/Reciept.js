@@ -12,7 +12,7 @@ const Reciept = () => {
 
   const navigateToLanding = () => {
     // {alert("button clicked")}
-    navigation.navigate("https://atlegile-marketing-solutions--client-x35upb5j.web.app");
+    navigation.navigate("/https://atlegile-marketing-solutions--client-x35upb5j.web.app");
   };
 
   return (

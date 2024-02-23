@@ -9,39 +9,39 @@ import {
   Picker,
 } from "react-native";
 import { WebView } from "react-native-webview";
-import { useNavigation } from "@react-navigation/native"; 
-import CircularProgress from "@mui/material/CircularProgress"; 
-import TextField from "@mui/material/TextField"; 
-import MenuItem from "@mui/material/MenuItem"; 
-import Button from "@mui/material/Button"; 
-import Box from "@mui/material/Box"; 
-import background from "../../Global/images/Reed.jpg"; 
+import { useNavigation } from "@react-navigation/native";
+import CircularProgress from "@mui/material/CircularProgress";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import background from "../../Global/images/Reed.jpg";
 import logo from "../../Global/images/logo.svg";
 import Banner from "../../Global/images/media bg-cover.png";
-import { auth, firestore, firebase } from "../../config"; 
-import Alert from "@mui/material/Alert"; 
-import AlertTitle from "@mui/material/AlertTitle"; 
+import { auth, firestore, firebase } from "../../config";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 import { Typography } from "@mui/material";
 
 // Define BusinessRegistration component
 const BusinessRegistration = () => {
-  const navigation = useNavigation(); 
-  const [businessName, setBusinessName] = useState(""); 
-  const [selectedRole, setSelectedRole] = useState(""); 
-  const [regNumber, setRegNumber] = useState(""); 
-  const [website, setWebsite] = useState(""); 
-  const [location, setLocation] = useState(""); 
-  const [selectedBusinessType, setSelectedBusinessType] = useState(""); 
-  const [selectedIndustry, setSelectedIndustry] = useState(""); 
-  const [phoneNumber, setPhoneNumber] = useState(""); 
-  const [bio, setBio] = useState(""); 
-  const [cardHolder, setCardHolder] = useState(null); 
-  const [cardNumber, setCardNumber] = useState(null); 
-  const [cvv, setCvv] = useState(null); 
-  const [loading, setLoading] = useState(false); 
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false); 
-  const [formSubmitted, setFormSubmitted] = useState(false); 
-  const window = Dimensions.get("window"); 
+  const navigation = useNavigation();
+  const [businessName, setBusinessName] = useState("");
+  const [selectedRole, setSelectedRole] = useState("");
+  const [regNumber, setRegNumber] = useState("");
+  const [website, setWebsite] = useState("");
+  const [location, setLocation] = useState("");
+  const [selectedBusinessType, setSelectedBusinessType] = useState("");
+  const [selectedIndustry, setSelectedIndustry] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [bio, setBio] = useState("");
+  const [cardHolder, setCardHolder] = useState(null);
+  const [cardNumber, setCardNumber] = useState(null);
+  const [cvv, setCvv] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const window = Dimensions.get("window");
 
   // useEffect hook to listen for authentication state changes
   useEffect(() => {
@@ -100,13 +100,13 @@ const BusinessRegistration = () => {
     }
   };
 
-  const emptyOption = [""]; 
+  const emptyOption = [""];
 
   // Define options for role, business type, and industry dropdowns
   const roleOptions = [
     ...emptyOption,
     "Graphic Designer",
-    // Add other roles here 
+    // Add other roles here
   ];
 
   const businessTypeOptions = [
@@ -165,6 +165,7 @@ const BusinessRegistration = () => {
             display: "flex",
             alignItems: "center",
             flexDirection: "column",
+            height: "auto",
             justifyContent: "space-around",
           }}
         >
@@ -228,7 +229,6 @@ const BusinessRegistration = () => {
                   style={{
                     width: "100%",
                     textAlign: "left",
-                    marginTop: "10px",
                   }}
                 >
                   {roleOptions.map((option) => (
@@ -248,7 +248,7 @@ const BusinessRegistration = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "100%", marginTop: "10px" }}
+                  style={{ width: "100%" }}
                   value={regNumber}
                   onChange={(e) => setRegNumber(e.target.value)}
                   required
@@ -264,7 +264,7 @@ const BusinessRegistration = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "100%", marginTop: "10px" }}
+                  style={{ width: "100%" }}
                   value={website}
                   onChange={(e) => setWebsite(e.target.value)}
                 />
@@ -278,7 +278,7 @@ const BusinessRegistration = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "100%", marginTop: "10px" }}
+                  style={{ width: "100%" }}
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   required
@@ -298,12 +298,10 @@ const BusinessRegistration = () => {
                     label="Type of business"
                     variant="standard"
                     value={selectedBusinessType}
-                    onChange={(e) =>
-                      setSelectedBusinessType(e.target.value)
-                    }
+                    onChange={(e) => setSelectedBusinessType(e.target.value)}
                     style={{
                       width: "48%",
-                      marginTop: "5px",
+
                       marginRight: "10px",
                       textAlign: "left",
                     }}
@@ -324,7 +322,6 @@ const BusinessRegistration = () => {
                     onChange={(e) => setSelectedIndustry(e.target.value)}
                     style={{
                       width: "48%",
-                      marginTop: "5px",
                       textAlign: "left",
                     }}
                     required
@@ -346,7 +343,7 @@ const BusinessRegistration = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "100%", marginTop: "10px" }}
+                  style={{ width: "100%" }}
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   required
@@ -361,7 +358,7 @@ const BusinessRegistration = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "100%", marginTop: "10px" }}
+                  style={{ width: "100%" }}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                   required
@@ -397,4 +394,4 @@ const BusinessRegistration = () => {
   );
 };
 
-export default BusinessRegistration;  
+export default BusinessRegistration;

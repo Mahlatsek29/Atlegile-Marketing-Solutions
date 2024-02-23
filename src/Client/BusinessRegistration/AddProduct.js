@@ -27,9 +27,9 @@ import ImageCompressor from "image-compressor";
 const AddProductsAndServices = () => {
   const navigation = useNavigation();
 
-  const navigatepaymentinfo = () => {
-    navigation.navigate("AddProductsAndServices");
-  };
+  // const navigatepaymentinfo = () => {
+  //   navigation.navigate("AddProductsAndServices");
+  // };
 
   const emptyOption = [""];
   const [images, setImages] = useState([]);
@@ -43,12 +43,12 @@ const AddProductsAndServices = () => {
   const [companyName, setCompanyName] = useState("");
   const [selectedProductCategory, setProductCategory] = useState("");
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-  
+
   const [brand, setBrand] = useState("");
-  const [length,setLength] = useState (null)
-  const [width,setWidth] = useState(null)
-  const [height,setHeight] = useState(null)
-  const [weight,setWeight]= useState(null)
+  const [length, setLength] = useState(null);
+  const [width, setWidth] = useState(null);
+  const [height, setHeight] = useState(null);
+  const [weight, setWeight] = useState(null);
   const productCategory = [
     ...emptyOption,
     "Electronics",
@@ -108,17 +108,17 @@ const AddProductsAndServices = () => {
 
       await productRef.set({
         name,
-        company: companyName,
+        company:businessName,
         businessName,
         price,
         quantity,
         description,
         selectedProductCategory,
         brand,
-        height: parseFloat(height),  // Parse input as a float
-      length: parseFloat(length),  // Parse input as a float
-      width: parseFloat(width),    // Parse input as a float
-      weight: parseFloat(weight),  // Parse input as a float
+        height: parseFloat(height), // Parse input as a float
+        length: parseFloat(length), // Parse input as a float
+        width: parseFloat(width), // Parse input as a float
+        weight: parseFloat(weight), // Parse input as a float
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
 
@@ -136,8 +136,6 @@ const AddProductsAndServices = () => {
 
       await productRef.update({ images: downloadURLs });
 
- 
-
       setTimeout(() => {
         setLoading(true);
       }, 3000);
@@ -152,150 +150,143 @@ const AddProductsAndServices = () => {
 
   return (
     <View
-    style={{
-      width: "100vw",
-      backgroundImage: `url(${background})`,
-      backgroundSize: "cover",
-      height: "100vh",
-    }}
-  >
-    <Grid
-      container
       style={{
-        width: "100%",
-        marginBottom: "-10vh",
-        position: "absolute",
-        top: 5,
-        left: -10,
-        right: 10,
+        width: "100vw",
+        backgroundImage: `url(${background})`,
+        backgroundSize: "cover",
+        height: "100vh",
       }}
     >
       <Grid
-        item
-        lg={8}
-        md={8}
-        sm={{ hidden: true }}
+        container
         style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
           width: "100%",
+          marginBottom: "-10vh",
+          position: "absolute",
+          top: 5,
+          left: -10,
+          right: 10,
+          
         }}
       >
-        {/* Left grid content */}
-      </Grid>
+        <Grid
+          item
+          lg={8}
+          md={8}
+          sm={{ hidden: true }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            height:"100%"
+          }}
+        >
+          {/* Left grid content */}
+        </Grid>
 
-      <Grid
-        item
-        lg={4}
-        md={4}
-        style={{
-          backgroundColor: "#fff",
-          marginLeft: "-10px",
-          width: "100%",
-          height: "98vh",
-          alignSelf: "center",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
-        <Grid style={{ alignSelf: "center" }}>
-        
+        <Grid
+          item
+          lg={4}
+          md={4}
+          style={{
+            backgroundColor: "#fff",
+            width: "100%",
+            height:'auto',
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems:'center',
+           
+          }}
+        >
+          <Grid >
             <img
               src={logo}
               style={{ height: "9vh", width: "90%", paddingTop: "8vh" }}
             />
-        
-        </Grid>
-
-        <View
-          className="form-container"
-          style={{
-            justifyContent: "center",
-            textAlign: "left",
-            alignItems: "center",
-            width: "75%",
-            marginLeft: "80px",
-            marginBottom: "30px",
-          }}
-        >
-          <Typography
-            variant="h2"
+          </Grid>
+          <View
+            className="form-container"
             style={{
-              color: "#000",
-              textAlign: "left",
-              fontSize: "15px",
-              width: "100%",
-              fontWeight: "bold",
-              marginBottom: 1,
+              width: "75%",
+              marginBottom: "30px",
             }}
           >
-            ADD PRODUCTS + SERVICES
-          </Typography>
-          <View
-                  className="uploadContainer"
+            <Typography
+              variant="h2"
+              style={{
+                color: "#000",
+                textAlign: "left",
+                fontSize: "15px",
+                width: "100%",
+                fontWeight: "bold",
+                marginBottom: 10,
+              }}
+            >
+              ADD PRODUCTS + SERVICES
+            </Typography>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                width: "100%",
+                height: "8vh",
+                alignSelf:'flex-start',
+                marginBottom:5,
+              }}
+            >
+              {images.length > 0 ? (
+                images.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image.url}
+                    alt={`Product Image ${index + 1}`}
+                    style={{
+                      padding: "15px",
+                      marginRight: "10px",
+                      width: "16%",
+                      height: "8vh",
+                    }}
+                  />
+                ))
+              ) : (
+                <img
+                  src={placeholder}
+                  alt="Placeholder"
                   style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
+                    padding: "5px",
+                    marginRight: "10px",
+                    width: "16%",
                     height: "8vh",
                   }}
-                >
-                  {images.length > 0 ? (
-                    images.map((image, index) => (
-                      <img
-                        key={index}
-                        src={image.url}
-                        alt={`Product Image ${index + 1}`}
-                        style={{
-                          padding: "15px",
-                          marginRight: "10px",
-                          width: "16%",
-                          height: "8vh",
-                        }}
-                      />
-                    ))
-                  ) : (
-                    <img
-                      src={placeholder}
-                      alt="Placeholder"
-                      style={{
-                        padding: "5px",
-                        marginRight: "10px",
-                        width: "16%",
-                        height: "8vh",
-                      }}
-                    />
-                  )}
+                />
+              )}
 
-                  <label
-                    htmlFor="imageInput"
-                    className="add"
-                    style={{
-                      backgroundColor: "whitesmoke",
-                      color: "#000",
-                      padding: "25px",
-                      // paddingBottom:'20px',
-                      width: "5%",
-                      cursor: "pointer",
-                      alignSelf: "center",
-                    }}
-                  >
-                    +
-                  </label>
-                  <input
-                    type="file"
-                    id="imageInput"
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    onChange={handleImageChange}
-                    multiple // Allow selecting multiple files
-                  />
-                </View>
-          <View style={{ alignSelf: "center" }}>
+              <label
+                htmlFor="imageInput"
+                className="add"
+                style={{
+                  backgroundColor: "whitesmoke",
+                  color: "#000",
+                  padding: "25px",
+                  // paddingBottom:'20px',
+                  width: "5%",
+                  cursor: "pointer",
+                  alignSelf: "center",
+                }}
+              >
+                +
+              </label>
+              <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleImageChange}
+                multiple // Allow selecting multiple files
+              />
+            </View>
+            <View >
               <form onSubmit={handleContinue}>
                 <TextField
                   fullWidth
@@ -321,27 +312,12 @@ const AddProductsAndServices = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    style={{ width: "100%", marginTop: "10px" }}
+                    style={{ width: "100%" }}
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
                     required
                   />
-                  <TextField
-                    id="outlined-number"
-                    label="company name"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{
-                      width: "100%",
-                      marginTop: "10px",
-                    }}
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    required
-                  />
+                  
                   <View style={{ display: "flex", flexDirection: "row" }}>
                     <TextField
                       fullWidth
@@ -355,7 +331,7 @@ const AddProductsAndServices = () => {
                       style={{
                         width: "45%",
                         marginRight: "10px",
-                        marginTop: "10px",
+                       
                       }}
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
@@ -370,7 +346,7 @@ const AddProductsAndServices = () => {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      style={{ width: "45%", marginTop: "10px" }}
+                      style={{ width: "45%" }}
                       value={quantity}
                       onChange={(e) => setQuantity(e.target.value)}
                       required
@@ -389,7 +365,7 @@ const AddProductsAndServices = () => {
                       style={{
                         width: "45%",
                         marginRight: "10px",
-                        marginTop: "10px",
+                        
                       }}
                       value={length}
                       onChange={(e) => setLength(e.target.value)}
@@ -404,7 +380,11 @@ const AddProductsAndServices = () => {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      style={{ width: "45%", marginTop: "10px", marginRight: "10px",}}
+                      style={{
+                        width: "45%",
+                      
+                        marginRight: "10px",
+                      }}
                       value={width}
                       onChange={(e) => setWidth(e.target.value)}
                       required
@@ -418,7 +398,11 @@ const AddProductsAndServices = () => {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      style={{ width: "45%", marginTop: "10px" ,marginRight: "10px",}}
+                      style={{
+                        width: "45%",
+                       
+                        marginRight: "10px",
+                      }}
                       value={height}
                       onChange={(e) => setHeight(e.target.value)}
                       required
@@ -432,7 +416,7 @@ const AddProductsAndServices = () => {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      style={{ width: "45%", marginTop: "10px" }}
+                      style={{ width: "45%" }}
                       value={weight}
                       onChange={(e) => setWeight(e.target.value)}
                       required
@@ -450,8 +434,7 @@ const AddProductsAndServices = () => {
                     }}
                     style={{
                       width: "100%",
-                      marginBottom: "10px",
-                      marginTop: "10px",
+                      
                     }}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -470,7 +453,8 @@ const AddProductsAndServices = () => {
                       marginRight: "10px",
                       textAlign: "left",
                     }}
-                    required>
+                    required
+                  >
                     {productCategory.map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
@@ -490,7 +474,7 @@ const AddProductsAndServices = () => {
                     style={{
                       width: "100%",
                       marginLeft: "5px",
-                      marginTop: "10px",
+                     
                     }}
                     value={brand}
                     onChange={(e) => setBrand(e.target.value)}
@@ -506,10 +490,17 @@ const AddProductsAndServices = () => {
                     background: "#072840",
                     borderRadius: "30px",
                   }}
-                  type="submit">
+                  type="submit"
+                >
                   {loading ? (
-                    <Box sx={{ display: "flex", justifyContent: "center", alignItems:"center" }}>
-                      <CircularProgress color="inherit"  size={25}/>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <CircularProgress color="inherit" size={25} />
                     </Box>
                   ) : (
                     "Continue"
@@ -517,8 +508,8 @@ const AddProductsAndServices = () => {
                 </Button>
               </form>
             </View>
-          
-          {/* <Button
+
+            {/* <Button
             variant="contained"
             style={{
               width: "100%",
@@ -543,10 +534,11 @@ const AddProductsAndServices = () => {
               "Continue"
             )}
           </Button> */}
-        </View>
+          </View>
+         
+        </Grid>
       </Grid>
-    </Grid>
-  </View>
+    </View>
   );
 };
 

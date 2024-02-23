@@ -42,7 +42,8 @@ const BusinessRegistration = () => {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const window = Dimensions.get("window");
-
+  const user = firebase.auth().currentUser;
+  const [sendToBackend,setSendToBackend] = useState(false)
   // useEffect hook to listen for authentication state changes
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -54,20 +55,47 @@ const BusinessRegistration = () => {
         setCurrentUserUID(null);
       }
     });
-
+  
     return () => unsubscribe();
-
+  
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
 
-  // Function to navigate to add product screen
-  const navigateaddproduct = () => {
-    navigation.navigate("AddProductsAndServices");
+  //talent
+  const handleContinue = async (e) => {
+    e.preventDefault();
+  
+    try {
+      // setLoading(true);
+  
+      const userRef = firestore.collection("Users").doc(user.uid);
+      
+      // Get the existing user data
+      const userData = await userRef.get();
+      await userRef.set(
+        {
+          talent: true,
+          company: businessName,
+        },
+        { merge: true }
+      );
+      
+  
+      console.log("Alternative contact information submitted to 'Users' collection in Firestore.");
+      setSendToBackend(true);
+    } catch (error) {
+      console.error("Error submitting alternative contact information:", error.message);
+      // You can handle the error here, e.g., display an error message to the user.
+    } finally {
+      // setLoading(false);
+    }
   };
-
+  
   // Function to handle form submission
-  const handlechange = async (event) => {
-    event.preventDefault();
+ // Function to handle form submission and backend interaction
+useEffect(() => {
+  const registerBusiness = async () => {
     try {
       setLoading(true);
 
@@ -100,7 +128,11 @@ const BusinessRegistration = () => {
     }
   };
 
-  const emptyOption = [""];
+  if (sendToBackend) {
+    registerBusiness();
+  }
+}, [sendToBackend]);
+const emptyOption = [""];
 
   // Define options for role, business type, and industry dropdowns
   const roleOptions = [
@@ -181,7 +213,7 @@ const BusinessRegistration = () => {
               justifyContent: "left",
             }}
           >
-            <form onSubmit={handlechange} style={{ width: "100%" }}>
+            <form onSubmit={handleContinue} style={{ width: "100%" }}>
               <View
                 className="form-container"
                 style={{

@@ -37,7 +37,7 @@ const BusinessProductCard = ({ productData }) => {
   }, []);
 
   useEffect(() => {
-    console.log("Product Data:", productData);
+   
     setLoading(false);  // Add this line to set loading to false
   }, [productData]);
   
@@ -75,7 +75,6 @@ const BusinessProductCard = ({ productData }) => {
       >
         <View
           style={{
-            // backgroundColor: "purple",
             justifyContent: "center",
             alignItems: "center",
             paddingHorizontal: 16,
@@ -138,7 +137,6 @@ const BusinessProductCard = ({ productData }) => {
               width: "100%",
               justifyContent: "space-between",
               marginTop: 16,
-              //  backgroundColor:'red',
               height: "25vh",
             }}
           >
@@ -148,7 +146,6 @@ const BusinessProductCard = ({ productData }) => {
                   flexDirection: "row",
                   justifyContent: "center",
                   alignItems: "center",
-                  //     backgroundColor:'green',
                   flexWrap: "wrap",
                 }}
               >

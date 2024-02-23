@@ -39,7 +39,6 @@ const ProductCard = ({ productId }) => {
   const [showSnackbar1, setShowSnackbar1] = useState(false);
 
   const navigateProductDetails = () => {
-    console.log("productId is ", productId);
     navigation.navigate("ProductDetails", { productId });
   };
 
@@ -112,7 +111,6 @@ const ProductCard = ({ productId }) => {
           .doc(productId)
           .get();
         const productData = productDoc.data();
-        console.log("Fetched product data:", productData);
         setProduct(productData);
       } catch (error) {
         console.error("Error fetching product data:", error);

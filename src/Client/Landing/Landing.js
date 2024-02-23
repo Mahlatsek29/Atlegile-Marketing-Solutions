@@ -34,7 +34,7 @@ const Landing = () => {
         productsData.map((item) => collection.push(item.company));
        
         setBusinesses([...new Set(collection)]);
-        console.log("businesses : ", businesses);
+      
       } catch (error) {
         console.error("Error fetching products:", error);
       }

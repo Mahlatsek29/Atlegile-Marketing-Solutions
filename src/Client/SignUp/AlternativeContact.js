@@ -12,7 +12,6 @@ import { firebase, firestore } from "../../config";
 import TextField from "@mui/material/TextField";
 import { useNavigation } from "@react-navigation/native";
 import CircularProgress from "@mui/material/CircularProgress";
-import FontAwesome from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome
 
 const AlternativeContact = () => {
   const user = firebase.auth().currentUser;
@@ -95,7 +94,7 @@ const AlternativeContact = () => {
           <View style={{ width: "75%" }}>
             <TextField
               id="outlined-number"
-              label="Email"
+              label="Name"
               type="text"
               variant="standard"
               InputLabelProps={{

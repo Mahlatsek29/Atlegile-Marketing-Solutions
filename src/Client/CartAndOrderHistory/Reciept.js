@@ -16,7 +16,7 @@ const Reciept = () => {
   };
 
   return (
-    <View>
+    <View style={{backgroundColor:"white"}}>
       <FollowUs />
       <Navbar />
       <Container fixed sx={{ height: "85vh" }}>

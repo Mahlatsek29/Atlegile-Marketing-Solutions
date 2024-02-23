@@ -107,7 +107,7 @@ const DateSelectionAndCheckout = () => {
 
   // using local host URL for now which routes back to the initial screen but when hosted we will use the host URL
  // const url = "http://localhost:19006";
-   const url = "https://atlegile-marketing-solutions.vercel.app";
+   const url = "https://atlegile-marketing-solutions--client-x35upb5j.web.app/Reciept";
 
   // Function to fetch cart data for the authenticated user
   const fetchCartData = async () => {

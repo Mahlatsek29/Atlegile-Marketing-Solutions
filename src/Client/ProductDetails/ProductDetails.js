@@ -396,13 +396,13 @@ export default function ProductDetails({ navigation, route }) {
                 href="/vaas"
                 sx={{ fontSize: 15, textDecoration: "none" }}
               >
-                VAAS
+                {product.company}
               </Link>
               <Typography
                 color="textPrimary"
                 sx={{ fontSize: 15, textDecoration: "none" }}
               >
-                Digital Marketing Solutions / {product.company}
+                Digital Marketing Solutions 
               </Typography>
             </Breadcrumbs>
           </Box>

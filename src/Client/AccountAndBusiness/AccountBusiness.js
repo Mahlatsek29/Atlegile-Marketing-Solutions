@@ -106,25 +106,26 @@ export default function BusinessAccount() {
   if (loading) {
     // Render a loading state using Skeleton
     return (
-      <Card sx={{
-        flex:1,
-        display:'flex',
-        justifyContent:'center',
-        alignItems:'center',
-        flexDirection:'column'
-      }}>
+      <Card
+        sx={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
         <Skeleton
           variant="rectangular"
           width={270}
           height={270}
           animation="wave"
         />
-       
-          <Skeleton variant="text" width={100} height={20} animation="wave" />
-          <Skeleton variant="text" width={200} height={16} animation="wave" />
-          <Skeleton variant="text" width={200} height={16} animation="wave" />
-          <Skeleton variant="text" width={80} height={14} animation="wave" />
-    
+
+        <Skeleton variant="text" width={100} height={20} animation="wave" />
+        <Skeleton variant="text" width={200} height={16} animation="wave" />
+        <Skeleton variant="text" width={200} height={16} animation="wave" />
+        <Skeleton variant="text" width={80} height={14} animation="wave" />
       </Card>
     );
   }
@@ -137,38 +138,38 @@ export default function BusinessAccount() {
         console.error("User not authenticated.");
         return;
       }
-  
+
       // Get a reference to the "Products" collection in Firestore
       const cartCollectionRef = collection(firestore, "Products");
       console.log("userData.company is: ", userData.company);
-  
+
       // Construct a query to filter products by businessName from userData
       const q = query(
         cartCollectionRef,
         where("company", "==", userData.company)
       );
-  
+
       try {
         // Execute the query and get a snapshot of the results
         const querySnapshot = await getDocs(q);
-  
+
         // Check if there are any matching products
         if (querySnapshot.empty) {
           console.log("No products found for the given company name.");
           return;
         }
-  
+
         // Initialize an array to store fetched product data
         const productsData = [];
-  
+
         // Iterate through each document in the querySnapshot
         querySnapshot.forEach((doc) => {
           // Push the data of each document into the productsData array
           productsData.push(doc.data());
         });
-  
-        console.log('product data is: ', productsData);
-  
+
+        console.log("product data is: ", productsData);
+
         // Update the state with the fetched product data
         setProducts(productsData);
       } catch (error) {
@@ -176,11 +177,10 @@ export default function BusinessAccount() {
         console.error("Error fetching product data:", error);
       }
     };
-  
+
     // Call the fetchProductData function when the userData dependency changes
     fetchProductData();
   }, [userData]);
-  
 
   useEffect(() => {
     // Get the authentication instance
@@ -1143,21 +1143,21 @@ export default function BusinessAccount() {
       {addProduct ? (
         // Overlay for the add product modal
         <View
-        style={{
-          top: 65,
-          position: "absolute",
-          flex: 1,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          zIndex: 9999,
-          alignSelf: "flex-end",
-        }}
+          style={{
+            top: 65,
+            position: "absolute",
+            flex: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 9999,
+            alignSelf: "flex-end",
+          }}
         >
           {/* Modal content */}
           <Grid
             item
             lg={3}
             md={3}
-            border= "2px lightgrey solid"
+            border="2px lightgrey solid"
             style={{
               backgroundColor: "white",
               width: "100%",
@@ -1165,7 +1165,7 @@ export default function BusinessAccount() {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              backgroundColor:'white'
+              backgroundColor: "white",
             }}
           >
             {/* Close button */}
@@ -1192,7 +1192,6 @@ export default function BusinessAccount() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-              
               }}
             >
               {/* Title of the perpose ffo the form */}
@@ -1274,7 +1273,7 @@ export default function BusinessAccount() {
               </View>
 
               {/* Form inputs */}
-              <View style={{ width: "80%", alignSelf: "center"}}>
+              <View style={{ width: "80%", alignSelf: "center" }}>
                 <form onSubmit={handleContinue}>
                   {/* Name input */}
                   <TextField
@@ -1543,7 +1542,7 @@ export default function BusinessAccount() {
             item
             lg={3}
             md={3}
-            border= "2px lightgrey solid"
+            border="2px lightgrey solid"
             style={{
               backgroundColor: "white",
               width: "100%",
@@ -1700,7 +1699,7 @@ export default function BusinessAccount() {
             item
             lg={3}
             md={3}
-            border= "2px lightgrey solid"
+            border="2px lightgrey solid"
             style={{
               backgroundColor: "white",
               width: "100%",
@@ -1949,913 +1948,908 @@ export default function BusinessAccount() {
           </Grid>
         </View>
       ) : null}
-       <View style={{backgroundColor:"white"}}>
-       <Header />
-      <NavBar />
-      <View        style={{
-          display: "flex",
-          flexDirection: "row",
-          backgroundColor: "#FFFFFF",
-        }}
-      >
-        {!isMobile && (
-          <View
-            style={{
-              paddingLeft: 30,
-              backgroundColor: "whitesmoke",
-              alignItems: "flex-start",
-            }}
-          >
-            <Box
-              display="flex"
-              justifyContent="flex-start"
-              alignItems="center"
-              paddingRight={2}
+      <View style={{ backgroundColor: "white" }}>
+        <Header />
+        <NavBar />
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            backgroundColor: "#FFFFFF",
+          }}
+        >
+          {!isMobile && (
+            <View
+              style={{
+                paddingLeft: 30,
+                backgroundColor: "whitesmoke",
+                alignItems: "flex-start",
+              }}
             >
-              <View
-                elevation={3}
-                style={{
-                  padding: "20px",
-                  height: "100%",
-                  width: "300px",
-                  margin: "auto",
-                  backgroundColor: "whitesmoke",
-                }}
+              <Box
+                display="flex"
+                justifyContent="flex-start"
+                alignItems="center"
+                paddingRight={2}
               >
-                <Box textAlign="center">
-                  <img
-                    src={sara}
-                    alt="User Image"
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "50%",
-                      marginTop: "80%",
-                    }}
-                  />
-                  <Box sx={{ marginTop: "10%" }}>
-                    <Typography variant="h6">
-                      {userData?.name} {userData?.surname}
-                    </Typography>
-                    <Typography variant="subtitle1">
-                      {userData?.phone}
-                    </Typography>
-                    <Typography variant="subtitle2">
-                      {userData?.email}
+                <View
+                  elevation={3}
+                  style={{
+                    padding: "20px",
+                    height: "100%",
+                    width: "300px",
+                    margin: "auto",
+                    backgroundColor: "whitesmoke",
+                  }}
+                >
+                  <Box textAlign="center">
+                    <img
+                      src={sara}
+                      alt="User Image"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        borderRadius: "50%",
+                        marginTop: "80%",
+                      }}
+                    />
+                    <Box sx={{ marginTop: "10%" }}>
+                      <Typography variant="h6">
+                        {userData?.name} {userData?.surname}
+                      </Typography>
+                      <Typography variant="subtitle1">
+                        {userData?.phone}
+                      </Typography>
+                      <Typography variant="subtitle2">
+                        {userData?.email}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Box>
+                    <Typography sx={{ textAlign: "center" }}>
+                      {userData?.location}
                     </Typography>
                   </Box>
-                </Box>
 
-                <Box>
-                  <Typography sx={{ textAlign: "center" }}>
-                    {userData?.location}
-                  </Typography>
-                </Box>
+                  <Box style={{ marginTop: "50%" }}>
+                    <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                    <Button
+                      style={{ marginLeft: 5, color: "gray" }}
+                      onClick={handleorders}
+                    >
+                      Orders
+                    </Button>
+                  </Box>
 
-                <Box style={{ marginTop: "50%" }}>
-                  <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                  <Button
-                    style={{ marginLeft: 5, color: "gray" }}
-                    onClick={handleorders}
-                  >
-                    Orders
-                  </Button>
-                </Box>
+                  <Box>
+                    <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                    <Button
+                      style={{ marginLeft: 5, color: "gray" }}
+                      onClick={handlefavorites}
+                    >
+                      Favorites
+                    </Button>
+                  </Box>
 
-                <Box>
-                  <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                  <Button
-                    style={{ marginLeft: 5, color: "gray" }}
-                    onClick={handlefavorites}
-                  >
-                    Favorites
-                  </Button>
-                </Box>
+                  <Box>
+                    <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                    <Button
+                      style={{ marginLeft: 5, color: "gray" }}
+                      onClick={handleterms}
+                    >
+                      Terms and Conditions
+                    </Button>
+                  </Box>
 
-                <Box>
-                  <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                  <Button
-                    style={{ marginLeft: 5, color: "gray" }}
-                    onClick={handleterms}
-                  >
-                    Terms and Conditions
-                  </Button>
-                </Box>
+                  <Box sx={{}}>
+                    <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                    <Button
+                      style={{ marginLeft: 5, color: "gray" }}
+                      onClick={handlepolicy}
+                    >
+                      Privacy Policy
+                    </Button>
+                  </Box>
 
-                <Box sx={{}}>
-                  <Ionicons name="ios-timer-outline" size={15} color="gray" />
-                  <Button
-                    style={{ marginLeft: 5, color: "gray" }}
-                    onClick={handlepolicy}
-                  >
-                    Privacy Policy
-                  </Button>
-                </Box>
-
-                <Box
-                  sx={{
-                    marginTop: "40px",
-                    backgroundColor: "rgba(266, 255, 255, 0.9)",
-                    textAlign: "center",
-                    padding: {
-                      xs: "10px",
-                      sm: "20px",
-                    },
-                  }}
-                >
-                  <Button
+                  <Box
                     sx={{
-                      fontWeight: "bolder",
-                      color: "black",
-                      marginTop: "10%",
+                      marginTop: "40px",
+                      backgroundColor: "rgba(266, 255, 255, 0.9)",
+                      textAlign: "center",
+                      padding: {
+                        xs: "10px",
+                        sm: "20px",
+                      },
                     }}
-                    onClick={handlePress}
                   >
-                    Julian James
-                  </Button>
+                    <Button
+                      sx={{
+                        fontWeight: "bolder",
+                        color: "black",
+                        marginTop: "10%",
+                      }}
+                      onClick={handlePress}
+                    >
+                      Julian James
+                    </Button>
 
-                  <Button sx={{ color: "gray", mt: 1, marginTop: "10%" }}>
-                    Alternative Contact
-                  </Button>
-                </Box>
+                    <Button sx={{ color: "gray", mt: 1, marginTop: "10%" }}>
+                      Alternative Contact
+                    </Button>
+                  </Box>
 
-                <Box textAlign="center" marginTop="10%">
-                  <Button onClick={handleSignOut} style={{ color: "red" }}>
-                    SIGN OUT
-                  </Button>
-                </Box>
-              </View>
+                  <Box textAlign="center" marginTop="10%">
+                    <Button onClick={handleSignOut} style={{ color: "red" }}>
+                      SIGN OUT
+                    </Button>
+                  </Box>
+                </View>
+              </Box>
+            </View>
+          )}
+          {isMobile && (
+            <Box style={{ textAlign: "center", padding: "10px" }}>
+              <Ionicons
+                name="ios-menu"
+                size={30}
+                color="black"
+                onClick={toggleDropdown}
+              />
             </Box>
-          </View>
-        )}
-        {isMobile && (
-          <Box style={{ textAlign: "center", padding: "10px" }}>
-            <Ionicons
-              name="ios-menu"
-              size={30}
-              color="black"
-              onClick={toggleDropdown}
-            />
-          </Box>
-        )}
-        {isMobile && showDropdown && (
-          <Box
-            style={{
-              position: "absolute",
-              top: "60px", // Adjust the top position as needed
-              right: "20px",
-              backgroundColor: "whitesmoke",
-              padding: "10px",
-              zIndex: 999,
-            }}
-          >
-            {/* Your dropdown content here */}
-            <Box textAlign="center">
-              <img
-                src={sara}
-                alt="User Image"
+          )}
+          {isMobile && showDropdown && (
+            <Box
+              style={{
+                position: "absolute",
+                top: "60px", // Adjust the top position as needed
+                right: "20px",
+                backgroundColor: "whitesmoke",
+                padding: "10px",
+                zIndex: 999,
+              }}
+            >
+              {/* Your dropdown content here */}
+              <Box textAlign="center">
+                <img
+                  src={sara}
+                  alt="User Image"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "50%",
+                    marginTop: "80%",
+                  }}
+                />
+                <Box sx={{ marginTop: "10%" }}>
+                  <Typography variant="h6">
+                    {userData?.name} {userData?.surname}
+                  </Typography>
+                  <Typography variant="subtitle1">{userData?.phone}</Typography>
+                  <Typography variant="subtitle2">{userData?.email}</Typography>
+                </Box>
+              </Box>
+              <Box>
+                <Typography sx={{ textAlign: "center" }}>
+                  {userData?.location}
+                </Typography>
+              </Box>
+
+              <Box style={{ marginTop: "50%" }}>
+                <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                <Button
+                  style={{ marginLeft: 5, color: "gray" }}
+                  onClick={handleorders}
+                >
+                  Orders
+                </Button>
+              </Box>
+
+              <Box>
+                <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                <Button
+                  style={{ marginLeft: 5, color: "gray" }}
+                  onClick={handlefavorites}
+                >
+                  Favorites
+                </Button>
+              </Box>
+
+              <Box>
+                <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                <Button
+                  style={{ marginLeft: 5, color: "gray" }}
+                  onClick={handleterms}
+                >
+                  Terms and Conditions
+                </Button>
+              </Box>
+
+              <Box sx={{}}>
+                <Ionicons name="ios-timer-outline" size={15} color="gray" />
+                <Button
+                  style={{ marginLeft: 5, color: "gray" }}
+                  onClick={handlepolicy}
+                >
+                  Privacy Policy
+                </Button>
+              </Box>
+
+              <Box
+                sx={{
+                  marginTop: "40px",
+                  backgroundColor: "rgba(266, 255, 255, 0.9)",
+                  textAlign: "center",
+                  padding: {
+                    xs: "10px",
+                    sm: "20px",
+                  },
+                }}
+              >
+                <Button
+                  sx={{
+                    fontWeight: "bolder",
+                    color: "black",
+                    marginTop: "10%",
+                  }}
+                  onClick={handlePress}
+                >
+                  Julian James
+                </Button>
+
+                <Button sx={{ color: "gray", mt: 1, marginTop: "10%" }}>
+                  Alternative Contact
+                </Button>
+              </Box>
+
+              <Box textAlign="center" marginTop="10%">
+                <Button onClick={handleSignOut} style={{ color: "red" }}>
+                  SIGN OUT
+                </Button>
+              </Box>
+              {/* Add the rest of your dropdown components */}
+            </Box>
+          )}
+
+          <View style={{ flex: 1 }}>
+            <View
+              style={{
+                height: "150px",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {/* Displaying an image of the blacksilk */}
+              <Image
+                source={BlackSilk}
                 style={{
-                  width: "100px",
-                  height: "100px",
-                  borderRadius: "50%",
-                  marginTop: "80%",
+                  width: "100%",
+                  height: "100%",
+                  resizeMode: "cover",
                 }}
               />
-              <Box sx={{ marginTop: "10%" }}>
-                <Typography variant="h6">
-                  {userData?.name} {userData?.surname}
-                </Typography>
-                <Typography variant="subtitle1">{userData?.phone}</Typography>
-                <Typography variant="subtitle2">{userData?.email}</Typography>
-              </Box>
-            </Box>
-            <Box>
-              <Typography sx={{ textAlign: "center" }}>
-                {userData?.location}
-              </Typography>
-            </Box>
+            </View>
 
-            <Box style={{ marginTop: "50%" }}>
-              <Ionicons name="ios-timer-outline" size={15} color="gray" />
-              <Button
-                style={{ marginLeft: 5, color: "gray" }}
-                onClick={handleorders}
-              >
-                Orders
-              </Button>
-            </Box>
-
-            <Box>
-              <Ionicons name="ios-timer-outline" size={15} color="gray" />
-              <Button
-                style={{ marginLeft: 5, color: "gray" }}
-                onClick={handlefavorites}
-              >
-                Favorites
-              </Button>
-            </Box>
-
-            <Box>
-              <Ionicons name="ios-timer-outline" size={15} color="gray" />
-              <Button
-                style={{ marginLeft: 5, color: "gray" }}
-                onClick={handleterms}
-              >
-                Terms and Conditions
-              </Button>
-            </Box>
-
-            <Box sx={{}}>
-              <Ionicons name="ios-timer-outline" size={15} color="gray" />
-              <Button
-                style={{ marginLeft: 5, color: "gray" }}
-                onClick={handlepolicy}
-              >
-                Privacy Policy
-              </Button>
-            </Box>
-
-            <Box
-              sx={{
-                marginTop: "40px",
-                backgroundColor: "rgba(266, 255, 255, 0.9)",
-                textAlign: "center",
-                padding: {
-                  xs: "10px",
-                  sm: "20px",
-                },
+            <View
+              style={{
+                height: "110px",
+                backgroundColor: "#072840",
+                paddingTop: 20,
+                paddingLeft: 30,
               }}
             >
-              <Button
-                sx={{
-                  fontWeight: "bolder",
-                  color: "black",
-                  marginTop: "10%",
-                }}
-                onClick={handlePress}
-              >
-                Julian James
-              </Button>
-
-              <Button sx={{ color: "gray", mt: 1, marginTop: "10%" }}>
-                Alternative Contact
-              </Button>
-            </Box>
-
-            <Box textAlign="center" marginTop="10%">
-              <Button onClick={handleSignOut} style={{ color: "red" }}>
-                SIGN OUT
-              </Button>
-            </Box>
-            {/* Add the rest of your dropdown components */}
-          </Box>
-        )}
-
-        <View style={{ flex: 1 }}>
-          <View
-            style={{
-              height: "150px",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {/* Displaying an image of the blacksilk */}
-            <Image
-              source={BlackSilk}
-              style={{
-                width: "100%",
-                height: "100%",
-                resizeMode: "cover",
-              }}
-            />
-          </View>
-
-          <View
-            style={{
-              height: "110px",
-              backgroundColor: "#072840",
-              paddingTop: 20,
-              paddingLeft: 30,
-            }}
-          >
-            {/* Text information about the business */}
-            <Text
-              style={{
-                display: "flex",
-                color: "white",
-                flexDirection: "column",
-              }}
-            >
-              {/* Business name */}
+              {/* Text information about the business */}
               <Text
-                style={{ fontWeight: "600", fontSize: 18, marginBottom: -5 }}
-              >
-                BUSINESS
-              </Text>
-              {/* Business name or slogan */}
-              <Text
-                style={{ fontWeight: "600", fontSize: 30, marginBottom: 5 }}
-              >
-                SECURETECH SOLUTIONS
-              </Text>
-              {/* Business website or domain */}
-              <Text style={{ fontWeight: "600", fontSize: 14 }}>
-                secure.tech.co.za
-              </Text>
-            </Text>
-          </View>
-
-          <View>
-            <View>
-              <View
                 style={{
                   display: "flex",
-                  justifyContent: "space-between",
-                  paddingRight: 30,
-                  paddingBottom: 30,
-                  paddingTop: 30,
-                  paddingLeft: 30,
+                  color: "white",
+                  flexDirection: "column",
                 }}
               >
+                {/* Business name */}
+                <Text
+                  style={{ fontWeight: "600", fontSize: 18, marginBottom: -5 }}
+                >
+                  BUSINESS
+                </Text>
+                {/* Business name or slogan */}
+                <Text
+                  style={{ fontWeight: "600", fontSize: 30, marginBottom: 5 }}
+                >
+                  SECURETECH SOLUTIONS
+                </Text>
+                {/* Business website or domain */}
+                <Text style={{ fontWeight: "600", fontSize: 14 }}>
+                  secure.tech.co.za
+                </Text>
+              </Text>
+            </View>
+
+            <View>
+              <View>
                 <View
                   style={{
                     display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
                     justifyContent: "space-between",
-                    flexWrap: "wrap", // Allow items to wrap to the next line
-                    padding: 20, // Add padding for better spacing
+                    paddingRight: 30,
+                    paddingBottom: 30,
+                    paddingTop: 30,
+                    paddingLeft: 30,
                   }}
                 >
-                  <View style={{ marginBottom: 10, flexWrap: "wrap" }}>
-                    {/* Heading for Products & Services */}
-                    <Text style={{ fontWeight: "700", fontSize: 20 }}>
-                      PRODUCTS & SERVICES
-                    </Text>
-                    {/* Additional information displayed conditionally */}
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      flexWrap: "wrap", // Allow items to wrap to the next line
+                      padding: 20, // Add padding for better spacing
+                    }}
+                  >
+                    <View style={{ marginBottom: 10, flexWrap: "wrap" }}>
+                      {/* Heading for Products & Services */}
+                      <Text style={{ fontWeight: "700", fontSize: 20 }}>
+                        PRODUCTS & SERVICES
+                      </Text>
+                      {/* Additional information displayed conditionally */}
+                      <Text
+                        style={{
+                          display: businessAuthorization ? "none" : "flex", // Adjust based on user subscription
+                          fontWeight: 600,
+                          fontSize: 14,
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        Please add a minimum of 3 products
+                      </Text>
+                    </View>
+                    {/* Business Plus subscription information */}
                     <Text
                       style={{
-                        display: businessAuthorization ? "none" : "flex", // Adjust based on user subscription
+                        color: "white",
                         fontWeight: 600,
                         fontSize: 14,
-                        flexWrap: "wrap",
+                        backgroundColor: "#072840",
+                        paddingTop: 10,
+                        paddingBottom: 10,
+                        paddingLeft: 25,
+                        paddingRight: 25,
+                        borderRadius: 20,
+                        marginTop: businessAuthorization ? 0 : 10, // Adjust spacing based on condition
                       }}
                     >
-                      Please add a minimum of 3 products
+                      BUSINESS PLUS R150/PM
                     </Text>
                   </View>
-                  {/* Business Plus subscription information */}
-                  <Text
-                    style={{
-                      color: "white",
-                      fontWeight: 600,
-                      fontSize: 14,
-                      backgroundColor: "#072840",
-                      paddingTop: 10,
-                      paddingBottom: 10,
-                      paddingLeft: 25,
-                      paddingRight: 25,
-                      borderRadius: 20,
-                      marginTop: businessAuthorization ? 0 : 10, // Adjust spacing based on condition
-                    }}
-                  >
-                    BUSINESS PLUS R150/PM
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  {/* Conditional display for Authorization Pending message */}
-                  <Text
-                    style={{
-                      color: "white",
-                      fontWeight: 600,
-                      fontSize: 14,
-                      backgroundColor: "#fe951c",
-                      paddingTop: 10,
-                      paddingBottom: 10,
-                      borderRadius: 20,
-                      display: businessAuthorization ? "none" : "flex",
-                      marginTop: 5,
-                      justifyContent: "center",
-                      paddingLeft: 25,
-                      paddingRight: 25,
-                    }}
-                  >
-                    AUTHORIZATION PENDING
-                  </Text>
 
                   <View
                     style={{
                       display: "flex",
                       flexDirection: "row",
-                      justifyContent: "center",
-                      alignItems: "center",
+                      justifyContent: "space-between",
                     }}
                   >
-                    {/* Button to add a product */}
-                    <TouchableOpacity onPress={() => setAddProduct(true)}>
-                      <Text
-                        style={{
-                          color: "white",
-                          fontWeight: 600,
-                          fontSize: 14,
-                          backgroundColor: "#072840",
-                          paddingTop: 10,
-                          paddingBottom: 10,
-                          paddingLeft: 25,
-                          paddingRight: 25,
-                          borderRadius: 20,
-                          display: !businessAuthorization ? "none" : "flex",
-                          marginRight: 20,
-                        }}
-                      >
-                        ADD PRODUCT
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-
-              {businessAuthorization ? ( //the usre must be subscribed
-                // Card component containing business banners and add banner option
-                <Card
-                  style={{
-                    width: "100%",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    display: "flex",
-                  }}
-                >
-                  {banner.length > 0 ? (
-                    // View displaying the current banner with background image and details
-                    <View
+                    {/* Conditional display for Authorization Pending message */}
+                    <Text
                       style={{
-                        backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
-                        backgroundColor: "gray",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: 15,
-                        flex: 1,
-                        transition: "0.5s ease-in-out",
+                        color: "white",
+                        fontWeight: 600,
+                        fontSize: 14,
+                        backgroundColor: "#fe951c",
+                        paddingTop: 10,
+                        paddingBottom: 10,
+                        borderRadius: 20,
+                        display: businessAuthorization ? "none" : "flex",
+                        marginTop: 5,
+                        justifyContent: "center",
+                        paddingLeft: 25,
+                        paddingRight: 25,
                       }}
                     >
-                      {/* Navigation button to go to the previous banner */}
-                      <TouchableOpacity
-                        onPress={handlePrevClick}
-                        style={{ marginRight: 20 }}
-                      >
-                        <AntDesign name="left" size={24} color="white" />
+                      AUTHORIZATION PENDING
+                    </Text>
+
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      {/* Button to add a product */}
+                      <TouchableOpacity onPress={() => setAddProduct(true)}>
+                        <Text
+                          style={{
+                            color: "white",
+                            fontWeight: 600,
+                            fontSize: 14,
+                            backgroundColor: "#072840",
+                            paddingTop: 10,
+                            paddingBottom: 10,
+                            paddingLeft: 25,
+                            paddingRight: 25,
+                            borderRadius: 20,
+                            display: !businessAuthorization ? "none" : "flex",
+                            marginRight: 20,
+                          }}
+                        >
+                          ADD PRODUCT
+                        </Text>
                       </TouchableOpacity>
-                      {/* Details of the current banner */}
+                    </View>
+                  </View>
+                </View>
+
+                {businessAuthorization ? ( //the usre must be subscribed
+                  // Card component containing business banners and add banner option
+                  <Card
+                    style={{
+                      width: "100%",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      display: "flex",
+                    }}
+                  >
+                    {banner.length > 0 ? (
+                      // View displaying the current banner with background image and details
                       <View
                         style={{
+                          backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
+                          backgroundColor: "gray",
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: 15,
                           flex: 1,
-                          flexDirection: "column",
-                          alignItems: "flex-start",
+                          transition: "0.5s ease-in-out",
                         }}
                       >
-                        <Text
+                        {/* Navigation button to go to the previous banner */}
+                        <TouchableOpacity
+                          onPress={handlePrevClick}
+                          style={{ marginRight: 20 }}
+                        >
+                          <AntDesign name="left" size={24} color="white" />
+                        </TouchableOpacity>
+                        {/* Details of the current banner */}
+                        <View
                           style={{
-                            fontSize: 15,
-                            fontWeight: 600,
-                            color: "white",
+                            flex: 1,
+                            flexDirection: "column",
+                            alignItems: "flex-start",
                           }}
                         >
-                          {banner[0].other}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 25,
-                            fontWeight: 700,
-                            color: "white",
-                          }}
-                        >
-                          {banner[0].productName}
-                        </Text>
-                        <Text>
-                          {/* Displaying discount and original prices */}
-                          <Text
-                            style={{
-                              fontSize: 18,
-                              fontWeight: 700,
-                              color: "#c29920",
-                            }}
-                          >
-                            R{banner[0].discountPrice}
-                          </Text>{" "}
                           <Text
                             style={{
                               fontSize: 15,
-                              fontWeight: 400,
+                              fontWeight: 600,
                               color: "white",
                             }}
                           >
-                            R{banner[0].originalPrice}
+                            {banner[0].other}
                           </Text>
-                        </Text>
+                          <Text
+                            style={{
+                              fontSize: 25,
+                              fontWeight: 700,
+                              color: "white",
+                            }}
+                          >
+                            {banner[0].productName}
+                          </Text>
+                          <Text>
+                            {/* Displaying discount and original prices */}
+                            <Text
+                              style={{
+                                fontSize: 18,
+                                fontWeight: 700,
+                                color: "#c29920",
+                              }}
+                            >
+                              R{banner[0].discountPrice}
+                            </Text>{" "}
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontWeight: 400,
+                                color: "white",
+                              }}
+                            >
+                              R{banner[0].originalPrice}
+                            </Text>
+                          </Text>
+                        </View>
+                        {/* Navigation button to go to the next banner */}
+                        <TouchableOpacity onPress={handleNextClick}>
+                          <AntDesign name="right" size={24} color="white" />
+                        </TouchableOpacity>
                       </View>
-                      {/* Navigation button to go to the next banner */}
-                      <TouchableOpacity onPress={handleNextClick}>
-                        <AntDesign name="right" size={24} color="white" />
-                      </TouchableOpacity>
-                    </View>
-                  ) : null}
+                    ) : null}
 
-                  {/* Option to add a new banner */}
-                  <TouchableOpacity
-                    style={{
-                      display: "flex",
-                      cursor: "pointer",
-                      width: "15%",
-                      borderRadius: 20,
-                      border: "1px gray dashed",
-                      height: "100%",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 20,
-                      fontWeight: 700,
-                      marginLeft: 10,
-                    }}
-                    onPress={() => setBannerModal(true)}
-                  >
-                    <Text>ADD BANNER</Text>
-                  </TouchableOpacity>
-                </Card>
-              ) : null}
-            </View>
-            {businessAuthorization ? null : (
-              // Displayed when businessAuthorization is false whicn is when not subscibed
-              <View
-                style={{
-                  top: "20%", // Use percentages for responsiveness
-                  position: "absolute",
-                  flex: 1,
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "flex-end",
-                  zIndex: 100,
-                  alignSelf: "flex-end",
-                  backgroundColor: "red",
-                }}
-              >
-                {/* Container for the subscription details */}
+                    {/* Option to add a new banner */}
+                    <TouchableOpacity
+                      style={{
+                        display: "flex",
+                        cursor: "pointer",
+                        width: "15%",
+                        borderRadius: 20,
+                        border: "1px gray dashed",
+                        height: "100%",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 20,
+                        fontWeight: 700,
+                        marginLeft: 10,
+                      }}
+                      onPress={() => setBannerModal(true)}
+                    >
+                      <Text>ADD BANNER</Text>
+                    </TouchableOpacity>
+                  </Card>
+                ) : null}
+              </View>
+              {businessAuthorization ? null : (
+                // Displayed when businessAuthorization is false whicn is when not subscibed
                 <View
                   style={{
-                    width: "auto", // Use percentages for responsiveness
-                    flexDirection: "column",
-                    borderWidth: 1,
-                    backgroundColor: "white",
-                    borderColor: "lightgray",
-                    padding: 20,
-                    alignItems: "center",
-                    minHeight: "50%", // Use percentages for responsiveness
-                    zIndex: 500,
+                    top: "20%", // Use percentages for responsiveness
+                    position: "absolute",
+                    flex: 1,
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "flex-end",
+                    zIndex: 100,
+                    alignSelf: "flex-end",
+                    backgroundColor: "red",
                   }}
                 >
-                  {/* Business Plus logo */}
-
-                  <Image
-                    source={require("../../Global/images/BusinessPlus+.jpg")}
-                    alt="business plus logo"
-                    style={{
-                      width: "120px", // Use percentages for responsiveness
-                      aspectRatio: 10 / 7, // Maintain the aspect ratio
-                      marginBottom: 5,
-                      height: "40px",
-                    }}
-                  />
-
-                  <Text
-                    style={{
-                      color: "#252b42",
-                      fontWeight: "700",
-                      fontSize: 16, // Adjust font size as needed
-                      textAlign: "center",
-                    }}
-                  >
-                    {/* Business Plus subscription title */}
-                    <TouchableOpacity onPress={() => setPaymentModal(true)}>
-                      <Text>BUSINESS PLUS SUBSCRIPTION</Text>
-                    </TouchableOpacity>
-                  </Text>
-                  <Text
-                    style={{
-                      color: "#9e9e9e",
-                      fontWeight: "700",
-                      fontSize: 12, // Adjust font size as needed
-                      textAlign: "center",
-                      paddingTop: 10,
-                      paddingBottom: 10,
-                    }}
-                  >
-                    {/* Subscription description */}
-                    Unlock More Opportunities with Business Plus Subscription
-                  </Text>
-                  {/* Subscription pricing details */}
+                  {/* Container for the subscription details */}
                   <View
                     style={{
+                      width: "auto", // Use percentages for responsiveness
                       flexDirection: "column",
+                      borderWidth: 1,
+                      backgroundColor: "white",
+                      borderColor: "lightgray",
+                      padding: 20,
                       alignItems: "center",
-                      justifyContent: "center",
+                      minHeight: "50%", // Use percentages for responsiveness
+                      zIndex: 500,
                     }}
                   >
-                    <Text
-                      style={{
-                        color: "#23a6f0",
-                        fontWeight: "700",
-                        fontSize: 24, // Adjust font size as needed
-                        marginBottom: -5,
-                      }}
-                    >
-                      R150
-                    </Text>
-                    <Text
-                      style={{
-                        color: "#b8d9f7",
-                        fontWeight: "700",
-                        fontSize: 14, // Adjust font size as needed
-                      }}
-                    >
-                      Per Month
-                    </Text>
-                  </View>
-                  {/* Subscription features */}
-                  <View style={{ flexDirection: "column" }}>
-                    <Text
-                      style={{
-                        marginTop: 10,
-                        fontWeight: "700",
-                        fontSize: 12, // Adjust font size as needed
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      {/* Checkmark and feature */}
-                      <Ionicons
-                        name="checkmark-circle"
-                        size={20}
-                        color="#2dc071"
-                      />
-                      {"  "}List Unlimited Products
-                    </Text>
-                    <Text
-                      style={{
-                        fontWeight: "700",
-                        fontSize: 12, // Adjust font size as needed
-                        marginTop: 10,
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      {/* Checkmark and feature */}
-                      <Ionicons
-                        name="checkmark-circle"
-                        size={20}
-                        color="#2dc071"
-                      />
-                      {"  "}Priority Support
-                    </Text>
-                    <Text
-                      style={{
-                        fontWeight: "700",
-                        fontSize: 12, // Adjust font size as needed
-                        marginTop: 10,
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      {/* Checkmark and feature */}
-                      <Ionicons
-                        name="checkmark-circle"
-                        size={20}
-                        color="#2dc071"
-                      />
-                      {"  "}Exclusive Promotions
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            )}
-            {/* ScrollView to allow vertical scrolling */}
-            <ScrollView style={{ width: "100%" }}>
-              {/* Container view for the product cards */}
-              <View
-                style={{
-                  paddingRight: 10,
-                  marginBottom: 20,
-                }}
-              >
-                {/* Flex container for the product cards */}
-                <View style={{ flex: 1 }}>
-                  {/* Flex container for wrapping the product cards */}
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    {/* Mapping through products to display individual product cards */}
+                    {/* Business Plus logo */}
 
-                    {products.map((product, index) => (
-                      <Card // Card component for each product
-                        key={index}
-                        sx={{
-                          width: {
-                            xs: "100%",
-                            sm: "45%",
-                            md: "35%",
-                            lg: "35%",
-                          },
-                          margin: 2,
+                    <Image
+                      source={require("../../Global/images/BusinessPlus+.jpg")}
+                      alt="business plus logo"
+                      style={{
+                        width: "120px", // Use percentages for responsiveness
+                        aspectRatio: 10 / 7, // Maintain the aspect ratio
+                        marginBottom: 5,
+                        height: "40px",
+                      }}
+                    />
+
+                    <Text
+                      style={{
+                        color: "#252b42",
+                        fontWeight: "700",
+                        fontSize: 16, // Adjust font size as needed
+                        textAlign: "center",
+                      }}
+                    >
+                      {/* Business Plus subscription title */}
+                      <TouchableOpacity onPress={() => setPaymentModal(true)}>
+                        <Text>BUSINESS PLUS SUBSCRIPTION</Text>
+                      </TouchableOpacity>
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#9e9e9e",
+                        fontWeight: "700",
+                        fontSize: 12, // Adjust font size as needed
+                        textAlign: "center",
+                        paddingTop: 10,
+                        paddingBottom: 10,
+                      }}
+                    >
+                      {/* Subscription description */}
+                      Unlock More Opportunities with Business Plus Subscription
+                    </Text>
+                    {/* Subscription pricing details */}
+                    <View
+                      style={{
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "#23a6f0",
+                          fontWeight: "700",
+                          fontSize: 24, // Adjust font size as needed
+                          marginBottom: -5,
                         }}
                       >
-                        {/* Container for the product image and details */}
-                        <View
-                          style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            paddingHorizontal: 16,
-                            height: "70vh",
-                          }}
-                        >
-                          {/* Box component for styling the product image container */}
-                          <Box
-                            style={{
-                              borderRadius: "16px",
-                              objectFit: "cover",
-                              position: "relative",
-                              backgroundColor: "whitesmoke",
-                              width: "250px",
-                              height: "250px",
-                              borderRadius: "50%",
-                              alignself: "center",
-                              justifyContent: "center",
-                              display: "flex",
-                              flexDirection: "column",
-                              alignSelf: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            {/* CardMedia component for displaying the product image */}
-                            <CardMedia
-                              component="img"
-                              height="140"
-                              image={
-                                product.images && product.images.length > 0
-                                  ? product.images[0]
-                                  : "../../assets/image/headsets.png"
-                              }
-                              alt={product.name}
-                              style={{
-                                position: "relative",
-                                borderRadius: "100px",
-                                objectFit: "cover",
-                                width: 220,
-                                height: 220,
-                                alignSelf: "center",
-                              }}
-                            />
-                          </Box>
-                          {/* Container for the product details */}
-                          <View
-                            style={{
-                              width: "100%",
-                              justifyContent: "space-between",
-                              marginTop: 16,
-                              height: "25vh",
-                            }}
-                          >
-                            {/* Flex container for the product category and rating */}
-                            <View>
-                              {/* Flex container for product category and rating */}
-
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  flexWrap: "wrap",
-                                }}
-                              >
-                                {/* Text component for displaying product category */}
-                                <Text
-                                  style={{
-                                    flex: 1,
-                                    fontSize: "15px",
-                                    color: "#4FC3F7",
-                                    fontWeight: "bold",
-                                  }}
-                                >
-                                  {product.selectedProductCategory}
-                                </Text>
-                                {/* View for displaying star rating */}
-                                <View
-                                  style={{
-                                    backgroundColor: "#072840",
-                                    paddingHorizontal: 5,
-                                    paddingVertical: 3,
-                                    borderRadius: 15,
-                                  }}
-                                >
-                                  {/* Text for displaying star icon and rating */}
-                                  <Text style={{}}>
-                                    ⭐{" "}
-                                    <Text style={{ color: "white" }}> 4.9</Text>
-                                  </Text>
-                                </View>
-                              </View>
-                              {/* Typography component for displaying product name */}
-                              <Typography variant="h5" component="h5">
-                                {product.name && product.name.slice(0, 20)}
-                                {product.name && product.name.length < 50
-                                  ? ""
-                                  : "..."}
-                              </Typography>
-                              {/* Typography component for displaying product description */}
-                              <Typography
-                                variant="subtitle2"
-                                component="p"
-                                style={{ color: "gray" }}
-                              >
-                                {product.description &&
-                                  product.description.slice(0, 50)}
-                                {product.description &&
-                                product.description.length < 50
-                                  ? ""
-                                  : "..."}
-                              </Typography>
-                              {/* Box component for additional details and pricing */}
-                              <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="space-between"
-                              >
-                                {/* Typography component for displaying sales count */}
-                                <Typography
-                                  variant="body2"
-                                  component="p"
-                                  style={{ color: "gray" }}
-                                >
-                                  <Icon2 name="download" size={20} /> 15 Sales
-                                </Typography>
-                                {/* Flex container for displaying prices */}
-                                <View
-                                  style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                  }}
-                                >
-                                  {/* Typography component for original price */}
-                                  <Typography
-                                    variant="subtitle2"
-                                    component="p"
-                                    style={{
-                                      color: "#BDBDBD",
-                                      fontSize: "18px",
-                                      fontWeight: "700",
-                                      marginRight: "10px",
-                                    }}
-                                  >
-                                    R{product.price}
-                                  </Typography>
-                                  {/* Typography component for discounted price */}
-                                  <Typography
-                                    variant="subtitle2"
-                                    component="p"
-                                    style={{
-                                      color: "rgb(97, 151, 97)",
-                                      fontSize: "18px",
-                                      fontWeight: "700",
-                                    }}
-                                  >
-                                    R{product.price}
-                                  </Typography>
-                                </View>
-                              </Box>
-                            </View>
-                          </View>
-                        </View>
-                      </Card>
-                    ))}
+                        R150
+                      </Text>
+                      <Text
+                        style={{
+                          color: "#b8d9f7",
+                          fontWeight: "700",
+                          fontSize: 14, // Adjust font size as needed
+                        }}
+                      >
+                        Per Month
+                      </Text>
+                    </View>
+                    {/* Subscription features */}
+                    <View style={{ flexDirection: "column" }}>
+                      <Text
+                        style={{
+                          marginTop: 10,
+                          fontWeight: "700",
+                          fontSize: 12, // Adjust font size as needed
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        {/* Checkmark and feature */}
+                        <Ionicons
+                          name="checkmark-circle"
+                          size={20}
+                          color="#2dc071"
+                        />
+                        {"  "}List Unlimited Products
+                      </Text>
+                      <Text
+                        style={{
+                          fontWeight: "700",
+                          fontSize: 12, // Adjust font size as needed
+                          marginTop: 10,
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        {/* Checkmark and feature */}
+                        <Ionicons
+                          name="checkmark-circle"
+                          size={20}
+                          color="#2dc071"
+                        />
+                        {"  "}Priority Support
+                      </Text>
+                      <Text
+                        style={{
+                          fontWeight: "700",
+                          fontSize: 12, // Adjust font size as needed
+                          marginTop: 10,
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        {/* Checkmark and feature */}
+                        <Ionicons
+                          name="checkmark-circle"
+                          size={20}
+                          color="#2dc071"
+                        />
+                        {"  "}Exclusive Promotions
+                      </Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-            </ScrollView>
+              )}
+              {/* ScrollView to allow vertical scrolling */}
+              <ScrollView style={{ width: "100%" }}>
+                {/* Container view for the product cards */}
+                <View
+                  style={{
+                    paddingRight: 10,
+                    marginBottom: 20,
+                  }}
+                >
+                  {/* Flex container for the product cards */}
+                  <View style={{ flex: 1 }}>
+                    {/* Flex container for wrapping the product cards */}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {/* Mapping through products to display individual product cards */}
+
+                      {products.length >= 3 ? (
+                        products.map((product, index) => (
+                          <Card
+                            key={index}
+                            sx={{
+                              width: {
+                                xs: "100%",
+                                sm: "45%",
+                                md: "35%",
+                                lg: "35%",
+                              },
+                              margin: 2,
+                            }}
+                          >
+                            <View
+                              style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                paddingHorizontal: 16,
+                                height: "70vh",
+                              }}
+                            >
+                              <Box
+                                style={{
+                                  borderRadius: "16px",
+                                  objectFit: "cover",
+                                  position: "relative",
+                                  backgroundColor: "whitesmoke",
+                                  width: "250px",
+                                  height: "250px",
+                                  borderRadius: "50%",
+                                  alignself: "center",
+                                  justifyContent: "center",
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignSelf: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <CardMedia
+                                  component="img"
+                                  height="140"
+                                  image={
+                                    product.images && product.images.length > 0
+                                      ? product.images[0]
+                                      : "../../assets/image/headsets.png"
+                                  }
+                                  alt={product.name}
+                                  style={{
+                                    position: "relative",
+                                    borderRadius: "100px",
+                                    objectFit: "cover",
+                                    width: 220,
+                                    height: 220,
+                                    alignSelf: "center",
+                                  }}
+                                />
+                              </Box>
+                              <View
+                                style={{
+                                  width: "100%",
+                                  justifyContent: "space-between",
+                                  marginTop: 16,
+                                  height: "25vh",
+                                }}
+                              >
+                                <View>
+                                  <View
+                                    style={{
+                                      flexDirection: "row",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                      flexWrap: "wrap",
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        flex: 1,
+                                        fontSize: "15px",
+                                        color: "#4FC3F7",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      {product.selectedProductCategory}
+                                    </Text>
+                                    <View
+                                      style={{
+                                        backgroundColor: "#072840",
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 3,
+                                        borderRadius: 15,
+                                      }}
+                                    >
+                                      <Text>
+                                        ⭐{" "}
+                                        <Text style={{ color: "white" }}>
+                                          {" "}
+                                          4.9
+                                        </Text>
+                                      </Text>
+                                    </View>
+                                  </View>
+                                  <Typography variant="h5" component="h5">
+                                    {product.name && product.name.slice(0, 20)}
+                                    {product.name && product.name.length < 50
+                                      ? ""
+                                      : "..."}
+                                  </Typography>
+                                  <Typography
+                                    variant="subtitle2"
+                                    component="p"
+                                    style={{ color: "gray" }}
+                                  >
+                                    {product.description &&
+                                      product.description.slice(0, 50)}
+                                    {product.description &&
+                                    product.description.length < 50
+                                      ? ""
+                                      : "..."}
+                                  </Typography>
+                                  <Box
+                                    display="flex"
+                                    flexDirection="column"
+                                    alignItems="flex-start"
+                                    justifyContent="space-between"
+                                  >
+                                    <Typography
+                                      variant="body2"
+                                      component="p"
+                                      style={{ color: "gray" }}
+                                    >
+                                      <Icon2 name="download" size={20} /> 15
+                                      Sales
+                                    </Typography>
+                                    <View
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="subtitle2"
+                                        component="p"
+                                        style={{
+                                          color: "#BDBDBD",
+                                          fontSize: "18px",
+                                          fontWeight: "700",
+                                          marginRight: "10px",
+                                        }}
+                                      >
+                                        R{product.price}
+                                      </Typography>
+                                      <Typography
+                                        variant="subtitle2"
+                                        component="p"
+                                        style={{
+                                          color: "rgb(97, 151, 97)",
+                                          fontSize: "18px",
+                                          fontWeight: "700",
+                                        }}
+                                      >
+                                        R{product.price}
+                                      </Typography>
+                                    </View>
+                                  </Box>
+                                </View>
+                              </View>
+                            </View>
+                          </Card>
+                        ))
+                      ) : (
+                        <Typography variant="body1" component="p">
+                          There are less than 3 products available. Please add a
+                          minimum of 3 products.
+                        </Typography>
+                      )}
+                    </View>
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
           </View>
         </View>
       </View>
-       </View>
-      
+
       <Footer />
     </>
   );

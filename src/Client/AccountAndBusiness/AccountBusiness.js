@@ -1949,11 +1949,10 @@ export default function BusinessAccount() {
           </Grid>
         </View>
       ) : null}
-
-      <Header />
+       <View style={{backgroundColor:"white"}}>
+       <Header />
       <NavBar />
-      <View
-        style={{
+      <View        style={{
           display: "flex",
           flexDirection: "row",
           backgroundColor: "#FFFFFF",
@@ -2855,6 +2854,8 @@ export default function BusinessAccount() {
           </View>
         </View>
       </View>
+       </View>
+      
       <Footer />
     </>
   );

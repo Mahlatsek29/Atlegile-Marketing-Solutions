@@ -137,29 +137,38 @@ export default function BusinessAccount() {
         console.error("User not authenticated.");
         return;
       }
-
+  
       // Get a reference to the "Products" collection in Firestore
       const cartCollectionRef = collection(firestore, "Products");
-
+      console.log("userData.company is: ", userData.company);
+  
       // Construct a query to filter products by businessName from userData
       const q = query(
         cartCollectionRef,
-        where("businessName", "==", userData.businessName)
+        where("company", "==", userData.company)
       );
-
+  
       try {
         // Execute the query and get a snapshot of the results
         const querySnapshot = await getDocs(q);
-
+  
+        // Check if there are any matching products
+        if (querySnapshot.empty) {
+          console.log("No products found for the given company name.");
+          return;
+        }
+  
         // Initialize an array to store fetched product data
         const productsData = [];
-
+  
         // Iterate through each document in the querySnapshot
         querySnapshot.forEach((doc) => {
           // Push the data of each document into the productsData array
           productsData.push(doc.data());
         });
-
+  
+        console.log('product data is: ', productsData);
+  
         // Update the state with the fetched product data
         setProducts(productsData);
       } catch (error) {
@@ -167,10 +176,11 @@ export default function BusinessAccount() {
         console.error("Error fetching product data:", error);
       }
     };
-
+  
     // Call the fetchProductData function when the userData dependency changes
     fetchProductData();
   }, [userData]);
+  
 
   useEffect(() => {
     // Get the authentication instance

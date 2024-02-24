@@ -1,10 +1,5 @@
 // Importing necessary components and libraries
-import {
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-} from "react-native";
+import { View, TouchableOpacity, Image, Text } from "react-native";
 import { Typography, Button } from "@mui/material";
 import Icon from "react-native-vector-icons/Fontisto";
 import React, { useState, useEffect } from "react";
@@ -22,7 +17,7 @@ import { auth, firestore } from "../../config";
 const UserProfile = () => {
   // Initializing navigation
   const navigation = useNavigation();
-  
+
   // State variables for user data, order history, and others
   const [userData, setUserData] = useState(null);
   const [orderHistory, setOrderHistory] = useState([]);
@@ -83,7 +78,7 @@ const UserProfile = () => {
 
   return (
     // Main container view
-    <View style={{backgroundColor:'white'}}>
+    <View style={{ backgroundColor: "white" }}>
       {/* Included FollowUs component */}
       <FollowUs />
       {/* Included Navbar component */}
@@ -148,7 +143,8 @@ const UserProfile = () => {
               {userData?.name} {userData?.surname}
             </Typography>
             <Typography style={{ color: "gray", fontWeight: 600 }} variant="h7">
-              {userData?.alternativeContact.name} {userData?.alternativeContact.phone}
+              {userData?.alternativeContact.name}{" "}
+              {userData?.alternativeContact.phone}
             </Typography>
           </View>
 
@@ -175,7 +171,7 @@ const UserProfile = () => {
                 <Text>ORDER HISTORY</Text>
               </TouchableOpacity>
             </View>
-            
+
             {/* Display order history if available */}
             {showOrderHistory && (
               <View>
@@ -217,7 +213,7 @@ const UserProfile = () => {
                 <Text>FAVOURITES </Text>
               </TouchableOpacity>
             </View>
-            
+
             {/* Terms & Conditions button */}
             <View
               style={{
@@ -241,7 +237,7 @@ const UserProfile = () => {
                 <Text>TERMS & CONDITIONS </Text>
               </TouchableOpacity>
             </View>
-            
+
             {/* Privacy Policy button */}
             <View
               style={{
@@ -289,10 +285,10 @@ const UserProfile = () => {
             >
               REGISTER BUSINESS
             </Button> */}
-            
+
             {/* Register as a Talent button */}
             <Button
-             onClick={handleBusiness}
+              onClick={handleBusiness}
               style={{
                 color: "#072840",
                 borderRadius: "20px",
@@ -303,7 +299,7 @@ const UserProfile = () => {
             >
               REGISTER AS A TALENT
             </Button>
-            
+
             {/* Sign Out button */}
             <Button
               style={{
@@ -317,26 +313,28 @@ const UserProfile = () => {
             >
               Sign Out
             </Button>
-            
+
             {/* Manage Business button */}
-            <Button
-              style={{
-                color: "#072840",
-                borderRadius: "20px",
-                outlineColor: "#072840",
-                marginRight: "5px",
-              }}
-              variant="outlined"
-              onClick={() => {
-                navigation.navigate("AccountAndBusiness");
-              }}
-            >
-              Manage Business
-            </Button>
+            {userData?.talent && (
+              <Button
+                style={{
+                  color: "#072840",
+                  borderRadius: "20px",
+                  outlineColor: "#072840",
+                  marginRight: "5px",
+                }}
+                variant="outlined"
+                onClick={() => {
+                  navigation.navigate("AccountAndBusiness");
+                }}
+              >
+                Manage Business
+              </Button>
+            )}
           </View>
         </View>
       </View>
-      
+
       {/* Included Footer component */}
       <Footer />
     </View>

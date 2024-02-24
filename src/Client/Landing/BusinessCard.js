@@ -106,7 +106,7 @@ export default function BusinessCard({ business }) {
 
   return (
     <>
-      {business && (
+      {business.length >= 3 ? (
         <View
           style={{
             display: "flex",
@@ -243,7 +243,7 @@ export default function BusinessCard({ business }) {
             </View>
           ) : null}
         </View>
-      )}
+      ):null}
     </>
   );
 }

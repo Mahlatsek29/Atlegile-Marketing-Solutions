@@ -162,6 +162,9 @@ const ProductCard = ({ productId }) => {
           display: "flex",
           flexWrap: "wrap",
           margin: 2,
+          width:300,
+          height:450,
+          justifyContent:'center'
         }}
       >
         <View
@@ -350,7 +353,7 @@ const ProductCard = ({ productId }) => {
                 </View>
 
                 <Typography variant="h5" component="h5">
-                  {product.name && product.name.slice(0, 20)}
+                  {product.name && product.name.slice(0, 15)}
                   {product.name && product.name.length < 50 ? "" : "..."}
                 </Typography>
                 <Typography
@@ -358,8 +361,8 @@ const ProductCard = ({ productId }) => {
                   component="p"
                   style={{ color: "gray" }}
                 >
-                  {product.description && product.description.slice(0, 50)}
-                  {product.description && product.description.length < 50
+                  {product.description && product.description.slice(0, 30)}
+                  {product.description && product.description.length < 30
                     ? ""
                     : "..."}
                 </Typography>

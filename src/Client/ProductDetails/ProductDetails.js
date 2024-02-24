@@ -608,7 +608,7 @@ export default function ProductDetails({ navigation, route }) {
                         Digital Product
                       </Typography>
                       <Typography sx={{ mt: "1" }}>
-                        Please note that you will receive this product in your
+                        Please note that you will receive digital products in your
                         email
                       </Typography>
                     </Box>

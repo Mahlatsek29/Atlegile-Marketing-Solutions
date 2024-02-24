@@ -361,8 +361,8 @@ const ProductCard = ({ productId }) => {
                   component="p"
                   style={{ color: "gray" }}
                 >
-                  {product.description && product.description.slice(0, 30)}
-                  {product.description && product.description.length < 30
+                  {product.description && product.description.slice(0, 25)}
+                  {product.description && product.description.length < 25
                     ? ""
                     : "..."}
                 </Typography>

@@ -29,6 +29,8 @@ import {
 } from "firebase/firestore";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import { Asset } from "expo-asset";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
@@ -42,7 +44,14 @@ const DeliveryAndChatSystem = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const mapRef = useRef(null);
-  
+  const icon = require('../../../assets/marker.png');
+  const iconURI = Asset.fromModule(icon).uri;
+  const leafletIcon = new L.Icon({
+    iconUrl: iconURI,
+    iconSize: [30, 30],
+    // iconAnchor: [22, 94],
+    // popupAnchor: [-3, -76],
+  });
   const [chats, setChats] = useState([
     // Initial chat data
     { messages: "Hello!", dateAntTime: "12:30 PM", status: "sent" },
@@ -573,7 +582,7 @@ const DeliveryAndChatSystem = () => {
                           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
-                        <Marker position={[order.coordinates.lat, order.coordinates.lng]}>
+                        <Marker position={[order.coordinates.lat, order.coordinates.lng]} icon={leafletIcon}>
                           <Popup>
                             <FontAwesomeIcon
                               icon={faMapMarkerAlt}

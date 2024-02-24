@@ -1045,9 +1045,7 @@ const DateSelectionAndCheckout = () => {
               {/* Left Side Content */}
               <Box mt={2} pr={4}>
                 {/* Heading displaying the order number */}
-                {/* <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                  ORDER #ABC246
-                </Typography> */}
+                
 
                 {/* Container for navigation links */}
                 <View style={{ display: "flex", flexDirection: "row" }}>

@@ -30,6 +30,8 @@ import { firestore } from "../../config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import { Asset } from "expo-asset";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -51,6 +53,16 @@ const DeliveryOngoing = () => {
   const [shipmentStatus, setShipmentStatus] = useState("");
   const { navigate } = useNavigation();
   const [loading, setLoading] = useState(true);
+
+  const icon = require('../../../assets/marker.png');
+  const iconURI = Asset.fromModule(icon).uri;
+
+  const leafletIcon = new L.Icon({
+    iconUrl: iconURI,
+    iconSize: [30, 30],
+    // iconAnchor: [22, 94],
+    // popupAnchor: [-3, -76],
+  });
 
   const [chats, setChats] = useState([
     // Initial chat data
@@ -172,6 +184,9 @@ const DeliveryOngoing = () => {
     }
   }, [order]);
 
+  useEffect(() => {
+    tackingShipment();
+  }, [tackingShipment]);
   
  
   return (
@@ -643,6 +658,7 @@ const DeliveryOngoing = () => {
                               order.coordinates.lat,
                               order.coordinates.lng,
                             ]}
+                            icon={leafletIcon}
                           >
                             <Popup>
                               <FontAwesomeIcon

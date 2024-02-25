@@ -6,6 +6,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { CardMedia } from "@mui/material";
 
 export default function BusinessCard({ business }) {
   const scrollViewRef = useRef(null);
@@ -53,11 +54,15 @@ export default function BusinessCard({ business }) {
   };
 
   useEffect(() => {
+    // This useEffect is responsible for fetching banner data when the component mounts.
     const fetchBanners = async () => {
       try {
+        // Access the "Banner" collection in Firestore
         const bannerCollection = firestore.collection("Banner");
+        // Retrieve the snapshot of the documents in the collection
         const snapshot = await bannerCollection.get();
-
+  
+        // Map the snapshot documents to a more usable format
         const bannerData = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
@@ -71,38 +76,44 @@ export default function BusinessCard({ business }) {
             company: data.company,
           };
         });
+        // Log the fetched banner data and set it to the state
         console.log("bannerData is: ", bannerData);
         setBanners(bannerData);
       } catch (error) {
+        // Log an error message if fetching fails
         console.error("Error fetching banner images:", error);
       }
     };
-
+  
+    // Invoke the fetchBanners function when the component mounts (empty dependency array)
     fetchBanners();
   }, []);
-
+  
   useEffect(() => {
-    // Find the banner that matches the current business
-    const matchingBanner = banners.find(
-      (banner) => banner.company === business
-    );
+    // This useEffect is triggered whenever the 'banners' or 'business' dependencies change.
+    // It sets the current banner based on the 'business' value.
+    const matchingBanner = banners.find((banner) => banner.company === business);
     setCurrentBanner(matchingBanner);
   }, [banners, business]);
-
+  
   useEffect(() => {
+    // This useEffect sets up an interval to automatically switch banners every 10 seconds.
     const interval = setInterval(() => {
       if (currentBanner.bannerImage.length > 0) {
+        // Update the currentIndex to the next image in the banner array
         setCurrentIndex((prevIndex) =>
           prevIndex === currentBanner.bannerImage.length - 1 ? 0 : prevIndex + 1
         );
       }
     }, 10000);
-
+  
+    // Cleanup: Clear the interval when the component unmounts or 'currentBanner' changes
     return () => {
       clearInterval(interval);
     };
   }, [currentBanner]);
-
+  
+  // Functions to handle click events for navigating to the previous and next banners
   const handlePrevClick = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? currentBanner.bannerImage.length - 1 : prevIndex - 1
@@ -113,6 +124,7 @@ export default function BusinessCard({ business }) {
       prevIndex === currentBanner.bannerImage.length - 1 ? 0 : prevIndex + 1
     );
   };
+  
 
   return (
     <>
@@ -193,15 +205,14 @@ export default function BusinessCard({ business }) {
           currentBanner.bannerImage.length > 0 ? (
             <View
               style={{
-                backgroundImage: `url(${currentBanner.bannerImage[currentIndex]})`,
                 backgroundColor: "gray",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                padding: 55,
                 flex: 1,
+                padding:5,
                 transition: "0.5s ease-in-out",
                 height: "20vh",
                 width: "80%",
@@ -215,20 +226,41 @@ export default function BusinessCard({ business }) {
               </TouchableOpacity>
               <View
                 style={{
-                  flex: 1,
+                  display: "flex",
                   flexDirection: "column",
-                  alignItems: "flex-start",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "auto",
                 }}
               >
-                <Text style={{ fontSize: 15, fontWeight: 600, color: "white" }}>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: 600,
+                    color: "white",
+                    alignSelf: "flex-start",
+                  }}
+                >
                   {currentBanner.other}
                 </Text>
-                <Text style={{ fontSize: 25, fontWeight: 700, color: "white" }}>
+                <Text
+                  style={{
+                    fontSize: 25,
+                    fontWeight: 700,
+                    color: "white",
+                    alignSelf: "flex-start",
+                  }}
+                >
                   {currentBanner.productName}
                 </Text>
-                <Text>
+                <Text style={{ alignSelf: "flex-start" }}>
                   <Text
-                    style={{ fontSize: 18, fontWeight: 700, color: "#c29920" }}
+                    style={{
+                      fontSize: 18,
+                      fontWeight: 700,
+                      color: "#c29920",
+                      alignSelf: "flex-start",
+                    }}
                   >
                     R{currentBanner.discountPrice}
                   </Text>{" "}
@@ -239,6 +271,19 @@ export default function BusinessCard({ business }) {
                   </Text>
                 </Text>
               </View>
+              <CardMedia
+                component="img"
+                height="140"
+                image={currentBanner.bannerImage[currentIndex]}
+                style={{
+                  position: "relative",
+                  objectFit: "cover",
+                  width: 220,
+                  height: 220,
+                  alignSelf: "center",
+                }}
+              />
+
               <TouchableOpacity onPress={handleNextClick}>
                 <AntDesign name="right" size={24} color="white" />
               </TouchableOpacity>

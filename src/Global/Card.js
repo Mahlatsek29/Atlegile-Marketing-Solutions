@@ -10,18 +10,7 @@ import {
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import {
-  getFirestore,
-  doc,
-  getDoc,
-  updateDoc,
-  setDoc,
-  addDoc,
-  collection,
-  serverTimestamp,
-  query,
-  where,
-  limit,
-  getDocs,
+  serverTimestamp
 } from "firebase/firestore";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";

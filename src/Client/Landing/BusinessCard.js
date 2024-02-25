@@ -8,10 +8,10 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 export default function BusinessCard({ business }) {
-  
   const scrollViewRef = useRef(null);
   const [products, setProducts] = useState([]);
-  const [banner, setBanner] = useState([]);
+  const [banners, setBanners] = useState([]);
+  const [currentBanner, setCurrentBanner] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigation = useNavigation();
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function BusinessCard({ business }) {
   };
 
   useEffect(() => {
-    const fetchBanner = async () => {
+    const fetchBanners = async () => {
       try {
         const bannerCollection = firestore.collection("Banner");
         const snapshot = await bannerCollection.get();
@@ -61,29 +61,39 @@ export default function BusinessCard({ business }) {
         const bannerData = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
+            id: doc.id,
             bannerImage: data.bannerImage,
             discountPrice: data.discountPrice,
             originalPrice: data.originalPrice,
             other: data.other,
             productName: data.productName,
             quantity: data.quantity,
+            company: data.company,
           };
         });
-       
-        setBanner(bannerData);
+        console.log("bannerData is: ", bannerData);
+        setBanners(bannerData);
       } catch (error) {
         console.error("Error fetching banner images:", error);
       }
     };
 
-    fetchBanner();
+    fetchBanners();
   }, []);
 
   useEffect(() => {
+    // Find the banner that matches the current business
+    const matchingBanner = banners.find(
+      (banner) => banner.company === business
+    );
+    setCurrentBanner(matchingBanner);
+  }, [banners, business]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
-      if (banner[0].bannerImage.length > 0) {
+      if (currentBanner.bannerImage.length > 0) {
         setCurrentIndex((prevIndex) =>
-          prevIndex === banner[0].bannerImage.length - 1 ? 0 : prevIndex + 1
+          prevIndex === currentBanner.bannerImage.length - 1 ? 0 : prevIndex + 1
         );
       }
     }, 10000);
@@ -91,16 +101,16 @@ export default function BusinessCard({ business }) {
     return () => {
       clearInterval(interval);
     };
-  }, [banner]);
+  }, [currentBanner]);
 
   const handlePrevClick = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? banner[0].bannerImage.length - 1 : prevIndex - 1
+      prevIndex === 0 ? currentBanner.bannerImage.length - 1 : prevIndex - 1
     );
   };
   const handleNextClick = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === banner[0].bannerImage.length - 1 ? 0 : prevIndex + 1
+      prevIndex === currentBanner.bannerImage.length - 1 ? 0 : prevIndex + 1
     );
   };
 
@@ -114,7 +124,8 @@ export default function BusinessCard({ business }) {
             marginTop: 50,
             alignItems: "center",
             marginBottom: 50,
-          }}>
+          }}
+        >
           <View
             style={{
               width: "80%",
@@ -122,14 +133,14 @@ export default function BusinessCard({ business }) {
               justifyContent: "space-between",
               alignItems: "center",
               flexDirection: "row",
-              
-              }}>
+            }}
+          >
             <TouchableOpacity onPress={scrollLeft}>
-              <ArrowBackIosIcon/>
+              <ArrowBackIosIcon />
             </TouchableOpacity>
 
             <TouchableOpacity onPress={scrollRight}>
-              <ArrowForwardIosIcon/>
+              <ArrowForwardIosIcon />
             </TouchableOpacity>
 
             <View
@@ -137,7 +148,7 @@ export default function BusinessCard({ business }) {
                 zIndex: -10,
                 width: "100%",
                 position: "absolute",
-               }}
+              }}
             >
               <View
                 style={{
@@ -151,7 +162,8 @@ export default function BusinessCard({ business }) {
                     fontSize: "30px",
                     fontWeight: "bolder",
                     marginTop: "10px",
-                  }}>
+                  }}
+                >
                   {business}
                 </Text>
                 <TouchableOpacity
@@ -168,17 +180,20 @@ export default function BusinessCard({ business }) {
                 showsHorizontalScrollIndicator={false}
                 onContentSizeChange={(contentWidth) =>
                   handleContentSizeChange(contentWidth)
-                }>
+                }
+              >
                 {oneCompany.map((product) => (
                   <ProductCard key={product.id} productId={product.id} />
                 ))}
               </ScrollView>
             </View>
           </View>
-          {banner.length > 0 ? (
+          {currentBanner &&
+          currentBanner.bannerImage &&
+          currentBanner.bannerImage.length > 0 ? (
             <View
               style={{
-                backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
+                backgroundImage: `url(${currentBanner.bannerImage[currentIndex]})`,
                 backgroundColor: "gray",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
@@ -190,10 +205,12 @@ export default function BusinessCard({ business }) {
                 transition: "0.5s ease-in-out",
                 height: "20vh",
                 width: "80%",
-              }}>
+              }}
+            >
               <TouchableOpacity
                 onPress={handlePrevClick}
-                style={{ marginRight: 20 }}>
+                style={{ marginRight: 20 }}
+              >
                 <AntDesign name="left" size={24} color="white" />
               </TouchableOpacity>
               <View
@@ -201,39 +218,24 @@ export default function BusinessCard({ business }) {
                   flex: 1,
                   flexDirection: "column",
                   alignItems: "flex-start",
-                }}>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 600,
-                    color: "white",
-                  }}>
-                  {banner[0].other}
+                }}
+              >
+                <Text style={{ fontSize: 15, fontWeight: 600, color: "white" }}>
+                  {currentBanner.other}
                 </Text>
-                <Text
-                  style={{
-                    fontSize: 25,
-                    fontWeight: 700,
-                    color: "white",
-                  }}>
-                  {banner[0].productName}
+                <Text style={{ fontSize: 25, fontWeight: 700, color: "white" }}>
+                  {currentBanner.productName}
                 </Text>
                 <Text>
                   <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: 700,
-                      color: "#c29920",
-                    }}>
-                    R{banner[0].discountPrice}
+                    style={{ fontSize: 18, fontWeight: 700, color: "#c29920" }}
+                  >
+                    R{currentBanner.discountPrice}
                   </Text>{" "}
                   <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: 400,
-                      color: "white",
-                    }}>
-                    R{banner[0].originalPrice}
+                    style={{ fontSize: 15, fontWeight: 400, color: "white" }}
+                  >
+                    R{currentBanner.originalPrice}
                   </Text>
                 </Text>
               </View>
@@ -243,7 +245,7 @@ export default function BusinessCard({ business }) {
             </View>
           ) : null}
         </View>
-      ):null}
+      ) : null}
     </>
   );
 }

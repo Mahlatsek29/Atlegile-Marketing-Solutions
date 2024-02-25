@@ -73,6 +73,7 @@ export default function BusinessAccount() {
   const [checkOrder, setCheckOrder] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [banner, setBanner] = useState([]);
+  const [currentBanner, setCurrentBanner] = useState(null);
   const [userData, setUserData] = useState(null);
   const [length, setLength] = useState(null);
   const [width, setWidth] = useState(null);
@@ -84,6 +85,8 @@ export default function BusinessAccount() {
   const theme = useTheme();
   const [isMobile, setIsMobile] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+ 
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 1080); // Adjust the breakpoint as needed
@@ -141,7 +144,7 @@ export default function BusinessAccount() {
 
       // Get a reference to the "Products" collection in Firestore
       const cartCollectionRef = collection(firestore, "Products");
-      console.log("userData.company is: ", userData.company);
+      
 
       // Construct a query to filter products by businessName from userData
       const q = query(
@@ -231,16 +234,13 @@ export default function BusinessAccount() {
   }, []);
 
   useEffect(() => {
-    // Define a function to fetch banner data from Firestore
     const fetchBanner = async () => {
       try {
-        // Get a reference to the "Banner" collection in Firestore
         const bannerCollection = firestore.collection("Banner");
-
-        // Fetch the snapshot of documents in the "Banner" collection
-        const snapshot = await bannerCollection.get();
-
-        // Map the snapshot documents to extract relevant data and create an array
+  
+        // Fetch the snapshot of documents in the "Banner" collection where bannerUid matches userData.uid
+        const snapshot = await bannerCollection.where("bannerUid", "==", userData.uid).get();
+  
         const bannerData = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
@@ -252,23 +252,17 @@ export default function BusinessAccount() {
             quantity: data.quantity,
           };
         });
-
-        // Log the fetched banner data to the console (for debugging purposes)
+  
         console.log("bannerData is ", bannerData);
-
-        // Update the component's state with the fetched banner data
         setBanner(bannerData);
       } catch (error) {
-        // Handle errors that may occur during the data fetching process
         console.error("Error fetching banner images:", error);
       }
     };
-
-    // Call the fetchBanner function when the component mounts
+  
     fetchBanner();
-
-    // The empty dependency array (`[]`) ensures that this effect runs only once when the component mounts
-  }, []);
+  }, [userData]);
+  
 
   useEffect(() => {
     // Set up an interval to change the current index of the banner images
@@ -472,53 +466,64 @@ export default function BusinessAccount() {
   // Function to handle saving a new banner
   const handleSaveAddBanner = async (e) => {
     e.preventDefault();
-
+  
     // Access the 'Banner' collection in Firestore
     const bannerCollection = firestore.collection("Banner");
-
-    // Generate a unique ID for the new banner
-    const bannerId = bannerCollection.id;
-
-    // Create an object with the specified fields for the new banner
-    const bannerData = {
-      bannerImage: [], // Initialize an empty array to store image URLs
-      discountPrice: parseFloat(priceDiscount), // Convert to number
-      originalPrice: parseFloat(priceOriginal), // Convert to number
-      other: otherBanner,
-      productName: productName,
-      quantity: parseInt(quantity), // Convert to number
-    };
-
+  
     try {
+      // Check if there is a document with bannerUid === userData.uid
+      const existingBannerQuery = await bannerCollection.where("bannerUid", "==", userData.uid).get();
+      const existingBannerDoc = existingBannerQuery.docs[0];
+  
+      // Generate a unique ID for the new banner
+      const bannerId = existingBannerDoc ? existingBannerDoc.id : bannerCollection.id;
+  
+      // Create an object with the specified fields for the new banner
+      const bannerData = {
+        bannerImage: [], // Initialize an empty array to store image URLs
+        discountPrice: parseFloat(priceDiscount), // Convert to number
+        originalPrice: parseFloat(priceOriginal), // Convert to number
+        other: otherBanner,
+        productName: productName,
+        quantity: parseInt(quantity),
+        bannerUid: userData.uid,
+        company:userData.company// Convert to number
+      };
+  
       // Upload each image in the 'images' array to Firebase Storage
       const uploadTasks = images.map((image, index) => {
         const imageRef = storage.ref(`banner_images/${bannerId}/image${index}`);
         return imageRef.put(image.file);
       });
-
+  
       // Wait for all image uploads to complete
       await Promise.all(uploadTasks);
-
+  
       // Get the download URLs of the uploaded images
       const downloadURLs = await Promise.all(
         uploadTasks.map((task) => task.snapshot.ref.getDownloadURL())
       );
-
+  
       // Update the 'bannerData' object with the image URLs
       bannerData.bannerImage = downloadURLs;
-
-      // Add the new banner document to the 'Banner' collection in Firestore
-      await bannerCollection.add(bannerData);
-
-      console.log("Banner data added successfully!");
-
-      // Close the modal after successful addition
+  
+      if (existingBannerDoc) {
+        // If there's an existing document, update its fields
+        await existingBannerDoc.ref.update(bannerData);
+      } else {
+        // If no existing document, add a new banner document to the 'Banner' collection in Firestore
+        await bannerCollection.add(bannerData);
+      }
+  
+      console.log("Banner data added/updated successfully!");
+  
+      // Close the modal after successful addition/update
       setBannerModal(false);
     } catch (error) {
-      console.error("Error adding banner data: ", error);
+      console.error("Error adding/updating banner data: ", error);
     }
   };
-
+  
   // Function to handle saving payment information
   const handleSavePaymentInfo = (e) => {
     e.preventDefault();
@@ -2468,7 +2473,82 @@ export default function BusinessAccount() {
                           <AntDesign name="right" size={24} color="white" />
                         </TouchableOpacity>
                       </View>
-                    ) : null}
+                    ) :<View
+                    style={{
+                      // backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
+                      backgroundColor: "gray",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: 15,
+                      flex: 1,
+                      transition: "0.5s ease-in-out",
+                    }}
+                  >
+                    {/* Navigation button to go to the previous banner */}
+                    <TouchableOpacity
+                      // onPress={handlePrevClick}
+                      style={{ marginRight: 20 }}
+                    >
+                      <AntDesign name="left" size={24} color="white" />
+                    </TouchableOpacity>
+                    {/* Details of the current banner */}
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: "column",
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: 600,
+                          color: "white",
+                        }}
+                      >
+                        EXCLUSIVE OFFER:SAVE BIG TODAY
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 25,
+                          fontWeight: 700,
+                          color: "white",
+                        }}
+                      >
+                        ULTRA HT SMART TV
+                      </Text>
+                      <Text>
+                        {/* Displaying discount and original prices */}
+                        <Text
+                          style={{
+                            fontSize: 18,
+                            fontWeight: 700,
+                            color: "#c29920",
+                          }}
+                        >
+                           R1699.99
+                        </Text>{" "}
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontWeight: 400,
+                            color: "white",
+                          }}
+                        >
+                          R1899.99
+                        </Text>
+                      </Text>
+                    </View>
+                    {/* Navigation button to go to the next banner */}
+                    <TouchableOpacity 
+                    // onPress={handleNextClick}
+                    >
+                      <AntDesign name="right" size={24} color="white" />
+                    </TouchableOpacity>
+                  </View>}
 
                     {/* Option to add a new banner */}
                     <TouchableOpacity

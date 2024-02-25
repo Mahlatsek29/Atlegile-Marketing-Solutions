@@ -6,7 +6,8 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { CardMedia } from "@mui/material";
+import { Card, CardMedia, Grid, Typography } from "@mui/material";
+import { brown } from "@mui/material/colors";
 
 export default function BusinessCard({ business }) {
   const scrollViewRef = useRef(null);
@@ -61,7 +62,7 @@ export default function BusinessCard({ business }) {
         const bannerCollection = firestore.collection("Banner");
         // Retrieve the snapshot of the documents in the collection
         const snapshot = await bannerCollection.get();
-  
+
         // Map the snapshot documents to a more usable format
         const bannerData = snapshot.docs.map((doc) => {
           const data = doc.data();
@@ -84,18 +85,20 @@ export default function BusinessCard({ business }) {
         console.error("Error fetching banner images:", error);
       }
     };
-  
+
     // Invoke the fetchBanners function when the component mounts (empty dependency array)
     fetchBanners();
   }, []);
-  
+
   useEffect(() => {
     // This useEffect is triggered whenever the 'banners' or 'business' dependencies change.
     // It sets the current banner based on the 'business' value.
-    const matchingBanner = banners.find((banner) => banner.company === business);
+    const matchingBanner = banners.find(
+      (banner) => banner.company === business
+    );
     setCurrentBanner(matchingBanner);
   }, [banners, business]);
-  
+
   useEffect(() => {
     // This useEffect sets up an interval to automatically switch banners every 10 seconds.
     const interval = setInterval(() => {
@@ -106,13 +109,13 @@ export default function BusinessCard({ business }) {
         );
       }
     }, 10000);
-  
+
     // Cleanup: Clear the interval when the component unmounts or 'currentBanner' changes
     return () => {
       clearInterval(interval);
     };
   }, [currentBanner]);
-  
+
   // Functions to handle click events for navigating to the previous and next banners
   const handlePrevClick = () => {
     setCurrentIndex((prevIndex) =>
@@ -124,7 +127,6 @@ export default function BusinessCard({ business }) {
       prevIndex === currentBanner.bannerImage.length - 1 ? 0 : prevIndex + 1
     );
   };
-  
 
   return (
     <>
@@ -203,91 +205,117 @@ export default function BusinessCard({ business }) {
           {currentBanner &&
           currentBanner.bannerImage &&
           currentBanner.bannerImage.length > 0 ? (
-            <View
+            <Card
               style={{
                 backgroundColor: "gray",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
+                width: "80%",
+                display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-                alignItems: "center",
-                flex: 1,
-                padding:5,
-                transition: "0.5s ease-in-out",
-                height: "20vh",
-                width: "80%",
               }}
             >
               <TouchableOpacity
                 onPress={handlePrevClick}
-                style={{ marginRight: 20 }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
                 <AntDesign name="left" size={24} color="white" />
               </TouchableOpacity>
-              <View
+              <Grid
+                container
+                spacing={2}
+                style={{ justifyContent: "center", alignItems: "center" }}
+              >
+                <Grid
+                  sx={
+                    {
+                      //  backgroundColor:"yellow"
+                    }
+                  }
+                >
+                  <Grid
+                    container
+                    direction="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    m={2}
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      style={{
+                        fontWeight: 600,
+                        color: "white",
+                        marginBottom: 5,
+                        alignSelf: "flex-start",
+                      }}
+                    >
+                      {currentBanner.other}
+                    </Typography>
+                    <Typography
+                      variant="h4"
+                      style={{
+                        fontWeight: 700,
+                        color: "white",
+                        marginBottom: 5,
+                        alignSelf: "flex-start",
+                      }}
+                    >
+                      {currentBanner.productName}
+                    </Typography>
+                    <Grid
+                      sx={{
+                        display:'flex',
+                        alignSelf: "flex-start",
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle1"
+                        style={{
+                          fontWeight: 700,
+                          color: "#c29920",
+                          marginRight: 5, // Add margin or padding as needed
+                        }}
+                      >
+                        R{currentBanner.discountPrice}
+                      </Typography>
+                      <Typography
+                        variant="subtitle1"
+                        style={{ color: "white" }}
+                      >
+                        R{currentBanner.originalPrice}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid height={230} wodth="100%">
+                  <CardMedia
+                    component="img"
+                    height="100%"
+                    image={currentBanner.bannerImage[currentIndex]}
+                    style={{
+                      objectFit: "cover",
+                      width: "40vw",
+                      height: "40vh",
+                    }}
+                  />
+                </Grid>
+              </Grid>
+
+              <TouchableOpacity
+                onPress={handleNextClick}
                 style={{
                   display: "flex",
-                  flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: "auto",
                 }}
               >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 600,
-                    color: "white",
-                    alignSelf: "flex-start",
-                  }}
-                >
-                  {currentBanner.other}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 25,
-                    fontWeight: 700,
-                    color: "white",
-                    alignSelf: "flex-start",
-                  }}
-                >
-                  {currentBanner.productName}
-                </Text>
-                <Text style={{ alignSelf: "flex-start" }}>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: 700,
-                      color: "#c29920",
-                      alignSelf: "flex-start",
-                    }}
-                  >
-                    R{currentBanner.discountPrice}
-                  </Text>{" "}
-                  <Text
-                    style={{ fontSize: 15, fontWeight: 400, color: "white" }}
-                  >
-                    R{currentBanner.originalPrice}
-                  </Text>
-                </Text>
-              </View>
-              <CardMedia
-                component="img"
-                height="140"
-                image={currentBanner.bannerImage[currentIndex]}
-                style={{
-                  position: "relative",
-                  objectFit: "cover",
-                  width: 220,
-                  height: 220,
-                  alignSelf: "center",
-                }}
-              />
-
-              <TouchableOpacity onPress={handleNextClick}>
                 <AntDesign name="right" size={24} color="white" />
               </TouchableOpacity>
-            </View>
+            </Card>
           ) : null}
         </View>
       ) : null}

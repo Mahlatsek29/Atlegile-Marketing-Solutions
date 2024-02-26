@@ -163,7 +163,7 @@ const Signup = () => {
                 color: "#072840",
               }}
             >
-              DON'T HAVE AN ACCOUNT?
+              ALREADY HAVE AN ACCOUNT?
             </TouchableOpacity>
           </View>
           <TouchableOpacity>

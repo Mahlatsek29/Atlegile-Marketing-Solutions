@@ -213,7 +213,7 @@ const Favourites = ({ item }) => {
     navigate("/privacypolicy");
   };
 
-  useEffect(() => {   
+  useEffect(() => {
     setLoading(false); // Add this line to set loading to false
   }, [products]);
 
@@ -280,37 +280,38 @@ const Favourites = ({ item }) => {
   if (loading) {
     // Render a loading state using Skeleton
     return (
-      <Card sx={{
-        flex:1,
-        display:'flex',
-        justifyContent:'center',
-        alignItems:'center',
-        flexDirection:'column'
-      }}>
+      <Card
+        sx={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
         <Skeleton
           variant="rectangular"
           width={270}
           height={270}
           animation="wave"
         />
-       
-          <Skeleton variant="text" width={100} height={20} animation="wave" />
-          <Skeleton variant="text" width={200} height={16} animation="wave" />
-          <Skeleton variant="text" width={200} height={16} animation="wave" />
-          <Skeleton variant="text" width={80} height={14} animation="wave" />
-    
+
+        <Skeleton variant="text" width={100} height={20} animation="wave" />
+        <Skeleton variant="text" width={200} height={16} animation="wave" />
+        <Skeleton variant="text" width={200} height={16} animation="wave" />
+        <Skeleton variant="text" width={80} height={14} animation="wave" />
       </Card>
     );
   }
   return (
-    <View>
+    <View style={{ backgroundColor: "white"}}>
       <FollowUs />
       <Navbar />
       <View
         style={{
           display: "flex",
           flexDirection: "row",
-          backgroundColor: "white",
+         
         }}
       >
         {!isMobile && (
@@ -445,7 +446,6 @@ const Favourites = ({ item }) => {
         )}
         {isMobile && (
           <Box style={{ textAlign: "center", padding: "10px" }}>
-            
             <Ionicons
               name="ios-menu"
               size={30}
@@ -590,12 +590,8 @@ const Favourites = ({ item }) => {
               <Card
                 key={product.id}
                 sx={{
-                  width: {
-                    xs: "100%",
-                    sm: "45%",
-                    md: "35%",
-                    lg: "35%",
-                  },
+                  width: 300,
+                  height: 450,
                   margin: 2,
                 }}
               >
@@ -781,7 +777,7 @@ const Favourites = ({ item }) => {
                       </View>
 
                       <Typography variant="h5" component="h5">
-                        {product.name && product.name.slice(0, 20)}
+                        {product.name && product.name.slice(0, 15)}
                         {product.name && product.name.length < 50 ? "" : "..."}
                       </Typography>
                       <Typography
@@ -790,8 +786,8 @@ const Favourites = ({ item }) => {
                         style={{ color: "gray" }}
                       >
                         {product.description &&
-                          product.description.slice(0, 50)}
-                        {product.description && product.description.length < 50
+                          product.description.slice(0, 25)}
+                        {product.description && product.description.length < 25
                           ? ""
                           : "..."}
                       </Typography>

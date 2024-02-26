@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import {
   Box,
   Typography,
@@ -70,7 +66,7 @@ export default function ProductDetails({ navigation, route }) {
 
   const handleChangeProduct = (relatedProductId) => {
     // Navigate to the new product's details page
-    navigation.navigate('ProductDetails', { productId: relatedProductId });
+    navigation.navigate("ProductDetails", { productId: relatedProductId });
   };
 
   const toggleHeart = async () => {
@@ -355,7 +351,6 @@ export default function ProductDetails({ navigation, route }) {
     return <Typography>No Product Found</Typography>;
   }
 
- 
   const handleNext = () => {
     setCurrentImage((prev) => (prev + 1) % product.images.length);
   };
@@ -378,9 +373,9 @@ export default function ProductDetails({ navigation, route }) {
   };
 
   return (
-    <View style={{backgroundColor: "white"}}>
+    <View style={{ backgroundColor: "white" }}>
       <Navbar />
-      <Box sx={{  height: "100%", overflowY: "auto" }}>
+      <Box sx={{ height: "100%", overflowY: "auto" }}>
         <Container maxWidth="md">
           <Box sx={{ pl: 2, pb: 2, backgroundColor: "white" }}>
             <Breadcrumbs>
@@ -402,7 +397,7 @@ export default function ProductDetails({ navigation, route }) {
                 color="textPrimary"
                 sx={{ fontSize: 15, textDecoration: "none" }}
               >
-                Digital Marketing Solutions 
+                Digital Marketing Solutions
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -439,7 +434,7 @@ export default function ProductDetails({ navigation, route }) {
                   <ArrowForwardIosIcon />
                 </IconButton>
               </Box>
-              <Box sx={{ display: "flex", mt: 1 ,flexWrap:'wrap'}}>
+              <Box sx={{ display: "flex", mt: 1, flexWrap: "wrap" }}>
                 {product.images.map((image, index) => (
                   <img
                     key={index}
@@ -608,8 +603,8 @@ export default function ProductDetails({ navigation, route }) {
                         Digital Product
                       </Typography>
                       <Typography sx={{ mt: "1" }}>
-                        Please note that you will receive digital products in your
-                        email
+                        Please note that you will receive digital products in
+                        your email
                       </Typography>
                     </Box>
                   </Box>
@@ -689,12 +684,8 @@ export default function ProductDetails({ navigation, route }) {
                       <Card
                         key={relatedProduct.id}
                         sx={{
-                          width: {
-                            xs: "100%",
-                            sm: "45%",
-                            md: "35%",
-                            lg: "35%",
-                          },
+                          width: 300,
+                          height: 450,
                           margin: 2,
                         }}
                       >
@@ -885,7 +876,7 @@ export default function ProductDetails({ navigation, route }) {
 
                               <Typography variant="h5" component="h5">
                                 {relatedProduct.name &&
-                                  relatedProduct.name.slice(0, 20)}
+                                  relatedProduct.name.slice(0, 15)}
                                 {relatedProduct.name &&
                                 relatedProduct.name.length < 50
                                   ? ""
@@ -897,9 +888,9 @@ export default function ProductDetails({ navigation, route }) {
                                 style={{ color: "gray" }}
                               >
                                 {relatedProduct.description &&
-                                  relatedProduct.description.slice(0, 50)}
+                                  relatedProduct.description.slice(0, 25)}
                                 {relatedProduct.description &&
-                                relatedProduct.description.length < 50
+                                relatedProduct.description.length < 25
                                   ? ""
                                   : "..."}
                               </Typography>
@@ -952,22 +943,20 @@ export default function ProductDetails({ navigation, route }) {
 
                             <Button
                               style={{
-                                border:"2px black solid",
-                                alignSelf:"flex-start",
-                                paddingHorizontal:'5px',
-                                borderRadius:'50px',
-                                marginBottom:15,
-                                color:'black',
+                                border: "2px black solid",
+                                alignSelf: "flex-start",
+                                paddingHorizontal: "5px",
+                                borderRadius: "50px",
+                                marginBottom: 15,
+                                color: "black",
                                 cursor: "pointer",
                               }}
                               onClick={() =>
                                 handleChangeProduct(relatedProduct.id)
                               }
                             >
-                              
-                             <Text>VIEW </Text> 
+                              <Text>VIEW </Text>
                               <Icon name="arrow-right" size={20} />
-                             
                             </Button>
                           </View>
                         </View>

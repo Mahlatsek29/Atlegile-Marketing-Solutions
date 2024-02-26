@@ -2750,12 +2750,8 @@ export default function BusinessAccount() {
                           <Card
                             key={index}
                             sx={{
-                              width: {
-                                xs: "100%",
-                                sm: "45%",
-                                md: "35%",
-                                lg: "35%",
-                              },
+                              width: 300,
+                              height: 450,
                               margin: 2,
                             }}
                           >

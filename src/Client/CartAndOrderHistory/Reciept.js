@@ -13,7 +13,7 @@ const Reciept = () => {
   const navigateToLanding = () => {
     // {alert("button clicked")}
     // navigation.navigate("https://atlegile-marketing-solutions--client-x35upb5j.web.app");
-    Linking.openURL("https://atlegile-marketing-solutions--client-x35upb5j.web.app")
+    Linking.openURL("/")
   };
 
   return (

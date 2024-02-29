@@ -22,10 +22,8 @@ import { useNavigation } from "@react-navigation/native";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
-import mapImage from "../../Global/images/mapImage.png";
-import hdtv from "../../Global/images/hdtv.jpg";
 import { useRoute } from "@react-navigation/native";
-import { collection, query, where, getDoc, doc } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
 import { firestore } from "../../config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -54,9 +52,10 @@ const DeliveryOngoing = () => {
   const { navigate } = useNavigation();
   const [loading, setLoading] = useState(true);
 
-  const icon = require('../../../assets/marker.png');
+  const icon = require("../../../assets/marker.png");
   const iconURI = Asset.fromModule(icon).uri;
 
+  // Create a Leaflet icon for map markers
   const leafletIcon = new L.Icon({
     iconUrl: iconURI,
     iconSize: [30, 30],
@@ -64,63 +63,96 @@ const DeliveryOngoing = () => {
     // popupAnchor: [-3, -76],
   });
 
+  // Set up initial chat data using state
   const [chats, setChats] = useState([
-    // Initial chat data
     { messages: "Hello!", dateAntTime: "12:30 PM", status: "sent" },
-    { messages: "Hi there!", dateAntTime: "12:35 PM", status: "recieved" },
+    { messages: "Hi there!", dateAntTime: "12:35 PM", status: "received" },
   ]);
+
+  // useEffect hook to handle authentication state changes
   useEffect(() => {
+    // Get the authentication instance
     const auth = getAuth();
+
+    // Subscribe to authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // Update the user state with the current user information
       setUser(user);
     });
 
+    // Clean up the subscription on component unmount
     return () => {
       unsubscribe();
     };
   }, []);
+
   const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
- 
+
+  // useEffect to handle authentication state changes
   useEffect(() => {
+    // Get the authentication instance
     const auth = getAuth();
+
+    // Subscribe to authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // Update the user state with the current user information
       setUser(user);
     });
 
+    // Clean up the subscription on component unmount
     return () => {
       unsubscribe();
     };
   }, []);
 
+  // useEffect to fetch order data based on orderId and user
   useEffect(() => {
-    const fetchOrdertData = async () => {
+    // Asynchronously fetch order data
+    const fetchOrderData = async () => {
       try {
-        const ordertDocRef = doc(firestore, "Orders", orderId);
-        const orderDocSnapshot = await getDoc(ordertDocRef);
+        // Create a Firestore document reference for the specified orderId
+        const orderDocRef = doc(firestore, "Orders", orderId);
+
+        // Get a snapshot of the order document
+        const orderDocSnapshot = await getDoc(orderDocRef);
 
         if (orderDocSnapshot.exists()) {
+          // If the document exists, extract and set order data
           const orderData = orderDocSnapshot.data();
-          console.log("Fetched product data:", orderData);
+          console.log("Fetched order data:", orderData);
           setOrder(orderData);
         } else {
-          console.log("Product not found");
+          // Log a message if the order document is not found
+          console.log("Order not found");
         }
       } catch (error) {
-        console.error("Error fetching product data:", error);
+        // Log an error message if there's an issue fetching order data
+        console.error("Error fetching order data:", error);
       } finally {
-        setLoading(false); // Set loading to false after data fetching is complete
+        // Set loading to false after data fetching is complete
+        setLoading(false);
       }
     };
 
-    fetchOrdertData();
+    // Call the fetchOrderData function when dependencies (firestore, orderId, user) change
+    fetchOrderData();
   }, [firestore, orderId, user]);
 
+  // useEffect to calculate order-related values when dependencies change
   useEffect(() => {
+    // Calculate the total amount of items in the cart
     const totalAmount = cartData.reduce((acc, item) => acc + item.amount, 0);
+
+    // Calculate the referral amount as 10% of the total amount
     const calculatedReferral = totalAmount * 0.1;
+
+    // Set the calculated referral amount in the state
     setAgentReferral(calculatedReferral);
 
+    // Calculate the final order total including tax and delivery amount
     const finalTotal = totalAmount + calculatedReferral + tax + deliveryAmount;
+
+    // Set the final order total in the state
     setOrderTotal(finalTotal);
   }, [cartData, tax, deliveryAmount]);
 
@@ -138,21 +170,27 @@ const DeliveryOngoing = () => {
     }
   };
 
+  // Function to toggle the visibility of the chat modal
   const handleMessageButtonClick = () => {
+    // Toggle the visibility state of the chat modal
     setChatmodelVisible(!chatmodelVisble);
   };
 
-  
-
+  // Function to navigate to the Landing screen
   const navigateToLanding = () => {
+    // Use the navigation object to navigate to the "Landing" screen
     navigation.navigate("Landing");
   };
 
+  // Function to navigate to the OrderHistory screen with the specified orderId
   const navigateToOrderHistory = () => {
+    // Use the navigation object to navigate to the "OrderHistory" screen with the orderId as a parameter
     navigation.navigate("OrderHistory", { orderId });
   };
 
-   const tackingShipment = useCallback(async () => {
+  // Define a memoized trackingShipment function using useCallback
+  const tackingShipment = useCallback(async () => {
+    // Set up headers for the API request
     const config = {
       headers: {
         Authorization: `Bearer ${CourierAPIKey}`,
@@ -161,37 +199,49 @@ const DeliveryOngoing = () => {
     };
 
     try {
+      // Make a GET request to the ShipLogic API to get shipment tracking information
       const response = await axios.get(
         `https://api.shiplogic.com/v2/tracking/shipments?tracking_reference=${order.trackingEventsRef}`,
         config
       );
+
+      // Log the API response for tracking shipment
       console.log("Courier API tracking shipment response:", response.data);
+
+      // Check if the response contains valid shipment data
       if (
         response.data &&
         response.data.shipments &&
         response.data.shipments.length > 0
       ) {
+        // Set the shipment tracking data in the state
         setShipmentTrack(response.data);
       } else {
+        // Log an error if the data received from the API is incomplete or undefined
         console.error("Incomplete or undefined data received from the API");
       }
     } catch (error) {
+      // Log an error and handle it appropriately
       console.error("Error getting shipments", error);
+
+      // Check if there is a response in the error object and log it
       if (error.response) {
         console.log("Response data:", error.response.data);
       }
-      // handle the error as needed
+      // Handle the error as needed
     }
   }, [order]);
 
+  // useEffect hook to call the tackingShipment function when the 'order' dependency changes
   useEffect(() => {
+    // Call the tackingShipment function
     tackingShipment();
   }, [tackingShipment]);
-  
- 
+
   return (
     <>
       {chatmodelVisble && (
+        // Modal overlay for the chat window
         <View
           style={{
             position: "fixed",
@@ -221,6 +271,7 @@ const DeliveryOngoing = () => {
                 backgroundColor: "white",
               }}
             >
+              {/* Close button for the chat window */}
               <TouchableOpacity
                 onPress={() => setChatmodelVisible(false)}
                 style={{
@@ -233,6 +284,8 @@ const DeliveryOngoing = () => {
                 {/* X icon button */}
                 <Text style={{ fontSize: 20, fontWeight: "bold" }}>X</Text>
               </TouchableOpacity>
+
+              {/* Chat message area */}
               <ScrollView
                 style={{
                   flex: 1,
@@ -251,6 +304,8 @@ const DeliveryOngoing = () => {
                 >
                   CHAT TO DRIVER
                 </Text>
+
+                {/* Map through chats to display messages */}
                 {chats.map((item, index) => (
                   <View
                     key={index}
@@ -261,6 +316,7 @@ const DeliveryOngoing = () => {
                       flexDirection: "row",
                     }}
                   >
+                    {/* Message bubble */}
                     <View
                       style={{
                         backgroundColor:
@@ -293,6 +349,7 @@ const DeliveryOngoing = () => {
                             : 0,
                       }}
                     >
+                      {/* Display the message text */}
                       <Text
                         style={{
                           color:
@@ -306,6 +363,8 @@ const DeliveryOngoing = () => {
                         {item.messages}
                       </Text>
                     </View>
+
+                    {/* Display the message timestamp */}
                     <View
                       style={{
                         fontSize: 14,
@@ -324,6 +383,7 @@ const DeliveryOngoing = () => {
                   </View>
                 ))}
               </ScrollView>
+
               {/* Input area for sending a message */}
               <View
                 style={{
@@ -333,6 +393,7 @@ const DeliveryOngoing = () => {
                   padding: 10,
                 }}
               >
+                {/* Input field for typing a message */}
                 <TextInput
                   style={{
                     flex: 1,
@@ -345,6 +406,8 @@ const DeliveryOngoing = () => {
                   value={message}
                   onChangeText={(text) => setMessage(text)}
                 />
+
+                {/* Button to send the message */}
                 <TouchableOpacity
                   onPress={handleSend}
                   style={{
@@ -354,6 +417,7 @@ const DeliveryOngoing = () => {
                     marginLeft: 10,
                   }}
                 >
+                  {/* "SEND" text on the button */}
                   <Text style={{ color: "white" }}>SEND</Text>
                 </TouchableOpacity>
               </View>
@@ -361,6 +425,7 @@ const DeliveryOngoing = () => {
           </View>
         </View>
       )}
+
       <FollowUs />
       <Navbar />
       <ScrollView style={{ flexDirection: "column", backgroundColor: "white" }}>
@@ -371,7 +436,6 @@ const DeliveryOngoing = () => {
                 {/* Left Side Content */}
                 <Box mt={2} pr={4}>
                   {/* Heading displaying the order number */}
-                  
 
                   {/* Container for navigation links */}
                   <View style={{ display: "flex", flexDirection: "row" }}>
@@ -393,11 +457,8 @@ const DeliveryOngoing = () => {
                       >
                         Order History /
                       </TouchableOpacity>
-                      
                     </Typography>
-                    <Typography>
-                      {order.orderNumber}
-                    </Typography>
+                    <Typography>{order.orderNumber}</Typography>
                   </View>
                   <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                     ORDER {order.orderNumber}
@@ -517,7 +578,9 @@ const DeliveryOngoing = () => {
                   </ScrollView>
 
                   {order.items && (
+                    // Check if there are items in the order
                     <>
+                      {/* Order Summary Section */}
                       <View
                         style={{
                           display: "flex",
@@ -525,10 +588,13 @@ const DeliveryOngoing = () => {
                           justifyContent: "space-between",
                         }}
                       >
+                        {/* Title for Order Summary */}
                         <Typography style={{ fontWeight: "bold" }}>
                           Order Summary
                         </Typography>
                       </View>
+
+                      {/* Delivery Section */}
                       <View
                         style={{
                           display: "flex",
@@ -537,15 +603,18 @@ const DeliveryOngoing = () => {
                           justifyContent: "space-between",
                         }}
                       >
+                        {/* Title for Delivery */}
                         <Typography style={{ fontWeight: "bold" }}>
                           Delivery
                         </Typography>
 
+                        {/* Display the delivery fee */}
                         <Typography style={{ fontWeight: "bold" }}>
                           R {order.deliveryFee}
                         </Typography>
                       </View>
 
+                      {/* Agent Referral Section */}
                       <View
                         style={{
                           display: "flex",
@@ -554,14 +623,18 @@ const DeliveryOngoing = () => {
                           justifyContent: "space-between",
                         }}
                       >
+                        {/* Title for Agent Referral */}
                         <Typography style={{ fontWeight: "bold" }}>
-                          {" "}
                           Agent Referral
                         </Typography>
+
+                        {/* Display the agent referral amount */}
                         <Typography style={{ fontWeight: "bold" }}>
                           R {order.agentReferralAmount}
                         </Typography>
                       </View>
+
+                      {/* Tax Section */}
                       <View
                         style={{
                           display: "flex",
@@ -570,15 +643,18 @@ const DeliveryOngoing = () => {
                           justifyContent: "space-between",
                         }}
                       >
+                        {/* Title for Tax */}
                         <Typography style={{ fontWeight: "bold" }}>
-                          {" "}
-                          Tax{" "}
+                          Tax
                         </Typography>
+
+                        {/* Display the tax amount */}
                         <Typography style={{ fontWeight: "bold" }}>
                           R {order.Tax}
                         </Typography>
                       </View>
 
+                      {/* Total Section */}
                       <View
                         style={{
                           display: "flex",
@@ -587,9 +663,12 @@ const DeliveryOngoing = () => {
                           justifyContent: "space-between",
                         }}
                       >
+                        {/* Title for Total */}
                         <Typography variant="h5" style={{ fontWeight: "bold" }}>
                           Total
                         </Typography>
+
+                        {/* Display the total order amount */}
                         <Typography variant="h5" style={{ fontWeight: "bold" }}>
                           R {order.totalAmount}
                         </Typography>
@@ -607,9 +686,10 @@ const DeliveryOngoing = () => {
                   display="flex"
                   flexDirection="column"
                   justifyContent="space-between"
-                  mpr={4}
+                  mp={4}
                 >
                   <Box mb={4}>
+                    {/* Delivery Details Section */}
                     <View>
                       <Typography
                         variant="h5"
@@ -622,6 +702,7 @@ const DeliveryOngoing = () => {
                         DELIVERY DETAILS
                       </Typography>
 
+                      {/* Delivery Address Section */}
                       <View
                         style={{
                           borderBottom: "1px white solid",
@@ -635,6 +716,8 @@ const DeliveryOngoing = () => {
                           {order.deliveryAddress}
                         </Typography>
                       </View>
+
+                      {/* Map Section */}
                       {order.coordinates && (
                         <MapContainer
                           center={[
@@ -649,6 +732,7 @@ const DeliveryOngoing = () => {
                             borderRadius: "25px",
                           }}
                         >
+                          {/* Map Layers */}
                           <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -672,13 +756,14 @@ const DeliveryOngoing = () => {
                         </MapContainer>
                       )}
 
+                      {/* Delivery Notes Section */}
                       <Typography style={{ color: "grey", marginTop: "14px" }}>
                         Delivery Notes
                       </Typography>
                       <Typography style={{ color: "white" }}>
                         In essence, AMS aims to not only help businesses grow
                         but also make a positive image on society by nurturing
-                        local talent and fostering sustainable busibess growth.
+                        local talent and fostering sustainable business growth.
                       </Typography>
                       <View
                         style={{
@@ -687,6 +772,8 @@ const DeliveryOngoing = () => {
                           borderBottomColor: "lightgrey",
                         }}
                       ></View>
+
+                      {/* Shipment Tracking Section */}
                       <View
                         style={{
                           display: "flex",
@@ -705,21 +792,19 @@ const DeliveryOngoing = () => {
                           }}
                         ></View>
                         {shipmentTrack &&
-                            shipmentTrack.shipments &&
-                            shipmentTrack.shipments.map((shipment, index) => (
-                              <View key={index}>
-                        <Typography
-                          style={{ color: "white", marginTop: "6px" }}
-                        >
-                          {" "}
-                          
+                          shipmentTrack.shipments &&
+                          shipmentTrack.shipments.map((shipment, index) => (
+                            <View key={index}>
+                              <Typography
+                                style={{ color: "white", marginTop: "6px" }}
+                              >
                                 {shipment.status}
-                                
-                        </Typography>
-                        </View>
-                        ))}
+                              </Typography>
+                            </View>
+                          ))}
                       </View>
 
+                      {/* Message Button Section */}
                       <TouchableOpacity
                         style={{
                           marginTop: 20,
@@ -746,6 +831,8 @@ const DeliveryOngoing = () => {
                           MESSAGE
                         </Text>
                       </TouchableOpacity>
+
+                      {/* Authentication PIN Section */}
                       <View
                         style={{
                           display: "flex",
@@ -760,16 +847,15 @@ const DeliveryOngoing = () => {
                           variant="h5"
                           style={{ color: "white", fontWeight: "bold" }}
                         >
-          
                           {order.Pin}
                         </Typography>
                       </View>
+
+                      {/* Ongoing Button Section */}
                       <Button
                         variant="outlined"
                         style={{
                           marginTop: 60,
-                          // width: 350,
-                          // height: 30,
                           borderWidth: 1,
                           borderColor: "lightgrey",
                           borderRadius: 15,
@@ -783,8 +869,6 @@ const DeliveryOngoing = () => {
                           style={{
                             fontSize: 16,
                             color: "lightgrey",
-                            // margin: 0,
-                            // marginLeft: 5,
                           }}
                         >
                           ONGOING

@@ -23,54 +23,67 @@ const TellUsAboutYourself = ({ navigation }) => {
   const window = Dimensions.get("window");
   const user = firebase.auth().currentUser;
 
+  // Function to handle the continue button click
   const handleContinue = async (e) => {
     e.preventDefault();
-    
-    if (!name || !surname || !phone || !gender || !email ) {
+
+    // Check if all required fields are filled
+    if (!name || !surname || !phone || !gender || !email) {
       alert("Please fill in all fields before continuing.");
       return;
     }
 
+    // Set user information in local storage
     localStorage.setItem("user", user.uid);
 
     try {
       setLoading(true);
+
+      // Reference to the user document in Firestore
       const userRef = firestore.collection("Users").doc(user.uid);
 
+      // Set user information in Firestore document
       await userRef.set({
         name,
         surname,
         phone,
         gender,
-        email,      
+        email,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        uid: user.uid,       
+        uid: user.uid,
       });
 
+      // Log success message and navigate to the next screen
       console.log("User information successfully submitted to Firestore.");
-
       navigation.navigate("AlternativeContact");
     } catch (error) {
+      // Log and alert if there's an error submitting user information
       console.error("Error submitting user information:", error.message);
       alert("Error submitting user information. Please try again.");
     } finally {
       setLoading(true);
     }
   };
+
+  // Array with an empty string as the only option
   const emptyOption = [""];
+  // Array with gender options
   const genderOptions = ["Male", "Female", "Other"];
 
-
   return (
+    // ImageBackground component to set the background image
     <ImageBackground
       source={require("../../Global/images/Reed.jpg")}
       style={styles.background}
     >
+      {/* Container View to hold the content */}
       <View style={styles.container}>
+        {/* Logo Image */}
         <Image
           source={require("../../Global/images/logo.png")}
           style={styles.logo}
-        />{" "}
+        />
+        {/* Title and Subtitle */}
         <View
           style={{
             display: "flex",
@@ -79,10 +92,10 @@ const TellUsAboutYourself = ({ navigation }) => {
             flexDirection: "column",
           }}
         >
-          {" "}
           <Text style={styles.title}>MAIN ACCOUNT HOLDER</Text>
           <Text style={styles.subtitle}>TELL US ABOUT YOURSELF</Text>
         </View>
+        {/* Form Inputs for Name and Surname */}
         <View
           style={{
             display: "flex",
@@ -102,11 +115,9 @@ const TellUsAboutYourself = ({ navigation }) => {
             onChange={(e) => setName(e.target.value)}
             style={{
               width: "48%",
-
               marginRight: "5px",
             }}
           />
-
           <TextField
             id="outlined-number"
             label="Surname"
@@ -122,6 +133,7 @@ const TellUsAboutYourself = ({ navigation }) => {
             }}
           />
         </View>
+        {/* Input for Phone number */}
         <TextField
           id="outlined-number"
           label="Phone"
@@ -139,6 +151,7 @@ const TellUsAboutYourself = ({ navigation }) => {
           }}
         />
         <br />
+        {/* Dropdown for selecting Gender */}
         <TextField
           id="outlined"
           select
@@ -159,6 +172,7 @@ const TellUsAboutYourself = ({ navigation }) => {
           ))}
         </TextField>
         <br />
+        {/* Input for Email */}
         <TextField
           id="outlined-number"
           label="Email"
@@ -175,6 +189,7 @@ const TellUsAboutYourself = ({ navigation }) => {
             textAlign: "left",
           }}
         />
+        {/* Continue button */}
         <TouchableOpacity style={styles.button} onPress={handleContinue}>
           {loading ? (
             <CircularProgress size={25} />

@@ -70,71 +70,87 @@ const AlternativeContact = () => {
   const containerHeight = window.height > 600 ? 600 : window.height * 0.9;
 
   return (
-    <View style={{ flex: 1 }}>
-      <ImageBackground
-        source={require("../../Global/images/Reed.jpg")}
-        style={styles.background}
-      >
-        <View
-          style={{ ...styles.container, width: containerWidth, height: "95%" }}
-        >
-          <Image
-            source={require("../../Global/images/logo.png")}
-            style={styles.logo}
-          />
-          <View
-            style={{
-              width: "120%",
-              flexDirection: "row",
-              justifyContent: "space-around",
-            }}
-          >
-            <Text style={styles.title}>ALTERNATIVE CONTACTS</Text>
-          </View>
-          <View style={{ width: "75%" }}>
-            <TextField
-              id="outlined-number"
-              label="Name"
-              type="text"
-              variant="standard"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <TextField
-              id="outlined-number"
-              label="Phone"
-              type="text"
-              variant="standard"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          </View>
-          <TouchableOpacity style={styles.button}  onPress={handleContinue}>
-            {loading ? (
-              <CircularProgress size={25} />
-            ) : (
-              <Text style={styles.buttonText}>CONTINUE</Text>
-            )}
-          </TouchableOpacity>
+  // View component representing the entire screen
+<View style={{ flex: 1 }}>
+  {/* ImageBackground component for setting the background image */}
+  <ImageBackground
+    source={require("../../Global/images/Reed.jpg")}
+    style={styles.background}
+  >
+    {/* View container with dynamic width and height styles */}
+    <View
+      style={{ ...styles.container, width: containerWidth, height: "95%" }}
+    >
+      {/* Image component for displaying the logo */}
+      <Image
+        source={require("../../Global/images/logo.png")}
+        style={styles.logo}
+      />
 
-          <TouchableOpacity
-            style={styles.businessButton}
-            onPress={handleContinue}
-          >
-            <Text style ={styles.buttonText1}>
-              NOT NOW
-              
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
+      {/* View for displaying the title */}
+      <View
+        style={{
+          width: "120%",
+          flexDirection: "row",
+          justifyContent: "space-around",
+        }}
+      >
+        {/* Text component displaying the title */}
+        <Text style={styles.title}>ALTERNATIVE CONTACTS</Text>
+      </View>
+
+      {/* View for input fields with a width of 75% */}
+      <View style={{ width: "75%" }}>
+        {/* TextField component for entering the Name */}
+        <TextField
+          id="outlined-number"
+          label="Name"
+          type="text"
+          variant="standard"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+
+        {/* TextField component for entering the Phone number */}
+        <TextField
+          id="outlined-number"
+          label="Phone"
+          type="text"
+          variant="standard"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+      </View>
+
+      {/* TouchableOpacity for triggering the 'handleContinue' function */}
+      <TouchableOpacity style={styles.button} onPress={handleContinue}>
+        {/* Conditional rendering based on 'loading' state */}
+        {loading ? (
+          // CircularProgress component shown when loading is true
+          <CircularProgress size={25} />
+        ) : (
+          // Text component displaying "CONTINUE" when loading is false
+          <Text style={styles.buttonText}>CONTINUE</Text>
+        )}
+      </TouchableOpacity>
+
+      {/* TouchableOpacity for triggering the 'handleContinue' function */}
+      <TouchableOpacity style={styles.businessButton} onPress={handleContinue}>
+        {/* Text component displaying "NOT NOW" */}
+        <Text style ={styles.buttonText1}>
+          NOT NOW
+        </Text>
+      </TouchableOpacity>
     </View>
+  </ImageBackground>
+</View>
+
   );
 };
 

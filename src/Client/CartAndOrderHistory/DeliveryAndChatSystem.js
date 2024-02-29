@@ -23,10 +23,7 @@ import { Footer } from "../../Global/Footer";
 import { firestore } from "../../config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRoute } from "@react-navigation/native";
-import {
-  doc,
-  getDoc,
-} from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -37,15 +34,17 @@ import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 const DeliveryAndChatSystem = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { orderId } = route.params; 
+  const { orderId } = route.params;
   const [chatmodelVisble, setChatmodelVisible] = useState(false);
   const [message, setMessage] = useState("");
   const [order, setOrder] = useState({});
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const mapRef = useRef(null);
-  const icon = require('../../../assets/marker.png');
+  const icon = require("../../../assets/marker.png");
   const iconURI = Asset.fromModule(icon).uri;
+
+  // Create a Leaflet icon for map markers
   const leafletIcon = new L.Icon({
     iconUrl: iconURI,
     iconSize: [30, 30],
@@ -58,45 +57,56 @@ const DeliveryAndChatSystem = () => {
     { messages: "Hi there!", dateAntTime: "12:35 PM", status: "recieved" },
   ]);
 
- 
-
+  // Effect for handling user authentication state changes
   useEffect(() => {
+    // Get authentication instance
     const auth = getAuth();
+
+    // Subscribe to authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // Set the user state based on the authentication state
       setUser(user);
     });
 
+    // Cleanup function to unsubscribe when component unmounts
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, []); // Dependency array is empty, so this effect runs once during component mount
 
+  // Effect for fetching order data based on orderId and user state
   useEffect(() => {
-    const fetchOrdertData = async () => {
+    // Function to fetch order data from Firestore
+    const fetchOrderData = async () => {
       try {
-        const ordertDocRef = doc(firestore, "Orders", orderId);
-        const orderDocSnapshot = await getDoc(ordertDocRef);
+        // Reference to the specific order document in Firestore
+        const orderDocRef = doc(firestore, "Orders", orderId);
+
+        // Get a snapshot of the order document
+        const orderDocSnapshot = await getDoc(orderDocRef);
 
         if (orderDocSnapshot.exists()) {
+          // Extract order data from the snapshot and set it in the state
           const orderData = orderDocSnapshot.data();
-          
           setOrder(orderData);
         } else {
-          console.log("Product not found");
+          console.log("Order not found");
         }
       } catch (error) {
-        console.error("Error fetching product data:", error);
+        // Log an error if there's an issue fetching order data
+        console.error("Error fetching order data:", error);
       } finally {
-        setLoading(false); // Set loading to false after data fetching is complete
+        // Set loading to false after data fetching is complete
+        setLoading(false);
       }
     };
 
-    fetchOrdertData();
-  }, [firestore, orderId, user]);
+    // Call the fetchOrderData function when dependencies change
+    fetchOrderData();
+  }, [firestore, orderId, user]); // Dependencies for the effect to re-run when these values change
 
   const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
 
- 
   const handleSend = () => {
     // Check if the message is not empty
     if (message.trim() !== "") {
@@ -111,21 +121,25 @@ const DeliveryAndChatSystem = () => {
     }
   };
 
+  // Function to toggle the visibility of the chat modal
   const handleMessageButtonClick = () => {
     setChatmodelVisible(!chatmodelVisble);
   };
 
+  // Function to navigate to the Landing screen
   const navigateToLanding = () => {
     navigation.navigate("Landing");
   };
 
+  // Function to navigate to the DeliveryOngoing screen with orderId as a parameter
   const navigateToDeliveryOngoing = () => {
-    navigation.navigate("DeliveryOngoing",{ orderId });
+    navigation.navigate("DeliveryOngoing", { orderId });
   };
 
   return (
     <>
       {chatmodelVisble && (
+        // Modal overlay for the chat window
         <View
           style={{
             position: "fixed",
@@ -155,6 +169,7 @@ const DeliveryAndChatSystem = () => {
                 backgroundColor: "white",
               }}
             >
+              {/* Close button for the chat window */}
               <TouchableOpacity
                 onPress={() => setChatmodelVisible(false)}
                 style={{
@@ -167,6 +182,8 @@ const DeliveryAndChatSystem = () => {
                 {/* X icon button */}
                 <Text style={{ fontSize: 20, fontWeight: "bold" }}>X</Text>
               </TouchableOpacity>
+
+              {/* Chat message area */}
               <ScrollView
                 style={{
                   flex: 1,
@@ -177,10 +194,16 @@ const DeliveryAndChatSystem = () => {
                 }}
               >
                 <Text
-                  style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    marginBottom: 10,
+                  }}
                 >
                   CHAT TO DRIVER
                 </Text>
+
+                {/* Map through chats to display messages */}
                 {chats.map((item, index) => (
                   <View
                     key={index}
@@ -191,6 +214,7 @@ const DeliveryAndChatSystem = () => {
                       flexDirection: "row",
                     }}
                   >
+                    {/* Message bubble */}
                     <View
                       style={{
                         backgroundColor:
@@ -223,6 +247,7 @@ const DeliveryAndChatSystem = () => {
                             : 0,
                       }}
                     >
+                      {/* Display the message text */}
                       <Text
                         style={{
                           color:
@@ -236,6 +261,8 @@ const DeliveryAndChatSystem = () => {
                         {item.messages}
                       </Text>
                     </View>
+
+                    {/* Display the message timestamp */}
                     <View
                       style={{
                         fontSize: 14,
@@ -254,6 +281,7 @@ const DeliveryAndChatSystem = () => {
                   </View>
                 ))}
               </ScrollView>
+
               {/* Input area for sending a message */}
               <View
                 style={{
@@ -263,6 +291,7 @@ const DeliveryAndChatSystem = () => {
                   padding: 10,
                 }}
               >
+                {/* Input field for typing a message */}
                 <TextInput
                   style={{
                     flex: 1,
@@ -275,6 +304,8 @@ const DeliveryAndChatSystem = () => {
                   value={message}
                   onChangeText={(text) => setMessage(text)}
                 />
+
+                {/* Button to send the message */}
                 <TouchableOpacity
                   onPress={handleSend}
                   style={{
@@ -284,6 +315,7 @@ const DeliveryAndChatSystem = () => {
                     marginLeft: 10,
                   }}
                 >
+                  {/* "SEND" text on the button */}
                   <Text style={{ color: "white" }}>SEND</Text>
                 </TouchableOpacity>
               </View>
@@ -294,8 +326,7 @@ const DeliveryAndChatSystem = () => {
       <FollowUs />
       <Navbar />
       <ScrollView style={{ flexDirection: "column", backgroundColor: "white" }}>
-     
-        <Container fixed sx={{  minHeight: "90vh"}} >
+        <Container fixed sx={{ minHeight: "90vh" }}>
           <View style={{ display: "flex", flexDirection: "row" }}>
             <Grid container spacing={2} mx="auto">
               <Grid item xs={12} md={8}>
@@ -330,10 +361,7 @@ const DeliveryAndChatSystem = () => {
                   </View>
 
                   {/* Heading for the cart section */}
-                  <Typography
-                    variant="h4"
-                    style={{ fontWeight: "bold" }}
-                  >
+                  <Typography variant="h4" style={{ fontWeight: "bold" }}>
                     CART
                   </Typography>
                   {/* ScrollView container with specific styles */}
@@ -448,6 +476,7 @@ const DeliveryAndChatSystem = () => {
 
                   {order.items && (
                     <>
+                      {/* Order Summary Section */}
                       <View
                         style={{
                           display: "flex",
@@ -459,6 +488,8 @@ const DeliveryAndChatSystem = () => {
                           Order Summary
                         </Typography>
                       </View>
+
+                      {/* Delivery Fee Section */}
                       <View
                         style={{
                           display: "flex",
@@ -470,13 +501,12 @@ const DeliveryAndChatSystem = () => {
                         <Typography style={{ fontWeight: "bold" }}>
                           Delivery
                         </Typography>
-                       
-                          <Typography style={{ fontWeight: "bold" }}>
-                            R {order.deliveryFee}
-                          </Typography>
-                       
+                        <Typography style={{ fontWeight: "bold" }}>
+                          R {order.deliveryFee}
+                        </Typography>
                       </View>
 
+                      {/* Agent Referral Section */}
                       <View
                         style={{
                           display: "flex",
@@ -486,15 +516,14 @@ const DeliveryAndChatSystem = () => {
                         }}
                       >
                         <Typography style={{ fontWeight: "bold" }}>
-                          {" "}
                           Agent Referral
                         </Typography>
                         <Typography style={{ fontWeight: "bold" }}>
-                         
-                            R {order.agentReferralAmount}
-                           
+                          R {order.agentReferralAmount}
                         </Typography>
                       </View>
+
+                      {/* Tax Section */}
                       <View
                         style={{
                           display: "flex",
@@ -504,14 +533,14 @@ const DeliveryAndChatSystem = () => {
                         }}
                       >
                         <Typography style={{ fontWeight: "bold" }}>
-                          {" "}
-                          Tax{" "}
+                          Tax
                         </Typography>
                         <Typography style={{ fontWeight: "bold" }}>
                           R {order.Tax}
                         </Typography>
                       </View>
 
+                      {/* Total Amount Section */}
                       <View
                         style={{
                           display: "flex",
@@ -528,7 +557,7 @@ const DeliveryAndChatSystem = () => {
                         </Typography>
                       </View>
                     </>
-                 )}
+                  )}
                 </Box>
               </Grid>
               <Grid item xs={12} md={4}>
@@ -540,10 +569,11 @@ const DeliveryAndChatSystem = () => {
                   display="flex"
                   flexDirection="column"
                   justifyContent="space-between"
-                  mpr={4}
+                  mp={4}
                 >
                   <Box mb={4}>
                     <View>
+                      {/* Delivery Details Section */}
                       <Typography
                         variant="h5"
                         style={{
@@ -555,6 +585,7 @@ const DeliveryAndChatSystem = () => {
                         DELIVERY DETAILS
                       </Typography>
 
+                      {/* Delivery Address Section */}
                       <View
                         style={{
                           borderBottom: "1px white solid",
@@ -568,39 +599,53 @@ const DeliveryAndChatSystem = () => {
                           {order.deliveryAddress}
                         </Typography>
                       </View>
-                      {order.coordinates && (<MapContainer
-                        center={[order.coordinates.lat, order.coordinates.lng]}
-                        zoom={13}
-                        ref={mapRef}
-                        style={{
-                          height: "20vh",
-                          width: "100%",
-                          borderRadius: "25px",
-                        }}
-                      >
-                        <TileLayer
-                          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                        <Marker position={[order.coordinates.lat, order.coordinates.lng]} icon={leafletIcon}>
-                          <Popup>
-                            <FontAwesomeIcon
-                              icon={faMapMarkerAlt}
-                              size="lg"
-                              color="black"
-                            />
-                          </Popup>
-                        </Marker>
-                        {/* Additional map layers or components can be added here */}
-                      </MapContainer>)}
-                      
+
+                      {/* Map Section */}
+                      {order.coordinates && (
+                        <MapContainer
+                          center={[
+                            order.coordinates.lat,
+                            order.coordinates.lng,
+                          ]}
+                          zoom={13}
+                          ref={mapRef}
+                          style={{
+                            height: "20vh",
+                            width: "100%",
+                            borderRadius: "25px",
+                          }}
+                        >
+                          <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                          />
+                          <Marker
+                            position={[
+                              order.coordinates.lat,
+                              order.coordinates.lng,
+                            ]}
+                            icon={leafletIcon}
+                          >
+                            <Popup>
+                              <FontAwesomeIcon
+                                icon={faMapMarkerAlt}
+                                size="lg"
+                                color="black"
+                              />
+                            </Popup>
+                          </Marker>
+                          {/* Additional map layers or components can be added here */}
+                        </MapContainer>
+                      )}
+
+                      {/* Delivery Notes Section */}
                       <Typography style={{ color: "grey", marginTop: "14px" }}>
                         Delivery Notes
                       </Typography>
                       <Typography style={{ color: "white" }}>
                         In essence, AMS aims to not only help businesses grow
                         but also make a positive image on society by nurturing
-                        local talent and fostering sustainable busibess growth.
+                        local talent and fostering sustainable business growth.
                       </Typography>
                       <View
                         style={{
@@ -609,6 +654,8 @@ const DeliveryAndChatSystem = () => {
                           borderBottomColor: "lightgrey",
                         }}
                       ></View>
+
+                      {/* Message Button Section */}
                       <TouchableOpacity
                         style={{
                           marginTop: 20,
@@ -653,8 +700,6 @@ const DeliveryAndChatSystem = () => {
         </Container>
         <Footer />
       </ScrollView>
-     
-      
     </>
   );
 };

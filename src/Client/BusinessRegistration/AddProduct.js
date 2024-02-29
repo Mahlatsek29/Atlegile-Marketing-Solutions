@@ -27,10 +27,6 @@ import ImageCompressor from "image-compressor";
 const AddProductsAndServices = () => {
   const navigation = useNavigation();
 
-  // const navigatepaymentinfo = () => {
-  //   navigation.navigate("AddProductsAndServices");
-  // };
-
   const emptyOption = [""];
   const [images, setImages] = useState([]);
 
@@ -40,15 +36,13 @@ const AddProductsAndServices = () => {
   const [quantity, setQuantity] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
-  const [companyName, setCompanyName] = useState("");
   const [selectedProductCategory, setProductCategory] = useState("");
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-
   const [brand, setBrand] = useState("");
   const [length, setLength] = useState(null);
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
   const [weight, setWeight] = useState(null);
+
   const productCategory = [
     ...emptyOption,
     "Electronics",
@@ -73,17 +67,16 @@ const AddProductsAndServices = () => {
     "Electrical and Lighting",
   ];
 
-  const url = "https://atlegile-marketing-solutions.vercel.app/";
+  const url = "https://atlegile-marketing-solutions--client-x35upb5j.web.app";
 
-  const handlePaymentButtonPress = () => {
-    const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=https://atlegilemarketing.firebaseapp.com/&amount=3170.00&item_name=TestProduct`;
-
-    Linking.openURL(paymentUrl);
-  };
-
+  // Function to handle image change when files are selected
   const handleImageChange = (e) => {
+    // Get the selected files from the event
     const files = e.target.files;
+
+    // Check if files are selected
     if (files.length > 0) {
+      // Create an array of objects with URLs and files and update the state
       const newImages = Array.from(files).map((file) => ({
         url: URL.createObjectURL(file),
         file,
@@ -91,9 +84,12 @@ const AddProductsAndServices = () => {
       setImages((prevImages) => [...prevImages, ...newImages]);
     }
   };
+
+  // Function to handle form submission
   const handleContinue = async (e) => {
     e.preventDefault();
 
+    // Check if at least one image is selected
     if (images.length === 0) {
       alert("Please select at least one image.");
       return;
@@ -102,13 +98,14 @@ const AddProductsAndServices = () => {
     try {
       setLoading(true);
 
+      // Create a reference to the Firestore collection and generate a unique product ID
       const productRef = firestore.collection("Products").doc();
-
       const productId = productRef.id;
 
+      // Set product data in Firestore
       await productRef.set({
         name,
-        company:businessName,
+        company: businessName,
         businessName,
         price,
         quantity,
@@ -122,6 +119,7 @@ const AddProductsAndServices = () => {
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
 
+      // Upload images to Firebase Storage
       const uploadTasks = images.map((image, index) => {
         const imageRef = storage.ref(
           `product_images/${productId}/image${index}`
@@ -129,18 +127,27 @@ const AddProductsAndServices = () => {
         return imageRef.put(image.file);
       });
 
+      // Wait for all image uploads to complete
       await Promise.all(uploadTasks);
+
+      // Get download URLs for the uploaded images
       const downloadURLs = await Promise.all(
         uploadTasks.map((task) => task.snapshot.ref.getDownloadURL())
       );
 
+      // Update product document with image URLs
       await productRef.update({ images: downloadURLs });
 
+      // Set a timeout for demonstration purposes (loading state)
       setTimeout(() => {
         setLoading(true);
       }, 3000);
+
+      // Construct payment URL and open it in a new tab
       const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=270.00&item_name=subscription`;
       Linking.openURL(paymentUrl);
+
+      // Navigate to the landing page after processing
       navigation.navigate("Landing");
     } catch (error) {
       console.error("Error storing data in Firestore:", error);
@@ -149,6 +156,7 @@ const AddProductsAndServices = () => {
   };
 
   return (
+    // Styling for the main container with background image
     <View
       style={{
         width: "100vw",
@@ -157,6 +165,7 @@ const AddProductsAndServices = () => {
         height: "100vh",
       }}
     >
+      {/* Grid container for layout */}
       <Grid
         container
         style={{
@@ -166,9 +175,9 @@ const AddProductsAndServices = () => {
           top: 5,
           left: -10,
           right: 10,
-          
         }}
       >
+        {/* Left grid content (hidden on small screens) */}
         <Grid
           item
           lg={8}
@@ -178,12 +187,13 @@ const AddProductsAndServices = () => {
             display: "flex",
             flexDirection: "column",
             width: "100%",
-            height:"100%"
+            height: "100%",
           }}
         >
           {/* Left grid content */}
         </Grid>
 
+        {/* Right grid content */}
         <Grid
           item
           lg={4}
@@ -191,20 +201,22 @@ const AddProductsAndServices = () => {
           style={{
             backgroundColor: "#fff",
             width: "100%",
-            height:'auto',
+            height: "auto",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            alignItems:'center',
-           
+            alignItems: "center",
           }}
         >
-          <Grid >
+          {/* Logo section */}
+          <Grid>
             <img
               src={logo}
               style={{ height: "9vh", width: "90%", paddingTop: "8vh" }}
             />
           </Grid>
+
+          {/* Form container */}
           <View
             className="form-container"
             style={{
@@ -212,6 +224,7 @@ const AddProductsAndServices = () => {
               marginBottom: "30px",
             }}
           >
+            {/* Title for adding products and services */}
             <Typography
               variant="h2"
               style={{
@@ -225,16 +238,19 @@ const AddProductsAndServices = () => {
             >
               ADD PRODUCTS + SERVICES
             </Typography>
+
+            {/* Image upload and display section */}
             <View
               style={{
                 display: "flex",
                 flexDirection: "row",
                 width: "100%",
                 height: "8vh",
-                alignSelf:'flex-start',
-                marginBottom:5,
+                alignSelf: "flex-start",
+                marginBottom: 5,
               }}
             >
+              {/* Display selected images or a placeholder */}
               {images.length > 0 ? (
                 images.map((image, index) => (
                   <img
@@ -262,6 +278,7 @@ const AddProductsAndServices = () => {
                 />
               )}
 
+              {/* Label and input for adding images */}
               <label
                 htmlFor="imageInput"
                 className="add"
@@ -269,7 +286,6 @@ const AddProductsAndServices = () => {
                   backgroundColor: "whitesmoke",
                   color: "#000",
                   padding: "25px",
-                  // paddingBottom:'20px',
                   width: "5%",
                   cursor: "pointer",
                   alignSelf: "center",
@@ -286,8 +302,11 @@ const AddProductsAndServices = () => {
                 multiple // Allow selecting multiple files
               />
             </View>
-            <View >
+
+            {/* Form for entering product details */}
+            <View>
               <form onSubmit={handleContinue}>
+                {/* Name input field */}
                 <TextField
                   fullWidth
                   id="outlined-number"
@@ -303,6 +322,7 @@ const AddProductsAndServices = () => {
                   required
                 />
                 <ScrollView>
+                  {/* Business name input field */}
                   <TextField
                     fullWidth
                     id="outlined-number"
@@ -317,7 +337,8 @@ const AddProductsAndServices = () => {
                     onChange={(e) => setBusinessName(e.target.value)}
                     required
                   />
-                  
+
+                  {/* Price and Quantity input fields */}
                   <View style={{ display: "flex", flexDirection: "row" }}>
                     <TextField
                       fullWidth
@@ -331,7 +352,6 @@ const AddProductsAndServices = () => {
                       style={{
                         width: "45%",
                         marginRight: "10px",
-                       
                       }}
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
@@ -352,7 +372,10 @@ const AddProductsAndServices = () => {
                       required
                     />
                   </View>
+
+                  {/* Dimensions input fields */}
                   <View style={{ display: "flex", flexDirection: "row" }}>
+                    {/* Length, width, height, and weight input fields */}
                     <TextField
                       fullWidth
                       id="outlined-number"
@@ -365,7 +388,6 @@ const AddProductsAndServices = () => {
                       style={{
                         width: "45%",
                         marginRight: "10px",
-                        
                       }}
                       value={length}
                       onChange={(e) => setLength(e.target.value)}
@@ -382,7 +404,6 @@ const AddProductsAndServices = () => {
                       }}
                       style={{
                         width: "45%",
-                      
                         marginRight: "10px",
                       }}
                       value={width}
@@ -400,7 +421,6 @@ const AddProductsAndServices = () => {
                       }}
                       style={{
                         width: "45%",
-                       
                         marginRight: "10px",
                       }}
                       value={height}
@@ -422,6 +442,8 @@ const AddProductsAndServices = () => {
                       required
                     />
                   </View>
+
+                  {/* Description input field */}
                   <br />
                   <TextField
                     fullWidth
@@ -434,12 +456,13 @@ const AddProductsAndServices = () => {
                     }}
                     style={{
                       width: "100%",
-                      
                     }}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     required
                   />
+
+                  {/* Product category selection */}
                   <TextField
                     fullWidth
                     id="outlined-select-currency"
@@ -455,6 +478,7 @@ const AddProductsAndServices = () => {
                     }}
                     required
                   >
+                    {/* Map through product categories and create options */}
                     {productCategory.map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
@@ -462,6 +486,7 @@ const AddProductsAndServices = () => {
                     ))}
                   </TextField>
 
+                  {/* Brand input field */}
                   <TextField
                     fullWidth
                     id="outlined-number"
@@ -474,13 +499,14 @@ const AddProductsAndServices = () => {
                     style={{
                       width: "100%",
                       marginLeft: "5px",
-                     
                     }}
                     value={brand}
                     onChange={(e) => setBrand(e.target.value)}
                     required
                   />
                 </ScrollView>
+
+                {/* Submit button */}
                 <Button
                   variant="contained"
                   style={{
@@ -492,6 +518,7 @@ const AddProductsAndServices = () => {
                   }}
                   type="submit"
                 >
+                  {/* Conditional rendering of loading or 'Continue' text */}
                   {loading ? (
                     <Box
                       sx={{
@@ -508,34 +535,7 @@ const AddProductsAndServices = () => {
                 </Button>
               </form>
             </View>
-
-            {/* <Button
-            variant="contained"
-            style={{
-              width: "100%",
-              height: "10%",
-              marginTop: "5%",
-              background: "#072840",
-              borderRadius: "30px",
-            }}
-            type="submit"
-          >
-            {loading ? (
-              <View
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <CircularProgress color="inherit" size={25} />
-              </View>
-            ) : (
-              "Continue"
-            )}
-          </Button> */}
           </View>
-         
         </Grid>
       </Grid>
     </View>

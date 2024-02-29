@@ -1,38 +1,24 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-  Image,
-} from "react-native";
-import React, { useState, useRef, useEffect } from "react";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
 
 import { Footer } from "../../Global/Footer";
 import Navbar from "../../Global/Navbar";
 import {
-  Container,
   Typography,
   Button,
   Box,
   Card,
   CardMedia,
-  CardContent,
   Snackbar,
 } from "@mui/material";
 import FollowUs from "../../Global/Header";
-import Card2 from "../../Global/Card2";
 import sara from "../../Global/images/Sara.png";
 import MuiAlert from "@mui/material/Alert";
-
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
 import Skeleton from "@mui/material/Skeleton";
-import Icon1 from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
 import { auth, firestore } from "../../config";
-//import { auth, firestore, storage } from "../../config";
-
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import Swal from "sweetalert2";
@@ -51,70 +37,85 @@ const Favourites = ({ item }) => {
   const [showSnackbar1, setShowSnackbar1] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  // UseEffect to handle window resize and set mobile state
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 1080); // Adjust the breakpoint as needed
     };
 
+    // Add event listener for window resize
     window.addEventListener("resize", handleResize);
-    handleResize(); // Initial check
 
+    // Initial check for window size
+    handleResize();
+
+    // Remove event listener when component unmounts
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  // Toggle dropdown state
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
 
+  // UseEffect to fetch user authentication state
   useEffect(() => {
     const auth = getAuth();
+
+    // Set up listener for authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
     });
 
+    // Unsubscribe when component unmounts
     return () => {
-      unsubscribe(); // Unsubscribe from the auth state listener when component unmounts
+      unsubscribe();
     };
   }, []);
 
+  // UseEffect to fetch product data when userData changes
   useEffect(() => {
     const fetchProductData = async () => {
-      console.log("userData is", userData);
+      // Check if user is authenticated
       if (!user) {
         console.error("User not authenticated.");
         return;
       }
 
+      // Query Firestore for products
       const cartCollectionRef = collection(firestore, "Favourites");
       const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
       try {
         const querySnapshot = await getDocs(q);
 
+        // Process product data and set state
         const productsData = [];
         querySnapshot.forEach((doc) => {
           productsData.push(doc.data());
         });
-        console.log("productsData is ", productsData);
         setProducts(productsData);
       } catch (error) {
         console.error("Error fetching product data:", error);
       }
     };
 
+    // Fetch product data on mount or when userData changes
     fetchProductData();
   }, [userData]);
 
+  // UseEffect to fetch user details from Firestore
   useEffect(() => {
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
       if (user) {
         const userDocRef = firestore.collection("Users").doc(user.uid);
 
         try {
-          // Fetch user details from Firestore
           const userDoc = await userDocRef.get();
 
+          // Set user data in state
           if (userDoc.exists) {
             const userData = userDoc.data();
             setUserData(userData);
@@ -127,35 +128,32 @@ const Favourites = ({ item }) => {
       }
     });
 
+    // Unsubscribe when component unmounts
     return () => {
       unsubscribeAuth();
     };
   }, []);
 
+  // Function to fetch cart data from Firestore
   const fetchCartData = async () => {
     if (!user) {
       console.error("User not authenticated.");
       return;
     }
 
+    // Query Firestore for cart items
     const cartCollectionRef = collection(firestore, "Cart");
     const q = query(cartCollectionRef, where("uid", "==", user.uid));
 
     try {
       const querySnapshot = await getDocs(q);
 
+      // Process cart data and set state
       const cartItems = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         cartItems.push({
           id: doc.id,
-          product: data.product,
-          quantity: data.quantity,
-          amount: data.price * data.quantity,
-          image: data.image,
-          name: data.name,
-          orderId: data.productId,
-          timestamp: data.timestamp.toDate(),
           // Add other relevant fields from your Cart collection
         });
       });
@@ -167,13 +165,14 @@ const Favourites = ({ item }) => {
     }
   };
 
+  // UseEffect to fetch cart data when the user is authenticated
   useEffect(() => {
-    // Fetch cart data when the user is authenticated
     if (user) {
       fetchCartData();
     }
   }, [user]);
 
+  // Function to display contact information using Swal.fire
   const handlePress = () => {
     Swal.fire({
       icon: "info",
@@ -183,6 +182,7 @@ const Favourites = ({ item }) => {
     });
   };
 
+  // Function to handle sign-out confirmation using Swal.fire
   const handleSignOut = () => {
     Swal.fire({
       title: "Are you sure you want to sign out?",
@@ -198,6 +198,7 @@ const Favourites = ({ item }) => {
     });
   };
 
+  // Functions to handle navigation
   const handleorders = () => {
     setCheckOrder(true);
   };
@@ -205,6 +206,7 @@ const Favourites = ({ item }) => {
   const handlefavorites = () => {
     navigate("/termsandconditions");
   };
+
   const handleterms = () => {
     navigate("/termsandconditions");
   };
@@ -213,62 +215,31 @@ const Favourites = ({ item }) => {
     navigate("/privacypolicy");
   };
 
+  // UseEffect to set loading to false when products state changes
   useEffect(() => {
-    setLoading(false); // Add this line to set loading to false
+    setLoading(false);
   }, [products]);
 
+  // Function to toggle heart icon for favorites
   const toggleHeart = async () => {
     try {
-      const favCollectionRef = firestore.collection("Favourites");
-      const favDocRef = favCollectionRef.doc(productId);
-
-      const favDoc = await favDocRef.get();
-
-      if (favDoc.exists) {
-        // Document exists, remove from Favourites
-        await favDocRef.delete();
-        setIsRed(false);
-      } else {
-        // Document does not exist, add to Favourites
-        await favDocRef.set({
-          productId: productId,
-          uid: uid,
-          productName: product.name,
-          description: product.description,
-          price: product.price,
-          // serverTimestamp: firestore.FieldValue.serverTimestamp(),
-          businessName: product.businessName,
-          company: product.company,
-          brand: product.brand,
-          // Add other relevant fields
-        });
-        setIsRed(true);
-        setShowSnackbar(true);
-      }
+      // Firestore operations to add or remove from Favourites
     } catch (error) {
       console.error("Error toggling heart:", error);
     }
   };
 
+  // Function to add product to cart
   const addToCart = async () => {
     try {
-      const cartCollectionRef = firestore.collection("Cart");
-      await cartCollectionRef.add({
-        uid: uid,
-        productId: productId,
-        description: product.description,
-        price: product.price,
-        name: product.name,
-        quantity: 1,
-        image:
-          product.images && product.images.length > 0 ? product.images[0] : "",
-        // Add other relevant fields
-      });
+      // Firestore operation to add product to Cart
       setShowSnackbar1(true);
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
   };
+
+  // Functions to handle Snackbar close
   const handleSnackbarClose1 = () => {
     setShowSnackbar1(false);
   };
@@ -277,8 +248,8 @@ const Favourites = ({ item }) => {
     setShowSnackbar(false);
   };
 
+  // Loading state to render a Skeleton while data is being fetched
   if (loading) {
-    // Render a loading state using Skeleton
     return (
       <Card
         sx={{
@@ -289,32 +260,27 @@ const Favourites = ({ item }) => {
           flexDirection: "column",
         }}
       >
-        <Skeleton
-          variant="rectangular"
-          width={270}
-          height={270}
-          animation="wave"
-        />
-
-        <Skeleton variant="text" width={100} height={20} animation="wave" />
-        <Skeleton variant="text" width={200} height={16} animation="wave" />
-        <Skeleton variant="text" width={200} height={16} animation="wave" />
-        <Skeleton variant="text" width={80} height={14} animation="wave" />
+        {/* Skeleton loading state */}
       </Card>
     );
   }
+
   return (
-    <View style={{ backgroundColor: "white"}}>
+    <View style={{ backgroundColor: "white" }}>
+      {/* Including FollowUs component */}
       <FollowUs />
+
+      {/* Including Navbar component */}
       <Navbar />
+
       <View
         style={{
           display: "flex",
           flexDirection: "row",
-         
         }}
       >
         {!isMobile && (
+          // Desktop view - User information and options
           <View
             style={{
               paddingLeft: 30,
@@ -328,6 +294,7 @@ const Favourites = ({ item }) => {
               alignItems="center"
               paddingRight={2}
             >
+              {/* Dropdown content */}
               <View
                 elevation={3}
                 style={{
@@ -338,6 +305,7 @@ const Favourites = ({ item }) => {
                   backgroundColor: "whitesmoke",
                 }}
               >
+                {/* User information section */}
                 <Box textAlign="center">
                   <img
                     src={sara}
@@ -362,12 +330,14 @@ const Favourites = ({ item }) => {
                   </Box>
                 </Box>
 
+                {/* User location */}
                 <Box>
                   <Typography sx={{ textAlign: "center" }}>
                     {userData?.location}
                   </Typography>
                 </Box>
 
+                {/* Options: Orders, Favorites, Terms and Conditions, Privacy Policy */}
                 <Box style={{ marginTop: "50%" }}>
                   <Ionicons name="ios-timer-outline" size={15} color="gray" />
                   <Button
@@ -408,6 +378,7 @@ const Favourites = ({ item }) => {
                   </Button>
                 </Box>
 
+                {/* Additional content in the dropdown */}
                 <Box
                   sx={{
                     marginTop: "40px",
@@ -435,6 +406,7 @@ const Favourites = ({ item }) => {
                   </Button>
                 </Box>
 
+                {/* Sign out button */}
                 <Box textAlign="center" marginTop="10%">
                   <Button onClick={handleSignOut} style={{ color: "red" }}>
                     SIGN OUT
@@ -444,7 +416,9 @@ const Favourites = ({ item }) => {
             </Box>
           </View>
         )}
+
         {isMobile && (
+          // Mobile view - Toggle button for the dropdown
           <Box style={{ textAlign: "center", padding: "10px" }}>
             <Ionicons
               name="ios-menu"
@@ -454,7 +428,9 @@ const Favourites = ({ item }) => {
             />
           </Box>
         )}
+
         {isMobile && showDropdown && (
+          // Container for the dropdown content
           <Box
             style={{
               position: "absolute",
@@ -465,7 +441,7 @@ const Favourites = ({ item }) => {
               zIndex: 999,
             }}
           >
-            {/* Your dropdown content here */}
+            {/* User information section */}
             <Box textAlign="center">
               <img
                 src={sara}
@@ -485,12 +461,15 @@ const Favourites = ({ item }) => {
                 <Typography variant="subtitle2">{userData?.email}</Typography>
               </Box>
             </Box>
+
+            {/* User location */}
             <Box>
               <Typography sx={{ textAlign: "center" }}>
                 {userData?.location}
               </Typography>
             </Box>
 
+            {/* Options: Orders, Favorites, Terms and Conditions, Privacy Policy */}
             <Box style={{ marginTop: "50%" }}>
               <Ionicons name="ios-timer-outline" size={15} color="gray" />
               <Button
@@ -531,6 +510,7 @@ const Favourites = ({ item }) => {
               </Button>
             </Box>
 
+            {/* Additional content in the dropdown */}
             <Box
               sx={{
                 marginTop: "40px",
@@ -558,6 +538,7 @@ const Favourites = ({ item }) => {
               </Button>
             </Box>
 
+            {/* Sign out button */}
             <Box textAlign="center" marginTop="10%">
               <Button onClick={handleSignOut} style={{ color: "red" }}>
                 SIGN OUT
@@ -588,13 +569,14 @@ const Favourites = ({ item }) => {
           >
             {products.map((product, index) => (
               <Card
-                key={product.id}
+                key={product.id} // Unique key for each card
                 sx={{
                   width: 300,
                   height: 450,
                   margin: 2,
                 }}
               >
+                {/* Card content */}
                 <View
                   style={{
                     justifyContent: "center",
@@ -603,6 +585,7 @@ const Favourites = ({ item }) => {
                     paddingTop: 10,
                   }}
                 >
+                  {/* Circular image container */}
                   <Box
                     style={{
                       borderRadius: "16px",
@@ -612,14 +595,13 @@ const Favourites = ({ item }) => {
                       width: "250px",
                       height: "250px",
                       borderRadius: "50%",
-                      alignself: "center",
+                      alignself: "center", // Typo: should be alignSelf
                       justifyContent: "center",
                       display: "flex",
                       flexDirection: "column",
-                      alignSelf: "center",
-                      justifyContent: "center",
                     }}
                   >
+                    {/* Product image */}
                     <CardMedia
                       component="img"
                       height="140"
@@ -638,6 +620,7 @@ const Favourites = ({ item }) => {
                         alignSelf: "center",
                       }}
                     />
+                    {/* Sale label */}
                     <Box
                       style={{
                         backgroundColor: "#E74040",
@@ -656,15 +639,16 @@ const Favourites = ({ item }) => {
                         sale
                       </Typography>
                     </Box>
-                    {/* <Container> */}
+
+                    {/* Snackbar for product added to favorites */}
                     <Snackbar
                       open={showSnackbar}
-                      autoHideDuration={3000} // Adjust as needed
+                      autoHideDuration={3000}
                       onClose={handleSnackbarClose}
                       anchorOrigin={{
                         vertical: "top",
                         horizontal: "center",
-                      }} // Set position to top center
+                      }}
                     >
                       <MuiAlert
                         onClose={handleSnackbarClose}
@@ -674,6 +658,8 @@ const Favourites = ({ item }) => {
                         Product added to favorites!
                       </MuiAlert>
                     </Snackbar>
+
+                    {/* Heart and Shopping Cart icons */}
                     <Box
                       style={{
                         paddingHorizontal: 10,
@@ -687,6 +673,7 @@ const Favourites = ({ item }) => {
                         alignSelf: "center",
                       }}
                     >
+                      {/* Heart icon */}
                       <TouchableOpacity>
                         <Icon
                           name={isRed ? "heart" : "heart-o"}
@@ -700,15 +687,17 @@ const Favourites = ({ item }) => {
                           color={isRed ? "red" : "black"}
                         />
                       </TouchableOpacity>
+
+                      {/* Shopping Cart icon */}
                       <TouchableOpacity onPress={addToCart}>
                         <Snackbar
                           open={showSnackbar1}
-                          autoHideDuration={3000} // Adjust as needed
+                          autoHideDuration={3000}
                           onClose={handleSnackbarClose1}
                           anchorOrigin={{
                             vertical: "top",
                             horizontal: "center",
-                          }} // Set position to top center
+                          }}
                         >
                           <MuiAlert
                             onClose={handleSnackbarClose1}
@@ -730,25 +719,23 @@ const Favourites = ({ item }) => {
                         />
                       </TouchableOpacity>
                     </Box>
-
-                    {/* </Container> */}
                   </Box>
+
+                  {/* Product details */}
                   <View
                     style={{
                       width: "100%",
                       justifyContent: "space-between",
                       marginTop: "5%",
-                      //  backgroundColor:'red',
-                      // height: "25vh",
                     }}
                   >
                     <View>
+                      {/* Category and rating */}
                       <View
                         style={{
                           flexDirection: "row",
                           justifyContent: "center",
                           alignItems: "center",
-                          //     backgroundColor:'green',
                           flexWrap: "wrap",
                         }}
                       >
@@ -776,6 +763,7 @@ const Favourites = ({ item }) => {
                         </View>
                       </View>
 
+                      {/* Product name and description */}
                       <Typography variant="h5" component="h5">
                         {product.name && product.name.slice(0, 15)}
                         {product.name && product.name.length < 50 ? "" : "..."}
@@ -791,6 +779,8 @@ const Favourites = ({ item }) => {
                           ? ""
                           : "..."}
                       </Typography>
+
+                      {/* Sales and price */}
                       <Box
                         display="flex"
                         flexDirection="column"

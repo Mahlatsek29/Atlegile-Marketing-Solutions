@@ -26,30 +26,39 @@ const Signup = () => {
 
   const window = Dimensions.get("window"); // Getting window dimensions
 
+  // Function to navigate to the "BusinessRegistration" screen
   const navigateSignUpBussiness = () => {
     navigation.navigate("BusinessRegistration");
   };
 
+  // Function to navigate to the "Landing" screen
   const navigateToShop = () => {
     navigation.navigate("Landing");
   };
- 
+
+  // Function to handle the signup process
   const handleSignup = async (e) => {
     e.preventDefault();
 
+    // Check if email or password is empty, display alert if true
     if (email.trim() === "" || password.trim() === "") {
       alert("Please fill in all fields before signing in.");
       return;
     }
 
     try {
-      setLoading(true);
+      setLoading(true); // Set loading state to true during the signup process
+
+      // Create a user using email and password
       const userCredential = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
 
+      // Check if user is created successfully
       if (userCredential.user) {
         console.log("User signed up:", userCredential.user);
+
+        // Save additional user information to Firestore
         await firestore
           .collection("Users")
           .doc(userCredential.user.uid)
@@ -61,6 +70,7 @@ const Signup = () => {
             },
           });
 
+        // Navigate to the "TellUsAboutYourself" screen
         navigation.navigate("TellUsAboutYourself");
       }
     } catch (error) {
@@ -76,21 +86,27 @@ const Signup = () => {
   const containerHeight = window.height > 600 ? 600 : window.height * 0.9;
 
   return (
+    // View representing the entire screen
     <View style={{ flex: 1 }}>
+      {/* Background image */}
       <ImageBackground
         source={require("../../Global/images/Reed.jpg")}
         style={styles.background}
       >
+        {/* Container for the main content */}
         <View
           style={{ ...styles.container, width: containerWidth, height: "95%" }}
         >
-          <View>
-            
-          </View>
+          {/* Empty View */}
+          <View></View>
+
+          {/* Logo image */}
           <Image
             source={require("../../Global/images/logo.png")}
             style={styles.logo}
           />
+
+          {/* Title and SHOP link */}
           <View
             style={{
               width: "120%",
@@ -98,7 +114,10 @@ const Signup = () => {
               justifyContent: "space-around",
             }}
           >
+            {/* Title for the screen */}
             <Text style={styles.title}>SIGN UP </Text>
+
+            {/* SHOP link with arrow icon */}
             <TouchableOpacity onPress={navigateToShop}>
               <Text
                 style={{
@@ -118,6 +137,8 @@ const Signup = () => {
               </Text>
             </TouchableOpacity>
           </View>
+
+          {/* Form fields for email and password */}
           <View style={{ width: "75%" }}>
             <TextField
               id="outlined-number"
@@ -143,6 +164,8 @@ const Signup = () => {
               secureTextEntry
             />
           </View>
+
+          {/* Button to initiate signup process */}
           <TouchableOpacity style={styles.button} onPress={handleSignup}>
             {loading ? (
               <CircularProgress size={25} />
@@ -150,9 +173,11 @@ const Signup = () => {
               <Text style={styles.buttonText}>SIGN UP</Text>
             )}
           </TouchableOpacity>
+
+          {/* Link to navigate to the sign-in screen */}
           <View style={{ width: "70%" }}>
             <TouchableOpacity
-            onPress={()=> navigation.navigate("SignIn")}
+              onPress={() => navigation.navigate("SignIn")}
               style={{
                 position: "relative",
                 left: 10,
@@ -166,6 +191,8 @@ const Signup = () => {
               ALREADY HAVE AN ACCOUNT?
             </TouchableOpacity>
           </View>
+
+          {/* Button to initiate signup with Google */}
           <TouchableOpacity>
             <Text style={styles.linkText1}>
               {" "}
@@ -173,6 +200,8 @@ const Signup = () => {
               SIGN UP WITH GOOGLE
             </Text>
           </TouchableOpacity>
+
+          {/* Button to navigate to business signup screen */}
           <TouchableOpacity
             style={styles.businessButton}
             onPress={navigateSignUpBussiness}

@@ -8,13 +8,10 @@ import AlternativeContact from "./src/Client/SignUp/AlternativeContact";
 import SignIn from "./src/Client/SignIn/Signin";
 import BusinessRegistration from "./src/Client/BusinessRegistration/BusinessRegistration";
 import AddProductsAndServices from "./src/Client/BusinessRegistration/AddProduct";
-import PaymentInfo from "./src/Client/BusinessRegistration/PaymentInfo";
 import ProductDetails from "./src/Client/ProductDetails/ProductDetails";
-import BusinessProducts from "./src/Client/ProductDetails/BusinessProducts";
 import UserProfile from "./src/Client/AccountAndBusiness/UserProfile";
 import AccountAndBusiness from "./src/Client/AccountAndBusiness/AccountBusiness";
 import OrderHistory from "./src/Client/CartAndOrderHistory/OrderHistory";
-import PayFast from "./src/Client/CartAndOrderHistory/PayFast";
 import Reciept from "./src/Client/CartAndOrderHistory/Reciept";
 import DeliveryOngoing from "./src/Client/CartAndOrderHistory/DeliveryOngoing";
 import DeliveryAndChatSystem from "./src/Client/CartAndOrderHistory/DeliveryAndChatSystem";
@@ -54,16 +51,14 @@ const Routes = () => {
           name="AddProductsAndServices"
           component={AddProductsAndServices}
         />
-        <Stack.Screen name="PaymentInfo" component={PaymentInfo} />
+       
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
-        <Stack.Screen name="BusinessProducts" component={BusinessProducts} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
         <Stack.Screen
           name="AccountAndBusiness"
           component={AccountAndBusiness}
         />
         <Stack.Screen name="OrderHistory" component={OrderHistory} />
-        <Stack.Screen name="PayFast" component={PayFast} />
        
         <Stack.Screen
           name="DateSelectionAndCheckout"

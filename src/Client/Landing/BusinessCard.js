@@ -130,7 +130,7 @@ export default function BusinessCard({ business }) {
 
   return (
     <>
-      {business.length >= 3 ? (
+      {business.length >= 3 ? ( // a business will only be shown if there are more than three oreducts
         <View
           style={{
             display: "flex",
@@ -149,14 +149,17 @@ export default function BusinessCard({ business }) {
               flexDirection: "row",
             }}
           >
+            {/* Left scroll button */}
             <TouchableOpacity onPress={scrollLeft}>
               <ArrowBackIosIcon />
             </TouchableOpacity>
 
+            {/* Right scroll button */}
             <TouchableOpacity onPress={scrollRight}>
               <ArrowForwardIosIcon />
             </TouchableOpacity>
 
+            {/* Container for the business name and product list */}
             <View
               style={{
                 zIndex: -10,
@@ -164,6 +167,7 @@ export default function BusinessCard({ business }) {
                 position: "absolute",
               }}
             >
+              {/* Business name and "View All" link */}
               <View
                 style={{
                   display: "flex",
@@ -171,6 +175,7 @@ export default function BusinessCard({ business }) {
                   justifyContent: "space-between",
                 }}
               >
+                {/* Business name */}
                 <Text
                   style={{
                     fontSize: "30px",
@@ -180,6 +185,8 @@ export default function BusinessCard({ business }) {
                 >
                   {business}
                 </Text>
+
+                {/* "View All" link */}
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate("Products", { businessId: business })
@@ -188,6 +195,8 @@ export default function BusinessCard({ business }) {
                   <Text>View All</Text>
                 </TouchableOpacity>
               </View>
+
+              {/* Horizontal ScrollView for displaying product cards */}
               <ScrollView
                 ref={scrollViewRef}
                 horizontal
@@ -196,15 +205,18 @@ export default function BusinessCard({ business }) {
                   handleContentSizeChange(contentWidth)
                 }
               >
+                {/* Map through products and render ProductCard component for each */}
                 {oneCompany.map((product) => (
                   <ProductCard key={product.id} productId={product.id} />
                 ))}
               </ScrollView>
             </View>
           </View>
+
           {currentBanner &&
           currentBanner.bannerImage &&
           currentBanner.bannerImage.length > 0 ? (
+            // Card container for the banner
             <Card
               style={{
                 backgroundColor: "gray",
@@ -214,6 +226,7 @@ export default function BusinessCard({ business }) {
                 justifyContent: "space-between",
               }}
             >
+              {/* Left arrow button */}
               <TouchableOpacity
                 onPress={handlePrevClick}
                 style={{
@@ -224,18 +237,15 @@ export default function BusinessCard({ business }) {
               >
                 <AntDesign name="left" size={24} color="white" />
               </TouchableOpacity>
+
+              {/* Grid container for banner content */}
               <Grid
                 container
                 spacing={2}
                 style={{ justifyContent: "center", alignItems: "center" }}
               >
-                <Grid
-                  sx={
-                    {
-                      //  backgroundColor:"yellow"
-                    }
-                  }
-                >
+                <Grid>
+                  {/* Nested Grid container for text content */}
                   <Grid
                     container
                     direction="column"
@@ -243,6 +253,7 @@ export default function BusinessCard({ business }) {
                     alignItems="center"
                     m={2}
                   >
+                    {/* Banner details - Other, Product Name, Price */}
                     <Typography
                       variant="subtitle1"
                       style={{
@@ -265,9 +276,10 @@ export default function BusinessCard({ business }) {
                     >
                       {currentBanner.productName}
                     </Typography>
+                    {/* Price display */}
                     <Grid
                       sx={{
-                        display:'flex',
+                        display: "flex",
                         alignSelf: "flex-start",
                         flexDirection: "row",
                       }}
@@ -291,7 +303,9 @@ export default function BusinessCard({ business }) {
                     </Grid>
                   </Grid>
                 </Grid>
+                {/* Image container */}
                 <Grid height={230} wodth="100%">
+                  {/* CardMedia component for displaying the banner image */}
                   <CardMedia
                     component="img"
                     height="100%"
@@ -305,6 +319,7 @@ export default function BusinessCard({ business }) {
                 </Grid>
               </Grid>
 
+              {/* Right arrow button */}
               <TouchableOpacity
                 onPress={handleNextClick}
                 style={{

@@ -239,7 +239,7 @@ const DeliveryOngoing = () => {
   }, [tackingShipment]);
 
   return (
-    <>
+    <View style={{backgroundColor:"white"}}>
       {chatmodelVisble && (
         // Modal overlay for the chat window
         <View
@@ -883,7 +883,7 @@ const DeliveryOngoing = () => {
         </Container>
         <Footer />
       </ScrollView>
-    </>
+    </View>
   );
 };
 

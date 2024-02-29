@@ -137,7 +137,7 @@ const DeliveryAndChatSystem = () => {
   };
 
   return (
-    <>
+    <View style={{backgroundColor:'white'}}>
       {chatmodelVisble && (
         // Modal overlay for the chat window
         <View
@@ -700,7 +700,7 @@ const DeliveryAndChatSystem = () => {
         </Container>
         <Footer />
       </ScrollView>
-    </>
+    </View>
   );
 };
 

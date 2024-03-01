@@ -28,9 +28,9 @@ Responsive Design: Ensures that the website works on different devices.
 ### Prerequisites
 
 Make sure you have the following installed on your machine:
- Git
- Node.js
- npm (Node Package Manager)
+ Git<br/>
+ Node.js<br/>
+ npm (Node Package Manager)<br/>
 
 ### Cloning the Repository
 
@@ -47,7 +47,7 @@ Open http://localhost:3000 in your browser to view the project.
 
 ### Contributions
 
-We welcome contributions! If you&#39;d like to enhance Atlegile Marketing Solutions CMS, please review
+We welcome contributions! If you&#39;d like to enhance Atlegile Marketing Solutions, please review
 our contribution guidelines.
 
 ### Contact

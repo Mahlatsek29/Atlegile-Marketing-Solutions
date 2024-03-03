@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
-  Image,
+
 } from "react-native";
 import {
   Container,
@@ -16,7 +16,7 @@ import {
   Card,
   ImageList,
   ImageListItem,
-  TextField,
+ 
 } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import FollowUs from "../../Global/Header";

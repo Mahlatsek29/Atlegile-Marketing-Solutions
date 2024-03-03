@@ -38,16 +38,6 @@ import {
 } from "firebase/firestore";
 
 import { auth } from "../../config";
-import PlacesAutocomplete, {
-  geocodeByAddress,
-  getLatLng,
-} from "react-places-autocomplete";
-// import { MapContainer, TileLayer, Popup } from "react-leaflet";
-// import "leaflet/dist/leaflet.css";
-// import L from "leaflet";
-// import { Asset } from "expo-asset";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import { TextInput } from "react-native";
@@ -151,15 +141,7 @@ const DateSelectionAndCheckout = () => {
     if (loadError) {
       return <View><Text>Error loading Google Maps API</Text></View>;
     }
-  // const icon = require('../../../assets/marker.png');
-  // const iconURI = Asset.fromModule(icon).uri;
-
-  // const leafletIcon = new L.Icon({
-  //   iconUrl: iconURI,
-  //   iconSize: [30, 30],
-  //   // iconAnchor: [22, 94],
-  //   // popupAnchor: [-3, -76],
-  // });
+  
   // useEffect hook to listen for changes in authentication state
   useEffect(() => {
     // Get the authentication instance

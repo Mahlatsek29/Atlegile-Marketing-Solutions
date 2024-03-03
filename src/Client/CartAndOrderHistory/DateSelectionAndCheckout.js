@@ -42,12 +42,17 @@ import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import { Asset } from "expo-asset";
+// import { MapContainer, TileLayer, Popup } from "react-leaflet";
+// import "leaflet/dist/leaflet.css";
+// import L from "leaflet";
+// import { Asset } from "expo-asset";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+
+import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
+import { TextInput } from "react-native";
+
+const MAP_LIBRARIES = ["places"];
 
 const DateSelectionAndCheckout = () => {
   const navigation = useNavigation();
@@ -70,6 +75,7 @@ const DateSelectionAndCheckout = () => {
     lat: -26.2609931,
     lng: 27.9502322,
   });
+  const [googleAddress, setGoogleAddress]= useState({});
   const [theBusinessName, setTheBusinessName] = useState("");
   const [trackingRef, setTrackingRef] = useState("");
   const [shipmentStatus, setShipmentStatus] = useState("");
@@ -91,15 +97,69 @@ const DateSelectionAndCheckout = () => {
   const [editCounty, setEditCountry] = useState(false);
   const [authPin,setAuthPIn] = useState('')
 
-  const icon = require('../../../assets/marker.png');
-  const iconURI = Asset.fromModule(icon).uri;
 
-  const leafletIcon = new L.Icon({
-    iconUrl: iconURI,
-    iconSize: [30, 30],
-    // iconAnchor: [22, 94],
-    // popupAnchor: [-3, -76],
-  });
+ 
+    const { isLoaded, loadError } = useJsApiLoader({
+      googleMapsApiKey: "AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs",
+      libraries: MAP_LIBRARIES,
+    });
+  
+    const autoCompleteRef = useRef();
+    const inputRef = useRef();
+   
+    const options = {
+      componentRestrictions: { country: "za" },
+      types: ["address"],
+    };
+  
+    useEffect(() => {
+      const onLoad = () => {
+        autoCompleteRef.current = new google.maps.places.Autocomplete(
+          inputRef.current,
+          options
+        );
+  
+        autoCompleteRef.current.addListener("place_changed", async function () {
+          const place = await autoCompleteRef.current.getPlace();
+  
+          if (place.geometry && place.formatted_address) {
+            const latLng = {
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng(),
+            };
+            setCoordinates(latLng);
+            setAddress(place);
+            // console.log("Address:", place.address_components);
+            setGoogleAddress(place)
+
+            // setLocation(place.formatted_address);
+            setAddressCard(true);
+            // console.log("Location Details:", place);
+          }
+        });
+      };
+  
+      if (isLoaded) {
+        onLoad();
+      }
+  
+      return () => {
+        // Clean up code here if needed
+      };
+    }, [isLoaded, options]);
+    
+    if (loadError) {
+      return <View><Text>Error loading Google Maps API</Text></View>;
+    }
+  // const icon = require('../../../assets/marker.png');
+  // const iconURI = Asset.fromModule(icon).uri;
+
+  // const leafletIcon = new L.Icon({
+  //   iconUrl: iconURI,
+  //   iconSize: [30, 30],
+  //   // iconAnchor: [22, 94],
+  //   // popupAnchor: [-3, -76],
+  // });
   // useEffect hook to listen for changes in authentication state
   useEffect(() => {
     // Get the authentication instance
@@ -683,38 +743,38 @@ const DateSelectionAndCheckout = () => {
     Linking.openURL(paymentUrl);
   };
 
-  const handleSelect = async (value) => {
-    try {
-      // Use geocodeByAddress to get location details based on the selected address
-      const results = await geocodeByAddress(value);
+  // const handleSelect = async (value) => {
+  //   try {
+  //     // Use geocodeByAddress to get location details based on the selected address
+  //     const results = await geocodeByAddress(value);
 
-      // Use getLatLng to extract latitude and longitude from the geocoded results
-      const latLng = await getLatLng(results[0]);
+  //     // Use getLatLng to extract latitude and longitude from the geocoded results
+  //     const latLng = await getLatLng(results[0]);
 
-      // Reset any previous error state
-      setError(null);
+  //     // Reset any previous error state
+  //     setError(null);
 
-      // Set the address state with the selected place details
-      setAddress(results[0]);
+  //     // Set the address state with the selected place details
+  //     setAddress(results[0]);
 
-      // Set the coordinates state with the latitude and longitude
-      setCoordinates(latLng);
+  //     // Set the coordinates state with the latitude and longitude
+  //     setCoordinates(latLng);
 
-      // Trigger some action related to address card visibility
-      setAddressCard(true);
-    } catch (error) {
-      // Handle geocoding errors
-      console.error("Geocoding error:", error);
+  //     // Trigger some action related to address card visibility
+  //     setAddressCard(true);
+  //   } catch (error) {
+  //     // Handle geocoding errors
+  //     console.error("Geocoding error:", error);
 
-      // Set an error message in the state
-      setError("Geocoding error. Please try again.");
-    }
-  };
+  //     // Set an error message in the state
+  //     setError("Geocoding error. Please try again.");
+  //   }
+  // };
 
   useEffect(() => {
     // Set the location state with the formatted address
-    setLocation(address.formatted_address);
-
+    setLocation(googleAddress.formatted_address);
+   
     // Initialize variables for address components
     let streetAddress,
       localArea,
@@ -1308,53 +1368,7 @@ const DateSelectionAndCheckout = () => {
                           backgroundColor: "white",
                         }}
                       >
-                        <PlacesAutocomplete
-                          value={address}
-                          onChange={setAddress}
-                          onSelect={handleSelect}
-                        >
-                          {({
-                            getInputProps,
-                            suggestions,
-                            getSuggestionItemProps,
-                            loading,
-                          }) => (
-                            <View>
-                              <TextField
-                                fullWidth
-                                id="places-autocomplete-input"
-                                placeholder="Type location"
-                                value={address}
-                                onChange={(e) => setAddress(e.target.value)}
-                                {...getInputProps()}
-                              />
-                              <View>
-                                {loading && <Typography>Loading...</Typography>}
-                                {suggestions.map((suggestion) => (
-                                  <View
-                                    style={{ width: "20vw" }}
-                                    {...getSuggestionItemProps(suggestion)}
-                                    key={suggestion.placeId}
-                                  >
-                                    <Typography
-                                      style={{
-                                        width: "70%",
-                                        display: "flex",
-                                        flexWrap: "wrap",
-                                        color: "gray",
-                                      }}
-                                    >
-                                      {suggestion.description}
-                                    </Typography>
-                                  </View>
-                                ))}
-                              </View>
-                              {error && (
-                                <Text style={{ color: "red" }}>{error}</Text>
-                              )}
-                            </View>
-                          )}
-                        </PlacesAutocomplete>
+                       
 
                         <TouchableOpacity
                           style={{
@@ -1388,21 +1402,7 @@ const DateSelectionAndCheckout = () => {
                           <Typography style={{ color: "#B7B9BC" }}>
                             Delivery Address
                           </Typography>
-                          <TouchableOpacity
-                            style={{
-                              color: "#B7B9BC",
-                              border: "2px white solid",
-                              padding: 10,
-                              borderRadius: 30,
-                            }}
-                            onPress={() => setAddessInput(true)} // Assuming setAddessInput is a function
-                          >
-                            <Text
-                              style={{ color: "white", paddingHorizontal: 10 }}
-                            >
-                              Type
-                            </Text>
-                          </TouchableOpacity>
+                         
                         </View>
 
                         <View
@@ -1411,12 +1411,28 @@ const DateSelectionAndCheckout = () => {
                             marginBottom: 15,
                           }}
                         >
-                          <Typography variant="h6" style={{ color: "#FFFFFF" }}>
-                            {location && location.slice(0, 30)}
-                            {location && location.length < 50 ? "" : "..."}
-                          </Typography>
+                          {isLoaded ? (
+                          <View>
+                          
+                          <TextInput ref={inputRef} style={{color:'white', marginVertical:5}} />
                         </View>
-                        <MapContainer
+                        ):<View><Text>Loading...</Text></View>}
+                       
+                        </View>
+                        {isLoaded ? (
+                          <GoogleMap
+                          center={coordinates}
+                          mapContainerStyle={{
+                            height: "20vh",
+                            width: "100%",
+                            borderRadius: "25px", // Adjust the height as needed
+                          }}
+                          zoom={15}
+                        >
+                          <Marker position={coordinates} />
+                        </GoogleMap>
+                        ):<View><Text>Loading...</Text></View>}
+                        {/* <MapContainer
                           center={[coordinates.lat, coordinates.lng]}
                           zoom={13}
                           ref={mapRef}
@@ -1439,8 +1455,8 @@ const DateSelectionAndCheckout = () => {
                               />
                             </Popup>
                           </Marker>
-                          {/* Additional map layers or components can be added here */}
-                        </MapContainer>
+                         
+                        </MapContainer> */}
                         <Typography
                           style={{ color: "grey", marginTop: "14px" }}
                         >

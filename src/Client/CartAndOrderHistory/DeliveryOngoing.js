@@ -26,13 +26,12 @@ import { useRoute } from "@react-navigation/native";
 import { getDoc, doc } from "firebase/firestore";
 import { firestore } from "../../config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import { Asset } from "expo-asset";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+
+import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import axios from "axios";
+
+const MAP_LIBRARIES = ["places"];
+
 const DeliveryOngoing = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -52,17 +51,18 @@ const DeliveryOngoing = () => {
   const { navigate } = useNavigation();
   const [loading, setLoading] = useState(true);
 
-  const icon = require("../../../assets/marker.png");
-  const iconURI = Asset.fromModule(icon).uri;
-
-  // Create a Leaflet icon for map markers
-  const leafletIcon = new L.Icon({
-    iconUrl: iconURI,
-    iconSize: [30, 30],
-    // iconAnchor: [22, 94],
-    // popupAnchor: [-3, -76],
+  
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: "AIzaSyBMth0dboixZRgwUPycpuqH9Gibyy-iAjs",
+    libraries: MAP_LIBRARIES,
   });
-
+  if (loadError) {
+    return (
+      <View>
+        <Text>Error loading Google Maps API</Text>
+      </View>
+    );
+  }
   // Set up initial chat data using state
   const [chats, setChats] = useState([
     { messages: "Hello!", dateAntTime: "12:30 PM", status: "sent" },
@@ -718,42 +718,30 @@ const DeliveryOngoing = () => {
                       </View>
 
                       {/* Map Section */}
-                      {order.coordinates && (
-                        <MapContainer
-                          center={[
-                            order.coordinates.lat,
-                            order.coordinates.lng,
-                          ]}
-                          zoom={13}
-                          ref={mapRef}
-                          style={{
+                      {order.coordinates && isLoaded ? (
+                        <GoogleMap
+                          center={{
+                            lat: order.coordinates.lat,
+                            lng: order.coordinates.lng,
+                          }}
+                          mapContainerStyle={{
                             height: "20vh",
                             width: "100%",
-                            borderRadius: "25px",
+                            borderRadius: "25px", // Adjust the height as needed
                           }}
+                          zoom={15}
                         >
-                          {/* Map Layers */}
-                          <TileLayer
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                          />
                           <Marker
-                            position={[
-                              order.coordinates.lat,
-                              order.coordinates.lng,
-                            ]}
-                            icon={leafletIcon}
-                          >
-                            <Popup>
-                              <FontAwesomeIcon
-                                icon={faMapMarkerAlt}
-                                size="lg"
-                                color="black"
-                              />
-                            </Popup>
-                          </Marker>
-                          {/* Additional map layers or components can be added here */}
-                        </MapContainer>
+                            position={{
+                              lat: order.coordinates.lat,
+                              lng: order.coordinates.lng,
+                            }}
+                          />
+                        </GoogleMap>
+                      ) : (
+                        <View>
+                          <Text>Loading...</Text>
+                        </View>
                       )}
 
                       {/* Delivery Notes Section */}

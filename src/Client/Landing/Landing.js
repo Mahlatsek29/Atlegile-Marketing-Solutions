@@ -150,173 +150,179 @@ const Landing = () => {
         </View>
 
         <View>
-  {/* FlatList to display businesses using BusinessCard component */}
-  <FlatList
-    data={businesses}
-    keyExtractor={(item) => item}
-    renderItem={({ item }) => <BusinessCard business={item} />}
-  />
-</View>
+          {/* FlatList to display businesses using BusinessCard component */}
+          <FlatList
+            data={businesses}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => <BusinessCard business={item} />}
+          />
+        </View>
 
-{/* Grid layout for a section with business information */}
-<Grid
-  container
-  style={{
-    width: "100%",
-    height: "auto",
-    alignItems: "center",
-    justifyContent: "center",
-  }}
->
-  {/* Grid item with responsive sizing */}
-  <Grid
-    item
-    xl={6}
-    lg={8}
-    md={8}
-    sm={10}
-    xs={10}
-    style={{
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    {/* View containing information about Africa's business support */}
-    <View
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        flexWrap: "wrap",
-        width: "66vw",
-      }}
-    >
-      {/* First block of information */}
-      <View
-        style={{
-          margin: 5,
-          height: "auto",
-          width: "32vw",
-          padding: 5,
-        }}
-      >
-        {/* Heading */}
-        <Typography
-          variant="h4"
+        {/* Grid layout for a section with business information */}
+        <Grid
+          container
           style={{
-            fontWeight: "bolder",
-            justifySelf: "center",
-            paddingTop: "4vh",
+            width: "100%",
+            height: "auto",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          AFRICA'S BUSINESS <br /> SUPPORT
-        </Typography>
-        {/* Subheading */}
-        <Typography
-          variant="h6"
-          style={{
-            fontSize: "15px",
-            fontWeight: "bold",
-            flexWrap: "wrap",
-          }}
-        >
-          High Impact Enterprises + Skills Development Solutions
-        </Typography>
-        {/* Buttons */}
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            marginVertical: "15px",
-          }}
-        >
-          <button
-            style={{
-              borderRadius: "15px",
-              color: "#fff",
-              backgroundColor: "#000",
-              marginRight: "5px",
-              justifyContent: "center",
-              alignItems: "center",
-              paddingLeft: 3,
-              paddingRight: 3,
-            }}
-          >
-            SHOP
-          </button>
-          <button
+          {/* Grid item with responsive sizing */}
+          <Grid
+            item
+            xl={6}
+            lg={8}
+            md={8}
+            sm={10}
+            xs={10}
             style={{
               justifyContent: "center",
               alignItems: "center",
-              paddingLeft: 3,
-              paddingRight: 3,
-              borderRadius: "15px",
             }}
           >
-            ABOUT US
-          </button>
-        </View>
-      </View>
+            {/* View containing information about Africa's business support */}
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                flexWrap: "wrap",
+                width: "66vw",
+              }}
+            >
+              {/* First block of information */}
+              <View
+                style={{
+                  margin: 5,
+                  height: "auto",
+                  width: "32vw",
+                  padding: 5,
+                }}
+              >
+                {/* Heading */}
+                <Typography
+                  variant="h4"
+                  style={{
+                    fontWeight: "bolder",
+                    justifySelf: "center",
+                    paddingTop: "4vh",
+                  }}
+                >
+                  AFRICA'S BUSINESS <br /> SUPPORT
+                </Typography>
+                {/* Subheading */}
+                <Typography
+                  variant="h6"
+                  style={{
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  High Impact Enterprises + Skills Development Solutions
+                </Typography>
+                {/* Buttons */}
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    marginVertical: "15px",
+                  }}
+                >
+                  <button
+                    style={{
+                      borderRadius: "15px",
+                      color: "#fff",
+                      backgroundColor: "#000",
+                      marginRight: "5px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingLeft: 3,
+                      paddingRight: 3,
+                    }}
+                  >
+                    SHOP
+                  </button>
+                  <button
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingLeft: 3,
+                      paddingRight: 3,
+                      borderRadius: "15px",
+                    }}
+                  >
+                    ABOUT US
+                  </button>
+                </View>
+              </View>
 
-      {/* Second block of information with multiple projects */}
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          flexWrap: "wrap",
-          width: "32vw",
-        }}
-      >
-        {/* Each project block with details */}
-        <View
-          style={{
-            border: "1px solid orange",
-            padding: 5,
-            marginRight: 5,
-            justifyContent: "center",
-            alignItems: "flex-start",
-          }}
-        >
-          <Typography variant="h6" style={{ fontSize: "12px" }}>
-            soWhereTo <br /> Township Business
-          </Typography>
-          <Typography style={{ color: "orange" }}>VIEW PROJECT</Typography>
-        </View>
-        <View
-          style={{
-            border: "1px solid orange",
-            padding: 5,
-            marginRight: 5,
-            justifyContent: "center",
-            alignItems: "flex-start",
-          }}
-        >
-          <Typography variant="h6" style={{ fontSize: "12px" }}>
-            soWhereTo <br /> Youth Training
-          </Typography>
-          <Typography style={{ color: "orange" }}>VIEW PROJECT</Typography>
-        </View>
-        <View
-          style={{
-            border: "1px solid orange",
-            padding: 5,
-            marginRight: 5,
-            justifyContent: "center",
-            alignItems: "flex-start",
-          }}
-        >
-          <Typography variant="h6" style={{ fontSize: "12px" }}>
-            soWhereTo <br /> @HUB Support
-          </Typography>
-          <Typography style={{ color: "orange" }}>VIEW PROJECT</Typography>
-        </View>
-      </View>
-    </View>
-  </Grid>
-</Grid>
+              {/* Second block of information with multiple projects */}
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexWrap: "wrap",
+                  width: "32vw",
+                }}
+              >
+                {/* Each project block with details */}
+                <View
+                  style={{
+                    border: "1px solid orange",
+                    padding: 5,
+                    marginRight: 5,
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Typography variant="h6" style={{ fontSize: "12px" }}>
+                    soWhereTo <br /> Township Business
+                  </Typography>
+                  <Typography style={{ color: "orange" }}>
+                    VIEW PROJECT
+                  </Typography>
+                </View>
+                <View
+                  style={{
+                    border: "1px solid orange",
+                    padding: 5,
+                    marginRight: 5,
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Typography variant="h6" style={{ fontSize: "12px" }}>
+                    soWhereTo <br /> Youth Training
+                  </Typography>
+                  <Typography style={{ color: "orange" }}>
+                    VIEW PROJECT
+                  </Typography>
+                </View>
+                <View
+                  style={{
+                    border: "1px solid orange",
+                    padding: 5,
+                    marginRight: 5,
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Typography variant="h6" style={{ fontSize: "12px" }}>
+                    soWhereTo <br /> @HUB Support
+                  </Typography>
+                  <Typography style={{ color: "orange" }}>
+                    VIEW PROJECT
+                  </Typography>
+                </View>
+              </View>
+            </View>
+          </Grid>
+        </Grid>
 
         <Footer />
       </View>

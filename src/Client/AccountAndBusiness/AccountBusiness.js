@@ -85,8 +85,7 @@ export default function BusinessAccount() {
   const theme = useTheme();
   const [isMobile, setIsMobile] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
- 
-
+  const [review, setReview] = useState({});
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 1080); // Adjust the breakpoint as needed
@@ -105,6 +104,58 @@ export default function BusinessAccount() {
 
   useEffect(() => {
     setLoading(false); // to set loading to false
+  }, [products]);
+
+  useEffect(() => {
+    // Define an asynchronous function 'fetchReviews' to retrieve and process reviews
+    const fetchReviews = async () => {
+      try {
+        // Iterate over the array of products and fetch reviews for each product
+        for (const product of products) {
+          // Attempt to fetch the document related to reviews for the given 'productId' from Firestore
+          const ReviewsDoc = await firestore
+            .collection("Reviews")
+            .doc(product.id)
+            .get();
+
+          // Extract the data from the Firestore document
+          const ReviewsData = ReviewsDoc.data();
+
+          // Extract the 'reviews' array from the data, or default to an empty array
+          const reviewsArray = ReviewsData?.reviews || [];
+
+          // Filter out reviews with missing or zero 'myRatings'
+          const validReviews = reviewsArray.filter(
+            (review) => review.myRatings > 0
+          );
+
+          // Calculate the total sum of 'myRatings' from valid reviews
+          const totalRatings = validReviews.reduce(
+            (sum, review) => sum + review.myRatings,
+            0
+          );
+
+          // Calculate the average rating by dividing the total ratings by the number of valid reviews
+          const averageRating =
+            validReviews.length > 0 ? totalRatings / validReviews.length : 0;
+
+          // Set the calculated average rating in the component's state using the 'setReview' function
+          setReview((prevReviews) => ({
+            ...prevReviews,
+            [product.id]: averageRating,
+          }));
+        }
+      } catch (error) {
+        // Log an error message if there's an issue fetching or processing the reviews
+        console.error("Error fetching product data:", error);
+      } finally {
+        // Set loading state to false, indicating that the reviews have been fetched or an error occurred
+        setLoading(false);
+      }
+    };
+
+    // Call the 'fetchReviews' function when the component mounts or when 'products' changes
+    fetchReviews();
   }, [products]);
   if (loading) {
     // Render a loading state using Skeleton
@@ -144,7 +195,6 @@ export default function BusinessAccount() {
 
       // Get a reference to the "Products" collection in Firestore
       const cartCollectionRef = collection(firestore, "Products");
-      
 
       // Construct a query to filter products by businessName from userData
       const q = query(
@@ -237,10 +287,12 @@ export default function BusinessAccount() {
     const fetchBanner = async () => {
       try {
         const bannerCollection = firestore.collection("Banner");
-  
+
         // Fetch the snapshot of documents in the "Banner" collection where bannerUid matches userData.uid
-        const snapshot = await bannerCollection.where("bannerUid", "==", userData.uid).get();
-  
+        const snapshot = await bannerCollection
+          .where("bannerUid", "==", userData.uid)
+          .get();
+
         const bannerData = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
@@ -252,17 +304,16 @@ export default function BusinessAccount() {
             quantity: data.quantity,
           };
         });
-  
+
         console.log("bannerData is ", bannerData);
         setBanner(bannerData);
       } catch (error) {
         console.error("Error fetching banner images:", error);
       }
     };
-  
+
     fetchBanner();
   }, [userData]);
-  
 
   useEffect(() => {
     // Set up an interval to change the current index of the banner images
@@ -466,18 +517,22 @@ export default function BusinessAccount() {
   // Function to handle saving a new banner
   const handleSaveAddBanner = async (e) => {
     e.preventDefault();
-  
+
     // Access the 'Banner' collection in Firestore
     const bannerCollection = firestore.collection("Banner");
-  
+
     try {
       // Check if there is a document with bannerUid === userData.uid
-      const existingBannerQuery = await bannerCollection.where("bannerUid", "==", userData.uid).get();
+      const existingBannerQuery = await bannerCollection
+        .where("bannerUid", "==", userData.uid)
+        .get();
       const existingBannerDoc = existingBannerQuery.docs[0];
-  
+
       // Generate a unique ID for the new banner
-      const bannerId = existingBannerDoc ? existingBannerDoc.id : bannerCollection.id;
-  
+      const bannerId = existingBannerDoc
+        ? existingBannerDoc.id
+        : bannerCollection.id;
+
       // Create an object with the specified fields for the new banner
       const bannerData = {
         bannerImage: [], // Initialize an empty array to store image URLs
@@ -487,26 +542,26 @@ export default function BusinessAccount() {
         productName: productName,
         quantity: parseInt(quantity),
         bannerUid: userData.uid,
-        company:userData.company// Convert to number
+        company: userData.company, // Convert to number
       };
-  
+
       // Upload each image in the 'images' array to Firebase Storage
       const uploadTasks = images.map((image, index) => {
         const imageRef = storage.ref(`banner_images/${bannerId}/image${index}`);
         return imageRef.put(image.file);
       });
-  
+
       // Wait for all image uploads to complete
       await Promise.all(uploadTasks);
-  
+
       // Get the download URLs of the uploaded images
       const downloadURLs = await Promise.all(
         uploadTasks.map((task) => task.snapshot.ref.getDownloadURL())
       );
-  
+
       // Update the 'bannerData' object with the image URLs
       bannerData.bannerImage = downloadURLs;
-  
+
       if (existingBannerDoc) {
         // If there's an existing document, update its fields
         await existingBannerDoc.ref.update(bannerData);
@@ -514,16 +569,14 @@ export default function BusinessAccount() {
         // If no existing document, add a new banner document to the 'Banner' collection in Firestore
         await bannerCollection.add(bannerData);
       }
-  
-      console.log("Banner data added/updated successfully!");
-  
+
       // Close the modal after successful addition/update
       setBannerModal(false);
     } catch (error) {
       console.error("Error adding/updating banner data: ", error);
     }
   };
-  
+
   // Function to handle saving payment information
   const handleSavePaymentInfo = (e) => {
     e.preventDefault();
@@ -2473,82 +2526,84 @@ export default function BusinessAccount() {
                           <AntDesign name="right" size={24} color="white" />
                         </TouchableOpacity>
                       </View>
-                    ) :<View
-                    style={{
-                      // backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
-                      backgroundColor: "gray",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: 15,
-                      flex: 1,
-                      transition: "0.5s ease-in-out",
-                    }}
-                  >
-                    {/* Navigation button to go to the previous banner */}
-                    <TouchableOpacity
-                      // onPress={handlePrevClick}
-                      style={{ marginRight: 20 }}
-                    >
-                      <AntDesign name="left" size={24} color="white" />
-                    </TouchableOpacity>
-                    {/* Details of the current banner */}
-                    <View
-                      style={{
-                        flex: 1,
-                        flexDirection: "column",
-                        alignItems: "flex-start",
-                      }}
-                    >
-                      <Text
+                    ) : (
+                      <View
                         style={{
-                          fontSize: 15,
-                          fontWeight: 600,
-                          color: "white",
+                          // backgroundImage: `url(${banner[0].bannerImage[currentIndex]})`,
+                          backgroundColor: "gray",
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: 15,
+                          flex: 1,
+                          transition: "0.5s ease-in-out",
                         }}
                       >
-                        EXCLUSIVE OFFER:SAVE BIG TODAY
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 25,
-                          fontWeight: 700,
-                          color: "white",
-                        }}
-                      >
-                        ULTRA HT SMART TV
-                      </Text>
-                      <Text>
-                        {/* Displaying discount and original prices */}
-                        <Text
+                        {/* Navigation button to go to the previous banner */}
+                        <TouchableOpacity
+                          // onPress={handlePrevClick}
+                          style={{ marginRight: 20 }}
+                        >
+                          <AntDesign name="left" size={24} color="white" />
+                        </TouchableOpacity>
+                        {/* Details of the current banner */}
+                        <View
                           style={{
-                            fontSize: 18,
-                            fontWeight: 700,
-                            color: "#c29920",
+                            flex: 1,
+                            flexDirection: "column",
+                            alignItems: "flex-start",
                           }}
                         >
-                           R1699.99
-                        </Text>{" "}
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            fontWeight: 400,
-                            color: "white",
-                          }}
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              fontWeight: 600,
+                              color: "white",
+                            }}
+                          >
+                            EXCLUSIVE OFFER:SAVE BIG TODAY
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 25,
+                              fontWeight: 700,
+                              color: "white",
+                            }}
+                          >
+                            ULTRA HT SMART TV
+                          </Text>
+                          <Text>
+                            {/* Displaying discount and original prices */}
+                            <Text
+                              style={{
+                                fontSize: 18,
+                                fontWeight: 700,
+                                color: "#c29920",
+                              }}
+                            >
+                              R1699.99
+                            </Text>{" "}
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontWeight: 400,
+                                color: "white",
+                              }}
+                            >
+                              R1899.99
+                            </Text>
+                          </Text>
+                        </View>
+                        {/* Navigation button to go to the next banner */}
+                        <TouchableOpacity
+                        // onPress={handleNextClick}
                         >
-                          R1899.99
-                        </Text>
-                      </Text>
-                    </View>
-                    {/* Navigation button to go to the next banner */}
-                    <TouchableOpacity 
-                    // onPress={handleNextClick}
-                    >
-                      <AntDesign name="right" size={24} color="white" />
-                    </TouchableOpacity>
-                  </View>}
+                          <AntDesign name="right" size={24} color="white" />
+                        </TouchableOpacity>
+                      </View>
+                    )}
 
                     {/* Option to add a new banner */}
                     <TouchableOpacity
@@ -2747,57 +2802,88 @@ export default function BusinessAccount() {
 
                       {products.length >= 3 ? (
                         products.map((product, index) => (
-                          <Card
+                          <View
                             key={index}
-                            sx={{
-                              width: 300,
+                            style={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              margin: 1,
                               height: 450,
-                              margin: 2,
+                              alignItems: "center",
+                              justifyContent: "center",
                             }}
                           >
                             <View
                               style={{
                                 justifyContent: "center",
                                 alignItems: "center",
-                                paddingHorizontal: 16,
-                                height: "70vh",
+                                paddingTop: 10,
+                                margin: 20,
                               }}
                             >
                               <Box
                                 style={{
-                                  borderRadius: "16px",
                                   objectFit: "cover",
                                   position: "relative",
-                                  backgroundColor: "whitesmoke",
-                                  width: "250px",
-                                  height: "250px",
+                                  backgroundColor: "gold",
+                                  width: "200px",
+                                  height: "200px",
                                   borderRadius: "50%",
                                   alignself: "center",
                                   justifyContent: "center",
                                   display: "flex",
                                   flexDirection: "column",
-                                  alignSelf: "center",
+                                  alignItems: "center",
                                   justifyContent: "center",
                                 }}
                               >
-                                <CardMedia
-                                  component="img"
-                                  height="140"
-                                  image={
-                                    product.images && product.images.length > 0
-                                      ? product.images[0]
-                                      : "../../assets/image/headsets.png"
-                                  }
-                                  alt={product.name}
+                                <View
                                   style={{
-                                    position: "relative",
-                                    borderRadius: "100px",
-                                    objectFit: "cover",
-                                    width: 220,
-                                    height: 220,
                                     alignSelf: "center",
+                                    width: 180,
+                                    height: 180,
                                   }}
-                                />
+                                >
+                                  <CardMedia
+                                    component="img"
+                                    height="140"
+                                    image={
+                                      product.images &&
+                                      product.images.length > 0
+                                        ? product.images[0]
+                                        : "../../assets/image/headsets.png"
+                                    }
+                                    alt={product.name}
+                                    style={{
+                                      borderRadius: "100px",
+                                      objectFit: "cover",
+                                      width: "100%",
+                                      height: "100%",
+                                    }}
+                                  />
+                                  <Box
+                                    style={{
+                                      backgroundColor: "#E74040",
+                                      position: "absolute",
+                                      top: 0,
+
+                                      padding: 2,
+                                      width: "30%",
+                                      borderRadius: "8%",
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="h5"
+                                      style={{
+                                        color: "#fff",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      Sale
+                                    </Typography>
+                                  </Box>
+                                </View>
                               </Box>
                               <View
                                 style={{
@@ -2834,17 +2920,13 @@ export default function BusinessAccount() {
                                         borderRadius: 15,
                                       }}
                                     >
-                                      <Text>
-                                        ⭐{" "}
-                                        <Text style={{ color: "white" }}>
-                                          {" "}
-                                          4.9
-                                        </Text>
+                                      <Text style={{ color: "white" }}>
+                                        ⭐ {review[product.id] || 0}
                                       </Text>
                                     </View>
                                   </View>
                                   <Typography variant="h5" component="h5">
-                                    {product.name && product.name.slice(0, 20)}
+                                    {product.name && product.name.slice(0, 15)}
                                     {product.name && product.name.length < 50
                                       ? ""
                                       : "..."}
@@ -2852,14 +2934,16 @@ export default function BusinessAccount() {
                                   <Typography
                                     variant="subtitle2"
                                     component="p"
-                                    style={{ color: "gray" }}
+                                    style={{
+                                      color: "gray",
+                                      wordWrap: "break-word",
+                                      display: "inline",
+                                    }}
                                   >
                                     {product.description &&
-                                      product.description.slice(0, 50)}
-                                    {product.description &&
-                                    product.description.length < 50
-                                      ? ""
-                                      : "..."}
+                                    product.description.length > 25
+                                      ? `${product.description.slice(0, 25)}...`
+                                      : product.description}
                                   </Typography>
                                   <Box
                                     display="flex"
@@ -2909,7 +2993,7 @@ export default function BusinessAccount() {
                                 </View>
                               </View>
                             </View>
-                          </Card>
+                          </View>
                         ))
                       ) : (
                         <Typography variant="body1" component="p">

@@ -135,19 +135,18 @@ export default function BusinessCard({ business }) {
           style={{
             display: "flex",
             flexDirection: "column",
-            marginTop: 50,
             alignItems: "center",
-            marginBottom: 50,
+            
           }}
         >
           <View
             style={{
               width: "80%",
-              height: "100vh",
+              height: "85vh",
               justifyContent: "space-between",
               alignItems: "center",
               flexDirection: "row",
-            }}
+             }}
           >
             {/* Left scroll button */}
             <TouchableOpacity onPress={scrollLeft}>

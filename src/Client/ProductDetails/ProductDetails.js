@@ -49,7 +49,6 @@ export default function ProductDetails({ navigation, route }) {
   const { productId } = route.params;
   const [myRatings, setMyRatings] = useState(2.5);
   const [product, setProduct] = useState(null);
-
   const [currentImage, setCurrentImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [review, setReview] = useState("");
@@ -772,12 +771,15 @@ export default function ProductDetails({ navigation, route }) {
                 {relatedProducts &&
                   relatedProducts.map((relatedProduct) =>
                     productId !== relatedProduct.id ? (
-                      <Card
+                      <View
                         key={relatedProduct.id}
-                        sx={{
-                          width: 300,
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          margin: 1,
                           height: 450,
-                          margin: 2,
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}
                       >
                         {/* Image and additional information for the related product */}
@@ -785,67 +787,74 @@ export default function ProductDetails({ navigation, route }) {
                           style={{
                             justifyContent: "center",
                             alignItems: "center",
-                            paddingHorizontal: "5%", // Adjust as needed
                             paddingTop: 10,
+                            margin: 20,
                           }}
                         >
                           {/* Container for the product image and sale label */}
                           <Box
                             style={{
-                              borderRadius: "16px",
                               objectFit: "cover",
                               position: "relative",
-                              backgroundColor: "whitesmoke",
-                              width: "250px",
-                              height: "250px",
+                              backgroundColor: "gold",
+                              width: "200px",
+                              height: "200px",
                               borderRadius: "50%",
                               alignself: "center",
                               justifyContent: "center",
                               display: "flex",
                               flexDirection: "column",
-                              alignSelf: "center",
+                              alignItems: "center",
                               justifyContent: "center",
                             }}
                           >
-                            {/* Product image */}
-                            <CardMedia
-                              component="img"
-                              height="140"
-                              image={
-                                relatedProduct.images &&
-                                relatedProduct.images.length > 0
-                                  ? relatedProduct.images[0]
-                                  : "../../assets/image/headsets.png"
-                              }
-                              alt={relatedProduct.name}
+                            <View
                               style={{
-                                position: "relative",
-                                borderRadius: "100px",
-                                objectFit: "cover",
-                                width: 220,
-                                height: 220,
                                 alignSelf: "center",
-                              }}
-                            />
-                            {/* Sale label */}
-                            <Box
-                              style={{
-                                backgroundColor: "#E74040",
-                                position: "absolute",
-                                bottom: 200,
-                                padding: 2,
-                                width: "22%",
-                                borderRadius: "8%",
-                                alignSelf: "center",
+                                width: 180,
+                                height: 180,
                               }}
                             >
-                              <Typography
-                                variant="h5"
-                                style={{ color: "#fff", textAlign: "center" }}
+                              {/* Product image */}
+                              <CardMedia
+                                component="img"
+                                height="140"
+                                image={
+                                  relatedProduct.images &&
+                                  relatedProduct.images.length > 0
+                                    ? relatedProduct.images[0]
+                                    : "../../assets/image/headsets.png"
+                                }
+                                alt={relatedProduct.name}
+                                style={{
+                                  borderRadius: "100px",
+                                  objectFit: "cover",
+                                  width: "100%",
+                                  height: "100%",
+                                }}
+                              />
+                              {/* Sale label */}
+                              <Box
+                                style={{
+                                  backgroundColor: "#E74040",
+                                  position: "absolute",
+                                  top: 0,
+
+                                  padding: 2,
+                                  width: "30%",
+                                  borderRadius: "8%",
+                                  alignSelf: "center",
+                                }}
                               >
-                                sale
-                              </Typography>
-                            </Box>
+                                <Typography
+                                  variant="h5"
+                                  style={{ color: "#fff", textAlign: "center" }}
+                                >
+                                  Sale
+                                </Typography>
+                              </Box>
+                            </View>
+
                             {/* Snackbar for product added to favorites */}
                             <Snackbar
                               open={showSnackbar}
@@ -870,7 +879,6 @@ export default function ProductDetails({ navigation, route }) {
                                 paddingHorizontal: 10,
                                 position: "absolute",
                                 bottom: 30,
-                                left: 80,
                                 width: "6vw",
                                 display: "flex",
                                 flexDirection: "row",
@@ -936,7 +944,6 @@ export default function ProductDetails({ navigation, route }) {
                               width: "100%",
                               justifyContent: "space-between",
                               marginTop: "5%", // Adjust as needed
-                             
                             }}
                           >
                             <View>
@@ -1066,7 +1073,7 @@ export default function ProductDetails({ navigation, route }) {
                             </Button>
                           </View>
                         </View>
-                      </Card>
+                      </View>
                     ) : null
                   )}
               </Box>

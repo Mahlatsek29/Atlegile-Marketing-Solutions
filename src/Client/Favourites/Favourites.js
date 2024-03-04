@@ -29,8 +29,8 @@ const Favourites = ({ item }) => {
   const [cartData, setCartData] = useState([]);
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
-  const [product, setProduct] = useState(null);
-  const [isRed, setIsRed] = useState(false);
+  const [review, setReview] = useState({});
+   const [isRed, setIsRed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [uid, setUid] = useState(null);
   const [showSnackbar, setShowSnackbar] = useState(false);
@@ -171,6 +171,58 @@ const Favourites = ({ item }) => {
       fetchCartData();
     }
   }, [user]);
+
+  useEffect(() => {
+    // Define an asynchronous function 'fetchReviews' to retrieve and process reviews
+    const fetchReviews = async () => {
+      try {
+        // Iterate over the array of products and fetch reviews for each product
+        for (const product of products) {
+          // Attempt to fetch the document related to reviews for the given 'productId' from Firestore
+          const ReviewsDoc = await firestore
+            .collection("Reviews")
+            .doc(product.id)
+            .get();
+
+          // Extract the data from the Firestore document
+          const ReviewsData = ReviewsDoc.data();
+
+          // Extract the 'reviews' array from the data, or default to an empty array
+          const reviewsArray = ReviewsData?.reviews || [];
+
+          // Filter out reviews with missing or zero 'myRatings'
+          const validReviews = reviewsArray.filter(
+            (review) => review.myRatings > 0
+          );
+
+          // Calculate the total sum of 'myRatings' from valid reviews
+          const totalRatings = validReviews.reduce(
+            (sum, review) => sum + review.myRatings,
+            0
+          );
+
+          // Calculate the average rating by dividing the total ratings by the number of valid reviews
+          const averageRating =
+            validReviews.length > 0 ? totalRatings / validReviews.length : 0;
+
+          // Set the calculated average rating in the component's state using the 'setReview' function
+          setReview((prevReviews) => ({
+            ...prevReviews,
+            [product.id]: averageRating,
+          }));
+        }
+      } catch (error) {
+        // Log an error message if there's an issue fetching or processing the reviews
+        console.error("Error fetching product data:", error);
+      } finally {
+        // Set loading state to false, indicating that the reviews have been fetched or an error occurred
+        setLoading(false);
+      }
+    };
+
+    // Call the 'fetchReviews' function when the component mounts or when 'products' changes
+    fetchReviews();
+  }, [products]);
 
   // Function to display contact information using Swal.fire
   const handlePress = () => {
@@ -567,13 +619,16 @@ const Favourites = ({ item }) => {
               //  justifyContent: 'space-around',
             }}
           >
-            {products.map((product, index) => (
-              <Card
+            {products.map((product) => (
+              <View
                 key={product.id} // Unique key for each card
-                sx={{
-                  width: 300,
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  margin: 1,
                   height: 450,
-                  margin: 2,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 {/* Card content */}
@@ -581,64 +636,68 @@ const Favourites = ({ item }) => {
                   style={{
                     justifyContent: "center",
                     alignItems: "center",
-                    paddingHorizontal: "5%", // Adjust as needed
                     paddingTop: 10,
+                    margin: 20,
                   }}
                 >
                   {/* Circular image container */}
                   <Box
                     style={{
-                      borderRadius: "16px",
                       objectFit: "cover",
                       position: "relative",
-                      backgroundColor: "whitesmoke",
-                      width: "250px",
-                      height: "250px",
+                      backgroundColor: "gold",
+                      width: "200px",
+                      height: "200px",
                       borderRadius: "50%",
-                      alignself: "center", // Typo: should be alignSelf
+                      alignself: "center",
                       justifyContent: "center",
                       display: "flex",
                       flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
                     {/* Product image */}
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      image={
-                        product.image && product.image.length > 0
-                          ? product.image
-                          : "../../assets/image/headsets.png"
-                      }
-                      alt={product.name}
-                      style={{
-                        position: "relative",
-                        borderRadius: "100px",
-                        objectFit: "cover",
-                        width: 220,
-                        height: 220,
-                        alignSelf: "center",
-                      }}
-                    />
-                    {/* Sale label */}
-                    <Box
-                      style={{
-                        backgroundColor: "#E74040",
-                        position: "absolute",
-                        bottom: 200,
-                        padding: 2,
-                        width: "22%",
-                        borderRadius: "8%",
-                        alignSelf: "center",
-                      }}
+                    <View
+                      style={{ alignSelf: "center", width: 180, height: 180 }}
                     >
-                      <Typography
-                        variant="h5"
-                        style={{ color: "#fff", textAlign: "center" }}
+                      <CardMedia
+                        component="img"
+                        height="140"
+                        image={
+                          product.image && product.image.length > 0
+                            ? product.image
+                            : "../../assets/image/headsets.png"
+                        }
+                        alt={product.name}
+                        style={{
+                          borderRadius: "100px",
+                          objectFit: "cover",
+                          width: "100%",
+                          height: "100%",
+                        }}
+                      />
+                      {/* Sale label */}
+                      <Box
+                        style={{
+                          backgroundColor: "#E74040",
+                          position: "absolute",
+                          top: 0,
+
+                          padding: 2,
+                          width: "30%",
+                          borderRadius: "8%",
+                          alignSelf: "center",
+                        }}
                       >
-                        sale
-                      </Typography>
-                    </Box>
+                        <Typography
+                          variant="h5"
+                          style={{ color: "#fff", textAlign: "center" }}
+                        >
+                          Sale
+                        </Typography>
+                      </Box>
+                    </View>
 
                     {/* Snackbar for product added to favorites */}
                     <Snackbar
@@ -665,7 +724,6 @@ const Favourites = ({ item }) => {
                         paddingHorizontal: 10,
                         position: "absolute",
                         bottom: 30,
-                        left: 80,
                         width: "6vw",
                         display: "flex",
                         flexDirection: "row",
@@ -750,34 +808,39 @@ const Favourites = ({ item }) => {
                           {product.selectedProductCategory}
                         </Text>
                         <View
-                          style={{
-                            backgroundColor: "#072840",
-                            paddingHorizontal: 5,
-                            paddingVertical: 3,
-                            borderRadius: 15,
-                          }}
-                        >
-                          <Text style={{}}>
-                            ⭐ <Text style={{ color: "white" }}> 4.9</Text>
-                          </Text>
-                        </View>
+                        style={{
+                          backgroundColor: "#072840",
+                          paddingHorizontal: 5,
+                          paddingVertical: 3,
+                          borderRadius: 15,
+                        }}
+                      >
+                        <Text style={{ color: "white" }}>
+                          ⭐ {review[product.id] || 0}
+                        </Text>
+                      </View>
                       </View>
 
                       {/* Product name and description */}
                       <Typography variant="h5" component="h5">
-                        {product.name && product.name.slice(0, 15)}
-                        {product.name && product.name.length < 50 ? "" : "..."}
+                        {product.productName &&
+                          product.productName.slice(0, 15)}
+                        {product.productName && product.productName.length < 50
+                          ? ""
+                          : "..."}
                       </Typography>
                       <Typography
                         variant="subtitle2"
                         component="p"
-                        style={{ color: "gray" }}
+                        style={{
+                          color: "gray",
+                          wordWrap: "break-word",
+                          display: "inline",
+                        }}
                       >
-                        {product.description &&
-                          product.description.slice(0, 25)}
-                        {product.description && product.description.length < 25
-                          ? ""
-                          : "..."}
+                        {product.description && product.description.length > 25
+                          ? `${product.description.slice(0, 25)}...`
+                          : product.description}
                       </Typography>
 
                       {/* Sales and price */}
@@ -799,18 +862,6 @@ const Favourites = ({ item }) => {
                             variant="subtitle2"
                             component="p"
                             style={{
-                              color: "#BDBDBD",
-                              fontSize: "18px",
-                              fontWeight: "700",
-                              marginRight: "10px",
-                            }}
-                          >
-                            R{product.price}
-                          </Typography>
-                          <Typography
-                            variant="subtitle2"
-                            component="p"
-                            style={{
                               color: "rgb(97, 151, 97)",
                               fontSize: "18px",
                               fontWeight: "700",
@@ -823,7 +874,7 @@ const Favourites = ({ item }) => {
                     </View>
                   </View>
                 </View>
-              </Card>
+              </View>
             ))}
           </Box>
         </ScrollView>

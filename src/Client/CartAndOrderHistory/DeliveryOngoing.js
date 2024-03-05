@@ -792,34 +792,7 @@ const DeliveryOngoing = () => {
                           ))}
                       </View>
 
-                      {/* Message Button Section */}
-                      <TouchableOpacity
-                        style={{
-                          marginTop: 20,
-                          width: 120,
-                          height: 30,
-                          borderWidth: 1,
-                          borderColor: "white",
-                          borderRadius: 15,
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-evenly",
-                          alignItems: "center",
-                        }}
-                        onPress={handleMessageButtonClick}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            color: "white",
-                            margin: 0,
-                            marginLeft: 5,
-                          }}
-                        >
-                          MESSAGE
-                        </Text>
-                      </TouchableOpacity>
-
+                      
                       {/* Authentication PIN Section */}
                       <View
                         style={{

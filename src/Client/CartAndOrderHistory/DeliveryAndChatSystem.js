@@ -644,41 +644,7 @@ const DeliveryAndChatSystem = () => {
                       ></View>
 
                       {/* Message Button Section */}
-                      <TouchableOpacity
-                        style={{
-                          marginTop: 20,
-                          width: 120,
-                          height: 30,
-                          borderWidth: 1,
-                          borderColor: "white",
-                          borderRadius: 15,
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-evenly",
-                          alignItems: "center",
-                        }}
-                        onPress={handleMessageButtonClick}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            color: "white",
-                            margin: 0,
-                            marginLeft: 5,
-                          }}
-                        >
-                          MESSAGE
-                        </Text>
-                        <View
-                          style={{
-                            height: 18,
-                            width: 18,
-                            borderRadius: 8,
-                            backgroundColor: "gray",
-                            marginRight: 5,
-                          }}
-                        />
-                      </TouchableOpacity>
+                    
                     </View>
                   </Box>
                 </Box>

@@ -147,7 +147,7 @@ const OrderHistory = () => {
 
   // Define a function to navigate to the 'DeliveryAndChatSystem' screen with orderId
   const navigateToDeliveryAndChatSystem = (orderId) => {
-    navigate("DeliveryAndChatSystem", { orderId });
+    navigate("DeliveryOngoing", { orderId });
   };
 
   return (

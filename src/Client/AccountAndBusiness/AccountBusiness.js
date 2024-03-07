@@ -13,6 +13,7 @@ import {
   Button,
   useTheme,
   CardMedia,
+  Skeleton,
 } from "@mui/material";
 import Typography from "@mui/joy/Typography";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -39,8 +40,7 @@ const logo = require("../../Global/images/cropped-AMS-Shadow-Queen-Logo_BNY-1320
 export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
-  const [paymentModal, setPaymentModal] = React.useState(false);
-
+  const [paymentModal, setPaymentModal] = useState(false);
   const [businessAuthorization, setBusinessAuthorization] = useState(false);
   const [productName, setProductName] = useState("");
   const [otherBanner, setOtherBanner] = useState("");
@@ -105,6 +105,37 @@ export default function BusinessAccount() {
   useEffect(() => {
     setLoading(false); // to set loading to false
   }, [products]);
+
+  const handleSubscription = async (e) => {
+    e.preventDefault();
+  
+    try {
+      setLoading(true);
+  
+      const userRef = firestore.collection("Users").doc(user.uid);
+  
+      // Get the existing user data
+      const userData = await userRef.get();
+  
+      // Update the subscribed field to true
+      await userRef.update({ subscribed: true });
+  
+      // Ensure that setPaymentModal is called directly in the component
+      setPaymentModal(false);
+  
+      // Reload the entire page
+      window.location.reload();
+  
+    } catch (error) {
+      console.error("Error updating subscribed status:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  
+  
+
 
   useEffect(() => {
     // Define an asynchronous function 'fetchReviews' to retrieve and process reviews
@@ -268,6 +299,8 @@ export default function BusinessAccount() {
           if (userDoc.exists) {
             // Update the component's state with the user data from the document
             setUserData(userDoc.data());
+            console.log("userDoc.data() is ",userDoc.data())
+            
           } else {
             console.error("User document does not exist");
           }
@@ -517,7 +550,7 @@ export default function BusinessAccount() {
   // Function to handle saving a new banner
   const handleSaveAddBanner = async (e) => {
     e.preventDefault();
-
+  
     // Access the 'Banner' collection in Firestore
     const bannerCollection = firestore.collection("Banner");
 
@@ -572,6 +605,8 @@ export default function BusinessAccount() {
 
       // Close the modal after successful addition/update
       setBannerModal(false);
+      // Reload the entire page
+    window.location.reload();
     } catch (error) {
       console.error("Error adding/updating banner data: ", error);
     }
@@ -681,10 +716,9 @@ export default function BusinessAccount() {
 
       // You can navigate to the next screen or perform other actions here
       alert("Product added successfully!");
-      const paymentUrl = "..."; // (your payment URL)
+       // Reload the entire page
+    window.location.reload();
 
-      // Open the payment URL in the device's default browser
-      Linking.openURL(paymentUrl);
     } catch (error) {
       console.error("Error storing data in Firestore:", error);
       // Set loading back to false in case of an error
@@ -1655,7 +1689,7 @@ export default function BusinessAccount() {
 
             {/* Form for entering payment details */}
             <View style={{ width: "80%", alignSelf: "center" }}>
-              <form onSubmit={handleSavePaymentInfo}>
+              <form onSubmit={handleSubscription}>
                 {/* Input for Card Holder's name */}
                 <TextField
                   id="standard-basic"
@@ -2353,7 +2387,7 @@ export default function BusinessAccount() {
                       {/* Additional information displayed conditionally */}
                       <Text
                         style={{
-                          display: businessAuthorization ? "none" : "flex", // Adjust based on user subscription
+                          display: userData && !userData.subscribed ? "none" : "flex", // Adjust based on user subscription
                           fontWeight: 600,
                           fontSize: 14,
                           flexWrap: "wrap",
@@ -2374,7 +2408,7 @@ export default function BusinessAccount() {
                         paddingLeft: 25,
                         paddingRight: 25,
                         borderRadius: 20,
-                        marginTop: businessAuthorization ? 0 : 10, // Adjust spacing based on condition
+                        marginTop: userData && !userData.subscribed ? 0 : 10, // Adjust spacing based on condition
                       }}
                     >
                       BUSINESS PLUS R150/PM
@@ -2398,7 +2432,7 @@ export default function BusinessAccount() {
                         paddingTop: 10,
                         paddingBottom: 10,
                         borderRadius: 20,
-                        display: businessAuthorization ? "none" : "flex",
+                        display: userData && userData.subscribed ? "none" : "flex",
                         marginTop: 5,
                         justifyContent: "center",
                         paddingLeft: 25,
@@ -2429,7 +2463,7 @@ export default function BusinessAccount() {
                             paddingLeft: 25,
                             paddingRight: 25,
                             borderRadius: 20,
-                            display: !businessAuthorization ? "none" : "flex",
+                            display: userData && !userData.subscribed ? "none" : "flex",
                             marginRight: 20,
                           }}
                         >
@@ -2440,7 +2474,7 @@ export default function BusinessAccount() {
                   </View>
                 </View>
 
-                {businessAuthorization ? ( //the usre must be subscribed
+                {userData && userData.subscribed ? ( //the usre must be subscribed
                   // Card component containing business banners and add banner option
                   <Card
                     style={{
@@ -2627,7 +2661,7 @@ export default function BusinessAccount() {
                   </Card>
                 ) : null}
               </View>
-              {businessAuthorization ? null : (
+              {userData && !userData.subscribed ?  (
                 // Displayed when businessAuthorization is false whicn is when not subscibed
                 <View
                   style={{
@@ -2779,7 +2813,7 @@ export default function BusinessAccount() {
                     </View>
                   </View>
                 </View>
-              )}
+              ):null }
               {/* ScrollView to allow vertical scrolling */}
               <ScrollView style={{ width: "100%" }}>
                 {/* Container view for the product cards */}

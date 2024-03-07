@@ -7,6 +7,7 @@ import TellUsAboutYourself from "./src/Client/SignUp/TellUsAboutYourself";
 import AlternativeContact from "./src/Client/SignUp/AlternativeContact";
 import SignIn from "./src/Client/SignIn/Signin";
 import BusinessRegistration from "./src/Client/BusinessRegistration/BusinessRegistration";
+import TalentRegistration from "./src/Client/BusinessRegistration/TalentRegistration";
 import AddProductsAndServices from "./src/Client/BusinessRegistration/AddProduct";
 import ProductDetails from "./src/Client/ProductDetails/ProductDetails";
 import UserProfile from "./src/Client/AccountAndBusiness/UserProfile";
@@ -46,6 +47,10 @@ const Routes = () => {
         <Stack.Screen
           name="BusinessRegistration"
           component={BusinessRegistration}
+        />
+         <Stack.Screen
+          name="TalentRegistration"
+          component={TalentRegistration}
         />
         <Stack.Screen
           name="AddProductsAndServices"

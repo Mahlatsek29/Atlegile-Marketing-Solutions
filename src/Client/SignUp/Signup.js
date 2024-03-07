@@ -56,7 +56,7 @@ const Signup = () => {
 
       // Check if user is created successfully
       if (userCredential.user) {
-        console.log("User signed up:", userCredential.user);
+        // console.log("User signed up:", userCredential.user);
 
         // Save additional user information to Firestore
         await firestore
@@ -68,6 +68,8 @@ const Signup = () => {
               name: nameAlternative,
               phone: phoneAlternative,
             },
+            business:false,
+            subscribed:false
           });
 
         // Navigate to the "TellUsAboutYourself" screen

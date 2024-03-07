@@ -22,21 +22,19 @@ import { auth, firestore, firebase } from "../../config";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { Typography } from "@mui/material";
-import { Password } from "@mui/icons-material";
 
 // Define BusinessRegistration component
-const BusinessRegistration = () => {
+const TalentRegistration = () => {
   const navigation = useNavigation();
   const [businessName, setBusinessName] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
   const [regNumber, setRegNumber] = useState("");
-  const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState("");
   const [location, setLocation] = useState("");
   const [selectedBusinessType, setSelectedBusinessType] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState("");
-  const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [bio, setBio] = useState("");
-  const [currentUserUID,setCurrentUserUID]=useState(null)
   const [cardHolder, setCardHolder] = useState(null);
   const [cardNumber, setCardNumber] = useState(null);
   const [cvv, setCvv] = useState(null);
@@ -45,7 +43,7 @@ const BusinessRegistration = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const window = Dimensions.get("window");
   const user = firebase.auth().currentUser;
-  const [sendToBackend, setSendToBackend] = useState(false);
+  const [sendToBackend,setSendToBackend] = useState(false)
   // useEffect hook to listen for authentication state changes
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -57,92 +55,84 @@ const BusinessRegistration = () => {
         setCurrentUserUID(null);
       }
     });
-
+  
     return () => unsubscribe();
-
+  
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
 
-  //   //talent
+  //talent
   const handleContinue = async (e) => {
     e.preventDefault();
-
+  
     try {
-      setLoading(true); // Set loading state to true during the signup process
-
-      // Create a user using email and password
-      const userCredential = await firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password);
-
-      // Check if user is created successfully
-      if (userCredential.user) {
-        // console.log("User signed up:", userCredential.user);
-
-        // Save additional user information to Firestore
-        await firestore.collection("Users").doc(userCredential.user.uid).set({
-          business: true,
-          company:businessName,
-          businessName: businessName,
-          subscribed:false,
-          uid: user.uid,
-        });
-
-        // Navigate to the "TellUsAboutYourself" screen
-        setSendToBackend(true);
-      }
+      // setLoading(true);
+  
+      const userRef = firestore.collection("Users").doc(user.uid);
+      
+      // Get the existing user data
+      const userData = await userRef.get();
+      await userRef.set(
+        {
+          talent: true,
+          company: businessName,
+        },
+        { merge: true }
+      );
+      
+  
+      // console.log("Alternative contact information submitted to 'Users' collection in Firestore.");
+      setSendToBackend(true);
     } catch (error) {
-      console.error("Error signing up:", error.message);
-      alert("Error signing up. Please try again.");
+      console.error("Error submitting alternative contact information:", error.message);
+      // You can handle the error here, e.g., display an error message to the user.
     } finally {
-      setLoading(false); // Set loading back to false after the sign-up process completes
+      // setLoading(false);
     }
+  };
+  
+  // Function to handle form submission
+ // Function to handle form submission and backend interaction
+useEffect(() => {
+  const registerBusiness = async () => {
+    try {
+      setLoading(true);
 
+      // Add form data to Firestore
+      await firestore.collection("Business").add({
+        businessName,
+        selectedRole,
+        regNumber,
+        website,
+        location,
+        selectedBusinessType,
+        selectedIndustry,
+        phoneNumber,
+        bio,
+        cardHolder,
+        cardNumber,
+        cvv,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+
+      setShowSuccessAlert(true);
+
+      setTimeout(() => {
+        setLoading(false);
+        navigation.navigate("AddProductsAndServices");
+      }, 2000);
+    } catch (error) {
+      console.error("Error storing data in Firestore:", error);
+      setLoading(false);
+    }
   };
 
-  // Function to handle form submission
-  // Function to handle form submission and backend interaction
-  useEffect(() => {
-    const registerBusiness = async () => {
-      try {
-        setLoading(true);
-
-        // Add form data to Firestore
-        await firestore.collection("Business").add({
-          businessName,
-          company: businessName,
-          selectedRole,
-          regNumber,
-          email,
-          location,
-          selectedBusinessType,
-          selectedIndustry,
-          password,
-          bio,
-          cardHolder,
-          cardNumber,
-          cvv,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-         
-        });
-
-        setShowSuccessAlert(true);
-
-        setTimeout(() => {
-          setLoading(false);
-          navigation.navigate("AddProductsAndServices");
-        }, 2000);
-      } catch (error) {
-        console.error("Error storing data in Firestore:", error);
-        setLoading(false);
-      }
-    };
-
-    if (sendToBackend) {
-      registerBusiness();
-    }
-  }, [sendToBackend]);
-  const emptyOption = [""];
+  if (sendToBackend) {
+    registerBusiness();
+  }
+}, [sendToBackend]);
+const emptyOption = [""];
 
   // Define options for role, business type, and industry dropdowns
   const roleOptions = [
@@ -296,7 +286,7 @@ const BusinessRegistration = () => {
                     marginBottom: "10px",
                   }}
                 >
-                  BUSINESS REGISTRATION
+                  TALENT REGISTRATION
                 </Typography>
 
                 {/* Business Name input */}
@@ -350,6 +340,20 @@ const BusinessRegistration = () => {
                   required
                 />
                 <br />
+
+                {/* Website input */}
+                <TextField
+                  id="outlined-number"
+                  label="Website"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%" }}
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
 
                 {/* Location input */}
                 <TextField
@@ -416,6 +420,21 @@ const BusinessRegistration = () => {
                   </TextField>
                 </View>
 
+                {/* Phone Number input */}
+                <TextField
+                  id="outlined-number"
+                  label="Phone Number"
+                  type="number"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%" }}
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  required
+                />
+
                 {/* Bio input */}
                 <TextField
                   id="outlined-number"
@@ -428,33 +447,6 @@ const BusinessRegistration = () => {
                   style={{ width: "100%" }}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  required
-                />
-                {/* email input */}
-                <TextField
-                  id="outlined-number"
-                  label="email"
-                  type="text"
-                  variant="standard"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  style={{ width: "100%" }}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                {/* password input */}
-                <TextField
-                  id="outlined-number"
-                  label="password"
-                  type="number"
-                  variant="standard"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  style={{ width: "100%" }}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
 
@@ -488,4 +480,4 @@ const BusinessRegistration = () => {
   );
 };
 
-export default BusinessRegistration;
+export default TalentRegistration;

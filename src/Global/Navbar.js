@@ -14,6 +14,7 @@ const Navbar = () => {
   const [userData, setUserData] = useState(null);
   const [cartCount, setCartCount] = useState(2);
   const [showMenu, setShowMenu] = useState(false);
+  const [businessData, setBusinessData] = useState(null);
   const [width, setWidth] = useState(Dimensions.get("window").width);
 
   useEffect(() => {
@@ -46,6 +47,7 @@ const Navbar = () => {
         const unsubscribeSnapshot = userDocRef.onSnapshot((doc) => {
           if (doc.exists) {
             setUserData(doc.data());
+            console.log("userdata is ", doc.data()); // Call doc.data() here as well
           } else {
             console.error("User data not found");
           }
@@ -71,18 +73,12 @@ const Navbar = () => {
   };
 
   const navigateAndCloseMenu = (screen) => {
-    console.log("screen is ", screen);
     navigation.navigate(screen);
     setShowMenu(false);
   };
 
-  const navigateCart = () => {
-    navigation.navigate("DateSelectionAndCheckout");
-  };
-
   return (
     <Toolbar
-    
       sx={{
         color: "#252B42",
         display: "flex",
@@ -117,7 +113,9 @@ const Navbar = () => {
               <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
                 <Button color="inherit">About Us</Button>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigateAndCloseMenu("DateSelectionAndCheckout")}>
+              <TouchableOpacity
+                onPress={() => navigateAndCloseMenu("DateSelectionAndCheckout")}
+              >
                 <Box>
                   <Badge
                     badgeContent={cartCount}
@@ -158,12 +156,16 @@ const Navbar = () => {
                   </Typography>
                 </View>
                 <View style={{ marginLeft: 10 }}>
-                  <Typography variant="subtitle1">
-                    Welcome, {userData.name}
-                  </Typography>
-                  <Typography style={{ fontSize: 12 }}>
-                    {userData.username}
-                  </Typography>
+                  
+                  {userData && userData.business ? (
+                    <Typography variant="subtitle1" >
+                     Welcome, {userData.businessName}
+                    </Typography>
+                  ) : (
+                    <Typography variant="subtitle1">
+                      Welcome, {userData.name}
+                    </Typography>
+                  )}
                 </View>
               </TouchableOpacity>
             </>
@@ -205,7 +207,9 @@ const Navbar = () => {
           </TouchableOpacity>
           {userData ? (
             <>
-              <TouchableOpacity onPress={() => navigateAndCloseMenu("UserProfile")}>
+              <TouchableOpacity
+                onPress={() => navigateAndCloseMenu("UserProfile")}
+              >
                 <Button color="inherit">Profile</Button>
               </TouchableOpacity>
               <TouchableOpacity

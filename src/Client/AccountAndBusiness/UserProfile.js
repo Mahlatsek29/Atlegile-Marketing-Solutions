@@ -68,7 +68,7 @@ const UserProfile = () => {
 
   // Navigation function to handle moving to the Business Registration screen
   const handleBusiness = () => {
-    navigation.navigate("BusinessRegistration");
+    navigation.navigate("TalentRegistration");
   };
 
   // Navigation function to handle moving to the Favourites screen
@@ -136,7 +136,15 @@ const UserProfile = () => {
             }}
           >
             {/* User name and contact information */}
-            <Typography
+            {userData && userData.business ? (
+              <Typography  style={{ color: "#072840", fontWeight: 600 }}
+              variant="h6"
+              >
+              {userData.businessName}
+            </Typography>
+            ):(
+              <>
+              <Typography
               style={{ color: "#072840", fontWeight: 600 }}
               variant="h6"
             >
@@ -146,6 +154,10 @@ const UserProfile = () => {
               {userData?.alternativeContact.name}{" "}
               {userData?.alternativeContact.phone}
             </Typography>
+              </>
+              
+            )}
+            
           </View>
 
           {/* Order history and navigation buttons */}
@@ -315,22 +327,23 @@ const UserProfile = () => {
             </Button>
 
             {/* Manage Business button */}
-            {userData?.talent && (
-              <Button
-                style={{
-                  color: "#072840",
-                  borderRadius: "20px",
-                  outlineColor: "#072840",
-                  marginRight: "5px",
-                }}
-                variant="outlined"
-                onClick={() => {
-                  navigation.navigate("AccountAndBusiness");
-                }}
-              >
-                Manage Business
-              </Button>
-            )}
+            {userData?.talent || userData?.business ? (
+  <Button
+    style={{
+      color: "#072840",
+      borderRadius: "20px",
+      outlineColor: "#072840",
+      marginRight: "5px",
+    }}
+    variant="outlined"
+    onClick={() => {
+      navigation.navigate("AccountAndBusiness");
+    }}
+  >
+    Manage Business
+  </Button>
+) : null}
+
           </View>
         </View>
       </View>

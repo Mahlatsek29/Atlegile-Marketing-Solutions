@@ -143,10 +143,6 @@ const AddProductsAndServices = () => {
         setLoading(true);
       }, 3000);
 
-      // Construct payment URL and open it in a new tab
-      const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=270.00&item_name=subscription`;
-      Linking.openURL(paymentUrl);
-
       // Navigate to the landing page after processing
       navigation.navigate("Landing");
     } catch (error) {

@@ -330,7 +330,7 @@ const BusinessRegistration = () => {
                 <TextField
                   id="outlined-number"
                   label="Password"
-                  type="number"
+                  type="password"
                   variant="standard"
                   InputLabelProps={{
                     shrink: true,

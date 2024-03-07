@@ -313,6 +313,33 @@ const BusinessRegistration = () => {
                   onChange={(e) => setBusinessName(e.target.value)}
                 />
                 <br />
+{/* email input */}
+<TextField
+                  id="outlined-number"
+                  label="Email"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%" }}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {/* password input */}
+                <TextField
+                  id="outlined-number"
+                  label="Password"
+                  type="number"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "100%" }}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
 
                 {/* Role select */}
                 <TextField
@@ -430,34 +457,7 @@ const BusinessRegistration = () => {
                   onChange={(e) => setBio(e.target.value)}
                   required
                 />
-                {/* email input */}
-                <TextField
-                  id="outlined-number"
-                  label="email"
-                  type="text"
-                  variant="standard"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  style={{ width: "100%" }}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                {/* password input */}
-                <TextField
-                  id="outlined-number"
-                  label="password"
-                  type="number"
-                  variant="standard"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  style={{ width: "100%" }}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-
+                
                 {/* Continue Button */}
                 <Button
                   variant="contained"

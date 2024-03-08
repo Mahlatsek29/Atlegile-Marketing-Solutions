@@ -21,7 +21,7 @@ import Banner from "../../Global/images/media bg-cover.png";
 import { auth, firestore, firebase } from "../../config";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import { Typography } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 
 // Define BusinessRegistration component
 const TalentRegistration = () => {
@@ -234,47 +234,47 @@ const emptyOption = [""];
         }}
       />
       {/* Form container */}
-      <View
-        style={{
-          backgroundColor: "white",
-          width: containerWidth,
-          position: "absolute",
-          right: 16,
-          top: 16,
-          bottom: 16,
+      <Paper
+        elevation={0}
+        variant="outlined"
+        sx={{
+          position: "fixed",
+          minWidth: 280,
+          height: "98%",
+          zIndex: 9999,
+          display: "flex",
+          flexDirection: "column", // Make the container a column
+          justifyContent: "space-between", // Push the content to the end
+          alignSelf: "center",
+          width: "90%",
+          "@media (min-width: 600px)": {
+            alignSelf: "flex-end",
+            width: 400,
+            margin: 1,
+          },
         }}
       >
-        {/* Main content container */}
-        <View
-          style={{
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "column",
-            height: "auto",
-            justifyContent: "space-around",
-          }}
-        >
+       
           {/* Logo */}
           <View>
             <img src={logo} style={{ height: "9vh", width: "90%" }} />
           </View>
           {/* Form */}
           <View
-            style={{
-              width: "80%",
-              display: "flex",
-              justifyContent: "left",
-            }}
-          >
-            <form onSubmit={handleContinue} style={{ width: "100%" }}>
-              <View
-                className="form-container"
+          style={{
+            marginBottom:30,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+            <form onSubmit={handleContinue}  style={{display:'flex',justifyContent:'center'}}>
+            <View
+                // className="form-container"
                 style={{
                   justifyContent: "center",
                   alignSelf: "center",
                   display: "flex",
-                  alignSelf: "center",
+                  width: "80%" 
                 }}
               >
                 {/* Form title */}
@@ -474,8 +474,8 @@ const emptyOption = [""];
             </form>
             {/* Display the success alert when showSuccessAlert is true */}
           </View>
-        </View>
-      </View>
+       
+      </Paper>
     </View>
   );
 };

@@ -21,7 +21,7 @@ import Banner from "../../Global/images/media bg-cover.png";
 import { auth, firestore, firebase } from "../../config";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import { Typography } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 import { Password } from "@mui/icons-material";
 
 // Define BusinessRegistration component
@@ -36,7 +36,7 @@ const BusinessRegistration = () => {
   const [selectedIndustry, setSelectedIndustry] = useState("");
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
-  const [currentUserUID,setCurrentUserUID]=useState(null)
+  const [currentUserUID, setCurrentUserUID] = useState(null);
   const [cardHolder, setCardHolder] = useState(null);
   const [cardNumber, setCardNumber] = useState(null);
   const [cvv, setCvv] = useState(null);
@@ -82,9 +82,9 @@ const BusinessRegistration = () => {
         // Save additional user information to Firestore
         await firestore.collection("Users").doc(userCredential.user.uid).set({
           business: true,
-          company:businessName,
+          company: businessName,
           businessName: businessName,
-          subscribed:false,
+          subscribed: false,
           uid: user.uid,
         });
 
@@ -97,7 +97,6 @@ const BusinessRegistration = () => {
     } finally {
       setLoading(false); // Set loading back to false after the sign-up process completes
     }
-
   };
 
   // Function to handle form submission
@@ -123,7 +122,6 @@ const BusinessRegistration = () => {
           cardNumber,
           cvv,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-         
         });
 
         setShowSuccessAlert(true);
@@ -244,47 +242,47 @@ const BusinessRegistration = () => {
         }}
       />
       {/* Form container */}
-      <View
-        style={{
-          backgroundColor: "white",
-          width: containerWidth,
-          position: "absolute",
-          right: 16,
-          top: 16,
-          bottom: 16,
+      <Paper
+        elevation={0}
+        variant="outlined"
+        sx={{
+          position: "fixed",
+          minWidth: 280,
+          height: "98%",
+          zIndex: 9999,
+          display: "flex",
+          flexDirection: "column", // Make the container a column
+          justifyContent: "space-between", // Push the content to the end
+          alignSelf: "center",
+          width: "90%",
+          "@media (min-width: 600px)": {
+            alignSelf: "flex-end",
+            width: 400,
+            margin: 1,
+          },
         }}
       >
-        {/* Main content container */}
-        <View
-          style={{
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "column",
-            height: "auto",
-            justifyContent: "space-around",
-          }}
-        >
+      
           {/* Logo */}
-          <View>
+          <View style={{flex:1, display: "flex", alignSelf: "center",justifyContent:'center' }}>
             <img src={logo} style={{ height: "9vh", width: "90%" }} />
           </View>
           {/* Form */}
           <View
-            style={{
-              width: "80%",
-              display: "flex",
-              justifyContent: "left",
-            }}
-          >
-            <form onSubmit={handleContinue} style={{ width: "100%" }}>
+          style={{
+            marginBottom:30,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+            <form onSubmit={handleContinue} style={{display:'flex',justifyContent:'center'}}>
               <View
-                className="form-container"
+                // className="form-container"
                 style={{
                   justifyContent: "center",
                   alignSelf: "center",
                   display: "flex",
-                  alignSelf: "center",
+                  width: "80%" 
                 }}
               >
                 {/* Form title */}
@@ -308,13 +306,13 @@ const BusinessRegistration = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "100%" }}
+                  // style={{ width: "100%" }}
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
                 />
                 <br />
-{/* email input */}
-<TextField
+                {/* email input */}
+                <TextField
                   id="outlined-number"
                   label="Email"
                   type="text"
@@ -322,7 +320,7 @@ const BusinessRegistration = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "100%" }}
+                  // style={{ width: "100%" }}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -335,7 +333,7 @@ const BusinessRegistration = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "100%" }}
+                  // style={{ width: "100%" }}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -350,7 +348,7 @@ const BusinessRegistration = () => {
                   value={selectedRole}
                   onChange={(e) => setSelectedRole(e.target.value)}
                   style={{
-                    width: "100%",
+                    // width: "100%",
                     textAlign: "left",
                   }}
                 >
@@ -371,7 +369,7 @@ const BusinessRegistration = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "100%" }}
+                  // style={{ width: "100%" }}
                   value={regNumber}
                   onChange={(e) => setRegNumber(e.target.value)}
                   required
@@ -387,7 +385,7 @@ const BusinessRegistration = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "100%" }}
+                  // style={{ width: "100%" }}
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   required
@@ -398,7 +396,7 @@ const BusinessRegistration = () => {
                   style={{
                     display: "flex",
                     flexDirection: "row",
-                    width: "100%",
+                    // width: "100%",
                   }}
                 >
                   <TextField
@@ -457,7 +455,7 @@ const BusinessRegistration = () => {
                   onChange={(e) => setBio(e.target.value)}
                   required
                 />
-                
+
                 {/* Continue Button */}
                 <Button
                   variant="contained"
@@ -482,8 +480,8 @@ const BusinessRegistration = () => {
             </form>
             {/* Display the success alert when showSuccessAlert is true */}
           </View>
-        </View>
-      </View>
+      
+      </Paper>
     </View>
   );
 };

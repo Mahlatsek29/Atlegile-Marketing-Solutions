@@ -7,19 +7,20 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 import CircularProgress from "@mui/material/CircularProgress"; // This import might cause an issue in a React Native project. Make sure you're using a proper CircularProgress component for React Native.
 import { firebase } from "../../config"; // Assuming firebase import is correct
+import { Paper } from "@mui/material";
 
 const Signin = () => {
   const navigation = useNavigation(); // React Navigation hook for navigation
   const [email, setEmail] = useState(""); // State variable for email input
   const [password, setPassword] = useState(""); // State variable for password input
   const [loading, setLoading] = useState(false); // State variable for loading indicator
-  const window = Dimensions.get('window'); // Getting window dimensions
+  const window = Dimensions.get("window"); // Getting window dimensions
 
   // Function to handle sign-in
   const handleSignin = async () => {
@@ -67,92 +68,150 @@ const Signin = () => {
   return (
     <ImageBackground
       source={require("../../Global/images/Reed.jpg")} // Background image
-      style={styles.background}>
-      <View style={{...styles.container, width: containerWidth, height: "95%"}}>
-
+      style={styles.background}
+    >
+      <Paper
+        elevation={0}
+        variant="outlined"
+        sx={{
+          position: "fixed",
+          minWidth: 280,
+          height: "98%",
+          zIndex: 9999,
+          display: "flex",
+          flexDirection: "column", // Make the container a column
+          justifyContent: "space-between", // Push the content to the end
+          alignSelf: "center",
+          width: "90%",
+          "@media (min-width: 600px)": {
+            alignSelf: "flex-end",
+            width: 400,
+            margin: 1,
+          },
+        }}
+      >
         {/* Logo image container */}
-        <View style={{}}>
+        <View style={{flex:1, display: "flex", alignSelf: "center",justifyContent:'center' }}>
           <Image
             source={require("../../Global/images/logo.png")}
             style={styles.logo}
           />
         </View>
+        <View
+          style={{
+            marginBottom:60,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          {/* Sign-in text container */}
+          <View
+            style={{
+              width: "80%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignSelf: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 24,
+                marginBottom: 10,
+                fontWeight: "bold",
+                textAlign: "left",
+              }}
+            >
+              SIGN IN{" "}
+            </Text>
 
-        {/* Sign-in text container */}
-        <View style={{ width: "110%", flexDirection: "row", justifyContent: "space-around" }}>
-          <Text style={styles.title}>SIGN IN </Text>
+            {/* Insert arrow logo */}
+            <TouchableOpacity onPress={handleShop}>
+              <Text
+                style={{ fontSize: 14, marginBottom: -20, fontWeight: "500" }}
+              >
+                SHOP{" "}
+                <AntDesign
+                  style={styles.arrow}
+                  name="right"
+                  size={20}
+                  color="#072840"
+                />
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-          {/* Insert arrow logo */}
-          <TouchableOpacity onPress={handleShop}>
-            <Text style={{ fontSize: 14, marginBottom: -20 ,fontWeight: "500",}}>
-              SHOP <AntDesign style={styles.arrow} name="right" size={20} color="#072840" />
+          <View style={{ width: "80%", display: "flex", alignSelf: "center" }}>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+              keyboardType="email-address"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+              secureTextEntry={true}
+            />
+          </View>
+          <View style={{ width: "80%",  display:'flex',alignSelf:'center' }}>
+            <Text
+              style={{
+                position: "relative",
+                alignSelf:'flex-end', 
+                marginVertical: 10,
+                cursor: "pointer",
+              
+                fontWeight: "500",
+                color: "#072840",
+              }}
+            >
+              FORGOT PASSWORD?
+            </Text>
+          </View>
+
+          {/* Sign-in button */}
+          <TouchableOpacity style={{display:'flex',alignSelf:'center',backgroundColor: "#072840",
+    paddingVertical: 10,
+    borderRadius: 30,
+    marginTop: 10,
+    width: "75%",
+    alignItems: "center",}} onPress={handleSignin}>
+            {loading ? (
+              <CircularProgress size={25} /> // Loading indicator
+            ) : (
+              <Text style={{color: "white",
+              textAlign: "center",
+              fontWeight: "bold",}}>SIGN IN</Text> // Sign-in text
+            )}
+          </TouchableOpacity>
+          <View style={{width: "80%",  display:'flex',alignSelf:'center' }}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SignUp")}
+              style={{
+                position: "relative",
+                left: 10,
+                marginVertical: 10,
+                cursor: "pointer",
+                alignSelf: "center",
+                fontWeight: "500",
+                color: "#072840",
+              }}
+            >
+              DON'T HAVE AN ACCOUNT?
+            </TouchableOpacity>
+          </View>
+          {/* Google sign-in button */}
+          <TouchableOpacity onPress={handleGoogleSignIn}>
+            <Text style={styles.linkText1}>
+              {/* <AntDesign name="google" size={15} color="red" /> SIGN UP WITH GOOGLE */}
             </Text>
           </TouchableOpacity>
         </View>
-
         {/* TextInput fields container */}
-        <View style={{ width: "75%" }}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-            keyboardType="email-address"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-            secureTextEntry={true}
-          />
-        </View>
-        <View style= {{width:"70%",paddingLeft:2}}>
-          <Text
-            style={{
-              position: "relative",
-              left: 10,
-              marginVertical: 10,
-              cursor: "pointer",
-              alignSelf:'flex-end',
-              fontWeight: "500",
-              color: "#072840",
-            }}>
-            FORGOT PASSWORD?
-          </Text>
-        </View>
-
-        {/* Sign-in button */}
-        <TouchableOpacity style={styles.button} onPress={handleSignin}>
-          {loading ? (
-            <CircularProgress size={25} /> // Loading indicator
-          ) : (
-            <Text style={styles.buttonText}>SIGN IN</Text> // Sign-in text
-          )}
-        </TouchableOpacity>
-        <View style= {{width:"70%"}}>
-          <TouchableOpacity
-          onPress={()=> navigation.navigate('SignUp')}
-            style={{
-              position: "relative",
-              left: 10,
-              marginVertical: 10,
-              cursor: "pointer",
-              alignSelf:'center',
-              fontWeight: "500",
-              color: "#072840",
-            }}>
-              
-            DON'T HAVE AN ACCOUNT?
-          </TouchableOpacity>
-        </View>
-        {/* Google sign-in button */}
-        <TouchableOpacity onPress={handleGoogleSignIn}>
-          <Text style={styles.linkText1}>
-            <AntDesign name="google" size={15} color="red" /> SIGN UP WITH GOOGLE
-          </Text>
-        </TouchableOpacity>
-      </View>
+      </Paper>
     </ImageBackground>
   );
 };

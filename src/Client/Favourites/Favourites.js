@@ -19,10 +19,10 @@ import Icon2 from "react-native-vector-icons/Feather";
 import Skeleton from "@mui/material/Skeleton";
 import { Ionicons } from "@expo/vector-icons";
 import { auth, firestore } from "../../config";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import Swal from "sweetalert2";
-
+import { useNavigation } from "@react-navigation/native";
 const Favourites = ({ item }) => {
   const [checkOrder, setCheckOrder] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -37,6 +37,7 @@ const Favourites = ({ item }) => {
   const [showSnackbar1, setShowSnackbar1] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const navigation = useNavigation();
   // UseEffect to handle window resize and set mobile state
   useEffect(() => {
     const handleResize = () => {
@@ -245,26 +246,27 @@ const Favourites = ({ item }) => {
       confirmButtonText: "Yes, sign me out!",
     }).then((result) => {
       if (result.isConfirmed) {
-        navigate("/landing-page");
+        signOut(firebase.auth())
+        navigation.navigate("Landing");
       }
     });
   };
 
   // Functions to handle navigation
   const handleorders = () => {
-    setCheckOrder(true);
+    navigation.navigate("OrderHistory");
   };
 
   const handlefavorites = () => {
-    navigate("/termsandconditions");
+    navigation.navigate("Favourites");
   };
 
   const handleterms = () => {
-    navigate("/termsandconditions");
+    navigation.navigate("termsandconditions");
   };
 
   const handlepolicy = () => {
-    navigate("/privacypolicy");
+    navigation.navigate("privacypolicy");
   };
 
   // UseEffect to set loading to false when products state changes

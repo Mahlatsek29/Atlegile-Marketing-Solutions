@@ -6,6 +6,7 @@ import {
   MenuItem,
   Button,
   Typography,
+  Paper,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import background from "../../Global/images/Reed.jpg";
@@ -161,49 +162,29 @@ const AddProductsAndServices = () => {
         height: "100vh",
       }}
     >
-      {/* Grid container for layout */}
-      <Grid
-        container
-        style={{
-          width: "100%",
-          marginBottom: "-10vh",
-          position: "absolute",
-          top: 5,
-          left: -10,
-          right: 10,
+    <Paper
+        elevation={0}
+        variant="outlined"
+        sx={{
+          position: "fixed",
+          minWidth: 280,
+          height: "98%",
+          zIndex: 9999,
+          display: "flex",
+          flexDirection: "column", // Make the container a column
+          justifyContent: "space-between", // Push the content to the end
+          alignSelf: "center",
+          width: "90%",
+          "@media (min-width: 600px)": {
+            alignSelf: "flex-end",
+            width: 400,
+            margin: 1,
+          },
         }}
       >
-        {/* Left grid content (hidden on small screens) */}
-        <Grid
-          item
-          lg={8}
-          md={8}
-          sm={{ hidden: true }}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          {/* Left grid content */}
-        </Grid>
+        
 
-        {/* Right grid content */}
-        <Grid
-          item
-          lg={4}
-          md={4}
-          style={{
-            backgroundColor: "#fff",
-            width: "100%",
-            height: "auto",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+       
           {/* Logo section */}
           <Grid>
             <img
@@ -214,12 +195,14 @@ const AddProductsAndServices = () => {
 
           {/* Form container */}
           <View
-            className="form-container"
-            style={{
-              width: "75%",
-              marginBottom: "30px",
-            }}
-          >
+          style={{
+            marginBottom:60,
+            display: "flex",
+            justifyContent: "center",
+           width:"80%",
+           alignSelf:'center'
+          }}
+        >
             {/* Title for adding products and services */}
             <Typography
               variant="h2"
@@ -240,10 +223,10 @@ const AddProductsAndServices = () => {
               style={{
                 display: "flex",
                 flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
                 width: "100%",
                 height: "8vh",
-                alignSelf: "flex-start",
-                marginBottom: 5,
               }}
             >
               {/* Display selected images or a placeholder */}
@@ -281,7 +264,7 @@ const AddProductsAndServices = () => {
                 style={{
                   backgroundColor: "whitesmoke",
                   color: "#000",
-                  padding: "25px",
+                  padding: "20px",
                   width: "5%",
                   cursor: "pointer",
                   alignSelf: "center",
@@ -301,7 +284,7 @@ const AddProductsAndServices = () => {
 
             {/* Form for entering product details */}
             <View>
-              <form onSubmit={handleContinue}>
+              <form onSubmit={handleContinue} >
                 {/* Name input field */}
                 <TextField
                   fullWidth
@@ -375,7 +358,7 @@ const AddProductsAndServices = () => {
                     <TextField
                       fullWidth
                       id="outlined-number"
-                      label="length_cm"
+                      label="Length_cm"
                       type="number"
                       variant="standard"
                       InputLabelProps={{
@@ -392,7 +375,7 @@ const AddProductsAndServices = () => {
                     <TextField
                       fullWidth
                       id="outlined-number"
-                      label="width_cm"
+                      label="Width_cm"
                       type="number"
                       variant="standard"
                       InputLabelProps={{
@@ -409,7 +392,7 @@ const AddProductsAndServices = () => {
                     <TextField
                       fullWidth
                       id="outlined-number"
-                      label="height_cm"
+                      label="Height_cm"
                       type="number"
                       variant="standard"
                       InputLabelProps={{
@@ -426,7 +409,7 @@ const AddProductsAndServices = () => {
                     <TextField
                       fullWidth
                       id="outlined-number"
-                      label="weight_kg"
+                      label="Weight_kg"
                       type="number"
                       variant="standard"
                       InputLabelProps={{
@@ -532,8 +515,8 @@ const AddProductsAndServices = () => {
               </form>
             </View>
           </View>
-        </Grid>
-      </Grid>
+        
+      </Paper>
     </View>
   );
 };

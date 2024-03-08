@@ -34,9 +34,11 @@ import { auth, firestore, storage } from "../../config";
 import firebase from "firebase/compat/app";
 import CircularProgress from "@mui/material/CircularProgress";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import sara from "../../Global/images/Sara.png";
 import Swal from "sweetalert2";
+import { useNavigation } from "@react-navigation/native";
+
 const logo = require("../../Global/images/cropped-AMS-Shadow-Queen-Logo_BNY-1320x772 1.png");
 export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
@@ -87,6 +89,8 @@ export default function BusinessAccount() {
   const [isMobile, setIsMobile] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [review, setReview] = useState({});
+  const navigation = useNavigation();
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 1080); // Adjust the breakpoint as needed
@@ -396,29 +400,30 @@ export default function BusinessAccount() {
       confirmButtonText: "Yes, sign me out!",
     }).then((result) => {
       if (result.isConfirmed) {
-        navigate("/landing-page");
+        signOut(firebase.auth())
+        navigation.navigate("Landing");
       }
     });
   };
 
   // Sets the `checkOrder` state to `true`.
   const handleorders = () => {
-    setCheckOrder(true);
+    navigation.navigate("OrderHistory");
   };
 
   // Navigates to the "/termsandconditions" route.
   const handlefavorites = () => {
-    navigate("/termsandconditions");
+    navigation.navigate("Favourites");
   };
 
   // Navigates to the "/termsandconditions" route.
   const handleterms = () => {
-    navigate("/termsandconditions");
+    navigation.navigate("termsandconditions");
   };
 
   // Navigates to the "/privacypolicy" route.
   const handlepolicy = () => {
-    navigate("/privacypolicy");
+    navigation.navigate("privacypolicy");
   };
 
   useEffect(() => {
@@ -1287,7 +1292,7 @@ export default function BusinessAccount() {
             ADD PRODUCTS + SERVICES
           </View> */}
           <View
-            className="uploadContainer"
+            // className="uploadContainer"
             style={{
               display: "flex",
               flexDirection: "row",

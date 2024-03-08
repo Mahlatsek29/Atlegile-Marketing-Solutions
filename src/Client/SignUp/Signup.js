@@ -14,6 +14,7 @@ import TextField from "@mui/material/TextField";
 import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import CircularProgress from "@mui/material/CircularProgress";
+import { Paper } from "@mui/material";
 
 const Signup = () => {
   const navigation = useNavigation();
@@ -68,8 +69,8 @@ const Signup = () => {
               name: nameAlternative,
               phone: phoneAlternative,
             },
-            business:false,
-            subscribed:false
+            business: false,
+            subscribed: false,
           });
 
         // Navigate to the "TellUsAboutYourself" screen
@@ -96,40 +97,181 @@ const Signup = () => {
         style={styles.background}
       >
         {/* Container for the main content */}
-        <View
-          style={{ ...styles.container, width: containerWidth, height: "95%" }}
+        <Paper
+          elevation={0}
+          variant="outlined"
+          sx={{
+            position: "fixed",
+            minWidth: 280,
+            height: "98%",
+            zIndex: 9999,
+            display: "flex",
+            flexDirection: "column", // Make the container a column
+            justifyContent: "space-between", // Push the content to the end
+            alignSelf: "center",
+            width: "90%",
+            "@media (min-width: 600px)": {
+              alignSelf: "flex-end",
+              width: 400,
+              margin: 1,
+            },
+          }}
         >
           {/* Empty View */}
-          <View></View>
-
-          {/* Logo image */}
-          <Image
-            source={require("../../Global/images/logo.png")}
-            style={styles.logo}
-          />
-
-          {/* Title and SHOP link */}
           <View
             style={{
-              width: "120%",
-              flexDirection: "row",
-              justifyContent: "space-around",
+              flex: 1,
+              display: "flex",
+              alignSelf: "center",
+              justifyContent: "center",
             }}
           >
-            {/* Title for the screen */}
-            <Text style={styles.title}>SIGN UP </Text>
+            {/* Logo image */}
+            <Image
+              source={require("../../Global/images/logo.png")}
+              style={styles.logo}
+            />
+          </View>
 
-            {/* SHOP link with arrow icon */}
-            <TouchableOpacity onPress={navigateToShop}>
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: 60,
+            }}
+          >
+            {/* Title and SHOP link */}
+            <View
+              style={{
+                width: "80%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignSelf: "center",
+              }}
+            >
+              {/* Title for the screen */}
               <Text
                 style={{
-                  fontSize: 14,
-                  marginBottom: -20,
+                  fontSize: 24,
+                  marginBottom: 10,
+                  fontWeight: "bold",
+                  textAlign: "left",
+                }}
+              >
+                SIGN UP{" "}
+              </Text>
+
+              {/* SHOP link with arrow icon */}
+              <TouchableOpacity onPress={navigateToShop}>
+                <Text
+                  style={{ fontSize: 14, marginBottom: -20, fontWeight: "500" }}
+                >
+                  SHOP{" "}
+                  <FontAwesome
+                    style={styles.arrow}
+                    name="angle-right"
+                    size={20}
+                    color="#072840"
+                  />
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Form fields for email and password */}
+            <View
+              style={{ width: "80%", display: "flex", alignSelf: "center" }}
+            >
+              <TextField
+                id="outlined-number"
+                label="Email"
+                type="text"
+                variant="standard"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <TextField
+                id="outlined-number"
+                label="Password"
+                type="password"
+                variant="standard"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                secureTextEntry
+              />
+            </View>
+
+            {/* Button to initiate signup process */}
+            <TouchableOpacity
+              style={{
+                display: "flex",
+                alignSelf: "center",
+                backgroundColor: "#072840",
+                paddingVertical: 10,
+                borderRadius: 30,
+                marginTop: 10,
+                width: "75%",
+                alignItems: "center",
+              }}
+              onPress={handleSignup}
+            >
+              {loading ? (
+                <CircularProgress size={25} />
+              ) : (
+                <Text style={styles.buttonText}>SIGN UP</Text>
+              )}
+            </TouchableOpacity>
+
+            {/* Link to navigate to the sign-in screen */}
+            <View
+              style={{ width: "80%", display: "flex", alignSelf: "center" }}
+            >
+              <TouchableOpacity
+                onPress={() => navigation.navigate("SignIn")}
+                style={{
+                  position: "relative",
+                  left: 10,
+                  marginVertical: 10,
+                  cursor: "pointer",
+                  alignSelf: "center",
                   fontWeight: "500",
                   color: "#072840",
                 }}
               >
-                SHOP{" "}
+                ALREADY HAVE AN ACCOUNT?
+              </TouchableOpacity>
+            </View>
+
+            {/* Button to initiate signup with Google */}
+            {/* <TouchableOpacity>
+            <Text style={styles.linkText1}>
+              {" "}
+              <AntDesign name="google" size={15} color="red" />
+              SIGN UP WITH GOOGLE
+            </Text>
+          </TouchableOpacity> */}
+
+            {/* Button to navigate to business signup screen */}
+            <TouchableOpacity
+              style={{
+                borderColor: "#072840",
+                borderWidth: 1,
+                paddingVertical: 10,
+                borderRadius: 30,
+                marginTop: 10,
+                width: "75%",
+                alignItems: "center",
+                alignSelf: "center",
+              }}
+              onPress={navigateSignUpBussiness}
+            >
+              <Text style={styles.buttonText1}>
+                SIGN UP AS A BUSINESS{" "}
                 <FontAwesome
                   style={styles.arrow}
                   name="angle-right"
@@ -139,86 +281,7 @@ const Signup = () => {
               </Text>
             </TouchableOpacity>
           </View>
-
-          {/* Form fields for email and password */}
-          <View style={{ width: "75%" }}>
-            <TextField
-              id="outlined-number"
-              label="Email"
-              type="text"
-              variant="standard"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-              id="outlined-number"
-              label="Password"
-              type="password"
-              variant="standard"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              secureTextEntry
-            />
-          </View>
-
-          {/* Button to initiate signup process */}
-          <TouchableOpacity style={styles.button} onPress={handleSignup}>
-            {loading ? (
-              <CircularProgress size={25} />
-            ) : (
-              <Text style={styles.buttonText}>SIGN UP</Text>
-            )}
-          </TouchableOpacity>
-
-          {/* Link to navigate to the sign-in screen */}
-          <View style={{ width: "70%" }}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("SignIn")}
-              style={{
-                position: "relative",
-                left: 10,
-                marginVertical: 10,
-                cursor: "pointer",
-                alignSelf: "center",
-                fontWeight: "500",
-                color: "#072840",
-              }}
-            >
-              ALREADY HAVE AN ACCOUNT?
-            </TouchableOpacity>
-          </View>
-
-          {/* Button to initiate signup with Google */}
-          <TouchableOpacity>
-            <Text style={styles.linkText1}>
-              {" "}
-              <AntDesign name="google" size={15} color="red" />
-              SIGN UP WITH GOOGLE
-            </Text>
-          </TouchableOpacity>
-
-          {/* Button to navigate to business signup screen */}
-          <TouchableOpacity
-            style={styles.businessButton}
-            onPress={navigateSignUpBussiness}
-          >
-            <Text style={styles.buttonText1}>
-              SIGN UP AS A BUSINESS{" "}
-              <FontAwesome
-                style={styles.arrow}
-                name="angle-right"
-                size={20}
-                color="#072840"
-              />
-            </Text>
-          </TouchableOpacity>
-        </View>
+        </Paper>
       </ImageBackground>
     </View>
   );

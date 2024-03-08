@@ -14,6 +14,7 @@ import {
   useTheme,
   CardMedia,
   Skeleton,
+  Paper,
 } from "@mui/material";
 import Typography from "@mui/joy/Typography";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -108,34 +109,29 @@ export default function BusinessAccount() {
 
   const handleSubscription = async (e) => {
     e.preventDefault();
-  
+
     try {
       setLoading(true);
-  
+
       const userRef = firestore.collection("Users").doc(user.uid);
-  
+
       // Get the existing user data
       const userData = await userRef.get();
-  
+
       // Update the subscribed field to true
       await userRef.update({ subscribed: true });
-  
+
       // Ensure that setPaymentModal is called directly in the component
       setPaymentModal(false);
-  
+
       // Reload the entire page
       window.location.reload();
-  
     } catch (error) {
       console.error("Error updating subscribed status:", error.message);
     } finally {
       setLoading(false);
     }
   };
-  
-  
-  
-
 
   useEffect(() => {
     // Define an asynchronous function 'fetchReviews' to retrieve and process reviews
@@ -299,8 +295,7 @@ export default function BusinessAccount() {
           if (userDoc.exists) {
             // Update the component's state with the user data from the document
             setUserData(userDoc.data());
-            console.log("userDoc.data() is ",userDoc.data())
-            
+            console.log("userDoc.data() is ", userDoc.data());
           } else {
             console.error("User document does not exist");
           }
@@ -550,7 +545,7 @@ export default function BusinessAccount() {
   // Function to handle saving a new banner
   const handleSaveAddBanner = async (e) => {
     e.preventDefault();
-  
+
     // Access the 'Banner' collection in Firestore
     const bannerCollection = firestore.collection("Banner");
 
@@ -606,22 +601,22 @@ export default function BusinessAccount() {
       // Close the modal after successful addition/update
       setBannerModal(false);
       // Reload the entire page
-    window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error("Error adding/updating banner data: ", error);
     }
   };
 
   // Function to handle saving payment information
-  const handleSavePaymentInfo = (e) => {
-    e.preventDefault();
+  // const handleSavePaymentInfo = (e) => {
+  //   e.preventDefault();
 
-    // Close the payment modal
-    setPaymentModal(false);
+  //   // Close the payment modal
+  //   setPaymentModal(false);
 
-    // Set the 'businessAuthorization' state to true, indicating successful authorization
-    setBusinessAuthorization(true);
-  };
+  //   // Set the 'businessAuthorization' state to true, indicating successful authorization
+  //   setBusinessAuthorization(true);
+  // };
 
   // useEffect hook to simulate a button click when the component mounts
   useEffect(() => {
@@ -716,9 +711,8 @@ export default function BusinessAccount() {
 
       // You can navigate to the next screen or perform other actions here
       alert("Product added successfully!");
-       // Reload the entire page
-    window.location.reload();
-
+      // Reload the entire page
+      window.location.reload();
     } catch (error) {
       console.error("Error storing data in Firestore:", error);
       // Set loading back to false in case of an error
@@ -728,7 +722,7 @@ export default function BusinessAccount() {
 
   return (
     <>
-      <React.Fragment>
+    <React.Fragment>
         {/* Main modal component */}
         <Modal
           open={!!layout} // Modal opens when the layout exists
@@ -973,6 +967,7 @@ export default function BusinessAccount() {
           </ModalOverflow>
         </Modal>
       </React.Fragment>
+      
 
       {editModal ? (
         // View for the edit modal overlay
@@ -1234,416 +1229,401 @@ export default function BusinessAccount() {
 
       {addProduct ? (
         // Overlay for the add product modal
-        <View
-          style={{
-            top: 65,
-            position: "absolute",
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
+        <Paper
+          elevation={0}
+          variant="outlined"
+          sx={{
+            // top: 65,
+            position: "fixed",
+            minWidth: 280,
+            height: "auto",
             zIndex: 9999,
-            alignSelf: "flex-end",
+            display: "flex",
+            flexDirection: "column", // Make the container a column
+            justifyContent: "space-between", // Push the content to the end
+            alignSelf: "center",
+            width: "90%",
+            "@media (min-width: 600px)": {
+              alignSelf: "flex-end",
+              width: 400,
+            },
           }}
         >
-          {/* Modal content */}
-          <Grid
-            item
-            lg={3}
-            md={3}
-            border="2px lightgrey solid"
+          <TouchableOpacity
+            onPress={() => setAddProduct(false)}
             style={{
-              backgroundColor: "white",
-              width: "100%",
-              height: "auto",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              backgroundColor: "white",
+              alignSelf: "flex-end",
+              // backgroundColor: "red",
+              padding: 5,
+              borderRadius: 5,
+              transition: "background-color 0.3s", // Add a smooth transition
+              ":hover": {
+                backgroundColor: "rgba(255, 0, 0, 0.7)", // Set the alpha value for transparency
+              },
             }}
           >
-            {/* Close button */}
-            <TouchableOpacity
-              onPress={() => setAddProduct(false)}
-              style={{ alignSelf: "flex-end", padding: 5 }}
-            >
-              <Icon name="close-a" size={20} color="black" />
-            </TouchableOpacity>
+            <Icon name="close-a" size={20} color="black" />
+          </TouchableOpacity>
 
-            {/* Logo section */}
-            <Grid style={{ alignSelf: "center" }}>
-              <img
-                src={logo}
-                style={{ height: "9vh", width: "90%", paddingTop: "15vh" }}
-              />
-            </Grid>
-
-            {/* Form container */}
-            <View
+          <Grid style={{ alignSelf: "center" }}>
+            <img
+              src={logo}
               style={{
-                height: "outo",
+                height: "8vh",
                 width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
+                //paddingTop: "15vh"
+              }}
+            />
+          </Grid>
+
+          {/* <View
+            style={{
+              color: "#000",
+              textAlign: "left",
+              fontSize: "25px",
+              textAlign: "center",
+            }}
+          >
+            ADD PRODUCTS + SERVICES
+          </View> */}
+          <View
+            className="uploadContainer"
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "8vh",
+            }}
+          >
+            {/* Display selected images or placeholder */}
+            {images.length > 0 ? (
+              images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image.url}
+                  alt={`Product Image ${index + 1}`}
+                  style={{
+                    padding: "15px",
+                    marginRight: "10px",
+                    width: "16%",
+                    height: "8vh",
+                  }}
+                />
+              ))
+            ) : (
+              <img
+                src={placeholder}
+                alt="Placeholder"
+                style={{
+                  padding: "5px",
+                  marginRight: "10px",
+                  width: "16%",
+                  height: "8vh",
+                }}
+              />
+            )}
+
+            {/* Button to trigger file input */}
+            <label
+              htmlFor="imageInput"
+              className="add"
+              style={{
+                backgroundColor: "whitesmoke",
+                color: "#000",
+                padding: "20px",
+                width: "5%",
+                cursor: "pointer",
+                alignSelf: "center",
               }}
             >
-              {/* Title of the perpose ffo the form */}
-              <h2
-                style={{
-                  color: "#000",
-                  textAlign: "left",
-                  fontSize: "25px",
-                  textAlign: "center",
+              +
+            </label>
+            {/* File input for image selection */}
+            <input
+              type="file"
+              id="imageInput"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handleImageChange}
+              multiple // Allow selecting multiple files
+            />
+          </View>
+          <View style={{ width: "80%", alignSelf: "center" }}>
+            <form onSubmit={handleContinue}>
+              {/* Name input */}
+              <TextField
+                fullWidth
+                id="outlined-number"
+                label="Name"
+                type="text"
+                variant="standard"
+                InputLabelProps={{
+                  shrink: true,
                 }}
-              >
-                ADD PRODUCTS + SERVICES
-              </h2>
-
-              {/* Image upload section */}
+                style={{ width: "100%" }}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+              {/* Business Name input */}
+              <TextField
+                fullWidth
+                id="outlined-number"
+                label="Business Name"
+                type="text"
+                variant="standard"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                style={{ width: "100%",
+                }}
+                value={businessName}
+                onChange={(e) => setBusinessName(e.target.value)}
+                required
+              />
+              <TextField
+                fullWidth
+                id="outlined-number"
+                label="Company Name"
+                type="text"
+                variant="standard"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                style={{ width: "100%", 
+                }}
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                required
+              />
               <View
-                className="uploadContainer"
                 style={{
                   display: "flex",
                   flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "100%",
-                  height: "8vh",
+                  flexWrap: "wrap",
                 }}
               >
-                {/* Display selected images or placeholder */}
-                {images.length > 0 ? (
-                  images.map((image, index) => (
-                    <img
-                      key={index}
-                      src={image.url}
-                      alt={`Product Image ${index + 1}`}
-                      style={{
-                        padding: "15px",
-                        marginRight: "10px",
-                        width: "16%",
-                        height: "8vh",
-                      }}
-                    />
-                  ))
-                ) : (
-                  <img
-                    src={placeholder}
-                    alt="Placeholder"
-                    style={{
-                      padding: "5px",
-                      marginRight: "10px",
-                      width: "16%",
-                      height: "8vh",
-                    }}
-                  />
-                )}
-
-                {/* Button to trigger file input */}
-                <label
-                  htmlFor="imageInput"
-                  className="add"
-                  style={{
-                    backgroundColor: "whitesmoke",
-                    color: "#000",
-                    padding: "25px",
-                    width: "5%",
-                    cursor: "pointer",
-                    alignSelf: "center",
+                <TextField
+                  fullWidth
+                  id="outlined-number"
+                  label="length_cm"
+                  type="number"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
                   }}
-                >
-                  +
-                </label>
-                {/* File input for image selection */}
-                <input
-                  type="file"
-                  id="imageInput"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleImageChange}
-                  multiple // Allow selecting multiple files
+                  style={{
+                    width: "45%",
+                    marginRight: "10px",
+                    }}
+                  value={length}
+                  onChange={(e) => setLength(e.target.value)}
+                  required
+                />
+                <TextField
+                  fullWidth
+                  id="outlined-number"
+                  label="width_cm"
+                  type="number"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{
+                    width: "45%",
+                    marginRight: "10px",
+                  }}
+                  value={width}
+                  onChange={(e) => setWidth(e.target.value)}
+                  required
+                />
+                <TextField
+                  fullWidth
+                  id="outlined-number"
+                  label="height_cm"
+                  type="number"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{
+                    width: "45%",
+                    marginRight: "10px",
+                  }}
+                  value={height}
+                  onChange={(e) => setHeight(e.target.value)}
+                  required
+                />
+                <TextField
+                  fullWidth
+                  id="outlined-number"
+                  label="weight_kg"
+                  type="number"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "45%", 
+                  }}
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
+                  required
                 />
               </View>
-
-              {/* Form inputs */}
-              <View style={{ width: "80%", alignSelf: "center" }}>
-                <form onSubmit={handleContinue}>
-                  {/* Name input */}
-                  <TextField
-                    fullWidth
-                    id="outlined-number"
-                    label="Name"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
+              {/* Price and Quantity inputs */}
+              <View style={{ display: "flex", flexDirection: "row" }}>
+                <TextField
+                  fullWidth
+                  id="outlined-number"
+                  label="Price"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{
+                    width: "45%",
+                    marginRight: "10px",
                     }}
-                    style={{ width: "100%" }}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  />
-                  {/* Business Name input */}
-                  <TextField
-                    fullWidth
-                    id="outlined-number"
-                    label="Business Name"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{ width: "100%", marginTop: "10px" }}
-                    value={businessName}
-                    onChange={(e) => setBusinessName(e.target.value)}
-                    required
-                  />
-                  <TextField
-                    fullWidth
-                    id="outlined-number"
-                    label="Company Name"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{ width: "100%", marginTop: "10px" }}
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value)}
-                    required
-                  />
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <TextField
-                      fullWidth
-                      id="outlined-number"
-                      label="length_cm"
-                      type="number"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{
-                        width: "45%",
-                        marginRight: "10px",
-                        marginTop: "10px",
-                      }}
-                      value={length}
-                      onChange={(e) => setLength(e.target.value)}
-                      required
-                    />
-                    <TextField
-                      fullWidth
-                      id="outlined-number"
-                      label="width_cm"
-                      type="number"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{
-                        width: "45%",
-                        marginTop: "10px",
-                        marginRight: "10px",
-                      }}
-                      value={width}
-                      onChange={(e) => setWidth(e.target.value)}
-                      required
-                    />
-                    <TextField
-                      fullWidth
-                      id="outlined-number"
-                      label="height_cm"
-                      type="number"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{
-                        width: "45%",
-                        marginTop: "10px",
-                        marginRight: "10px",
-                      }}
-                      value={height}
-                      onChange={(e) => setHeight(e.target.value)}
-                      required
-                    />
-                    <TextField
-                      fullWidth
-                      id="outlined-number"
-                      label="weight_kg"
-                      type="number"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{ width: "45%", marginTop: "10px" }}
-                      value={weight}
-                      onChange={(e) => setWeight(e.target.value)}
-                      required
-                    />
-                  </View>
-                  {/* Price and Quantity inputs */}
-                  <View style={{ display: "flex", flexDirection: "row" }}>
-                    <TextField
-                      fullWidth
-                      id="outlined-number"
-                      label="Price"
-                      type="text"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{
-                        width: "45%",
-                        marginRight: "10px",
-                        marginTop: "10px",
-                      }}
-                      value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                      required
-                    />
-                    <TextField
-                      fullWidth
-                      id="outlined-number"
-                      label="Quantity"
-                      type="text"
-                      variant="standard"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      style={{ width: "45%", marginTop: "10px" }}
-                      value={quantity}
-                      onChange={(e) => setQuantity(e.target.value)}
-                      required
-                    />
-                  </View>
-                  {/* Description input */}
-                  <TextField
-                    fullWidth
-                    id="outlined-number"
-                    label="Description"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{
-                      width: "100%",
-                      marginBottom: "10px",
-                      marginTop: "10px",
-                    }}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    required
-                  />
-                  {/* Product Category input */}
-                  <TextField
-                    fullWidth
-                    id="outlined-select-currency"
-                    select
-                    label="Product Category"
-                    variant="standard"
-                    value={selectedProductCategory}
-                    onChange={(e) => setProductCategory(e.target.value)}
-                    style={{
-                      width: "100%",
-                      marginRight: "10px",
-                      textAlign: "left",
-                    }}
-                    required
-                  >
-                    {productCategory.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                  {/* Brand input */}
-                  <TextField
-                    fullWidth
-                    id="outlined-number"
-                    label="Brand"
-                    type="text"
-                    variant="standard"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{
-                      width: "100%",
-                      marginLeft: "5px",
-                      marginTop: "10px",
-                    }}
-                    value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
-                    required
-                  />
-
-                  {/* Loading indicator or Continue button */}
-                  {loading ? (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: "1vh",
-                      }}
-                    >
-                      <CircularProgress />
-                    </Box>
-                  ) : (
-                    <Button
-                      variant="contained"
-                      style={{
-                        width: "80%",
-                        height: "10%",
-                        margin: "20px 0px",
-                        background: "#072840",
-                        borderRadius: "30px",
-                      }}
-                      type="submit"
-                    >
-                      Continue
-                    </Button>
-                  )}
-                </form>
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  required
+                />
+                <TextField
+                  fullWidth
+                  id="outlined-number"
+                  label="Quantity"
+                  type="text"
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{ width: "45%", 
+                  }}
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                  required
+                />
               </View>
-            </View>
-          </Grid>
-        </View>
+              {/* Description input */}
+              <TextField
+                fullWidth
+                id="outlined-number"
+                label="Description"
+                type="text"
+                variant="standard"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                style={{
+                  width: "100%",
+                  marginBottom: "10px",
+                  }}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              />
+              {/* Product Category input */}
+              <TextField
+                fullWidth
+                id="outlined-select-currency"
+                select
+                label="Product Category"
+                variant="standard"
+                value={selectedProductCategory}
+                onChange={(e) => setProductCategory(e.target.value)}
+                style={{
+                  width: "100%",
+                  textAlign: "left",
+                }}
+                required
+              >
+                {productCategory.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+              {/* Brand input */}
+              <TextField
+                fullWidth
+                id="outlined-number"
+                label="Brand"
+                type="text"
+                variant="standard"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                style={{
+                  width: "100%",
+                  marginLeft: "5px",
+                 
+                }}
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                required
+              />
+
+              {/* Loading indicator or Continue button */}
+              {loading ? (
+                // <Box
+                //   sx={{
+                //     display: "flex",
+                //     justifyContent: "center",
+                //     alignItems: "center",
+                //     height: "1vh",
+                //   }}
+                // >
+                //   <CircularProgress />
+                // </Box>
+                <View></View>
+              ) : (
+                <Button
+                  variant="contained"
+                  style={{
+                    width: "100%",
+                    height: "10%",
+                    marginTop: "20px",
+                    marginBottom: "10px",
+                    background: "#072840",
+                    borderRadius: "30px",
+                  }}
+                  type="submit"
+                >
+                  Continue
+                </Button>
+              )}
+            </form>
+          </View>
+        </Paper>
       ) : null}
+
 
       {paymentModal ? (
         // Overlay for the payment modal
-        <View
-          style={{
-            top: 65,
-            position: "absolute",
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            zIndex: 9999,
+        <Paper
+        elevation={0}
+        variant="outlined"
+        sx={{
+          // top: 65,
+          position: "fixed",
+          minWidth: 280,
+          height: "auto",
+          zIndex: 9999,
+          display: "flex",
+          flexDirection: "column", // Make the container a column
+          justifyContent: "space-between", // Push the content to the end
+          alignSelf: "center",
+          width: "90%",
+          "@media (min-width: 600px)": {
             alignSelf: "flex-end",
-          }}
-        >
-          {/* Container for the payment modal */}
-          <Grid
-            item
-            lg={3}
-            md={3}
-            border="2px lightgrey solid"
-            style={{
-              backgroundColor: "white",
-              width: "100%",
-              height: "auto",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
+            width: 400,
+          },
+        }}
+      >
+        
             {/* Close button */}
             <TouchableOpacity
               onPress={() => setPaymentModal(false)}
@@ -1755,9 +1735,10 @@ export default function BusinessAccount() {
                   mode="contained"
                   type="submit"
                   style={{
-                    width: "80%",
+                    width: "100%",
                     height: "15%",
-                    margin: 20,
+                    marginTop: 20,
+                    marginBottom: 20,
                     borderRadius: 30,
                     backgroundColor: "#072840",
                     alignSelf: "center",
@@ -1767,41 +1748,32 @@ export default function BusinessAccount() {
                 </Button>
               </form>
             </View>
-          </Grid>
-        </View>
+         
+        </Paper>
       ) : null}
 
       {bannerModal ? (
         // Overlay for the banner modal
-        <View
-          style={{
-            top: 65,
-            position: "absolute",
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "flex-end",
-            zIndex: 9999,
+        <Paper
+        elevation={0}
+        variant="outlined"
+        sx={{
+          // top: 65,
+          position: "fixed",
+          minWidth: 280,
+          height: "auto",
+          zIndex: 9999,
+          display: "flex",
+          flexDirection: "column", // Make the container a column
+          justifyContent: "space-between", // Push the content to the end
+          alignSelf: "center",
+          width: "90%",
+          "@media (min-width: 600px)": {
             alignSelf: "flex-end",
-          }}
-        >
-          {/* Container for the banner modal */}
-          <Grid
-            item
-            lg={3}
-            md={3}
-            border="2px lightgrey solid"
-            style={{
-              backgroundColor: "white",
-              width: "100%",
-              height: "auto",
-              alignSelf: "flex-end",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
+            width: 400,
+          },
+        }}
+      >
             {/* Close button */}
             <TouchableOpacity
               onPress={() => setBannerModal(false)}
@@ -1812,22 +1784,25 @@ export default function BusinessAccount() {
 
             {/* Logo section */}
             <Grid style={{ alignSelf: "center" }}>
-              <img
-                src={logo}
-                style={{ height: "9vh", width: "90%", paddingTop: "15vh" }}
-              />
-            </Grid>
+            <img
+              src={logo}
+              style={{
+                height: "8vh",
+                width: "100%",
+                paddingTop: 30,
+                paddingBottom: 30
+              }}
+            />
+          </Grid>
 
             {/* Form container */}
             <View
               className="form-container"
               style={{
-                justifyContent: "center",
-                textAlign: "center",
-                alignItems: "center",
-                width: "75%",
-                marginLeft: "80px",
-                marginBottom: "30px",
+               
+               
+                width:"80%",
+                alignSelf:'center'
               }}
             >
               {/* Logo in the form */}
@@ -1850,7 +1825,7 @@ export default function BusinessAccount() {
               </View>
 
               {/* Add Banner title */}
-              <View style={{}}>
+              <View >
                 <Text
                   style={{
                     fontWeight: "600",
@@ -1927,7 +1902,7 @@ export default function BusinessAccount() {
               </View>
 
               {/* Form for entering banner details */}
-              <View style={{ display: "flex", justifyContent: "center" }}>
+              <View style={{ display: "flex", alignSelf: "center" }}>
                 <form onSubmit={handleSaveAddBanner}>
                   {/* Input for Product Name */}
                   <TextField
@@ -1942,7 +1917,8 @@ export default function BusinessAccount() {
                       shrink: true,
                     }}
                     onChange={(e) => setProductName(e.target.value)}
-                    style={{ width: "100%", marginTop: "10px" }}
+                    style={{ width: "100%", 
+                    }}
                   />
                   <br />
 
@@ -1970,7 +1946,8 @@ export default function BusinessAccount() {
                         value={priceDiscount}
                         label="Discount Price"
                         onChange={(e) => setPriceDiscount(e.target.value)}
-                        style={{ width: "100%", marginTop: "10px" }}
+                        style={{ width: "100%", 
+                        }}
                       />
                     </View>
 
@@ -1984,7 +1961,8 @@ export default function BusinessAccount() {
                         value={quantity}
                         label="Quantity"
                         onChange={(e) => setQuantity(e.target.value)}
-                        style={{ width: "100%", marginTop: "10px" }}
+                        style={{ width: "100%", 
+                        }}
                       />
                     </View>
                   </View>
@@ -1998,7 +1976,8 @@ export default function BusinessAccount() {
                     value={priceOriginal}
                     label="Original Price"
                     onChange={(e) => setPriceOriginal(e.target.value)}
-                    style={{ width: "100%", marginTop: "10px" }}
+                    style={{ width: "100%",
+                    }}
                   />
 
                   {/* Input for Other details */}
@@ -2010,7 +1989,8 @@ export default function BusinessAccount() {
                     type="text"
                     value={otherBanner}
                     onChange={(e) => setOtherBanner(e.target.value)}
-                    style={{ width: "100%", marginTop: "10px" }}
+                    style={{ width: "100%", 
+                    }}
                   />
 
                   {/* Continue button */}
@@ -2027,6 +2007,7 @@ export default function BusinessAccount() {
                       textAlign: "center",
                       padding: 10,
                       marginTop: 20,
+                      marginBottom: 20,
                       alignSelf: "center",
                       width: "100%",
                     }}
@@ -2037,8 +2018,7 @@ export default function BusinessAccount() {
                 </form>
               </View>
             </View>
-          </Grid>
-        </View>
+          </Paper>
       ) : null}
       <View style={{ backgroundColor: "white" }}>
         <Header />
@@ -2387,7 +2367,8 @@ export default function BusinessAccount() {
                       {/* Additional information displayed conditionally */}
                       <Text
                         style={{
-                          display: userData && !userData.subscribed ? "none" : "flex", // Adjust based on user subscription
+                          display:
+                            userData && !userData.subscribed ? "none" : "flex", // Adjust based on user subscription
                           fontWeight: 600,
                           fontSize: 14,
                           flexWrap: "wrap",
@@ -2432,7 +2413,8 @@ export default function BusinessAccount() {
                         paddingTop: 10,
                         paddingBottom: 10,
                         borderRadius: 20,
-                        display: userData && userData.subscribed ? "none" : "flex",
+                        display:
+                          userData && userData.subscribed ? "none" : "flex",
                         marginTop: 5,
                         justifyContent: "center",
                         paddingLeft: 25,
@@ -2463,7 +2445,10 @@ export default function BusinessAccount() {
                             paddingLeft: 25,
                             paddingRight: 25,
                             borderRadius: 20,
-                            display: userData && !userData.subscribed ? "none" : "flex",
+                            display:
+                              userData && !userData.subscribed
+                                ? "none"
+                                : "flex",
                             marginRight: 20,
                           }}
                         >
@@ -2661,7 +2646,7 @@ export default function BusinessAccount() {
                   </Card>
                 ) : null}
               </View>
-              {userData && !userData.subscribed ?  (
+              {userData && !userData.subscribed ? (
                 // Displayed when businessAuthorization is false whicn is when not subscibed
                 <View
                   style={{
@@ -2813,7 +2798,7 @@ export default function BusinessAccount() {
                     </View>
                   </View>
                 </View>
-              ):null }
+              ) : null}
               {/* ScrollView to allow vertical scrolling */}
               <ScrollView style={{ width: "100%" }}>
                 {/* Container view for the product cards */}

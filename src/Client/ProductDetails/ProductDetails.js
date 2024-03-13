@@ -44,6 +44,7 @@ import {
 import firebaseConfig from "../../config";
 import { firebase, auth } from "../../config";
 import Navbar from "../../Global/Navbar";
+import Header from "../../Global/Header"
 
 export default function ProductDetails({ navigation, route }) {
   const { productId } = route.params;
@@ -479,6 +480,7 @@ export default function ProductDetails({ navigation, route }) {
 
   return (
     <View style={{ backgroundColor: "white" }}>
+      <Header/>
       <Navbar />
       <Box sx={{ height: "100%", overflowY: "auto" }}>
         <Container maxWidth="md">

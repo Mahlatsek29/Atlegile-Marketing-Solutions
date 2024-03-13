@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import Icon2 from "react-native-vector-icons/Feather";
 import Icon3 from "react-native-vector-icons/EvilIcons";
@@ -28,9 +28,11 @@ const FollowUs = () => {
   }, []);
 
   return (
+    <Grid container spacing={2} sx={{display:'flex', justifyContent:'center', backgroundColor: "#252b42",}}>
+    <Grid item xs={12} sm={10} md={9} >
     <Box
       sx={{
-        backgroundColor: "#252b42",
+       
         color: "white",
         display: "flex",
         flexDirection: "row",
@@ -98,6 +100,8 @@ const FollowUs = () => {
         )}
       </Box>
     </Box>
+    </Grid>
+    </Grid>
   );
 };
 

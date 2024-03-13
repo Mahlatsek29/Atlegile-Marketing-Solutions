@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Toolbar, Typography, Box, Badge } from "@mui/material";
+import { Button, Toolbar, Typography, Box, Badge, Grid } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import { View, Image, TouchableOpacity, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -78,6 +78,8 @@ const Navbar = () => {
   };
 
   return (
+    <Grid container spacing={2} sx={{display:'flex', justifyContent:'center'}}>
+    <Grid item xs={12} sm={10} md={9} >
     <Toolbar
       sx={{
         color: "#252B42",
@@ -108,7 +110,7 @@ const Navbar = () => {
           {userData ? (
             <>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
-                <Button color="inherit">Shop</Button>
+                <Button  sx={{backgroundColor :"#252b42",color:"white",borderRadius:20}}>Shop</Button>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
                 <Button color="inherit">About Us</Button>
@@ -158,13 +160,24 @@ const Navbar = () => {
                 <View style={{ marginLeft: 10 }}>
                   
                   {userData && userData.business ? (
+                    <View style={{display:'flex',flexDirection:'column'}}>
                     <Typography variant="subtitle1" >
-                     Welcome, {userData.businessName}
+                     Welcome
                     </Typography>
+                    <Typography variant="subtitle1" >
+                     {userData.businessName}
+                   </Typography>
+                    </View>
+                    
                   ) : (
-                    <Typography variant="subtitle1">
-                      Welcome, {userData.name}
+                    <View style={{display:'flex',flexDirection:'column'}}>
+                    <Typography variant="subtitle1" >
+                     Welcome
                     </Typography>
+                    <Typography variant="subtitle2" >
+                     {userData.name}
+                   </Typography>
+                    </View>
                   )}
                 </View>
               </TouchableOpacity>
@@ -172,7 +185,7 @@ const Navbar = () => {
           ) : (
             <>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
-                <Button color="inherit">Shop</Button>
+              <Button  sx={{backgroundColor :"#252b42",color:"white",borderRadius:20}}>Shop</Button>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
                 <Button color="inherit">About Us</Button>
@@ -200,7 +213,7 @@ const Navbar = () => {
           }}
         >
           <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
-            <Button color="inherit">Shop</Button>
+          <Button  sx={{backgroundColor :"#252b42",color:"white",borderRadius:20}}>Shop</Button>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
             <Button color="inherit">About Us</Button>
@@ -231,6 +244,8 @@ const Navbar = () => {
         </View>
       )}
     </Toolbar>
+    </Grid>
+    </Grid>
   );
 };
 

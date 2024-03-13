@@ -141,7 +141,7 @@ export default function BusinessCard({ business }) {
         >
           <View
             style={{
-              width: "80%",
+              width: "100%",
               height: "85vh",
               justifyContent: "space-between",
               alignItems: "center",
@@ -219,7 +219,7 @@ export default function BusinessCard({ business }) {
             <Card
               style={{
                 backgroundColor: "gray",
-                width: "80%",
+                width: "100%",
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",

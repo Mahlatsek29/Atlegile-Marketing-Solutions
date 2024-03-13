@@ -149,14 +149,16 @@ const Landing = () => {
           </Grid>
         </View>
 
-        <View>
+        <Grid container spacing={2} sx={{display:'flex', justifyContent:'center'}}>
+    <Grid item xs={12} sm={10} md={9} >
           {/* FlatList to display businesses using BusinessCard component */}
           <FlatList
             data={businesses}
             keyExtractor={(item) => item}
             renderItem={({ item }) => <BusinessCard business={item} />}
           />
-        </View>
+     </Grid>
+     </Grid>
 
         {/* Grid layout for a section with business information */}
         <Grid

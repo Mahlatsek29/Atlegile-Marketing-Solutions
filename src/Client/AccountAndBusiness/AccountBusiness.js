@@ -13,7 +13,6 @@ import {
   Button,
   useTheme,
   CardMedia,
-  Skeleton,
   Paper,
 } from "@mui/material";
 import Typography from "@mui/joy/Typography";
@@ -29,11 +28,9 @@ import Header from "../../Global/Header";
 import { Ionicons } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
 import placeholder from "../../Global/images/login.jpg";
-import { Linking } from "react-native";
 import { auth, firestore, storage } from "../../config";
 import firebase from "firebase/compat/app";
-import CircularProgress from "@mui/material/CircularProgress";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import {  onSnapshot, collection, query, where, getDocs  } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import sara from "../../Global/images/Sara.png";
 import Swal from "sweetalert2";
@@ -138,82 +135,64 @@ export default function BusinessAccount() {
   };
 
   useEffect(() => {
-    // Define an asynchronous function 'fetchReviews' to retrieve and process reviews
-    const fetchReviews = async () => {
+    // Define an asynchronous function to fetch product data
+    const fetchProductData = async () => {
+      // Check if the user is authenticated
+      if (!user) {
+        console.error("User not authenticated.");
+        return;
+      }
+  
+      // Get a reference to the "Products" collection in Firestore
+      const productsCollectionRef = collection(firestore, "Products");
+  
+      // Construct a query to filter products by businessName from userData
+      const q = query(
+        productsCollectionRef,
+        where("company", "==", userData.company)
+      );
+  
       try {
-        // Iterate over the array of products and fetch reviews for each product
-        for (const product of products) {
-          // Attempt to fetch the document related to reviews for the given 'productId' from Firestore
-          const ReviewsDoc = await firestore
-            .collection("Reviews")
-            .doc(product.id)
-            .get();
-
-          // Extract the data from the Firestore document
-          const ReviewsData = ReviewsDoc.data();
-
-          // Extract the 'reviews' array from the data, or default to an empty array
-          const reviewsArray = ReviewsData?.reviews || [];
-
-          // Filter out reviews with missing or zero 'myRatings'
-          const validReviews = reviewsArray.filter(
-            (review) => review.myRatings > 0
-          );
-
-          // Calculate the total sum of 'myRatings' from valid reviews
-          const totalRatings = validReviews.reduce(
-            (sum, review) => sum + review.myRatings,
-            0
-          );
-
-          // Calculate the average rating by dividing the total ratings by the number of valid reviews
-          const averageRating =
-            validReviews.length > 0 ? totalRatings / validReviews.length : 0;
-
-          // Set the calculated average rating in the component's state using the 'setReview' function
-          setReview((prevReviews) => ({
-            ...prevReviews,
-            [product.id]: averageRating,
-          }));
+        // Execute the query and get a snapshot of the results
+        const querySnapshot = await getDocs(q);
+  
+        // Check if there are any matching products
+        if (querySnapshot.empty) {
+          console.log("No products found for the given company name.");
+          return;
         }
+  
+        // Initialize an array to store fetched product data
+        const productsData = [];
+  
+        // Iterate through each document in the querySnapshot
+        querySnapshot.forEach((doc) => {
+          // Push the data of each document into the productsData array
+          productsData.push(doc.data());
+        });
+  
+        console.log("product data is: ", productsData);
+  
+        // Update the state with the fetched product data
+        setProducts(productsData);
       } catch (error) {
-        // Log an error message if there's an issue fetching or processing the reviews
+        // Handle errors that may occur during the data fetching process
         console.error("Error fetching product data:", error);
-      } finally {
-        // Set loading state to false, indicating that the reviews have been fetched or an error occurred
-        setLoading(false);
       }
     };
-
-    // Call the 'fetchReviews' function when the component mounts or when 'products' changes
-    fetchReviews();
-  }, [products]);
-  if (loading) {
-    // Render a loading state using Skeleton
-    return (
-      <Card
-        sx={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-        }}
-      >
-        <Skeleton
-          variant="rectangular"
-          width={270}
-          height={270}
-          animation="wave"
-        />
-
-        <Skeleton variant="text" width={100} height={20} animation="wave" />
-        <Skeleton variant="text" width={200} height={16} animation="wave" />
-        <Skeleton variant="text" width={200} height={16} animation="wave" />
-        <Skeleton variant="text" width={80} height={14} animation="wave" />
-      </Card>
-    );
-  }
+  
+    // Include both userData and productsCollectionRef in the dependency array
+    // This will trigger the effect whenever either of them changes
+    const productsCollectionRef = collection(firestore, "Products");
+    fetchProductData();
+    const unsubscribe = onSnapshot(productsCollectionRef, () => fetchProductData());
+  
+    return () => {
+      // Cleanup the subscription when the component unmounts
+      unsubscribe();
+    };
+  }, [userData]);  // Include other dependencies if needed
+  
 
   useEffect(() => {
     // Define an asynchronous function to fetch product data
@@ -223,37 +202,37 @@ export default function BusinessAccount() {
         console.error("User not authenticated.");
         return;
       }
-
+  
       // Get a reference to the "Products" collection in Firestore
-      const cartCollectionRef = collection(firestore, "Products");
-
+      const productsCollectionRef = collection(firestore, "Products");
+  
       // Construct a query to filter products by businessName from userData
       const q = query(
-        cartCollectionRef,
+        productsCollectionRef,
         where("company", "==", userData.company)
       );
-
+  
       try {
         // Execute the query and get a snapshot of the results
         const querySnapshot = await getDocs(q);
-
+  
         // Check if there are any matching products
         if (querySnapshot.empty) {
           console.log("No products found for the given company name.");
           return;
         }
-
+  
         // Initialize an array to store fetched product data
         const productsData = [];
-
+  
         // Iterate through each document in the querySnapshot
         querySnapshot.forEach((doc) => {
           // Push the data of each document into the productsData array
           productsData.push(doc.data());
         });
-
+  
         console.log("product data is: ", productsData);
-
+  
         // Update the state with the fetched product data
         setProducts(productsData);
       } catch (error) {
@@ -261,10 +240,18 @@ export default function BusinessAccount() {
         console.error("Error fetching product data:", error);
       }
     };
-
-    // Call the fetchProductData function when the userData dependency changes
+  
+    // Include both userData and productsCollectionRef in the dependency array
+    // This will trigger the effect whenever either of them changes
+    const productsCollectionRef = collection(firestore, "Products");
     fetchProductData();
-  }, [userData]);
+    const unsubscribe = onSnapshot(productsCollectionRef, () => fetchProductData());
+  
+    return () => {
+      // Cleanup the subscription when the component unmounts
+      unsubscribe();
+    };
+  }, [userData]);  // Include other dependencies if needed
 
   useEffect(() => {
     // Get the authentication instance
@@ -319,12 +306,12 @@ export default function BusinessAccount() {
     const fetchBanner = async () => {
       try {
         const bannerCollection = firestore.collection("Banner");
-
+  
         // Fetch the snapshot of documents in the "Banner" collection where bannerUid matches userData.uid
         const snapshot = await bannerCollection
           .where("bannerUid", "==", userData.uid)
           .get();
-
+  
         const bannerData = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
@@ -336,16 +323,26 @@ export default function BusinessAccount() {
             quantity: data.quantity,
           };
         });
-
-        console.log("bannerData is ", bannerData);
+  
+        // console.log("bannerData is ", bannerData);
         setBanner(bannerData);
       } catch (error) {
         console.error("Error fetching banner images:", error);
       }
     };
-
+  
+    // Include both userData and bannerCollection in the dependency array
+    // This will trigger the effect whenever either of them changes
+    const bannerCollection = firestore.collection("Banner");
     fetchBanner();
-  }, [userData]);
+    const unsubscribe = bannerCollection.onSnapshot(() => fetchBanner());
+  
+    return () => {
+      // Cleanup the subscription when the component unmounts
+      unsubscribe();
+    };
+  }, [userData]);  // Include other dependencies if needed
+  
 
   useEffect(() => {
     // Set up an interval to change the current index of the banner images
@@ -606,22 +603,22 @@ export default function BusinessAccount() {
       // Close the modal after successful addition/update
       setBannerModal(false);
       // Reload the entire page
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error("Error adding/updating banner data: ", error);
     }
   };
 
   // Function to handle saving payment information
-  // const handleSavePaymentInfo = (e) => {
-  //   e.preventDefault();
+  const handleSavePaymentInfo = (e) => {
+    e.preventDefault();
 
-  //   // Close the payment modal
-  //   setPaymentModal(false);
+    // Close the payment modal
+    setPaymentModal(false);
 
-  //   // Set the 'businessAuthorization' state to true, indicating successful authorization
-  //   setBusinessAuthorization(true);
-  // };
+    // Set the 'businessAuthorization' state to true, indicating successful authorization
+    setBusinessAuthorization(true);
+  };
 
   // useEffect hook to simulate a button click when the component mounts
   useEffect(() => {
@@ -717,7 +714,7 @@ export default function BusinessAccount() {
       // You can navigate to the next screen or perform other actions here
       alert("Product added successfully!");
       // Reload the entire page
-      window.location.reload();
+      setAddProduct(false)
     } catch (error) {
       console.error("Error storing data in Firestore:", error);
       // Set loading back to false in case of an error

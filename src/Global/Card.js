@@ -12,6 +12,7 @@ import MuiAlert from "@mui/material/Alert";
 import { serverTimestamp } from "firebase/firestore";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
+import Icon3 from "react-native-vector-icons/MaterialCommunityIcons";
 import Skeleton from "@mui/material/Skeleton";
 import { Text, TouchableOpacity, View } from "react-native";
 import { firestore, auth, firebase } from "../config";
@@ -26,8 +27,8 @@ const ProductCard = ({ productId }) => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [showSnackbar1, setShowSnackbar1] = useState(false);
   const [review, setReview] = useState(0);
-  const [favoriteProducts,setFavoriteProducts] =useState([])
-
+  const [favoriteProducts, setFavoriteProducts] = useState([]);
+  const [catrItems, setCartItems] = useState([]);
   const navigateProductDetails = () => {
     navigation.navigate("ProductDetails", { productId });
   };
@@ -71,31 +72,45 @@ const ProductCard = ({ productId }) => {
     }
   };
 
-  // Function to add the product to the shopping cart
-  const addToCart = async () => {
+  // Function to toggle the cart icon to the shopping cart
+  const toggleCart = async () => {
     try {
       // Reference to the 'Cart' collection in Firestore
       const cartCollectionRef = firestore.collection("Cart");
-
-      // Add the product details to the 'Cart' collection
-      await cartCollectionRef.add({
-        uid: uid,
-        productId: productId,
-        description: product.description,
-        price: product.price,
-        name: product.name,
-        quantity: 1,
-        image:
-          product.images && product.images.length > 0 ? product.images[0] : "",
-        timestamp: serverTimestamp(),
-      });
-
-      setShowSnackbar1(true); // Show a snackbar indicating the item was added to the cart
+  
+      // Check if the product already exists in the cart
+      const existingCartItemQuerySnapshot = await cartCollectionRef
+        .where("uid", "==", uid)
+        .where("productId", "==", productId)
+        .get();
+  
+      if (!existingCartItemQuerySnapshot.empty) {
+        // Product exists in cart, delete it
+        existingCartItemQuerySnapshot.forEach(async (doc) => {
+          await doc.ref.delete();
+        });
+        setShowSnackbar1(false); // Do not show a snackbar for deletion
+      } else {
+        // Product does not exist in cart, add it
+        await cartCollectionRef.add({
+          uid: uid,
+          productId: productId,
+          description: product.description,
+          price: product.price,
+          name: product.name,
+          quantity: 1,
+          image:
+            product.images && product.images.length > 0 ? product.images[0] : "",
+          timestamp: serverTimestamp(),
+        });
+        setShowSnackbar1(true); // Show a snackbar indicating the item was added to the cart
+      }
     } catch (error) {
-      // Log an error message if there's an issue adding to the cart
-      console.error("Error adding to cart:", error);
+      // Log an error message if there's an issue adding to or deleting from the cart
+      console.error("Error toggling cart:", error);
     }
   };
+  
 
   // Function to handle closing the snackbar indicating successful addition to the cart
   const handleSnackbarClose1 = () => {
@@ -109,65 +124,79 @@ const ProductCard = ({ productId }) => {
 
   // useEffect hook to fetch product data from Firestore based on the 'productId'
   useEffect(() => {
-    const fetchProductData = async () => {
-      try {
-        // Retrieve the product document from Firestore
-        const productDoc = await firestore
-          .collection("Products")
-          .doc(productId)
-          .get();
+    // Create a reference to the product document in Firestore
+    const productRef = firestore.collection("Products").doc(productId);
 
-        // Extract product data from the document and set it in the component's state
-        const productData = productDoc.data();
+    // Subscribe to real-time updates on the product document
+    const unsubscribe = productRef.onSnapshot((snapshot) => {
+      // Check if the document exists
+      if (snapshot.exists) {
+        // Extract product data from the snapshot and set it in the component's state
+        const productData = snapshot.data();
         setProduct(productData);
-      } catch (error) {
-        // Log an error message if there's an issue fetching product data
-        console.error("Error fetching product data:", error);
-      } finally {
-        // Set loading state to false, indicating that the product data has been fetched or an error occurred
         setLoading(false);
+      } else {
+        // Document doesn't exist, set product to null
+        setProduct(null);
+        // setLoading(false);
       }
-    };
+    }, (error) => {
+      // Log an error message if there's an issue with the listener
+      console.error("Error fetching product data:", error);
+      setLoading(false);
+    });
 
-    // Call the 'fetchProductData' function when the component mounts or when 'productId' changes
-    fetchProductData();
+    // Unsubscribe from the real-time listener when the component unmounts
+    return () => unsubscribe();
   }, [productId]);
 
+
   useEffect(() => {
-    const fetchFavorites = async () => {
+    // Function to subscribe to real-time updates for Favorites and Cart collections
+    const subscribeToUpdates = async () => {
       try {
         // Reference to the 'Favorites' collection in Firestore
         const favoritesCollectionRef = firestore.collection("Favourites");
-  
-        // Query favorites where uid matches the current user's id
-        const favoritesQuerySnapshot = await favoritesCollectionRef.where("uid", "==", uid).get();
-  
-        // Initialize an array to store favorite products
-        const favoriteProducts = [];
-  
-        // Iterate through the query snapshot
-        favoritesQuerySnapshot.forEach((doc) => {
-          // Extract data from each document
-          const favoriteData = doc.data();
-          // Push the favorite product data into the array
-          favoriteProducts.push(favoriteData);
-        });
-  
-        // Log or set the favorite products in the component's state
-        console.log("Favorite Products:", favoriteProducts);
-        // You can set the favorite products in the state if needed
-         setFavoriteProducts(favoriteProducts);
+        // Reference to the 'Cart' collection in Firestore
+        const cartCollectionRef = firestore.collection("Cart");
+
+        // Real-time listener for Favorites collection
+        const favoritesUnsubscribe = favoritesCollectionRef
+          .where("uid", "==", uid)
+          .onSnapshot((snapshot) => {
+            const favoriteProductsData = [];
+            snapshot.forEach((doc) => {
+              favoriteProductsData.push(doc.data());
+            });
+            setFavoriteProducts(favoriteProductsData);
+          });
+
+        // Real-time listener for Cart collection
+        const cartUnsubscribe = cartCollectionRef
+          .where("uid", "==", uid)
+          .onSnapshot((snapshot) => {
+            const cartItemsData = [];
+            snapshot.forEach((doc) => {
+              cartItemsData.push(doc.data());
+            });
+            setCartItems(cartItemsData);
+          });
+
+        // Return functions to unsubscribe from real-time listeners when component unmounts
+        return () => {
+          favoritesUnsubscribe();
+          cartUnsubscribe();
+        };
       } catch (error) {
-        console.error("Error fetching favorite products:", error);
+        console.error("Error fetching favorite products and cart items:", error);
       }
     };
-  
-    // Call the fetchFavorites function when the component mounts or when 'uid' changes
+
+    // Call the subscribeToUpdates function when the component mounts or when 'uid' changes
     if (uid) {
-      fetchFavorites();
+      subscribeToUpdates();
     }
   }, [uid]);
-  
   
   // This useEffect hook is triggered whenever the 'productId' dependency changes
   useEffect(() => {
@@ -350,20 +379,32 @@ const ProductCard = ({ productId }) => {
                 alignSelf: "center",
               }}
             >
-               <TouchableOpacity>
-              <Icon
-                name={favoriteProducts.find((item) => item.productId === productId) ? "heart" : "heart-o"}
-                size={20}
-                style={{
-                  padding: 10,
-                  backgroundColor: "white",
-                  borderRadius: "50%",
-                }}
-                onClick={toggleHeart}
-                color={favoriteProducts.find((item) => item.productId === productId) ? "red" : "black"}
-              />
-            </TouchableOpacity>
-              <TouchableOpacity onPress={addToCart}>
+              <TouchableOpacity>
+                <Icon
+                  name={
+                    favoriteProducts.find(
+                      (item) => item.productId === productId
+                    )
+                      ? "heart"
+                      : "heart-o"
+                  }
+                  size={20}
+                  style={{
+                    padding: 10,
+                    backgroundColor: "white",
+                    borderRadius: "50%",
+                  }}
+                  onClick={toggleHeart}
+                  color={
+                    favoriteProducts.find(
+                      (item) => item.productId === productId
+                    )
+                      ? "red"
+                      : "black"
+                  }
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={toggleCart}>
                 <Snackbar
                   open={showSnackbar1}
                   autoHideDuration={3000} // Adjust as needed
@@ -378,8 +419,12 @@ const ProductCard = ({ productId }) => {
                     Product added to Cart!
                   </MuiAlert>
                 </Snackbar>
-                <Icon
-                  name="shopping-cart"
+                <Icon3
+                  name={
+                    catrItems.find((item) => item.productId === productId)
+                      ? "cart"
+                      : "cart-outline"
+                  }
                   size={20}
                   style={{
                     padding: 10,

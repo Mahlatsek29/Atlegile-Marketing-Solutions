@@ -191,7 +191,10 @@ export default function BusinessCard({ business }) {
                     navigation.navigate("Products", { businessId: business })
                   }
                 >
-                  <Text>View All</Text>
+                  <Text style={{
+                  
+                    marginTop: "30px",
+                  }}>View All</Text>
                 </TouchableOpacity>
               </View>
 

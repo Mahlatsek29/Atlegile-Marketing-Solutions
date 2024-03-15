@@ -16,6 +16,7 @@ import Skeleton from "@mui/material/Skeleton";
 import { Text, TouchableOpacity, View } from "react-native";
 import { firestore, auth, firebase } from "../config";
 import { useNavigation } from "@react-navigation/native";
+import { useActionData } from "react-router-dom";
 const ProductCard = ({ productId }) => {
   const navigation = useNavigation();
   const [isRed, setIsRed] = useState(false);
@@ -25,6 +26,8 @@ const ProductCard = ({ productId }) => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [showSnackbar1, setShowSnackbar1] = useState(false);
   const [review, setReview] = useState(0);
+  const [favoriteProducts,setFavoriteProducts] =useState([])
+
   const navigateProductDetails = () => {
     navigation.navigate("ProductDetails", { productId });
   };
@@ -130,6 +133,42 @@ const ProductCard = ({ productId }) => {
     fetchProductData();
   }, [productId]);
 
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        // Reference to the 'Favorites' collection in Firestore
+        const favoritesCollectionRef = firestore.collection("Favourites");
+  
+        // Query favorites where uid matches the current user's id
+        const favoritesQuerySnapshot = await favoritesCollectionRef.where("uid", "==", uid).get();
+  
+        // Initialize an array to store favorite products
+        const favoriteProducts = [];
+  
+        // Iterate through the query snapshot
+        favoritesQuerySnapshot.forEach((doc) => {
+          // Extract data from each document
+          const favoriteData = doc.data();
+          // Push the favorite product data into the array
+          favoriteProducts.push(favoriteData);
+        });
+  
+        // Log or set the favorite products in the component's state
+        console.log("Favorite Products:", favoriteProducts);
+        // You can set the favorite products in the state if needed
+         setFavoriteProducts(favoriteProducts);
+      } catch (error) {
+        console.error("Error fetching favorite products:", error);
+      }
+    };
+  
+    // Call the fetchFavorites function when the component mounts or when 'uid' changes
+    if (uid) {
+      fetchFavorites();
+    }
+  }, [uid]);
+  
+  
   // This useEffect hook is triggered whenever the 'productId' dependency changes
   useEffect(() => {
     // Define an asynchronous function 'fetchReviews' to retrieve and process reviews
@@ -311,19 +350,19 @@ const ProductCard = ({ productId }) => {
                 alignSelf: "center",
               }}
             >
-              <TouchableOpacity>
-                <Icon
-                  name={isRed ? "heart" : "heart-o"}
-                  size={20}
-                  style={{
-                    padding: 10,
-                    backgroundColor: "white",
-                    borderRadius: "50%",
-                  }}
-                  onClick={toggleHeart}
-                  color={isRed ? "red" : "black"}
-                />
-              </TouchableOpacity>
+               <TouchableOpacity>
+              <Icon
+                name={favoriteProducts.find((item) => item.productId === productId) ? "heart" : "heart-o"}
+                size={20}
+                style={{
+                  padding: 10,
+                  backgroundColor: "white",
+                  borderRadius: "50%",
+                }}
+                onClick={toggleHeart}
+                color={favoriteProducts.find((item) => item.productId === productId) ? "red" : "black"}
+              />
+            </TouchableOpacity>
               <TouchableOpacity onPress={addToCart}>
                 <Snackbar
                   open={showSnackbar1}

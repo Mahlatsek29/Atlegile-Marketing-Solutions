@@ -13,12 +13,13 @@ import MuiAlert from "@mui/material/Alert";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
+import Icon3 from "react-native-vector-icons/MaterialCommunityIcons";
 import Skeleton from "@mui/material/Skeleton";
 import Navbar from "../../Global/Navbar";
 import SearchBar from "../../Global/SearchBar";
 import FollowUs from "../../Global/Header";
 import { Footer } from "../../Global/Footer";
-import { firestore } from "../../config";
+import { firestore, auth, firebase } from "../../config";
 import { useNavigation } from "@react-navigation/native";
 import { getDocs, query, where, collection } from "firebase/firestore";
 import { useRoute } from "@react-navigation/native";
@@ -33,39 +34,53 @@ const Products = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [showSnackbar1, setShowSnackbar1] = useState(false);
   const [review, setReview] = useState({});
+  const [favoriteProducts, setFavoriteProducts] = useState([]);
 
+  const [cartItems, setCartItems] = useState([]);
   // Function to navigate to product details screen with the specified productId
   const navigateProductDetails = (productId) => {
     // Navigate to the "ProductDetails" screen with the provided productId as a parameter
     navigation.navigate("ProductDetails", { productId });
   };
 
+  useEffect(() => {
+    const authObserver = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUid(user.uid);
+      }
+    });
+
+    return () => {
+      // Unsubscribe from the auth state observer when the component unmounts
+      authObserver();
+    };
+  }, []);
   // Function to toggle the heart icon for adding/removing product from favorites
   const toggleHeart = async (product) => {
     try {
       // Check if the product or its ID is undefined
       if (!product || !product.id) {
-        // Log an error message and return if product or product ID is undefined
         console.error("Product or product ID is undefined", product);
         return;
       }
-
+  
+      // Check if the product is already in the favorites list
+      const isFavorite = favoriteProducts.find(
+        (item) => item.productId === product.id
+      );
+  
       // Reference to the "Favourites" collection in Firestore
       const favCollectionRef = firestore.collection("Favourites");
       // Reference to the document in the "Favourites" collection with the product ID
       const favDocRef = favCollectionRef.doc(product.id);
-
-      // Retrieve the document snapshot for the product in "Favourites" collection
-      const favDoc = await favDocRef.get();
-
-      // Check if the document exists in "Favourites" collection
-      if (favDoc.exists) {
-        // Document exists, remove the product from favorites
+  
+      if (isFavorite) {
+        // If the product is already in favorites, remove it
         await favDocRef.delete();
-        // Set the state to indicate that the heart icon should not be filled
+        // Update the state to indicate that the heart icon should not be filled
         setIsRed(false);
       } else {
-        // Document does not exist, add the product to favorites
+        // If the product is not in favorites, add it
         await favDocRef.set({
           productId: product.id,
           uid: uid,
@@ -81,7 +96,7 @@ const Products = () => {
               ? product.images[0]
               : "",
         });
-        // Set the state to indicate that the heart icon should be filled
+        // Update the state to indicate that the heart icon should be filled
         setIsRed(true);
         // Set the state to show the success snackbar
         setShowSnackbar(true);
@@ -91,36 +106,50 @@ const Products = () => {
       console.error("Error toggling heart:", error);
     }
   };
+  
 
-  // Function to add a product to the cart
-  const addToCart = async (product) => {
-    try {
-      // Check if the product or its ID is undefined
-      if (!product || !product.id) {
-        console.error("Product or product ID is undefined", product);
-        return;
-      }
+ // Function to toggle the cart icon to the shopping cart
+const toggleCart = async (product) => {
+  try {
+    // Reference to the 'Cart' collection in Firestore
+    const cartCollectionRef = firestore.collection("Cart");
 
-      // Reference to the "Cart" collection in Firestore
-      const cartCollectionRef = firestore.collection("Cart");
+    // Check if the product already exists in the cart
+    const existingCartItemQuerySnapshot = await cartCollectionRef
+      .where("uid", "==", uid)
+      .where("productId", "==", product.id)
 
-      // Add a new document to the "Cart" collection with product details
+      .get();
+
+    if (!existingCartItemQuerySnapshot.empty) {
+      // Product exists in cart, delete it
+      existingCartItemQuerySnapshot.forEach(async (doc) => {
+        await doc.ref.delete();
+      });
+      setShowSnackbar1(false); // Do not show a snackbar for deletion
+    } else {
+      // Product does not exist in cart, add it
       await cartCollectionRef.add({
         uid: uid,
         productId: product.id,
         description: product.description,
         price: product.price,
         name: product.name,
-        quantity: 1, // Set initial quantity to 1 when adding to the cart
+        quantity: 1,
         image:
-          product.images && product.images.length > 0 ? product.images[0] : "", // Set the image to the first image in the array if available
+          product.images && product.images.length > 0 ? product.images[0] : "",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(), // Updated line
       });
-
-      setShowSnackbar1(true); // Display a snackbar to notify the user about the successful addition
-    } catch (error) {
-      console.error("Error adding to cart:", error); // Log any errors that occur during the process
+      setShowSnackbar1(true); // Show a snackbar indicating the item was added to the cart
     }
-  };
+  } catch (error) {
+    // Log an error message if there's an issue adding to or deleting from the cart
+    console.error("Error toggling cart:", error);
+  }
+};
+
+
+
 
   // Function to handle closing the snackbar for cart notifications
   const handleSnackbarClose1 = () => {
@@ -228,6 +257,102 @@ const Products = () => {
     fetchReviews();
   }, [products]);
 
+
+  useEffect(() => {
+    // Function to subscribe to real-time updates for Favorites and Cart collections
+    const subscribeToUpdates = async () => {
+      try {
+        // Reference to the 'Favorites' collection in Firestore
+        const favoritesCollectionRef = firestore.collection("Favourites");
+        // Reference to the 'Cart' collection in Firestore
+        const cartCollectionRef = firestore.collection("Cart");
+
+        // Real-time listener for Favorites collection
+        const favoritesUnsubscribe = favoritesCollectionRef
+          .where("uid", "==", uid)
+          .onSnapshot((snapshot) => {
+            const favoriteProductsData = [];
+            snapshot.forEach((doc) => {
+              favoriteProductsData.push(doc.data());
+            });
+            setFavoriteProducts(favoriteProductsData);
+          });
+
+        // Real-time listener for Cart collection
+        const cartUnsubscribe = cartCollectionRef
+          .where("uid", "==", uid)
+          .onSnapshot((snapshot) => {
+            const cartItemsData = [];
+            snapshot.forEach((doc) => {
+              cartItemsData.push(doc.data());
+            });
+            console.log('cartItemsData is: ',cartItemsData)
+            setCartItems(cartItemsData);
+          });
+
+        // Return functions to unsubscribe from real-time listeners when component unmounts
+        return () => {
+          favoritesUnsubscribe();
+          cartUnsubscribe();
+        };
+      } catch (error) {
+        console.error("Error fetching favorite products and cart items:", error);
+      }
+    };
+
+    // Call the subscribeToUpdates function when the component mounts or when 'uid' changes
+    if (uid) {
+      subscribeToUpdates();
+    }
+  }, [uid]);
+  useEffect(() => {
+    // Function to subscribe to real-time updates for Favorites and Cart collections
+    const subscribeToUpdates = async () => {
+      try {
+        // Reference to the 'Favorites' collection in Firestore
+        const favoritesCollectionRef = firestore.collection("Favourites");
+        // Reference to the 'Cart' collection in Firestore
+        const cartCollectionRef = firestore.collection("Cart");
+
+        // Real-time listener for Favorites collection
+        const favoritesUnsubscribe = favoritesCollectionRef
+          .where("uid", "==", uid)
+          .onSnapshot((snapshot) => {
+            const favoriteProductsData = [];
+            snapshot.forEach((doc) => {
+              favoriteProductsData.push(doc.data());
+            });
+            console.log('favoriteProductsData is: ',favoriteProductsData)
+            setFavoriteProducts(favoriteProductsData);
+          });
+
+        // Real-time listener for Cart collection
+        const cartUnsubscribe = cartCollectionRef
+          .where("uid", "==", uid)
+          .onSnapshot((snapshot) => {
+            const cartItemsData = [];
+            snapshot.forEach((doc) => {
+              cartItemsData.push(doc.data());
+            });
+            setCartItems(cartItemsData);
+          });
+
+        // Return functions to unsubscribe from real-time listeners when component unmounts
+        return () => {
+          favoritesUnsubscribe();
+          cartUnsubscribe();
+        };
+      } catch (error) {
+        console.error("Error fetching favorite products and cart items:", error);
+      }
+    };
+
+    // Call the subscribeToUpdates function when the component mounts or when 'uid' changes
+    if (uid) {
+      subscribeToUpdates();
+    }
+  }, [uid]);
+  
   // Conditionally render a loading state using Skeleton when the 'loading' state is true
   if (loading) {
     // Return a Card component containing Skeleton elements to represent a loading state
@@ -392,56 +517,60 @@ const Products = () => {
                         }}
                       >
                         {/* TouchableOpacity for toggling heart icon */}
-                        <TouchableOpacity onPress={() => toggleHeart(product)}>
-                          {/* Icon component representing the heart icon */}
-                          <Icon
-                            name={isRed ? "heart" : "heart-o"}
-                            size={20}
-                            style={{
-                              padding: 10,
-                              backgroundColor: "white",
-                              borderRadius: "50%",
-                            }}
-                            color={isRed ? "red" : "black"}
-                          />
-                        </TouchableOpacity>
+                        <Icon
+  name={
+    favoriteProducts.find((item) => item.productId === product.id)
+      ? "heart"
+      : "heart-o"
+  }
+  size={20}
+  style={{
+    padding: 10,
+    backgroundColor: "white",
+    borderRadius: "50%",
+  }}
+  onPress={() => toggleHeart(product)} // Use onPress instead of onClick for TouchableOpacity
+  color={
+    favoriteProducts.find((item) => item.productId === product.id)
+      ? "red"
+      : "black"
+  }
+/>
+
 
                         {/* TouchableOpacity for adding product to the cart */}
-                        <TouchableOpacity
-                          onPress={() => addToCart(product)}
-                          disabled={!product}
-                        >
-                          {/* Snackbar for showing a success message when adding to the cart */}
-                          <Snackbar
-                            open={showSnackbar1}
-                            autoHideDuration={3000}
-                            onClose={handleSnackbarClose1}
-                            anchorOrigin={{
-                              vertical: "top",
-                              horizontal: "center",
-                            }}
-                          >
-                            <MuiAlert
-                              onClose={handleSnackbarClose1}
-                              severity="success"
-                              sx={{ width: "100%" }}
-                            >
-                              Product added to Cart!
-                            </MuiAlert>
-                          </Snackbar>
+                        <TouchableOpacity onPress={() => toggleCart(product)}>
 
-                          {/* Icon component representing the shopping cart icon */}
-                          <Icon
-                            name="shopping-cart"
-                            size={20}
-                            style={{
-                              padding: 10,
-                              backgroundColor: "white",
-                              borderRadius: "50%",
-                            }}
-                            color="black"
-                          />
-                        </TouchableOpacity>
+  <Snackbar
+    open={showSnackbar1}
+    autoHideDuration={3000} // Adjust as needed
+    onClose={handleSnackbarClose1}
+    anchorOrigin={{ vertical: "top", horizontal: "center" }} // Set position to top center
+  >
+    <MuiAlert
+      onClose={handleSnackbarClose1}
+      severity="success"
+      sx={{ width: "100%" }}
+    >
+      Product added to Cart!
+    </MuiAlert>
+  </Snackbar>
+  <Icon3
+    name={
+      cartItems.find((item) => item.productId === product.id)
+        ? "cart"
+        : "cart-outline"
+    }
+    size={20}
+    style={{
+      padding: 10,
+      backgroundColor: "white",
+      borderRadius: "50%",
+    }}
+    color="black"
+  />
+</TouchableOpacity>
+
                       </Box>
                     </Box>
 

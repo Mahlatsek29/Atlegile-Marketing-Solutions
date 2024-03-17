@@ -28,7 +28,7 @@ const ProductCard = ({ productId }) => {
   const [showSnackbar1, setShowSnackbar1] = useState(false);
   const [review, setReview] = useState(0);
   const [favoriteProducts, setFavoriteProducts] = useState([]);
-  const [catrItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
   const navigateProductDetails = () => {
     navigation.navigate("ProductDetails", { productId });
   };
@@ -72,44 +72,46 @@ const ProductCard = ({ productId }) => {
     }
   };
 
-  // Function to toggle the cart icon to the shopping cart
-  const toggleCart = async () => {
-    try {
-      // Reference to the 'Cart' collection in Firestore
-      const cartCollectionRef = firestore.collection("Cart");
-  
-      // Check if the product already exists in the cart
-      const existingCartItemQuerySnapshot = await cartCollectionRef
-        .where("uid", "==", uid)
-        .where("productId", "==", productId)
-        .get();
-  
-      if (!existingCartItemQuerySnapshot.empty) {
-        // Product exists in cart, delete it
-        existingCartItemQuerySnapshot.forEach(async (doc) => {
-          await doc.ref.delete();
-        });
-        setShowSnackbar1(false); // Do not show a snackbar for deletion
-      } else {
-        // Product does not exist in cart, add it
-        await cartCollectionRef.add({
-          uid: uid,
-          productId: productId,
-          description: product.description,
-          price: product.price,
-          name: product.name,
-          quantity: 1,
-          image:
-            product.images && product.images.length > 0 ? product.images[0] : "",
-          timestamp: serverTimestamp(),
-        });
-        setShowSnackbar1(true); // Show a snackbar indicating the item was added to the cart
-      }
-    } catch (error) {
-      // Log an error message if there's an issue adding to or deleting from the cart
-      console.error("Error toggling cart:", error);
+ 
+ // Function to toggle the cart icon to the shopping cart
+const toggleCart = async () => {
+  try {
+    // Reference to the 'Cart' collection in Firestore
+    const cartCollectionRef = firestore.collection("Cart");
+
+    // Check if the product already exists in the cart
+    const existingCartItemQuerySnapshot = await cartCollectionRef
+      .where("uid", "==", uid)
+      .where("productId", "==", productId)
+      .get();
+
+    if (!existingCartItemQuerySnapshot.empty) {
+      // Product exists in cart, delete it
+      existingCartItemQuerySnapshot.forEach(async (doc) => {
+        await doc.ref.delete();
+      });
+      setShowSnackbar1(false); // Do not show a snackbar for deletion
+    } else {
+      // Product does not exist in cart, add it
+      await cartCollectionRef.add({
+        uid: uid,
+        productId: productId,
+        description: product.description,
+        price: product.price,
+        name: product.name,
+        quantity: 1,
+        image:
+          product.images && product.images.length > 0 ? product.images[0] : "",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(), // Updated line
+      });
+      setShowSnackbar1(true); // Show a snackbar indicating the item was added to the cart
     }
-  };
+  } catch (error) {
+    // Log an error message if there's an issue adding to or deleting from the cart
+    console.error("Error toggling cart:", error);
+  }
+};
+
   
 
   // Function to handle closing the snackbar indicating successful addition to the cart
@@ -421,7 +423,7 @@ const ProductCard = ({ productId }) => {
                 </Snackbar>
                 <Icon3
                   name={
-                    catrItems.find((item) => item.productId === productId)
+                    cartItems.find((item) => item.productId === productId)
                       ? "cart"
                       : "cart-outline"
                   }

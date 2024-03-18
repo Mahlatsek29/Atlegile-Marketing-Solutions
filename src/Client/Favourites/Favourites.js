@@ -16,7 +16,7 @@ import sara from "../../Global/images/Sara.png";
 import MuiAlert from "@mui/material/Alert";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
-import Skeleton from "@mui/material/Skeleton";
+import Icon3 from "react-native-vector-icons/MaterialCommunityIcons";
 import { Ionicons } from "@expo/vector-icons";
 import { auth, firestore } from "../../config";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
@@ -38,6 +38,9 @@ const Favourites = ({ item }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const navigation = useNavigation();
+  const [favoriteProducts, setFavoriteProducts] = useState([]);
+
+  const [cartItems, setCartItems] = useState([]);
   // UseEffect to handle window resize and set mobile state
   useEffect(() => {
     const handleResize = () => {
@@ -55,7 +58,69 @@ const Favourites = ({ item }) => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+  useEffect(() => {
+    const authObserver = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUid(user.uid);
+      }
+    });
 
+    return () => {
+      // Unsubscribe from the auth state observer when the component unmounts
+      authObserver();
+    };
+  }, []);
+
+  useEffect(() => {
+    // Function to subscribe to real-time updates for Favorites and Cart collections
+    const subscribeToUpdates = async () => {
+      try {
+        // Reference to the 'Favorites' collection in Firestore
+        const favoritesCollectionRef = firestore.collection("Favourites");
+        // Reference to the 'Cart' collection in Firestore
+        const cartCollectionRef = firestore.collection("Cart");
+
+        // Real-time listener for Favorites collection
+        const favoritesUnsubscribe = favoritesCollectionRef
+          .where("uid", "==", uid)
+          .onSnapshot((snapshot) => {
+            const favoriteProductsData = [];
+            snapshot.forEach((doc) => {
+              favoriteProductsData.push(doc.data());
+            });
+            console.log("favoriteProductsData is: ", favoriteProductsData);
+            setFavoriteProducts(favoriteProductsData);
+          });
+
+        // Real-time listener for Cart collection
+        const cartUnsubscribe = cartCollectionRef
+          .where("uid", "==", uid)
+          .onSnapshot((snapshot) => {
+            const cartItemsData = [];
+            snapshot.forEach((doc) => {
+              cartItemsData.push(doc.data());
+            });
+            setCartItems(cartItemsData);
+          });
+
+        // Return functions to unsubscribe from real-time listeners when component unmounts
+        return () => {
+          favoritesUnsubscribe();
+          cartUnsubscribe();
+        };
+      } catch (error) {
+        console.error(
+          "Error fetching favorite products and cart items:",
+          error
+        );
+      }
+    };
+
+    // Call the subscribeToUpdates function when the component mounts or when 'uid' changes
+    if (uid) {
+      subscribeToUpdates();
+    }
+  }, [uid]);
   // Toggle dropdown state
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
@@ -98,6 +163,7 @@ const Favourites = ({ item }) => {
           productsData.push(doc.data());
         });
         setProducts(productsData);
+        
       } catch (error) {
         console.error("Error fetching product data:", error);
       }
@@ -160,7 +226,7 @@ const Favourites = ({ item }) => {
       });
 
       setCartData(cartItems);
-      console.log("Cart Data : ", cartData);
+     
     } catch (error) {
       console.error("Error fetching cart data:", error);
     }
@@ -270,28 +336,104 @@ const Favourites = ({ item }) => {
   };
 
   // UseEffect to set loading to false when products state changes
-  useEffect(() => {
-    setLoading(false);
-  }, [products]);
+  // useEffect(() => {
+  //   setLoading(false);
+  // }, [products]);
 
   // Function to toggle heart icon for favorites
-  const toggleHeart = async () => {
+  const toggleHeart = async (product) => {
     try {
-      // Firestore operations to add or remove from Favourites
+      // Check if the product or its ID is undefined
+      if (!product || !product.id) {
+        console.error("Product or product ID is undefined", product);
+        return;
+      }
+
+      // Check if the product is already in the favorites list
+      const isFavorite = favoriteProducts.find(
+        (item) => item.productId === product.id
+      );
+
+      // Reference to the "Favourites" collection in Firestore
+      const favCollectionRef = firestore.collection("Favourites");
+      // Reference to the document in the "Favourites" collection with the product ID
+      const favDocRef = favCollectionRef.doc(product.id);
+
+      if (isFavorite) {
+        // If the product is already in favorites, remove it
+        await favDocRef.delete();
+        // Update the state to indicate that the heart icon should not be filled
+        setIsRed(false);
+      } else {
+        // If the product is not in favorites, add it
+        await favDocRef.set({
+          productId: product.id,
+          uid: uid,
+          productName: product.name,
+          description: product.description,
+          price: product.price,
+          businessName: product.businessName,
+          company: product.company,
+          brand: product.brand,
+          // Set the image of the product (first image from the array)
+          image:
+            product.images && product.images.length > 0
+              ? product.images[0]
+              : "",
+        });
+        // Update the state to indicate that the heart icon should be filled
+        setIsRed(true);
+        // Set the state to show the success snackbar
+        setShowSnackbar(true);
+      }
     } catch (error) {
+      // Log an error message if there's an error while toggling heart icon
       console.error("Error toggling heart:", error);
     }
   };
 
-  // Function to add product to cart
-  const addToCart = async () => {
+  // Function to toggle the cart icon to the shopping cart
+  const toggleCart = async (product) => {
     try {
-      // Firestore operation to add product to Cart
-      setShowSnackbar1(true);
+      // Reference to the 'Cart' collection in Firestore
+      const cartCollectionRef = firestore.collection("Cart");
+
+      // Check if the product already exists in the cart
+      const existingCartItemQuerySnapshot = await cartCollectionRef
+        .where("uid", "==", uid)
+        .where("productId", "==", product.id)
+
+        .get();
+
+      if (!existingCartItemQuerySnapshot.empty) {
+        // Product exists in cart, delete it
+        existingCartItemQuerySnapshot.forEach(async (doc) => {
+          await doc.ref.delete();
+        });
+        setShowSnackbar1(false); // Do not show a snackbar for deletion
+      } else {
+        // Product does not exist in cart, add it
+        await cartCollectionRef.add({
+          uid: uid,
+          productId: product.id,
+          description: product.description,
+          price: product.price,
+          name: product.name,
+          quantity: 1,
+          image:
+            product.images && product.images.length > 0
+              ? product.images[0]
+              : "",
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(), // Updated line
+        });
+        setShowSnackbar1(true); // Show a snackbar indicating the item was added to the cart
+      }
     } catch (error) {
-      console.error("Error adding to cart:", error);
+      // Log an error message if there's an issue adding to or deleting from the cart
+      console.error("Error toggling cart:", error);
     }
   };
+
 
   // Functions to handle Snackbar close
   const handleSnackbarClose1 = () => {
@@ -733,31 +875,42 @@ const Favourites = ({ item }) => {
                         alignSelf: "center",
                       }}
                     >
-                      {/* Heart icon */}
-                      <TouchableOpacity>
-                        <Icon
-                          name={isRed ? "heart" : "heart-o"}
-                          size={20}
-                          style={{
-                            padding: 10,
-                            backgroundColor: "white",
-                            borderRadius: "50%",
-                          }}
-                          onClick={toggleHeart}
-                          color={isRed ? "red" : "black"}
-                        />
-                      </TouchableOpacity>
+                     {/* TouchableOpacity for toggling heart icon */}
+                     <TouchableOpacity><Icon
+                        name={
+                          favoriteProducts.find(
+                            (item) => item.productId === product.id
+                          )
+                            ? "heart"
+                            : "heart-o"
+                        }
+                        size={20}
+                        style={{
+                          padding: 10,
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                        onPress={() => toggleHeart(product)} // Use onPress instead of onClick for TouchableOpacity
+                        color={
+                          favoriteProducts.find(
+                            (item) => item.productId === product.id
+                          )
+                            ? "red"
+                            : "black"
+                        }
+                      /></TouchableOpacity>
+                      
 
-                      {/* Shopping Cart icon */}
-                      <TouchableOpacity onPress={addToCart}>
+                      {/* TouchableOpacity for adding product to the cart */}
+                      <TouchableOpacity onPress={() => toggleCart(product)}>
                         <Snackbar
                           open={showSnackbar1}
-                          autoHideDuration={3000}
+                          autoHideDuration={3000} // Adjust as needed
                           onClose={handleSnackbarClose1}
                           anchorOrigin={{
                             vertical: "top",
                             horizontal: "center",
-                          }}
+                          }} // Set position to top center
                         >
                           <MuiAlert
                             onClose={handleSnackbarClose1}
@@ -767,8 +920,14 @@ const Favourites = ({ item }) => {
                             Product added to Cart!
                           </MuiAlert>
                         </Snackbar>
-                        <Icon
-                          name="shopping-cart"
+                        <Icon3
+                          name={
+                            cartItems.find(
+                              (item) => item.productId === product.id
+                            )
+                              ? "cart"
+                              : "cart-outline"
+                          }
                           size={20}
                           style={{
                             padding: 10,

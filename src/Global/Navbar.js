@@ -47,7 +47,7 @@ const Navbar = () => {
         const unsubscribeSnapshot = userDocRef.onSnapshot((doc) => {
           if (doc.exists) {
             setUserData(doc.data());
-            console.log("userdata is ", doc.data()); // Call doc.data() here as well
+            
           } else {
             console.error("User data not found");
           }

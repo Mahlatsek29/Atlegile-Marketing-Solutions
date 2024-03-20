@@ -53,7 +53,7 @@ const ProductCard = ({ productId }) => {
         // Document does not exist, add to Favourites
         await favDocRef.set({
           productId: productId,
-          
+          selectedProductCategory:product.selectedProductCategory,
           uid: uid,
           productName: product.name,
           description: product.description,

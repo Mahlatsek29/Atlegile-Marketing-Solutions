@@ -182,6 +182,7 @@ const toggleCart = async () => {
             snapshot.forEach((doc) => {
               cartItemsData.push(doc.data());
             });
+            console.log('cartItemsData is ',cartItemsData)
             setCartItems(cartItemsData);
           });
 
@@ -309,7 +310,7 @@ const toggleCart = async () => {
               width: "200px",
               height: "200px",
               borderRadius: "50%",
-              alignself: "center",
+              // alignself: "center",
               justifyContent: "center",
               display: "flex",
               flexDirection: "column",
@@ -375,11 +376,12 @@ const toggleCart = async () => {
                 paddingHorizontal: 10,
                 position: "absolute",
                 bottom: 30,
-                width: "6vw",
+                width: "auto",
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignSelf: "center",
+                
               }}
             >
               <TouchableOpacity>

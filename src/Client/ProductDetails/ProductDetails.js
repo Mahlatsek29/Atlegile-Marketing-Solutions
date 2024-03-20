@@ -41,11 +41,11 @@ import {
   where,
   limit,
   getDocs,
-  onSnapshot,  
-  deleteDoc,  
+  onSnapshot,
+  deleteDoc,
 } from "firebase/firestore";
 import firebaseConfig from "../../config";
-import {firestore, auth, firebase } from "../../config";
+import { firestore, auth, firebase } from "../../config";
 import Navbar from "../../Global/Navbar";
 import Header from "../../Global/Header";
 export default function ProductDetails({ navigation, route }) {
@@ -132,96 +132,94 @@ export default function ProductDetails({ navigation, route }) {
   }, [uid]);
 
   // Function to toggle the heart (like) icon for a product in the user's favorites
-const toggleHeart = async (product) => {
-  try {
-   
-    if (!product || !product.id) {
-      console.error("Product or productId is missing or undefined.");
-      return;
+  const toggleHeart = async (product) => {
+    try {
+      if (!product || !product.id) {
+        console.error("Product or productId is missing or undefined.");
+        return;
+      }
+
+      // Reference to the 'Favourites' collection in Firestore
+      const favCollectionRef = collection(firestore, "Favourites");
+
+      // Reference to the specific document in the 'Favourites' collection based on the 'productId'
+      const favDocRef = doc(favCollectionRef, product.id);
+
+      // Retrieve the document from Firestore
+      const favDocSnap = await getDoc(favDocRef);
+
+      if (favDocSnap.exists()) {
+        // Document exists, remove from Favourites
+        await deleteDoc(favDocRef);
+        setIsRed(false); // Set the heart icon to not red
+      } else {
+        // Document does not exist, add to Favourites
+        await setDoc(favDocRef, {
+          productId: product.id,
+          selectedProductCategory: product.selectedProductCategory,
+          uid: uid,
+          productName: product.name,
+          description: product.description,
+          price: product.price,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          businessName: product.businessName,
+          company: product.company,
+          brand: product.brand,
+          image: product.images[0],
+        });
+        setIsRed(true); // Set the heart icon to red
+        setShowSnackbar(true); // Show a snackbar indicating the item was added to favorites
+      }
+    } catch (error) {
+      // Log an error message if there's an issue toggling the heart icon
+      console.error("Error toggling heart:", error);
     }
-
-    // Reference to the 'Favourites' collection in Firestore
-    const favCollectionRef = collection(firestore, "Favourites");
-
-    // Reference to the specific document in the 'Favourites' collection based on the 'productId'
-    const favDocRef = doc(favCollectionRef, product.id);
-
-    // Retrieve the document from Firestore
-    const favDocSnap = await getDoc(favDocRef);
-
-    if (favDocSnap.exists()) {
-      // Document exists, remove from Favourites
-      await deleteDoc(favDocRef);
-      setIsRed(false); // Set the heart icon to not red
-    } else {
-      // Document does not exist, add to Favourites
-      await setDoc(favDocRef, {
-        productId: product.id,
-        selectedProductCategory: product.selectedProductCategory,
-        uid: uid,
-        productName: product.name,
-        description: product.description,
-        price: product.price,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        businessName: product.businessName,
-        company: product.company,
-        brand: product.brand,
-        image: product.images[0],
-      });
-      setIsRed(true); // Set the heart icon to red
-      setShowSnackbar(true); // Show a snackbar indicating the item was added to favorites
-    }
-  } catch (error) {
-    // Log an error message if there's an issue toggling the heart icon
-    console.error("Error toggling heart:", error);
-  }
-};
+  };
   // Function to toggle the cart icon to the shopping cart
-const toggleCart = async (product) => {
-  try {
-    
-    if (!product || !product.id) {
-      console.error("Product or productId is missing or undefined.");
-      return;
+  const toggleCart = async (product) => {
+    try {
+      if (!product || !product.id) {
+        console.error("Product or productId is missing or undefined.");
+        return;
+      }
+
+      // Reference to the 'Cart' collection in Firestore
+      const cartCollectionRef = collection(firestore, "Cart");
+
+      // Check if the product already exists in the cart
+      const existingCartItemQuerySnapshot = await getDocs(
+        query(
+          cartCollectionRef,
+          where("uid", "==", uid),
+          where("productId", "==", product.id)
+        )
+      );
+
+      if (!existingCartItemQuerySnapshot.empty) {
+        // Product exists in cart, delete it
+        existingCartItemQuerySnapshot.forEach(async (doc) => {
+          await deleteDoc(doc.ref);
+        });
+        setShowSnackbar1(false); // Do not show a snackbar for deletion
+      } else {
+        // Product does not exist in cart, add it
+        await addDoc(cartCollectionRef, {
+          uid: uid,
+          productId: product.id,
+          description: product.description,
+          price: product.price,
+          name: product.businessName,
+          quantity: 1,
+          image: product.images,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(), // Updated line
+        });
+        setShowSnackbar1(true); // Show a snackbar indicating the item was added to the cart
+      }
+    } catch (error) {
+      // Log an error message if there's an issue adding to or deleting from the cart
+      console.error("Error toggling cart:", error);
     }
-
-    // Reference to the 'Cart' collection in Firestore
-    const cartCollectionRef = collection(firestore, "Cart");
-
-    // Check if the product already exists in the cart
-    const existingCartItemQuerySnapshot = await getDocs(
-      query(
-        cartCollectionRef,
-        where("uid", "==", uid),
-        where("productId", "==", product.id)
-      )
-    );
-
-    if (!existingCartItemQuerySnapshot.empty) {
-      // Product exists in cart, delete it
-      existingCartItemQuerySnapshot.forEach(async (doc) => {
-        await deleteDoc(doc.ref);
-      });
-      setShowSnackbar1(false); // Do not show a snackbar for deletion
-    } else {
-      // Product does not exist in cart, add it
-      await addDoc(cartCollectionRef, {
-        uid: uid,
-        productId: product.id,
-        description: product.description,
-        price: product.price,
-        name: product.businessName,
-        quantity: 1,
-        image: product.images,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(), // Updated line
-      });
-      setShowSnackbar1(true); // Show a snackbar indicating the item was added to the cart
-    }
-  } catch (error) {
-    // Log an error message if there's an issue adding to or deleting from the cart
-    console.error("Error toggling cart:", error);
-  }
-};
+  };
 
   // Function to handle the addition of a product to the user's shopping cart
 
@@ -279,7 +277,6 @@ const toggleCart = async (product) => {
         // Set the reviews state with the fetched reviews or an empty array if none
         setReviews(reviewsData.reviews || []);
       } else {
-        
         // Set the reviews state to an empty array
         setReviews([]);
       }
@@ -364,7 +361,7 @@ const toggleCart = async (product) => {
           // Extract product data from the snapshot
           const productData = productDocSnapshot.data();
 
-         // Set the product state with the fetched product data
+          // Set the product state with the fetched product data
           setProduct(productData);
         } else {
           // Log a message if the product is not found
@@ -458,7 +455,6 @@ const toggleCart = async (product) => {
           cartItemsData.push(doc.data());
         });
 
-        
         // Set the state with the fetched cart items
         setCartItems(cartItemsData);
         // Subscribe to real-time updates for cart items
@@ -886,13 +882,37 @@ const toggleCart = async (product) => {
           {/*END - Right side Panel*/}
 
           {/* Section for displaying related products */}
-          <Box>
-            <Typography sx={{ fontWeight: "600", fontSize: 20, mt: 3, mb: 4 }}>
+          <Box
+            sx={{
+              
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+          >
+            <Typography sx={{ fontWeight: "600", fontSize: 20, mt: 3, mb: 4,display: "flex",alignSelf: "flex-start", }}>
               RELATED PRODUCTS
             </Typography>
-            <Box sx={{ pl: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                alignSelf: "center",
+                flexDirection: "column",
+              }}
+            >
               {/* Display the company name of the related products */}
-              <Typography sx={{ fontWeight: "600", fontSize: 15, mb: 2 }}>
+              <Typography
+                sx={{
+                  display: "flex",
+                  alignSelf: "flex-start",
+                  fontWeight: "600",
+                  fontSize: 15,
+                  mb: 2,
+                }}
+              >
                 {product.company}
               </Typography>
               {/* Container for related product cards */}
@@ -900,7 +920,8 @@ const toggleCart = async (product) => {
                 sx={{
                   display: "flex",
                   flexWrap: "wrap",
-                  margin: 2,
+                  // margin: 2,
+                  alignSelf: "center",
                 }}
               >
                 {/* Map through related products and create a card for each */}
@@ -975,7 +996,6 @@ const toggleCart = async (product) => {
                                   backgroundColor: "#E74040",
                                   position: "absolute",
                                   top: 0,
-
                                   padding: 2,
                                   width: "30%",
                                   borderRadius: "8%",
@@ -1015,28 +1035,13 @@ const toggleCart = async (product) => {
                                 paddingHorizontal: 10,
                                 position: "absolute",
                                 bottom: 30,
-                                width: "6vw",
+                                width: "auto",
                                 display: "flex",
                                 flexDirection: "row",
                                 justifyContent: "space-between",
                                 alignSelf: "center",
                               }}
                             >
-                              {/* Button to toggle heart icon for favorites */}
-                              {/* <TouchableOpacity
-                                onPress={() => toggleHeart(relatedProduct)}
-                              >
-                                <Icon
-                                  name={isRed ? "heart" : "heart-o"}
-                                  size={20}
-                                  style={{
-                                    padding: 10,
-                                    backgroundColor: "white",
-                                    borderRadius: "50%",
-                                  }}
-                                  color={isRed ? "red" : "black"}
-                                />
-                              </TouchableOpacity> */}
                               <TouchableOpacity>
                                 <Icon
                                   name={

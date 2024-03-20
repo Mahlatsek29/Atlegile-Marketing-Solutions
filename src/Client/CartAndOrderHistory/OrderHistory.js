@@ -256,10 +256,10 @@ const OrderHistory = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: "100%",
+            width: "80%",
           }}
         >
-          <Grid>
+          <Grid  xs={10} md={10}>
             {/* Map through the 'order' array to display order information */}
             {order.map((item, index) => (
               <TouchableOpacity
@@ -267,7 +267,7 @@ const OrderHistory = () => {
                 key={index}
               >
                 {/* Grid item for each order */}
-                <Grid item xs={10} md={8} key={item.id}>
+                <Grid item  xs={10} md={8} key={item.id}>
                   {/* Card component to display order details */}
                   <Card
                     sx={{

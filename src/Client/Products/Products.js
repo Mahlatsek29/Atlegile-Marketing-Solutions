@@ -438,7 +438,7 @@ const Products = () => {
                         paddingHorizontal: 10,
                         position: "absolute",
                         bottom: 30,
-                        width: "6vw",
+                        width: "auto",
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "space-between",

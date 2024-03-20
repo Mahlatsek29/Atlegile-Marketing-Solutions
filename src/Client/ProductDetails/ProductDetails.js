@@ -977,10 +977,9 @@ export default function ProductDetails({ navigation, route }) {
                                     borderRadius: 15,
                                   }}
                                 >
-                                  <Text style={{}}>
-                                    ⭐{" "}
-                                    <Text style={{ color: "white" }}> 4.9</Text>
-                                  </Text>
+                                   <Text style={{ color: "white" }}>
+                            ⭐ {review[relatedProduct.id] || 0}
+                          </Text>
                                 </View>
                               </View>
                               {/* Product name */}

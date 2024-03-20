@@ -20,6 +20,7 @@ import MuiAlert from "@mui/material/Alert";
 import Rating from "@mui/material/Rating";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
+import Icon3 from "react-native-vector-icons/MaterialCommunityIcons";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AddIcon from "@mui/icons-material/Add";
@@ -40,12 +41,13 @@ import {
   where,
   limit,
   getDocs,
+  onSnapshot,  
+  deleteDoc,  
 } from "firebase/firestore";
 import firebaseConfig from "../../config";
-import { firebase, auth } from "../../config";
+import {firestore, auth, firebase } from "../../config";
 import Navbar from "../../Global/Navbar";
-import Header from "../../Global/Header"
-
+import Header from "../../Global/Header";
 export default function ProductDetails({ navigation, route }) {
   const { productId } = route.params;
   const [myRatings, setMyRatings] = useState(2.5);
@@ -60,87 +62,166 @@ export default function ProductDetails({ navigation, route }) {
   const [showSnackbar1, setShowSnackbar1] = useState(false);
   const [isRed, setIsRed] = useState(false);
   const user = firebase.auth().currentUser;
-
+  const [uid, setUid] = useState(null);
+  const [favoriteProducts, setFavoriteProducts] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
   const app = initializeApp(firebaseConfig);
   const firestore = getFirestore(app);
-
   const handleChangeProduct = (relatedProductId) => {
     // Navigate to the new product's details page
     navigation.navigate("ProductDetails", { productId: relatedProductId });
   };
 
-  // Function to toggle the heart (like) icon for a product in the user's favorites
-
-  const toggleHeart = async () => {
-    try {
-      // Reference to the 'Favourites' collection in Firestore
-      const favCollectionRef = firestore.collection("Favourites");
-
-      // Reference to the document within 'Favourites' collection based on productId
-      const favDocRef = favCollectionRef.doc(productId);
-
-      // Retrieve the document snapshot from Firestore
-      const favDoc = await favDocRef.get();
-
-      if (favDoc.exists) {
-        // Document exists, meaning the product is already in favorites
-        // Remove the product from favorites by deleting the document
-        await favDocRef.delete();
-        // Set the state to indicate that the heart icon should not be red (not favorited)
-        setIsRed(false);
-      } else {
-        // Document does not exist, meaning the product is not in favorites
-        // Add the product to favorites by creating a new document
-        await favDocRef.set({
-          productId: productId,
-          uid: uid,
-          productName: product.name,
-          description: product.description,
-          price: product.price,
-          businessName: product.businessName,
-          company: product.company,
-          brand: product.brand,
-          image: product.images[0],
-        });
-        // Set the state to indicate that the heart icon should be red (favorited)
-        setIsRed(true);
-        // Set a flag to show a snackbar or notification that the product is added to favorites
-        setShowSnackbar(true);
+  useEffect(() => {
+    const authObserver = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUid(user.uid);
       }
-    } catch (error) {
-      // Handle any errors that might occur during the process
-      console.error("Error toggling heart:", error);
-    }
-  };
+    });
 
-  // Function to add a product to the user's shopping cart
+    return () => {
+      // Unsubscribe from the auth state observer when the component unmounts
+      authObserver();
+    };
+  }, []);
 
-  const addToCart = async () => {
-    try {
+  // UseEffect to fetch product data when userData changes
+  useEffect(() => {
+    const fetchProductData = async () => {
+      // Check if user is authenticated
+      if (!user) {
+        console.error("User not authenticated.");
+        return;
+      }
+
+      // Reference to the Firestore collection
+      const favouritesCollectionRef = collection(firestore, "Favourites");
+
+      // Query to get products for the current user
+      const q = query(favouritesCollectionRef, where("uid", "==", user.uid));
       // Reference to the 'Cart' collection in Firestore
       const cartCollectionRef = firestore.collection("Cart");
 
-      // Add a new document to the 'Cart' collection with product details
-      await cartCollectionRef.add({
-        uid: uid, // User ID associated with the cart
-        productId: productId, // ID of the product being added
-        description: product.description, // Description of the product
-        price: product.price, // Price of the product
-        name: product.name, // Name of the product
-        quantity: 1, // Initial quantity set to 1 (can be adjusted)
-        // Image of the product, if available; otherwise, an empty string
-        image:
-          product.images && product.images.length > 0 ? product.images[0] : "",
-        // Additional fields can be added based on the product structure
+      // Subscribe to real-time updates
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const productsData = [];
+        snapshot.forEach((doc) => {
+          productsData.push(doc.data());
+        });
+        setProducts(productsData);
       });
+      // Real-time listener for Cart collection
+      const cartUnsubscribe = cartCollectionRef
+        .where("uid", "==", uid)
+        .onSnapshot((snapshot) => {
+          const cartItemsData = [];
+          snapshot.forEach((doc) => {
+            cartItemsData.push(doc.data());
+          });
+          setCartItems(cartItemsData);
+        });
 
-      // Set a flag to show a snackbar or notification that the product is added to the cart
-      setShowSnackbar1(true);
-    } catch (error) {
-      // Handle any errors that might occur during the process
-      console.error("Error adding to cart:", error);
+      return () => {
+        unsubscribe();
+        cartUnsubscribe();
+      };
+    };
+
+    // Fetch product data on mount or when userData changes
+    fetchProductData();
+  }, [uid]);
+
+  // Function to toggle the heart (like) icon for a product in the user's favorites
+const toggleHeart = async (product) => {
+  try {
+   
+    if (!product || !product.id) {
+      console.error("Product or productId is missing or undefined.");
+      return;
     }
-  };
+
+    // Reference to the 'Favourites' collection in Firestore
+    const favCollectionRef = collection(firestore, "Favourites");
+
+    // Reference to the specific document in the 'Favourites' collection based on the 'productId'
+    const favDocRef = doc(favCollectionRef, product.id);
+
+    // Retrieve the document from Firestore
+    const favDocSnap = await getDoc(favDocRef);
+
+    if (favDocSnap.exists()) {
+      // Document exists, remove from Favourites
+      await deleteDoc(favDocRef);
+      setIsRed(false); // Set the heart icon to not red
+    } else {
+      // Document does not exist, add to Favourites
+      await setDoc(favDocRef, {
+        productId: product.id,
+        selectedProductCategory: product.selectedProductCategory,
+        uid: uid,
+        productName: product.name,
+        description: product.description,
+        price: product.price,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        businessName: product.businessName,
+        company: product.company,
+        brand: product.brand,
+        image: product.images[0],
+      });
+      setIsRed(true); // Set the heart icon to red
+      setShowSnackbar(true); // Show a snackbar indicating the item was added to favorites
+    }
+  } catch (error) {
+    // Log an error message if there's an issue toggling the heart icon
+    console.error("Error toggling heart:", error);
+  }
+};
+  // Function to toggle the cart icon to the shopping cart
+const toggleCart = async (product) => {
+  try {
+    
+    if (!product || !product.id) {
+      console.error("Product or productId is missing or undefined.");
+      return;
+    }
+
+    // Reference to the 'Cart' collection in Firestore
+    const cartCollectionRef = collection(firestore, "Cart");
+
+    // Check if the product already exists in the cart
+    const existingCartItemQuerySnapshot = await getDocs(
+      query(
+        cartCollectionRef,
+        where("uid", "==", uid),
+        where("productId", "==", product.id)
+      )
+    );
+
+    if (!existingCartItemQuerySnapshot.empty) {
+      // Product exists in cart, delete it
+      existingCartItemQuerySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
+      setShowSnackbar1(false); // Do not show a snackbar for deletion
+    } else {
+      // Product does not exist in cart, add it
+      await addDoc(cartCollectionRef, {
+        uid: uid,
+        productId: product.id,
+        description: product.description,
+        price: product.price,
+        name: product.businessName,
+        quantity: 1,
+        image: product.images,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(), // Updated line
+      });
+      setShowSnackbar1(true); // Show a snackbar indicating the item was added to the cart
+    }
+  } catch (error) {
+    // Log an error message if there's an issue adding to or deleting from the cart
+    console.error("Error toggling cart:", error);
+  }
+};
 
   // Function to handle the addition of a product to the user's shopping cart
 
@@ -195,15 +276,10 @@ export default function ProductDetails({ navigation, route }) {
         // Extract reviews data from the snapshot
         const reviewsData = reviewsCollectionSnapshot.data();
 
-        // Log fetched reviews data for debugging purposes
-        console.log("Fetched reviews data:", reviewsData);
-
         // Set the reviews state with the fetched reviews or an empty array if none
         setReviews(reviewsData.reviews || []);
       } else {
-        // Log a message if the reviews collection is not found for the specified product
-        console.log("Reviews collection not found for product:", productId);
-
+        
         // Set the reviews state to an empty array
         setReviews([]);
       }
@@ -288,10 +364,7 @@ export default function ProductDetails({ navigation, route }) {
           // Extract product data from the snapshot
           const productData = productDocSnapshot.data();
 
-          // Log fetched product data for debugging purposes
-          console.log("Fetched product data:", productData);
-
-          // Set the product state with the fetched product data
+         // Set the product state with the fetched product data
           setProduct(productData);
         } else {
           // Log a message if the product is not found
@@ -313,39 +386,98 @@ export default function ProductDetails({ navigation, route }) {
   // useEffect hook to fetch related products when the component mounts or when the product changes
 
   useEffect(() => {
-    // Async function to fetch related products from Firestore
     const fetchProducts = async () => {
-      // Reference to the 'Products' collection in Firestore
       const productsCollectionRef = collection(firestore, "Products");
 
       // Construct a query to get products with the same businessName, limiting to 4 results
-      const q = query(
+      const productQuery = query(
         productsCollectionRef,
         where("businessName", "==", product.businessName),
         limit(4)
       );
 
+      const favouritesCollectionRef = collection(firestore, "Favourites");
+      const cartCollectionRef = collection(firestore, "Cart");
+
       try {
-        // Retrieve the query snapshot from Firestore
-        const querySnapshot = await getDocs(q);
+        // Retrieve the query snapshot from Firestore for related products
+        const productQuerySnapshot = await getDocs(productQuery);
+        const relatedProductsData = [];
 
-        // Array to store fetched product data
-        const productsData = [];
-
-        // Iterate through the query snapshot and extract document IDs and data
-        querySnapshot.forEach((doc) => {
+        // Iterate through the related products query snapshot and extract document IDs and data
+        productQuerySnapshot.forEach((doc) => {
           const productWithId = { id: doc.id, ...doc.data() };
-          productsData.push(productWithId);
+          relatedProductsData.push(productWithId);
         });
 
-        // Log fetched product data for debugging purposes
-        console.log("productsData is ", productsData);
-
         // Set the state with the fetched related products
-        setRelatedProducts(productsData);
+        setRelatedProducts(relatedProductsData);
+
+        // Construct a query to get favorite products based on user ID
+        const favouritesQuery = query(
+          favouritesCollectionRef,
+          where("uid", "==", user.uid)
+        );
+
+        // Retrieve the query snapshot from Firestore for favorite products
+        const favouritesQuerySnapshot = await getDocs(favouritesQuery);
+        const favoriteProductsData = [];
+
+        // Iterate through the favorite products query snapshot and extract data
+        favouritesQuerySnapshot.forEach((doc) => {
+          favoriteProductsData.push(doc.data());
+        });
+
+        // Set the state with the fetched favorite products
+        setFavoriteProducts(favoriteProductsData);
+
+        // Subscribe to real-time updates for favorite products
+        const unsubscribeFavourites = onSnapshot(
+          favouritesQuery,
+          (snapshot) => {
+            const updatedFavoriteProductsData = [];
+            snapshot.forEach((doc) => {
+              updatedFavoriteProductsData.push(doc.data());
+            });
+            setFavoriteProducts(updatedFavoriteProductsData);
+          }
+        );
+
+        // Construct a query to get cart items based on user ID
+        const cartQuery = query(
+          cartCollectionRef,
+          where("uid", "==", user.uid)
+        );
+
+        // Retrieve the query snapshot from Firestore for cart items
+        const cartQuerySnapshot = await getDocs(cartQuery);
+        const cartItemsData = [];
+
+        // Iterate through the cart items query snapshot and extract data
+        cartQuerySnapshot.forEach((doc) => {
+          cartItemsData.push(doc.data());
+        });
+
+        
+        // Set the state with the fetched cart items
+        setCartItems(cartItemsData);
+        // Subscribe to real-time updates for cart items
+        const unsubscribeCart = onSnapshot(cartQuery, (snapshot) => {
+          const updatedCartItemsData = [];
+          snapshot.forEach((doc) => {
+            updatedCartItemsData.push(doc.data());
+          });
+          setCartItems(updatedCartItemsData);
+        });
 
         // Set loading to false after data fetching is complete
         setLoading(false);
+
+        // Return a cleanup function to unsubscribe from real-time updates
+        return () => {
+          unsubscribeFavourites();
+          unsubscribeCart();
+        };
       } catch (error) {
         // Handle any errors that might occur during the data fetching process
         console.error("Error fetching product data:", error);
@@ -354,7 +486,9 @@ export default function ProductDetails({ navigation, route }) {
 
     // Call the fetchProducts function when the component mounts or when the product changes
     fetchProducts();
-  }, [product]); // Adjust the dependency to include only necessary variables
+  }, [product, uid, firestore]);
+
+  // Adjust the dependency to include only necessary variables
 
   // Function to handle closing the snackbar for successful cart item addition
   const handleSnackbarClose1 = () => {
@@ -480,7 +614,7 @@ export default function ProductDetails({ navigation, route }) {
 
   return (
     <View style={{ backgroundColor: "white" }}>
-      <Header/>
+      <Header />
       <Navbar />
       <Box sx={{ height: "100%", overflowY: "auto" }}>
         <Container maxWidth="md">
@@ -889,7 +1023,7 @@ export default function ProductDetails({ navigation, route }) {
                               }}
                             >
                               {/* Button to toggle heart icon for favorites */}
-                              <TouchableOpacity
+                              {/* <TouchableOpacity
                                 onPress={() => toggleHeart(relatedProduct)}
                               >
                                 <Icon
@@ -902,13 +1036,38 @@ export default function ProductDetails({ navigation, route }) {
                                   }}
                                   color={isRed ? "red" : "black"}
                                 />
+                              </TouchableOpacity> */}
+                              <TouchableOpacity>
+                                <Icon
+                                  name={
+                                    favoriteProducts.find(
+                                      (item) =>
+                                        item.productId === relatedProduct.id
+                                    )
+                                      ? "heart"
+                                      : "heart-o"
+                                  }
+                                  size={20}
+                                  style={{
+                                    padding: 10,
+                                    backgroundColor: "white",
+                                    borderRadius: "50%",
+                                  }}
+                                  onPress={() => toggleHeart(relatedProduct)} // Use onPress instead of onClick for TouchableOpacity
+                                  color={
+                                    favoriteProducts.find(
+                                      (item) =>
+                                        item.productId === relatedProduct.id
+                                    )
+                                      ? "red"
+                                      : "black"
+                                  }
+                                />
                               </TouchableOpacity>
                               {/* Button to add product to cart */}
                               <TouchableOpacity
-                                onPress={() => addToCart(relatedProduct)}
-                                disabled={!relatedProduct}
+                                onPress={() => toggleCart(relatedProduct)}
                               >
-                                {/* Snackbar for product added to cart */}
                                 <Snackbar
                                   open={showSnackbar1}
                                   autoHideDuration={3000} // Adjust as needed
@@ -926,9 +1085,15 @@ export default function ProductDetails({ navigation, route }) {
                                     Product added to Cart!
                                   </MuiAlert>
                                 </Snackbar>
-                                {/* Shopping cart icon */}
-                                <Icon
-                                  name="shopping-cart"
+                                <Icon3
+                                  name={
+                                    cartItems.find(
+                                      (item) =>
+                                        item.productId === relatedProduct.id
+                                    )
+                                      ? "cart"
+                                      : "cart-outline"
+                                  }
                                   size={20}
                                   style={{
                                     padding: 10,
@@ -977,9 +1142,9 @@ export default function ProductDetails({ navigation, route }) {
                                     borderRadius: 15,
                                   }}
                                 >
-                                   <Text style={{ color: "white" }}>
-                            ⭐ {review[relatedProduct.id] || 0}
-                          </Text>
+                                  <Text style={{ color: "white" }}>
+                                    ⭐ {review[relatedProduct.id] || 0}
+                                  </Text>
                                 </View>
                               </View>
                               {/* Product name */}

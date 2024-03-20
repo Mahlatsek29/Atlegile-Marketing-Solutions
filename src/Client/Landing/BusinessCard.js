@@ -77,8 +77,7 @@ export default function BusinessCard({ business }) {
             company: data.company,
           };
         });
-        // Log the fetched banner data and set it to the state
-        console.log("bannerData is: ", bannerData);
+        
         setBanners(bannerData);
       } catch (error) {
         // Log an error message if fetching fails

@@ -1,6 +1,6 @@
 import { Box, TextField, IconButton } from "@mui/material";
-import { View, Text, Image } from "react-native";
-import { useNavigation } from "@react-navigation/native"; // Import useNavigation
+import { Image } from "react-native";
+
 import { useState } from "react";
 
 export default function SearchBar() {

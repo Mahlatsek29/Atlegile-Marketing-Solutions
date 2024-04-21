@@ -299,7 +299,7 @@ const UserProfile = () => {
             </Button> */}
 
             {/* Register as a Talent button */}
-            <Button
+            {/* <Button
               onClick={handleBusiness}
               style={{
                 color: "#072840",
@@ -310,7 +310,7 @@ const UserProfile = () => {
               variant="outlined"
             >
               REGISTER AS A TALENT
-            </Button>
+            </Button> */}
 
             {/* Sign Out button */}
             <Button
@@ -328,20 +328,21 @@ const UserProfile = () => {
 
             {/* Manage Business button */}
             {userData?.talent || userData?.business ? (
-  <Button
-    style={{
-      color: "#072840",
-      borderRadius: "20px",
-      outlineColor: "#072840",
-      marginRight: "5px",
-    }}
-    variant="outlined"
-    onClick={() => {
-      navigation.navigate("AccountAndBusiness");
-    }}
-  >
-    Manage Business
-  </Button>
+  // <Button
+  //   style={{
+  //     color: "#072840",
+  //     borderRadius: "20px",
+  //     outlineColor: "#072840",
+  //     marginRight: "5px",
+  //   }}
+  //   variant="outlined"
+  //   onClick={() => {
+  //     navigation.navigate("AccountAndBusiness");
+  //   }}
+  // >
+  //   Manage Business
+              // </Button>
+            <></>
 ) : null}
 
           </View>

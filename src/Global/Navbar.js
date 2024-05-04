@@ -94,7 +94,7 @@ const Navbar = () => {
       </TouchableOpacity>
       {width < 600 ? (
         <TouchableOpacity onPress={toggleMenu}>
-          <Icon name={showMenu ? "times" : "bars"} size={20} color="#252B42" />
+          <Icon name={showMenu ? "bars" : "bars"} size={20} color="#252B42" />
         </TouchableOpacity>
       ) : (
         <View
@@ -112,7 +112,9 @@ const Navbar = () => {
               <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
                 <Button color="inherit">About Us</Button>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigateAndCloseMenu("DateSelectionAndCheckout")}>
+              <TouchableOpacity
+                onPress={() => navigateAndCloseMenu("DateSelectionAndCheckout")}
+              >
                 <Box>
                   <Badge
                     badgeContent={cartCount}
@@ -185,40 +187,131 @@ const Navbar = () => {
           style={{
             position: "absolute",
             top: 60,
-            right: 10,
+            right: 0,
             backgroundColor: "#fff",
-            padding: 10,
-            borderRadius: 5,
+            width: "70%",
+            height: "85vh",
             zIndex: 999,
+            display: "flex",
+            alignItems: "center",
+           
           }}
         >
-          <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
-            <Button color="inherit">Shop</Button>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
-            <Button color="inherit">About Us</Button>
-          </TouchableOpacity>
-          {userData ? (
-            <>
-              <TouchableOpacity onPress={() => navigateAndCloseMenu("UserProfile")}>
-                <Button color="inherit">Profile</Button>
+          <View style={{  flex:1, display:'flex',justifyContent:'space-between' }}>
+            <View style={{top: 20,}}>
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
+                <Button
+                  style={{
+                    color: "white",
+                    backgroundColor: "#252b42",
+                    borderRadius: "20px",
+                    outlineColor: "#072840",
+                    width: "60vw",
+                  }}
+                  variant="outlined"
+                >
+                  Shop
+                </Button>
               </TouchableOpacity>
-              <TouchableOpacity
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
+                <Button color="inherit">About Us</Button>
+              </TouchableOpacity>
+            </View>
+            <View style={{bottom:20, display:'flex',alignItems:'center'}}>
+              {userData ? (
+              <>
+                <TouchableOpacity
+                onPress={() => navigateAndCloseMenu("UserProfile")}
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: 10,
+                }}
+              >
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    backgroundColor: "gray",
+                    borderRadius: "8%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography
+                    style={{
+                      fontSize: 16,
+                      color: "white",
+                      padding: 10,
+                    }}
+                  >
+                    AS
+                  </Typography>
+                </View>
+                <View style={{ marginLeft: 10 }}>
+                  <Typography variant="subtitle1">
+                    Welcome, {userData.name}
+                  </Typography>
+                  <Typography style={{ fontSize: 12 }}>
+                    {userData.username}
+                  </Typography>
+                </View>
+              </TouchableOpacity>
+                 <TouchableOpacity
                 onPress={() => navigateAndCloseMenu("DateSelectionAndCheckout")}
               >
-                <Button color="inherit">Cart</Button>
+                <Box>
+                  <Badge
+                    badgeContent={cartCount}
+                    color="primary"
+                    style={{ margin: "0px 15px" }}
+                  >
+                    <ShoppingCart color="action" style={{ color: "black" }} />
+                  </Badge>
+                </Box>
               </TouchableOpacity>
-            </>
-          ) : (
-            <>
-              <TouchableOpacity onPress={() => navigateAndCloseMenu("SignIn")}>
-                <Button color="inherit">Sign In</Button>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigateAndCloseMenu("SignUp")}>
-                <Button color="inherit">Sign Up</Button>
-              </TouchableOpacity>
-            </>
-          )}
+              </>
+            ) : (
+              <>
+                <TouchableOpacity
+                  onPress={() => navigateAndCloseMenu("SignIn")}
+                >
+                  <Button
+                    style={{
+                      color: "white",
+                      backgroundColor: "#252b42",
+                      borderRadius: "20px",
+                      outlineColor: "#072840",
+                      width: "60vw",
+                    }}
+                    variant="outlined"
+                  >
+                    Sign In
+                  </Button>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => navigateAndCloseMenu("SignUp")}
+                >
+                  <Button
+                    style={{
+                      color: "#252b42",
+                      backgroundColor: "white",
+                      borderRadius: "20px",
+                      // outlineColor: "#072840",
+                      width: "60vw",
+                      marginTop: 10,
+                    }}
+                    variant="outlined"
+                  >
+                    Sign Up
+                  </Button>
+                </TouchableOpacity>
+              </>
+            )}
+             </View>
+            
+          </View>
         </View>
       )}
     </Toolbar>

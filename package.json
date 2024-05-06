@@ -10,8 +10,8 @@
     "build": "expo export:web"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.3",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^19.0.1",
     "@fontsource/roboto": "^5.0.8",

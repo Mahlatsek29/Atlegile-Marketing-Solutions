@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Toolbar, Typography, Box, Badge, Grid } from "@mui/material";
+import { Button, Toolbar, Typography, Box, Badge } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import { View, Image, TouchableOpacity, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -14,7 +14,6 @@ const Navbar = () => {
   const [userData, setUserData] = useState(null);
   const [cartCount, setCartCount] = useState(2);
   const [showMenu, setShowMenu] = useState(false);
-  const [businessData, setBusinessData] = useState(null);
   const [width, setWidth] = useState(Dimensions.get("window").width);
 
   useEffect(() => {
@@ -47,7 +46,6 @@ const Navbar = () => {
         const unsubscribeSnapshot = userDocRef.onSnapshot((doc) => {
           if (doc.exists) {
             setUserData(doc.data());
-            
           } else {
             console.error("User data not found");
           }
@@ -73,13 +71,12 @@ const Navbar = () => {
   };
 
   const navigateAndCloseMenu = (screen) => {
+    console.log("screen is ", screen);
     navigation.navigate(screen);
     setShowMenu(false);
   };
 
   return (
-    <Grid container spacing={2} sx={{display:'flex', justifyContent:'center'}}>
-    <Grid item xs={12} sm={10} md={9} >
     <Toolbar
       sx={{
         color: "#252B42",
@@ -97,7 +94,7 @@ const Navbar = () => {
       </TouchableOpacity>
       {width < 600 ? (
         <TouchableOpacity onPress={toggleMenu}>
-          <Icon name={showMenu ? "times" : "bars"} size={20} color="#252B42" />
+          <Icon name={showMenu ? "bars" : "bars"} size={20} color="#252B42" />
         </TouchableOpacity>
       ) : (
         <View
@@ -110,7 +107,7 @@ const Navbar = () => {
           {userData ? (
             <>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
-                <Button  sx={{backgroundColor :"#252b42",color:"white",borderRadius:20}}>Shop</Button>
+                <Button color="inherit">Shop</Button>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
                 <Button color="inherit">About Us</Button>
@@ -158,34 +155,19 @@ const Navbar = () => {
                   </Typography>
                 </View>
                 <View style={{ marginLeft: 10 }}>
-                  
-                  {userData && userData.business ? (
-                    <View style={{display:'flex',flexDirection:'column'}}>
-                    <Typography variant="subtitle1" >
-                     Welcome
-                    </Typography>
-                    <Typography variant="subtitle1" >
-                     {userData.businessName}
-                   </Typography>
-                    </View>
-                    
-                  ) : (
-                    <View style={{display:'flex',flexDirection:'column'}}>
-                    <Typography variant="subtitle1" >
-                     Welcome
-                    </Typography>
-                    <Typography variant="subtitle2" >
-                     {userData.name}
-                   </Typography>
-                    </View>
-                  )}
+                  <Typography variant="subtitle1">
+                    Welcome, {userData.name}
+                  </Typography>
+                  <Typography style={{ fontSize: 12 }}>
+                    {userData.username}
+                  </Typography>
                 </View>
               </TouchableOpacity>
             </>
           ) : (
             <>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
-              <Button  sx={{backgroundColor :"#252b42",color:"white",borderRadius:20}}>Shop</Button>
+                <Button color="inherit">Shop</Button>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
                 <Button color="inherit">About Us</Button>
@@ -205,47 +187,134 @@ const Navbar = () => {
           style={{
             position: "absolute",
             top: 60,
-            right: 10,
+            right: 0,
             backgroundColor: "#fff",
-            padding: 10,
-            borderRadius: 5,
+            width: "70%",
+            height: "85vh",
             zIndex: 999,
+            display: "flex",
+            alignItems: "center",
+           
           }}
         >
-          <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
-          <Button  sx={{backgroundColor :"#252b42",color:"white",borderRadius:20}}>Shop</Button>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
-            <Button color="inherit">About Us</Button>
-          </TouchableOpacity>
-          {userData ? (
-            <>
-              <TouchableOpacity
-                onPress={() => navigateAndCloseMenu("UserProfile")}
-              >
-                <Button color="inherit">Profile</Button>
+          <View style={{  flex:1, display:'flex',justifyContent:'space-between' }}>
+            <View style={{top: 20,}}>
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
+                <Button
+                  style={{
+                    color: "white",
+                    backgroundColor: "#252b42",
+                    borderRadius: "20px",
+                    outlineColor: "#072840",
+                    width: "60vw",
+                  }}
+                  variant="outlined"
+                >
+                  Shop
+                </Button>
               </TouchableOpacity>
-              <TouchableOpacity
+              <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
+                <Button color="inherit">About Us</Button>
+              </TouchableOpacity>
+            </View>
+            <View style={{bottom:20, display:'flex',alignItems:'center'}}>
+              {userData ? (
+              <>
+                <TouchableOpacity
+                onPress={() => navigateAndCloseMenu("UserProfile")}
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: 10,
+                }}
+              >
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    backgroundColor: "gray",
+                    borderRadius: "8%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography
+                    style={{
+                      fontSize: 16,
+                      color: "white",
+                      padding: 10,
+                    }}
+                  >
+                    AS
+                  </Typography>
+                </View>
+                <View style={{ marginLeft: 10 }}>
+                  <Typography variant="subtitle1">
+                    Welcome, {userData.name}
+                  </Typography>
+                  <Typography style={{ fontSize: 12 }}>
+                    {userData.username}
+                  </Typography>
+                </View>
+              </TouchableOpacity>
+                 <TouchableOpacity
                 onPress={() => navigateAndCloseMenu("DateSelectionAndCheckout")}
               >
-                <Button color="inherit">Cart</Button>
+                <Box>
+                  <Badge
+                    badgeContent={cartCount}
+                    color="primary"
+                    style={{ margin: "0px 15px" }}
+                  >
+                    <ShoppingCart color="action" style={{ color: "black" }} />
+                  </Badge>
+                </Box>
               </TouchableOpacity>
-            </>
-          ) : (
-            <>
-              <TouchableOpacity onPress={() => navigateAndCloseMenu("SignIn")}>
-                <Button color="inherit">Sign In</Button>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigateAndCloseMenu("SignUp")}>
-                <Button color="inherit">Sign Up</Button>
-              </TouchableOpacity>
-            </>
-          )}
+              </>
+            ) : (
+              <>
+                <TouchableOpacity
+                  onPress={() => navigateAndCloseMenu("SignIn")}
+                >
+                  <Button
+                    style={{
+                      color: "white",
+                      backgroundColor: "#252b42",
+                      borderRadius: "20px",
+                      outlineColor: "#072840",
+                      width: "60vw",
+                    }}
+                    variant="outlined"
+                  >
+                    Sign In
+                  </Button>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => navigateAndCloseMenu("SignUp")}
+                >
+                  <Button
+                    style={{
+                      color: "#252b42",
+                      backgroundColor: "white",
+                      borderRadius: "20px",
+                      // outlineColor: "#072840",
+                      width: "60vw",
+                      marginTop: 10,
+                    }}
+                    variant="outlined"
+                  >
+                    Sign Up
+                  </Button>
+                </TouchableOpacity>
+              </>
+            )}
+             </View>
+            
+          </View>
         </View>
       )}
     </Toolbar>
-    </Grid>
-    </Grid>
   );
 };
 

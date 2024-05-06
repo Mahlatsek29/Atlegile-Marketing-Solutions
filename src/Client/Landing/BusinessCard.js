@@ -1,5 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Button } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Button,
+  Dimensions,
+} from "react-native";
 import { firebase, firestore, auth } from "../../config"; // Adjust the path based on your project structure
 import ProductCard from "../../Global/Card";
 import { AntDesign } from "@expo/vector-icons";
@@ -16,6 +23,19 @@ export default function BusinessCard({ business }) {
   const [currentBanner, setCurrentBanner] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigation = useNavigation();
+  const [width, setWidth] = useState(Dimensions.get("window").width);
+  useEffect(() => {
+    const handleDimensionsChange = ({ window }) => {
+      setWidth(window.width);
+    };
+
+    Dimensions.addEventListener("change", handleDimensionsChange);
+
+    return () => {
+      Dimensions.removeEventListener("change", handleDimensionsChange);
+    };
+  }, []);
+
   useEffect(() => {
     const fetchProducts = async () => {
       const productsRef = firebase.firestore().collection("Products");
@@ -77,7 +97,7 @@ export default function BusinessCard({ business }) {
             company: data.company,
           };
         });
-        
+
         setBanners(bannerData);
       } catch (error) {
         // Log an error message if fetching fails
@@ -129,212 +149,437 @@ export default function BusinessCard({ business }) {
 
   return (
     <>
-      {business.length >= 3 ? ( // a business will only be shown if there are more than three oreducts
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            
-          }}
-        >
-          <View
-            style={{
-              width: "100%",
-              height: "85vh",
-              justifyContent: "space-between",
-              alignItems: "center",
-              flexDirection: "row",
-             }}
-          >
-            {/* Left scroll button */}
-            <TouchableOpacity onPress={scrollLeft}>
-              <ArrowBackIosIcon />
-            </TouchableOpacity>
-
-            {/* Right scroll button */}
-            <TouchableOpacity onPress={scrollRight}>
-              <ArrowForwardIosIcon />
-            </TouchableOpacity>
-
-            {/* Container for the business name and product list */}
+      {width < 600 ? (
+        <>
+          {business.length >= 3 ? ( // a business will only be shown if there are more than three oreducts
             <View
               style={{
-                zIndex: -10,
-                width: "100%",
-                position: "absolute",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                // backgroundColor:'red'                
               }}
             >
-              {/* Business name and "View All" link */}
               <View
                 style={{
-                  display: "flex",
-                  flexDirection: "row",
+                  width: "100%",
+                  height: "40vh",
                   justifyContent: "space-between",
+                  alignItems: "center",
+                  flexDirection: "row",
                 }}
               >
-                {/* Business name */}
-                <Text
+                {/* Left scroll button */}
+                {/* <TouchableOpacity onPress={scrollLeft}>
+                  <ArrowBackIosIcon />
+                </TouchableOpacity> */}
+
+                {/* Right scroll button */}
+                {/* <TouchableOpacity onPress={scrollRight}>
+                  <ArrowForwardIosIcon />
+                </TouchableOpacity> */}
+
+                {/* Container for the business name and product list */}
+                <View
                   style={{
-                    fontSize: "30px",
-                    fontWeight: "bolder",
-                    marginTop: "10px",
+                    zIndex: -10,
+                    width: "100%",
+                    position: "absolute",
                   }}
                 >
-                  {business}
-                </Text>
-
-                {/* "View All" link */}
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("Products", { businessId: business })
-                  }
-                >
-                  <Text style={{
-                  
-                    marginTop: "30px",
-                  }}>View All</Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* Horizontal ScrollView for displaying product cards */}
-              <ScrollView
-                ref={scrollViewRef}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                onContentSizeChange={(contentWidth) =>
-                  handleContentSizeChange(contentWidth)
-                }
-              >
-                {/* Map through products and render ProductCard component for each */}
-                {oneCompany.map((product) => (
-                  <ProductCard key={product.id} productId={product.id} />
-                ))}
-              </ScrollView>
-            </View>
-          </View>
-
-          {currentBanner &&
-          currentBanner.bannerImage &&
-          currentBanner.bannerImage.length > 0 ? (
-            // Card container for the banner
-            <Card
-              style={{
-                backgroundColor: "gray",
-                width: "100%",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              {/* Left arrow button */}
-              <TouchableOpacity
-                onPress={handlePrevClick}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <AntDesign name="left" size={24} color="white" />
-              </TouchableOpacity>
-
-              {/* Grid container for banner content */}
-              <Grid
-                container
-                spacing={2}
-                style={{ justifyContent: "center", alignItems: "center" }}
-              >
-                <Grid>
-                  {/* Nested Grid container for text content */}
-                  <Grid
-                    container
-                    direction="column"
-                    justifyContent="center"
-                    alignItems="center"
-                    m={2}
+                  {/* Business name and "View All" link */}
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      marginHorizontal:10
+                    }}
                   >
-                    {/* Banner details - Other, Product Name, Price */}
-                    <Typography
-                      variant="subtitle1"
+                    {/* Business name */}
+                    <Text
                       style={{
-                        fontWeight: 600,
-                        color: "white",
-                        marginBottom: 5,
-                        alignSelf: "flex-start",
+                        fontSize: "30px",
+                        fontWeight: "bolder",
+                        marginTop: "10px",
                       }}
                     >
-                      {currentBanner.other}
-                    </Typography>
-                    <Typography
-                      variant="h4"
-                      style={{
-                        fontWeight: 700,
-                        color: "white",
-                        marginBottom: 5,
-                        alignSelf: "flex-start",
-                      }}
+                      {business}
+                    </Text>
+
+                    {/* "View All" link */}
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("Products", {
+                          businessId: business,
+                        })
+                      }
                     >
-                      {currentBanner.productName}
-                    </Typography>
-                    {/* Price display */}
-                    <Grid
-                      sx={{
-                        display: "flex",
-                        alignSelf: "flex-start",
-                        flexDirection: "row",
-                      }}
-                    >
-                      <Typography
-                        variant="subtitle1"
+                      <Text
                         style={{
-                          fontWeight: 700,
-                          color: "#c29920",
-                          marginRight: 5, // Add margin or padding as needed
+                          marginTop: "25px",
                         }}
                       >
-                        R{currentBanner.discountPrice}
-                      </Typography>
-                      <Typography
-                        variant="subtitle1"
-                        style={{ color: "white" }}
+                        View All
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* Horizontal ScrollView for displaying product cards */}
+                  <ScrollView
+                    ref={scrollViewRef}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    onContentSizeChange={(contentWidth) =>
+                      handleContentSizeChange(contentWidth)
+                    }
+                    contentContainerStyle={{ alignItems: "center" }}
+                  >
+                    {/* Map through products and render ProductCard component for each */}
+                    {oneCompany.map((product) => (
+                      <ProductCard key={product.id} productId={product.id} />
+                    ))}
+                  </ScrollView>
+                </View>
+              </View>
+
+              {currentBanner &&
+              currentBanner.bannerImage &&
+              currentBanner.bannerImage.length > 0 ? (
+                // Card container for the banner
+                <Card
+                  style={{
+                    backgroundColor: "gray",
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  {/* Left arrow button */}
+                  <TouchableOpacity
+                    onPress={handlePrevClick}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <AntDesign name="left" size={24} color="white" />
+                  </TouchableOpacity>
+
+                  {/* Grid container for banner content */}
+                  <Grid
+                    container
+                    spacing={2}
+                    style={{ justifyContent: "center", alignItems: "center" }}
+                  >
+                    <Grid>
+                      {/* Nested Grid container for text content */}
+                      <Grid
+                        container
+                        direction="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        m={2}
                       >
-                        R{currentBanner.originalPrice}
-                      </Typography>
+                        {/* Banner details - Other, Product Name, Price */}
+                        <Typography
+                          variant="subtitle1"
+                          style={{
+                            fontWeight: 600,
+                            color: "white",
+                            marginBottom: 5,
+                            alignSelf: "flex-start",
+                          }}
+                        >
+                          {currentBanner.other}
+                        </Typography>
+                        <Typography
+                          variant="h4"
+                          style={{
+                            fontWeight: 700,
+                            color: "white",
+                            marginBottom: 5,
+                            alignSelf: "flex-start",
+                          }}
+                        >
+                          {currentBanner.productName}
+                        </Typography>
+                        {/* Price display */}
+                        <Grid
+                          sx={{
+                            display: "flex",
+                            alignSelf: "flex-start",
+                            flexDirection: "row",
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle1"
+                            style={{
+                              fontWeight: 700,
+                              color: "#c29920",
+                              marginRight: 5, // Add margin or padding as needed
+                            }}
+                          >
+                            R{currentBanner.discountPrice}
+                          </Typography>
+                          <Typography
+                            variant="subtitle1"
+                            style={{ color: "white" }}
+                          >
+                            R{currentBanner.originalPrice}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    {/* Image container */}
+                    <Grid height={230} wodth="100%">
+                      {/* CardMedia component for displaying the banner image */}
+                      <CardMedia
+                        component="img"
+                        height="100%"
+                        image={currentBanner.bannerImage[currentIndex]}
+                        style={{
+                          objectFit: "cover",
+                          width: "40vw",
+                          height: "40vh",
+                        }}
+                      />
                     </Grid>
                   </Grid>
-                </Grid>
-                {/* Image container */}
-                <Grid height={230} wodth="100%">
-                  {/* CardMedia component for displaying the banner image */}
-                  <CardMedia
-                    component="img"
-                    height="100%"
-                    image={currentBanner.bannerImage[currentIndex]}
-                    style={{
-                      objectFit: "cover",
-                      width: "40vw",
-                      height: "40vh",
-                    }}
-                  />
-                </Grid>
-              </Grid>
 
-              {/* Right arrow button */}
-              <TouchableOpacity
-                onPress={handleNextClick}
+                  {/* Right arrow button */}
+                  <TouchableOpacity
+                    onPress={handleNextClick}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <AntDesign name="right" size={24} color="white" />
+                  </TouchableOpacity>
+                </Card>
+              ) : null}
+            </View>
+          ) : null}
+        </>
+      ) : (
+        <>
+          {business.length >= 3 ? ( // a business will only be shown if there are more than three oreducts
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <View
                 style={{
-                  display: "flex",
+                  width: "100%",
+                  height: "85vh",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  justifyContent: "center",
+                  flexDirection: "row",
                 }}
               >
-                <AntDesign name="right" size={24} color="white" />
-              </TouchableOpacity>
-            </Card>
+                {/* Left scroll button */}
+                <TouchableOpacity onPress={scrollLeft}>
+                  <ArrowBackIosIcon />
+                </TouchableOpacity>
+
+                {/* Right scroll button */}
+                <TouchableOpacity onPress={scrollRight}>
+                  <ArrowForwardIosIcon />
+                </TouchableOpacity>
+
+                {/* Container for the business name and product list */}
+                <View
+                  style={{
+                    zIndex: -10,
+                    width: "100%",
+                    position: "absolute",
+                  }}
+                >
+                  {/* Business name and "View All" link */}
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    {/* Business name */}
+                    <Text
+                      style={{
+                        fontSize: "30px",
+                        fontWeight: "bolder",
+                        marginTop: "10px",
+                      }}
+                    >
+                      {business}
+                    </Text>
+
+                    {/* "View All" link */}
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("Products", {
+                          businessId: business,
+                        })
+                      }
+                    >
+                      <Text
+                        style={{
+                          marginTop: "25px",
+                        }}
+                      >
+                        View All
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* Horizontal ScrollView for displaying product cards */}
+                  <ScrollView
+                    ref={scrollViewRef}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    onContentSizeChange={(contentWidth) =>
+                      handleContentSizeChange(contentWidth)
+                    }
+                      Style={{ display:'flex',alignItems: "center" , backgroundColor:'red'}}
+                  >
+                    {/* Map through products and render ProductCard component for each */}
+                    {oneCompany.map((product) => (
+                      <ProductCard key={product.id} productId={product.id} />
+                    ))}
+                  </ScrollView>
+                </View>
+              </View>
+
+              {currentBanner &&
+              currentBanner.bannerImage &&
+              currentBanner.bannerImage.length > 0 ? (
+                // Card container for the banner
+                <Card
+                  style={{
+                    backgroundColor: "gray",
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  {/* Left arrow button */}
+                  <TouchableOpacity
+                    onPress={handlePrevClick}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <AntDesign name="left" size={24} color="white" />
+                  </TouchableOpacity>
+
+                  {/* Grid container for banner content */}
+                  <Grid
+                    container
+                    spacing={2}
+                    style={{ justifyContent: "center", alignItems: "center" }}
+                  >
+                    <Grid>
+                      {/* Nested Grid container for text content */}
+                      <Grid
+                        container
+                        direction="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        m={2}
+                      >
+                        {/* Banner details - Other, Product Name, Price */}
+                        <Typography
+                          variant="subtitle1"
+                          style={{
+                            fontWeight: 600,
+                            color: "white",
+                            marginBottom: 5,
+                            alignSelf: "flex-start",
+                          }}
+                        >
+                          {currentBanner.other}
+                        </Typography>
+                        <Typography
+                          variant="h4"
+                          style={{
+                            fontWeight: 700,
+                            color: "white",
+                            marginBottom: 5,
+                            alignSelf: "flex-start",
+                          }}
+                        >
+                          {currentBanner.productName}
+                        </Typography>
+                        {/* Price display */}
+                        <Grid
+                          sx={{
+                            display: "flex",
+                            alignSelf: "flex-start",
+                            flexDirection: "row",
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle1"
+                            style={{
+                              fontWeight: 700,
+                              color: "#c29920",
+                              marginRight: 5, // Add margin or padding as needed
+                            }}
+                          >
+                            R{currentBanner.discountPrice}
+                          </Typography>
+                          <Typography
+                            variant="subtitle1"
+                            style={{ color: "white" }}
+                          >
+                            R{currentBanner.originalPrice}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    {/* Image container */}
+                    <Grid height={230} wodth="100%">
+                      {/* CardMedia component for displaying the banner image */}
+                      <CardMedia
+                        component="img"
+                        height="100%"
+                        image={currentBanner.bannerImage[currentIndex]}
+                        style={{
+                          objectFit: "cover",
+                          width: "40vw",
+                          height: "40vh",
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  {/* Right arrow button */}
+                  <TouchableOpacity
+                    onPress={handleNextClick}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <AntDesign name="right" size={24} color="white" />
+                  </TouchableOpacity>
+                </Card>
+              ) : null}
+            </View>
           ) : null}
-        </View>
-      ) : null}
+        </>
+      )}
     </>
   );
 }

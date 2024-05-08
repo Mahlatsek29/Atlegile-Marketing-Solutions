@@ -1,15 +1,28 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Image, Dimensions} from "react-native";
+import { View, Text, Image, Dimensions } from "react-native";
 import { Video } from "expo-av";
 import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
 import { COLORS } from "../../Global/Color";
+import { require } from 'expo-asset';
 
 export default function AboutUs() {
   // State to manage screen dimensions
-  const [dimensions, setDimensions] = useState(Dimensions.get("window"));
-  const { width, height } = dimensions;
+  const [width, setWidth] = useState(Dimensions.get("window").width);
+  useEffect(() => {
+    const handleDimensionsChange = ({ window }) => {
+      setWidth(window.width);
+    };
+
+    Dimensions.addEventListener("change", handleDimensionsChange);
+
+    return () => {
+      Dimensions.removeEventListener("change", handleDimensionsChange);
+    };
+  }, []);
+
+  
 
   // Ref for the video component
   const video = useRef(null);
@@ -32,55 +45,25 @@ export default function AboutUs() {
   }, []); // Empty dependency array to run the effect only once during component mount
 
   return (
-    <View style={{ flex: 1,backgroundColor:'white' }}>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
       {/* Included FollowUs component */}
       <FollowUs />
       {/* Included Navbar component */}
       <Navbar />
-      <View
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          display: "flex",
-        }}
-      >
-        <View
-          style={{
-            width: width * 0.66,
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            display: "flex",
-          }}
-        >
+      <View style={{ alignItems: "center", justifyContent: "center" }}>
+        <View style={{ width: width * 0.66 }}>
           {/* Logo section */}
-          <View>
+          <View style={{ alignItems: "center" }}>
             <Image
               source={require("../../Global/images/logo.svg")}
               style={{ width: 120, height: 60, resizeMode: "contain" }}
             />
           </View>
           {/* About text section */}
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              display: "flex",
-              justifyContent: "center",
-              paddingHorizontal: 20,
-            }}
-          >
-            <Text
-              style={{
-                color: COLORS.darkBlue,
-                textAlign: "center",
-                fontWeight: "bold",
-                fontSize: 20,
-              }}
-            >
+          <View style={{ paddingHorizontal: 20 }}>
+            <Text style={{ color: COLORS.darkBlue, fontWeight: "bold", fontSize: 20, textAlign: "center" }}>
               ATTLEGILE MARKETING SOLUTIONS
             </Text>
-
             <Text style={{ textAlign: "center", paddingTop: 10 }}>
               Welcome to Atlegile Marketing Solutions (Pty) Ltd, where passion,
               purpose, and expertise collide to create exceptional Marketing
@@ -100,33 +83,10 @@ export default function AboutUs() {
           </View>
 
           {/* Three sections with information */}
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              paddingTop: 30,
-              paddingBottom: 30,
-            }}
-          >
+          <View style={{ flexDirection: "row", paddingTop: 30, paddingBottom: 30 }}>
             {/* Section 1: What We Offer */}
-            <View
-              style={{
-                height: "auto",
-                width: "33%",
-                borderWidth: 1,
-                borderColor: "grey",
-                margin: 1,
-              }}
-            >
-              <Text
-                style={{
-                  color: COLORS.darkBlue,
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  fontSize: 16,
-                  paddingTop: 10,
-                }}
-              >
+            <View style={{ width: "33%", borderWidth: 1, borderColor: "grey", margin: 1 }}>
+              <Text style={{ color: COLORS.darkBlue, textAlign: "center", fontWeight: "bold", fontSize: 16, paddingTop: 10 }}>
                 WHAT WE OFFER
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
@@ -138,24 +98,8 @@ export default function AboutUs() {
               </Text>
             </View>
             {/* Section 2: About AMS */}
-            <View
-              style={{
-                height: "auto",
-                width: "33%",
-                borderWidth: 1,
-                borderColor: "grey",
-                margin: 1,
-              }}
-            >
-              <Text
-                style={{
-                  color: COLORS.darkBlue,
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  fontSize: 16,
-                  paddingTop: 10,
-                }}
-              >
+            <View style={{ width: "33%", borderWidth: 1, borderColor: "grey", margin: 1 }}>
+              <Text style={{ color: COLORS.darkBlue, textAlign: "center", fontWeight: "bold", fontSize: 16, paddingTop: 10 }}>
                 ABOUT AMS
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
@@ -166,24 +110,8 @@ export default function AboutUs() {
               </Text>
             </View>
             {/* Section 3: Our USP */}
-            <View
-              style={{
-                height: "auto",
-                width: "33.5%",
-                borderWidth: 1,
-                borderColor: "grey",
-                margin: 1,
-              }}
-            >
-              <Text
-                style={{
-                  color: COLORS.darkBlue,
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  fontSize: 16,
-                  paddingTop: 10,
-                }}
-              >
+            <View style={{ width: "34%", borderWidth: 1, borderColor: "grey", margin: 1 }}>
+              <Text style={{ color: COLORS.darkBlue, textAlign: "center", fontWeight: "bold", fontSize: 16, paddingTop: 10 }}>
                 OUR USP
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
@@ -191,40 +119,18 @@ export default function AboutUs() {
                 creativity, while transferring 8 years of professional quality
                 service.
               </Text>
-              <Text
-                style={{
-                  color: "black",
-                  textAlign: "center",
-                  fontWeight: "medium",
-                  fontSize: 14,
-                  padding: 10,
-                  textAlign: "start",
-                }}
-              >
+              <Text style={{ color: "black", textAlign: "center", fontWeight: "medium", fontSize: 14, padding: 10 }}>
                 #AGILE IS WHAT ATLEGILE IS ABOUT
               </Text>
             </View>
           </View>
 
           {/* Video section */}
-          <View
-            style={{
-              height: "50vh",
-              width: "80%",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
+          <View style={{ height: "50vh", width: "80%", display: "flex", justifyContent: "center", alignSelf: "center" }}>
             <Video
               ref={video}
-              style={{
-                height: "50vh",
-                width: "100%",
-                alignSelf: "center",
-              }}
-              source={{
-                uri: "http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
-              }}
+              style={{ height: "50vh", width: "100%" }}
+              source={require("../../Global/images/SWT.mp4")}
               useNativeControls
               resizeMode="contain"
               isLooping
@@ -235,8 +141,8 @@ export default function AboutUs() {
             </Text>
           </View>
 
-          {/* AMS core values section */}
-          <View style={{ marginTop: 20 }}>
+         {/* AMS core values section */}
+         <View style={{ marginTop: 20 }}>
             <Text
               style={{
                 color: COLORS.darkBlue,
@@ -363,16 +269,11 @@ export default function AboutUs() {
           </View>
         </View>
       </View>
-
       {/* Big lion image section */}
-      <View style={{ width: "100%", height: "100vh" }}>
+      <View style={{ width: "100%", height: "100vh", alignItems: "center" }}>
         <Image
           source={require("../../Global/images/big-lion.svg")}
-          style={{
-            width: "100%",
-            height: "100%",
-            resizeMode: "contain",
-          }}
+          style={{ width: "100%", height: "100%", resizeMode: "contain" }}
         />
       </View>
 

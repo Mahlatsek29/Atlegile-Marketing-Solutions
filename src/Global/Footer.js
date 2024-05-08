@@ -1,9 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 import lionImage from "../Global/images/BigLion..png";
 import shadowLogo from "./images/Shadow_Logo.png";
-const { width } = Dimensions.get('window');
+
 export function Footer() {
+  const [width, setWidth] = useState(Dimensions.get("window").width);
+
+  useEffect(() => {
+    const handleDimensionsChange = ({ window }) => {
+      setWidth(window.width);
+    };
+
+    Dimensions.addEventListener("change", handleDimensionsChange);
+
+    return () => {
+      Dimensions.removeEventListener("change", handleDimensionsChange);
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.section1}>
@@ -43,36 +57,42 @@ export function Footer() {
             />
           </View>
         </View>
-      ) : null}
+      ) : (
+        <View style={styles.mobileSection}>
+          <Text style={styles.mobileSectionText}>
+            Atlegile Marketing Solutions (Pty) Ltd <br />
+            eCommerce 2023
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#070F18",
     width: "100%",
-    height: "20%",
     flex: 1,
   },
   section1: {
     flexDirection: "row",
+    paddingVertical: 20,
+    paddingHorizontal: 10,
   },
   section1Left: {
     flex: 6,
-    padding: 2,
   },
   section1Right: {
     flex: 6,
-    padding: 2,
   },
   logo: {
-    marginTop: 50,
-    marginBottom: 20,
+    marginTop: 10,
     width: 173,
     height: 63,
   },
   heading: {
-    marginBottom: 20,
+    marginBottom: 10,
     fontSize: 18,
     fontWeight: "bold",
     color: "#FFF",
@@ -82,7 +102,7 @@ const styles = StyleSheet.create({
     color: "#FFF",
   },
   email: {
-    marginTop: 20,
+    marginTop: 10,
     fontSize: 12,
     color: "#FFF",
   },
@@ -92,15 +112,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   linksContainer: {
-    marginLeft: 50,
+    marginLeft: 20,
   },
   link1: {
-    marginTop: 90,
-    marginBottom: 15,
+    marginBottom: 5,
     color: "#FFF",
   },
   link2: {
-    marginBottom: 15,
+    marginBottom: 5,
     color: "#FFF",
   },
   link3: {
@@ -108,11 +127,12 @@ const styles = StyleSheet.create({
   },
   section1Image: {
     flex: 6,
-    padding: 2,
   },
   section2: {
     flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 20,
   },
   section2TextContainer: {
     flex: 10,
@@ -131,5 +151,15 @@ const styles = StyleSheet.create({
   section2Image: {
     width: "100%",
     height: 250,
+  },
+  mobileSection: {
+    padding: 10,
+    alignItems: "center",
+  },
+  mobileSectionText: {
+    color: "#FFF",
+    textAlign: "center",
+    fontSize: 10,
+    lineHeight: 20,
   },
 });

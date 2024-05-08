@@ -58,16 +58,14 @@ export default function SearchBar() {
         }}
       >
         <Image
-          source={require("../../assets/image/logo2.png")}
+          source={require("../../assets/logo.png")}
           alt="AMS COMPANY"
           style={{
             // marginTop: "1px",
-            marginTop: 20,
-            height: "50px",
+            height: "auto",
             color: "white",
-            marginBottom: "50px",
             width: 150,
-            height: 50,
+            height: 120,
             zIndex:900
           }}
         />
@@ -166,23 +164,22 @@ export default function SearchBar() {
         }}
       >
         <Image
-          source={require("../../assets/image/logo2.png")}
+          source={require("../../assets/logo.png")}
           alt="AMS COMPANY"
           style={{
             // marginTop: "1px",
-            marginTop: 20,
-            height: "50px",
+            // marginTop: 5,
+            height: "auto",
             color: "white",
-            marginBottom: "50px",
             width: 150,
-            height: 50,
+            height: 120,
             zIndex:900
           }}
         />
         <Box
           style={{
             padding: "10px",
-            width: "100%",
+            width: "80%",
             backgroundColor: "white",
             display: "flex",
             flexDirection: "row",

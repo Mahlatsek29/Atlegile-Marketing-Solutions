@@ -308,10 +308,11 @@ const ProductCard = ({ productId }) => {
                 flexWrap: "wrap",
                 margin: 1,
                 height: 260,
-                width: 150,
+                minWidth: 120,
                 alignItems: "center",
                 justifyContent: "center",
-                // backgroundColor: "red",
+
+                margin: 4,
               }}
             >
               <View
@@ -319,19 +320,18 @@ const ProductCard = ({ productId }) => {
                   justifyContent: "center",
                   alignItems: "center",
                   paddingTop: 10,
-                  margin: 20,
+                  // margin: 10,
                 }}
               >
                 <Box
                   style={{
                     objectFit: "cover",
                     position: "relative",
-                    backgroundColor: "gold",
+                    background:
+                      "radial-gradient(circle at top left, rgba(255, 255, 255, 0.5) 0%, #D4AF37 10%, #B48811 40%, #A2790D 50%, #E7BE3A 90%)",
                     width: "110px",
                     height: "110px",
                     borderRadius: "50%",
-                    // alignself: "center",
-                    justifyContent: "center",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -343,7 +343,6 @@ const ProductCard = ({ productId }) => {
                   >
                     <CardMedia
                       component="img"
-                      // height="140"
                       image={
                         product.images && product.images.length > 0
                           ? product.images[0]
@@ -401,21 +400,33 @@ const ProductCard = ({ productId }) => {
                     width: "100%",
                     justifyContent: "space-between",
                     marginTop: "5%", // Adjust as needed
-                    // height: "25vh",
                   }}
                 >
                   <View>
-                    <Typography variant="h5" component="h5">
-                        {product.name && product.name.slice(0, 8)}
-                        {product.name && product.name.length < 50 ? "" : "..."}
-                      </Typography>
+                    <Typography variant="body2" component="body2">
+                      {product.name && product.name.slice(0, 18)}
+                      {product.name && product.name.length < 50 ? "" : "..."}
+                    </Typography>
+                    <Typography
+                      variant="subtitle2"
+                      component="p"
+                      style={{
+                        color: "gray",
+                        wordWrap: "break-word",
+                        display: "inline",
+                      }}
+                    >
+                      {product.description && product.description.length > 12
+                        ? `${product.description.slice(0, 12)}...`
+                        : product.description}
+                    </Typography>
                     <View
                       style={{
+                        display: "flex",
                         flexDirection: "row",
-                        justifyContent: "space-between",
                         alignItems: "center",
-                        //     backgroundColor:'green',
-                        // flexWrap: "wrap",
+                        marginBottom: 5,
+                        marginTop: 5,
                       }}
                     >
                       {/* <Text
@@ -428,7 +439,7 @@ const ProductCard = ({ productId }) => {
                       >
                       {product.selectedProductCategory}
                      </Text> */}
-                      
+
                       <View
                         style={{
                           backgroundColor: "#072840",
@@ -441,79 +452,65 @@ const ProductCard = ({ productId }) => {
                           ⭐ <Text style={{ color: "white" }}> {review}</Text>
                         </Text>
                       </View>
-                      <Box
-                      style={{
-                        paddingHorizontal: 10,
-                        // position: "absolute",
-                        bottom: 30,
-                        width: "auto",
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignSelf: "center",
-                      }}
-                    >
-                      <TouchableOpacity>
-                        <Icon
-                          name={
-                            favoriteProducts.find(
-                              (item) => item.productId === productId
-                            )
-                              ? "heart"
-                              : "heart-o"
-                          }
-                          size={20}
-                          style={{
-                            padding: 10,
-                            backgroundColor: "white",
-                            borderRadius: "50%",
-                          }}
-                          onClick={toggleHeart}
-                          color={
-                            favoriteProducts.find(
-                              (item) => item.productId === productId
-                            )
-                              ? "red"
-                              : "black"
-                          }
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={toggleCart}>
-                        <Snackbar
-                          open={showSnackbar1}
-                          autoHideDuration={3000} // Adjust as needed
-                          onClose={handleSnackbarClose1}
-                          anchorOrigin={{
-                            vertical: "top",
-                            horizontal: "center",
-                          }} // Set position to top center
-                        >
-                          <MuiAlert
+
+                      
+                        <TouchableOpacity>
+                          <Icon
+                            name={
+                              favoriteProducts.find(
+                                (item) => item.productId === productId
+                              )
+                                ? "heart"
+                                : "heart-o"
+                            }
+                            size={20}
+                            style={{
+                              marginLeft: 5,
+                            }}
+                            onClick={toggleHeart}
+                            color={
+                              favoriteProducts.find(
+                                (item) => item.productId === productId
+                              )
+                                ? "red"
+                                : "black"
+                            }
+                          />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={toggleCart}>
+                          <Snackbar
+                            open={showSnackbar1}
+                            autoHideDuration={3000} // Adjust as needed
                             onClose={handleSnackbarClose1}
-                            severity="success"
-                            sx={{ width: "100%" }}
+                            anchorOrigin={{
+                              vertical: "top",
+                              horizontal: "center",
+                            }} // Set position to top center
                           >
-                            Product added to Cart!
-                          </MuiAlert>
-                        </Snackbar>
-                        <Icon3
-                          name={
-                            cartItems.find(
-                              (item) => item.productId === productId
-                            )
-                              ? "cart"
-                              : "cart-outline"
-                          }
-                          size={20}
-                          style={{
-                            padding: 10,
-                            backgroundColor: "white",
-                            borderRadius: "50%",
-                          }}
-                          color="black"
-                        />
-                      </TouchableOpacity>
-                    </Box>
+                            <MuiAlert
+                              onClose={handleSnackbarClose1}
+                              severity="success"
+                              sx={{ width: "100%" }}
+                            >
+                              Product added to Cart!
+                            </MuiAlert>
+                          </Snackbar>
+                          <Icon3
+                            name={
+                              cartItems.find(
+                                (item) => item.productId === productId
+                              )
+                                ? "cart"
+                                : "cart-outline"
+                            }
+                            size={20}
+                            style={{
+                              marginLeft: 5,
+                            }}
+                            color="black"
+                          />
+                        </TouchableOpacity>
+                     
                     </View>
 
                     {/* <Typography
@@ -544,11 +541,10 @@ const ProductCard = ({ productId }) => {
                    </Typography> */}
                       <View style={{ display: "flex", flexDirection: "row" }}>
                         <Typography
-                          variant="subtitle2"
-                          component="p"
+                          variant="body2"
+                          component="body2"
                           style={{
                             color: "#BDBDBD",
-                            fontSize: "18px",
                             fontWeight: "700",
                             marginRight: "10px",
                           }}
@@ -556,11 +552,10 @@ const ProductCard = ({ productId }) => {
                           R{product.price}
                         </Typography>
                         <Typography
-                          variant="subtitle2"
-                          component="p"
+                          variant="body2"
+                          component="body2"
                           style={{
                             color: "rgb(97, 151, 97)",
-                            fontSize: "18px",
                             fontWeight: "700",
                           }}
                         >
@@ -568,12 +563,11 @@ const ProductCard = ({ productId }) => {
                         </Typography>
                       </View>
                     </Box>
-                    
+
                     <Button
                       style={{
-                        border: "2px black solid",
+                        border: "1px black solid",
                         alignSelf: "flex-start",
-                        paddingHorizontal: "5px",
                         borderRadius: "50px",
                         marginBottom: 15,
                         color: "black",
@@ -582,7 +576,7 @@ const ProductCard = ({ productId }) => {
                       onClick={navigateProductDetails}
                     >
                       <Text>VIEW </Text>
-                      <Icon name="arrow-right" size={20} />
+                      <Icon name="arrow-right" size={10} />
                     </Button>
                   </View>
                 </View>
@@ -615,12 +609,11 @@ const ProductCard = ({ productId }) => {
                   style={{
                     objectFit: "cover",
                     position: "relative",
-                    backgroundColor: "gold",
+                    background:
+                      "radial-gradient(circle at top left, rgba(255, 255, 255, 0.5) 0%, #D4AF37 10%, #B48811 40%, #A2790D 50%, #E7BE3A 90%)",
                     width: "200px",
                     height: "200px",
                     borderRadius: "50%",
-                    // alignself: "center",
-                    justifyContent: "center",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -766,7 +759,6 @@ const ProductCard = ({ productId }) => {
                         flexDirection: "row",
                         justifyContent: "center",
                         alignItems: "center",
-                        //     backgroundColor:'green',
                         flexWrap: "wrap",
                       }}
                     >

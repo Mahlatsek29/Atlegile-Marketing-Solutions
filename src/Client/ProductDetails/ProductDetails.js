@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import {
   Box,
   Typography,
@@ -67,6 +67,7 @@ export default function ProductDetails({ navigation, route }) {
   const [cartItems, setCartItems] = useState([]);
   const app = initializeApp(firebaseConfig);
   const firestore = getFirestore(app);
+  const [width, setWidth] = useState(Dimensions.get("window").width);
   const handleChangeProduct = (relatedProductId) => {
     // Navigate to the new product's details page
     navigation.navigate("ProductDetails", { productId: relatedProductId });
@@ -85,6 +86,17 @@ export default function ProductDetails({ navigation, route }) {
     };
   }, []);
 
+  useEffect(() => {
+    const handleDimensionsChange = ({ window }) => {
+      setWidth(window.width);
+    };
+
+    Dimensions.addEventListener("change", handleDimensionsChange);
+
+    return () => {
+      Dimensions.removeEventListener("change", handleDimensionsChange);
+    };
+  }, []);
   // UseEffect to fetch product data when userData changes
   useEffect(() => {
     const fetchProductData = async () => {
@@ -884,14 +896,22 @@ export default function ProductDetails({ navigation, route }) {
           {/* Section for displaying related products */}
           <Box
             sx={{
-              
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexDirection: "column",
             }}
           >
-            <Typography sx={{ fontWeight: "600", fontSize: 20, mt: 3, mb: 4,display: "flex",alignSelf: "flex-start", }}>
+            <Typography
+              sx={{
+                fontWeight: "600",
+                fontSize: 20,
+                mt: 3,
+                mb: 4,
+                display: "flex",
+                alignSelf: "flex-start",
+              }}
+            >
               RELATED PRODUCTS
             </Typography>
             <Box
@@ -915,288 +935,258 @@ export default function ProductDetails({ navigation, route }) {
               >
                 {product.company}
               </Typography>
-              {/* Container for related product cards */}
-              <Box
-                sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  // margin: 2,
-                  alignSelf: "center",
-                }}
-              >
-                {/* Map through related products and create a card for each */}
-                {relatedProducts &&
-                  relatedProducts.map((relatedProduct) =>
-                    productId !== relatedProduct.id ? (
-                      <View
-                        key={relatedProduct.id}
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          margin: 1,
-                          height: 450,
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        {/* Image and additional information for the related product */}
+              {width < 600 ? (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                  }}
+                >
+                  {/* Map through related products and create a card for each */}
+                  {relatedProducts &&
+                    relatedProducts.map((relatedProduct) =>
+                      productId !== relatedProduct.id ? (
                         <View
+                          key={relatedProduct.id}
                           style={{
-                            justifyContent: "center",
+                            display: "flex",
+                            margin: 1,
                             alignItems: "center",
-                            paddingTop: 10,
-                            margin: 20,
+                            justifyContent: "center",
+                            // backgroundColor: "yellow",
                           }}
                         >
-                          {/* Container for the product image and sale label */}
-                          <Box
-                            style={{
-                              objectFit: "cover",
-                              position: "relative",
-                              backgroundColor: "gold",
-                              width: "200px",
-                              height: "200px",
-                              borderRadius: "50%",
-                              alignself: "center",
-                              justifyContent: "center",
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <View
-                              style={{
-                                alignSelf: "center",
-                                width: 180,
-                                height: 180,
-                              }}
-                            >
-                              {/* Product image */}
-                              <CardMedia
-                                component="img"
-                                height="140"
-                                image={
-                                  relatedProduct.images &&
-                                  relatedProduct.images.length > 0
-                                    ? relatedProduct.images[0]
-                                    : "../../assets/image/headsets.png"
-                                }
-                                alt={relatedProduct.name}
-                                style={{
-                                  borderRadius: "100px",
-                                  objectFit: "cover",
-                                  width: "100%",
-                                  height: "100%",
-                                }}
-                              />
-                              {/* Sale label */}
-                              <Box
-                                style={{
-                                  backgroundColor: "#E74040",
-                                  position: "absolute",
-                                  top: 0,
-                                  padding: 2,
-                                  width: "30%",
-                                  borderRadius: "8%",
-                                  alignSelf: "center",
-                                }}
-                              >
-                                <Typography
-                                  variant="h5"
-                                  style={{ color: "#fff", textAlign: "center" }}
-                                >
-                                  Sale
-                                </Typography>
-                              </Box>
-                            </View>
-
-                            {/* Snackbar for product added to favorites */}
-                            <Snackbar
-                              open={showSnackbar}
-                              autoHideDuration={3000} // Adjust as needed
-                              onClose={handleSnackbarClose}
-                              anchorOrigin={{
-                                vertical: "top",
-                                horizontal: "center",
-                              }} // Set position to top center
-                            >
-                              <MuiAlert
-                                onClose={handleSnackbarClose}
-                                severity="success"
-                                sx={{ width: "100%" }}
-                              >
-                                Product added to favorites!
-                              </MuiAlert>
-                            </Snackbar>
-                            {/* Buttons for adding to favorites and cart */}
-                            <Box
-                              style={{
-                                paddingHorizontal: 10,
-                                position: "absolute",
-                                bottom: 30,
-                                width: "auto",
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                alignSelf: "center",
-                              }}
-                            >
-                              <TouchableOpacity>
-                                <Icon
-                                  name={
-                                    favoriteProducts.find(
-                                      (item) =>
-                                        item.productId === relatedProduct.id
-                                    )
-                                      ? "heart"
-                                      : "heart-o"
-                                  }
-                                  size={20}
-                                  style={{
-                                    padding: 10,
-                                    backgroundColor: "white",
-                                    borderRadius: "50%",
-                                  }}
-                                  onPress={() => toggleHeart(relatedProduct)} // Use onPress instead of onClick for TouchableOpacity
-                                  color={
-                                    favoriteProducts.find(
-                                      (item) =>
-                                        item.productId === relatedProduct.id
-                                    )
-                                      ? "red"
-                                      : "black"
-                                  }
-                                />
-                              </TouchableOpacity>
-                              {/* Button to add product to cart */}
-                              <TouchableOpacity
-                                onPress={() => toggleCart(relatedProduct)}
-                              >
-                                <Snackbar
-                                  open={showSnackbar1}
-                                  autoHideDuration={3000} // Adjust as needed
-                                  onClose={handleSnackbarClose1}
-                                  anchorOrigin={{
-                                    vertical: "top",
-                                    horizontal: "center",
-                                  }} // Set position to top center
-                                >
-                                  <MuiAlert
-                                    onClose={handleSnackbarClose1}
-                                    severity="success"
-                                    sx={{ width: "100%" }}
-                                  >
-                                    Product added to Cart!
-                                  </MuiAlert>
-                                </Snackbar>
-                                <Icon3
-                                  name={
-                                    cartItems.find(
-                                      (item) =>
-                                        item.productId === relatedProduct.id
-                                    )
-                                      ? "cart"
-                                      : "cart-outline"
-                                  }
-                                  size={20}
-                                  style={{
-                                    padding: 10,
-                                    backgroundColor: "white",
-                                    borderRadius: "50%",
-                                  }}
-                                  color="black"
-                                />
-                              </TouchableOpacity>
-                            </Box>
-                          </Box>
-                          {/* Additional information about the related product */}
+                          {/* View for styling and layout within each Card */}
                           <View
                             style={{
-                              width: "100%",
-                              justifyContent: "space-between",
-                              marginTop: "5%", // Adjust as needed
+                              justifyContent: "center",
+                              alignItems: "center",
+                              // paddingTop: 10,
+                              margin: 5,
                             }}
                           >
-                            <View>
-                              {/* Category, rating, product name, and description */}
+                            {/* Box for styling product display */}
+                            <Box
+                              style={{
+                                objectFit: "cover",
+                                position: "relative",
+                                background:
+                                  "radial-gradient(circle at top left, rgba(255, 255, 255, 0.5) 0%, #D4AF37 10%, #B48811 40%, #A2790D 50%, #E7BE3A 90%)",
+                                width: "110px",
+                                height: "110px",
+                                borderRadius: "50%",
+                                alignself: "center",
+                                justifyContent: "center",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
                               <View
                                 style={{
-                                  flexDirection: "row",
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  flexWrap: "wrap",
+                                  alignSelf: "center",
+                                  width: 100,
+                                  height: 100,
                                 }}
                               >
-                                {/* Category and star rating */}
-                                <Text
+                                <CardMedia
+                                  component="img"
+                                  height="140"
+                                  image={
+                                      relatedProduct.images &&
+                                      relatedProduct.images.length > 0
+                                        ? relatedProduct.images[0]
+                                        : "../../assets/image/headsets.png"
+                                    }
+                                  alt={relatedProduct.name}
                                   style={{
-                                    flex: 1,
-                                    fontSize: "15px",
-                                    color: "#4FC3F7",
-                                    fontWeight: "bold",
+                                    borderRadius: "100px",
+                                    objectFit: "cover",
+                                    width: "100%",
+                                    height: "100%",
                                   }}
+                                />
+                              </View>
+
+                              {/* Snackbar for showing a success message when adding to favorites */}
+                              <Snackbar
+                                open={showSnackbar}
+                                autoHideDuration={3000}
+                                onClose={handleSnackbarClose}
+                                anchorOrigin={{
+                                  vertical: "top",
+                                  horizontal: "center",
+                                }}
+                              >
+                                <MuiAlert
+                                  onClose={handleSnackbarClose}
+                                  severity="success"
+                                  sx={{ width: "100%" }}
                                 >
-                                  {relatedProduct.selectedProductCategory}
-                                </Text>
+                                  Product added to favorites!
+                                </MuiAlert>
+                              </Snackbar>
+
+                              {/* Box containing heart and shopping cart icons with interaction */}
+                            </Box>
+
+                            {/* View for styling and layout within each Card */}
+                            <View
+                              style={{
+                                width: "100%",
+                                justifyContent: "space-between",
+                                marginTop: "5%",
+                              }}
+                            >
+                              {/* View for displaying product details */}
+                              <View>
+                                {/* View for displaying product category and rating */}
                                 <View
                                   style={{
-                                    backgroundColor: "#072840",
-                                    paddingHorizontal: 5,
-                                    paddingVertical: 3,
-                                    borderRadius: 15,
+                                    flexDirection: "row",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    flexWrap: "wrap",
+                                  }}
+                                ></View>
+
+                                {/* Typography component for displaying the product name */}
+                                <Typography variant="body2" component="body2">
+                                  {relatedProduct.name && relatedProduct.name.slice(0, 15)}
+                                  {relatedProduct.name && relatedProduct.name.length < 50
+                                    ? ""
+                                    : "..."}
+                                </Typography>
+
+                                {/* Typography component for displaying the product description */}
+                                <Typography
+                                  variant="subtitle2"
+                                  component="p"
+                                  style={{
+                                    color: "gray",
+                                    wordWrap: "break-word",
+                                    display: "inline",
                                   }}
                                 >
-                                  <Text style={{ color: "white" }}>
-                                    ⭐ {review[relatedProduct.id] || 0}
-                                  </Text>
-                                </View>
-                              </View>
-                              {/* Product name */}
-                              <Typography variant="h5" component="h5">
-                                {relatedProduct.name &&
-                                  relatedProduct.name.slice(0, 15)}
-                                {relatedProduct.name &&
-                                relatedProduct.name.length < 50
-                                  ? ""
-                                  : "..."}
-                              </Typography>
-                              {/* Product description */}
-                              <Typography
-                                variant="subtitle2"
-                                component="p"
-                                style={{ color: "gray" }}
-                              >
-                                {relatedProduct.description &&
-                                  relatedProduct.description.slice(0, 25)}
-                                {relatedProduct.description &&
-                                relatedProduct.description.length < 25
-                                  ? ""
-                                  : "..."}
-                              </Typography>
-                              {/* Sales quantity */}
-                              <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="flex-start"
-                                justifyContent="space-between"
-                              >
-                                <Typography
-                                  variant="body2"
-                                  component="p"
-                                  style={{ color: "gray" }}
-                                >
-                                  <Icon2 name="download" size={20} />{" "}
-                                  {relatedProduct.quantity} Sales
+                                  {product.description &&
+                                  product.description.length > 12
+                                    ? `${product.description.slice(0, 12)}...`
+                                    : product.description}
                                 </Typography>
-                                {/* Prices */}
+                                <View
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    marginBottom: 5,
+                                    marginTop: 5,
+                                  }}
+                                >
+                                  <View
+                                      style={{
+                                        backgroundColor: "#072840",
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 3,
+                                        borderRadius: 15,
+                                      }}
+                                    >
+                                      <Text style={{ color: "white" }}>
+                                        ⭐ {review[relatedProduct.id] || 0}
+                                      </Text>
+                                    </View>
+                                  <TouchableOpacity>
+                                    <Icon
+                                      name={
+                                        favoriteProducts.find(
+                                          (item) =>
+                                            item.productId === relatedProduct.id
+                                        )
+                                          ? "heart"
+                                          : "heart-o"
+                                      }
+                                      size={20}
+                                      style={{
+                                        marginLeft: 5,
+                                      }}
+                                      onPress={() =>
+                                        toggleHeart(relatedProduct)
+                                      } // Use onPress instead of onClick for TouchableOpacity
+                                      color={
+                                        favoriteProducts.find(
+                                          (item) =>
+                                            item.productId === relatedProduct.id
+                                        )
+                                          ? "red"
+                                          : "black"
+                                      }
+                                    />
+                                  </TouchableOpacity>
+                                  {/* Button to add product to cart */}
+                                  <TouchableOpacity
+                                    onPress={() => toggleCart(relatedProduct)}
+                                  >
+                                    <Snackbar
+                                      open={showSnackbar1}
+                                      autoHideDuration={3000} // Adjust as needed
+                                      onClose={handleSnackbarClose1}
+                                      anchorOrigin={{
+                                        vertical: "top",
+                                        horizontal: "center",
+                                      }} // Set position to top center
+                                    >
+                                      <MuiAlert
+                                        onClose={handleSnackbarClose1}
+                                        severity="success"
+                                        sx={{ width: "100%" }}
+                                      >
+                                        Product added to Cart!
+                                      </MuiAlert>
+                                    </Snackbar>
+                                    <Icon3
+                                      name={
+                                        cartItems.find(
+                                          (item) =>
+                                            item.productId === relatedProduct.id
+                                        )
+                                          ? "cart"
+                                          : "cart-outline"
+                                      }
+                                      size={20}
+                                      style={{
+                                        marginLeft: 5,
+                                      }}
+                                      color="black"
+                                    />
+                                  </TouchableOpacity>
+                                  {/* Box for displaying additional product details */}
+                                  <Box
+                                    display="flex"
+                                    flexDirection="column"
+                                    alignItems="flex-start"
+                                    justifyContent="space-between"
+                                  >
+                                     {/* Typography component for displaying sales information */}
+                                     {/* <Typography
+                                     variant="body2"
+                                     component="p"
+                                     style={{ color: "gray" }}
+                                     >
+                                     <Icon2 name="download" size={20} /> {product.quantity}{" "}
+                                      Sales
+                                     </Typography> */}
+
+                                    {/* View for displaying product price */}
+                                  </Box>
+                                </View>
                                 <View
                                   style={{
                                     display: "flex",
                                     flexDirection: "row",
                                   }}
                                 >
-                                  {/* Original price */}
+                                  {/* Typography component for displaying the original product price */}
                                   <Typography
                                     variant="subtitle2"
                                     component="p"
@@ -1209,7 +1199,8 @@ export default function ProductDetails({ navigation, route }) {
                                   >
                                     R{relatedProduct.price}
                                   </Typography>
-                                  {/* Discounted price */}
+
+                                  {/* Typography component for displaying the discounted product price */}
                                   <Typography
                                     variant="subtitle2"
                                     component="p"
@@ -1222,32 +1213,375 @@ export default function ProductDetails({ navigation, route }) {
                                     R{relatedProduct.price}
                                   </Typography>
                                 </View>
-                              </Box>
+                              </View>
+
+                              {/* Button for navigating to the product details screen */}
+                              <Button
+                                  style={{
+                                    border: "2px black solid",
+                                    alignSelf: "flex-start",
+                                    paddingHorizontal: "5px",
+                                    borderRadius: "50px",
+                                    marginBottom: 15,
+                                    color: "black",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() =>
+                                    handleChangeProduct(relatedProduct.id)
+                                  }
+                                >
+                                  <Text>VIEW </Text>
+                                  <Icon name="arrow-right" size={20} />
+                                </Button>
                             </View>
-                            {/* Button to view more details */}
-                            <Button
-                              style={{
-                                border: "2px black solid",
-                                alignSelf: "flex-start",
-                                paddingHorizontal: "5px",
-                                borderRadius: "50px",
-                                marginBottom: 15,
-                                color: "black",
-                                cursor: "pointer",
-                              }}
-                              onClick={() =>
-                                handleChangeProduct(relatedProduct.id)
-                              }
-                            >
-                              <Text>VIEW </Text>
-                              <Icon name="arrow-right" size={20} />
-                            </Button>
                           </View>
                         </View>
-                      </View>
-                    ) : null
-                  )}
-              </Box>
+                      ) : null
+                    )}
+                </View>
+              ) : (
+                <>
+                  {/* Container for related product cards */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      // margin: 2,
+                      alignSelf: "center",
+                    }}
+                  >
+                    {/* Map through related products and create a card for each */}
+                    {relatedProducts &&
+                      relatedProducts.map((relatedProduct) =>
+                        productId !== relatedProduct.id ? (
+                          <View
+                            key={relatedProduct.id}
+                            style={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              margin: 1,
+                              height: 450,
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            {/* Image and additional information for the related product */}
+                            <View
+                              style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                paddingTop: 10,
+                                margin: 20,
+                              }}
+                            >
+                              {/* Container for the product image and sale label */}
+                              <Box
+                                style={{
+                                  objectFit: "cover",
+                                  position: "relative",
+                                  background:
+                                    "radial-gradient(circle at top left, rgba(255, 255, 255, 0.5) 0%, #D4AF37 10%, #B48811 40%, #A2790D 50%, #E7BE3A 90%)",
+                                  width: "200px",
+                                  height: "200px",
+                                  borderRadius: "50%",
+                                  alignself: "center",
+                                  justifyContent: "center",
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <View
+                                  style={{
+                                    alignSelf: "center",
+                                    width: 180,
+                                    height: 180,
+                                  }}
+                                >
+                                  {/* Product image */}
+                                  <CardMedia
+                                    component="img"
+                                    height="140"
+                                    image={
+                                      relatedProduct.images &&
+                                      relatedProduct.images.length > 0
+                                        ? relatedProduct.images[0]
+                                        : "../../assets/image/headsets.png"
+                                    }
+                                    alt={relatedProduct.name}
+                                    style={{
+                                      borderRadius: "100px",
+                                      objectFit: "cover",
+                                      width: "100%",
+                                      height: "100%",
+                                    }}
+                                  />
+                                  {/* Sale label */}
+                                  <Box
+                                    style={{
+                                      backgroundColor: "#E74040",
+                                      position: "absolute",
+                                      top: 0,
+                                      padding: 2,
+                                      width: "30%",
+                                      borderRadius: "8%",
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="h5"
+                                      style={{
+                                        color: "#fff",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      Sale
+                                    </Typography>
+                                  </Box>
+                                </View>
+
+                                {/* Snackbar for product added to favorites */}
+                                <Snackbar
+                                  open={showSnackbar}
+                                  autoHideDuration={3000} // Adjust as needed
+                                  onClose={handleSnackbarClose}
+                                  anchorOrigin={{
+                                    vertical: "top",
+                                    horizontal: "center",
+                                  }} // Set position to top center
+                                >
+                                  <MuiAlert
+                                    onClose={handleSnackbarClose}
+                                    severity="success"
+                                    sx={{ width: "100%" }}
+                                  >
+                                    Product added to favorites!
+                                  </MuiAlert>
+                                </Snackbar>
+                                {/* Buttons for adding to favorites and cart */}
+                                <Box
+                                  style={{
+                                    paddingHorizontal: 10,
+                                    position: "absolute",
+                                    bottom: 30,
+                                    width: "auto",
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  <TouchableOpacity>
+                                    <Icon
+                                      name={
+                                        favoriteProducts.find(
+                                          (item) =>
+                                            item.productId === relatedProduct.id
+                                        )
+                                          ? "heart"
+                                          : "heart-o"
+                                      }
+                                      size={20}
+                                      style={{
+                                        padding: 10,
+                                        backgroundColor: "white",
+                                        borderRadius: "50%",
+                                      }}
+                                      onPress={() =>
+                                        toggleHeart(relatedProduct)
+                                      } // Use onPress instead of onClick for TouchableOpacity
+                                      color={
+                                        favoriteProducts.find(
+                                          (item) =>
+                                            item.productId === relatedProduct.id
+                                        )
+                                          ? "red"
+                                          : "black"
+                                      }
+                                    />
+                                  </TouchableOpacity>
+                                  {/* Button to add product to cart */}
+                                  <TouchableOpacity
+                                    onPress={() => toggleCart(relatedProduct)}
+                                  >
+                                    <Snackbar
+                                      open={showSnackbar1}
+                                      autoHideDuration={3000} // Adjust as needed
+                                      onClose={handleSnackbarClose1}
+                                      anchorOrigin={{
+                                        vertical: "top",
+                                        horizontal: "center",
+                                      }} // Set position to top center
+                                    >
+                                      <MuiAlert
+                                        onClose={handleSnackbarClose1}
+                                        severity="success"
+                                        sx={{ width: "100%" }}
+                                      >
+                                        Product added to Cart!
+                                      </MuiAlert>
+                                    </Snackbar>
+                                    <Icon3
+                                      name={
+                                        cartItems.find(
+                                          (item) =>
+                                            item.productId === relatedProduct.id
+                                        )
+                                          ? "cart"
+                                          : "cart-outline"
+                                      }
+                                      size={20}
+                                      style={{
+                                        padding: 10,
+                                        backgroundColor: "white",
+                                        borderRadius: "50%",
+                                      }}
+                                      color="black"
+                                    />
+                                  </TouchableOpacity>
+                                </Box>
+                              </Box>
+                              {/* Additional information about the related product */}
+                              <View
+                                style={{
+                                  width: "100%",
+                                  justifyContent: "space-between",
+                                  marginTop: "5%", // Adjust as needed
+                                }}
+                              >
+                                <View>
+                                  {/* Category, rating, product name, and description */}
+                                  <View
+                                    style={{
+                                      flexDirection: "row",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                      flexWrap: "wrap",
+                                    }}
+                                  >
+                                    {/* Category and star rating */}
+                                    <Text
+                                      style={{
+                                        flex: 1,
+                                        fontSize: "15px",
+                                        color: "#4FC3F7",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      {relatedProduct.selectedProductCategory}
+                                    </Text>
+                                    <View
+                                      style={{
+                                        backgroundColor: "#072840",
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 3,
+                                        borderRadius: 15,
+                                      }}
+                                    >
+                                      <Text style={{ color: "white" }}>
+                                        ⭐ {review[relatedProduct.id] || 0}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                  {/* Product name */}
+                                  <Typography variant="h5" component="h5">
+                                    {relatedProduct.name &&
+                                      relatedProduct.name.slice(0, 15)}
+                                    {relatedProduct.name &&
+                                    relatedProduct.name.length < 50
+                                      ? ""
+                                      : "..."}
+                                  </Typography>
+                                  {/* Product description */}
+                                  <Typography
+                                    variant="subtitle2"
+                                    component="p"
+                                    style={{ color: "gray" }}
+                                  >
+                                    {relatedProduct.description &&
+                                      relatedProduct.description.slice(0, 25)}
+                                    {relatedProduct.description &&
+                                    relatedProduct.description.length < 25
+                                      ? ""
+                                      : "..."}
+                                  </Typography>
+                                  {/* Sales quantity */}
+                                  <Box
+                                    display="flex"
+                                    flexDirection="column"
+                                    alignItems="flex-start"
+                                    justifyContent="space-between"
+                                  >
+                                    <Typography
+                                      variant="body2"
+                                      component="p"
+                                      style={{ color: "gray" }}
+                                    >
+                                      <Icon2 name="download" size={20} />{" "}
+                                      {relatedProduct.quantity} Sales
+                                    </Typography>
+                                    {/* Prices */}
+                                    <View
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                      }}
+                                    >
+                                      {/* Original price */}
+                                      <Typography
+                                        variant="subtitle2"
+                                        component="p"
+                                        style={{
+                                          color: "#BDBDBD",
+                                          fontSize: "18px",
+                                          fontWeight: "700",
+                                          marginRight: "10px",
+                                        }}
+                                      >
+                                        R{relatedProduct.price}
+                                      </Typography>
+                                      {/* Discounted price */}
+                                      <Typography
+                                        variant="subtitle2"
+                                        component="p"
+                                        style={{
+                                          color: "rgb(97, 151, 97)",
+                                          fontSize: "18px",
+                                          fontWeight: "700",
+                                        }}
+                                      >
+                                        R{relatedProduct.price}
+                                      </Typography>
+                                    </View>
+                                  </Box>
+                                </View>
+                                {/* Button to view more details */}
+                                <Button
+                                  style={{
+                                    border: "2px black solid",
+                                    alignSelf: "flex-start",
+                                    paddingHorizontal: "5px",
+                                    borderRadius: "50px",
+                                    marginBottom: 15,
+                                    color: "black",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() =>
+                                    handleChangeProduct(relatedProduct.id)
+                                  }
+                                >
+                                  <Text>VIEW </Text>
+                                  <Icon name="arrow-right" size={20} />
+                                </Button>
+                              </View>
+                            </View>
+                          </View>
+                        ) : null
+                      )}
+                  </Box>
+                </>
+              )}
             </Box>
           </Box>
         </Container>

@@ -157,7 +157,7 @@ export default function BusinessCard({ business }) {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                // backgroundColor:'red'                
+                margin: 5,
               }}
             >
               <View
@@ -167,6 +167,7 @@ export default function BusinessCard({ business }) {
                   justifyContent: "space-between",
                   alignItems: "center",
                   flexDirection: "row",
+                  margin: 10,
                 }}
               >
                 {/* Left scroll button */}
@@ -193,19 +194,20 @@ export default function BusinessCard({ business }) {
                       display: "flex",
                       flexDirection: "row",
                       justifyContent: "space-between",
-                      marginHorizontal:10
+                      marginHorizontal: 10,
                     }}
                   >
                     {/* Business name */}
-                    <Text
+                    <Typography
+                      variant="body2"
                       style={{
-                        fontSize: "30px",
+                        // fontSize: "30px",
                         fontWeight: "bolder",
                         marginTop: "10px",
                       }}
                     >
                       {business}
-                    </Text>
+                    </Typography>
 
                     {/* "View All" link */}
                     <TouchableOpacity
@@ -217,7 +219,7 @@ export default function BusinessCard({ business }) {
                     >
                       <Text
                         style={{
-                          marginTop: "25px",
+                          marginTop: "10px",
                         }}
                       >
                         View All
@@ -246,121 +248,84 @@ export default function BusinessCard({ business }) {
               {currentBanner &&
               currentBanner.bannerImage &&
               currentBanner.bannerImage.length > 0 ? (
-                // Card container for the banner
-                <Card
+                <View
                   style={{
-                    backgroundColor: "gray",
-                    width: "100%",
+                    backgroundImage: `url(${currentBanner.bannerImage[currentIndex]})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
                     display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
+                    justifyContent: "center",
+                    alignItems: "flex-end",
+                    height: "20vh",
+                    width: "100%",
                   }}
                 >
-                  {/* Left arrow button */}
-                  <TouchableOpacity
-                    onPress={handlePrevClick}
+                  <View
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      width: "100%",
                     }}
                   >
-                    <AntDesign name="left" size={24} color="white" />
-                  </TouchableOpacity>
-
-                  {/* Grid container for banner content */}
-                  <Grid
-                    container
-                    spacing={2}
-                    style={{ justifyContent: "center", alignItems: "center" }}
-                  >
-                    <Grid>
-                      {/* Nested Grid container for text content */}
-                      <Grid
-                        container
-                        direction="column"
-                        justifyContent="center"
-                        alignItems="center"
-                        m={2}
+                    <TouchableOpacity
+                      onPress={handlePrevClick}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <AntDesign name="left" size={24} color="white" />
+                    </TouchableOpacity>
+                    {/* Nested div container for text content */}
+                    <View
+                      style={{
+                        textAlign: "left",
+                        color: "white",
+                        maxWidth: "400px", // Adjust as needed
+                      }}
+                    >
+                      {/* Banner details - Other, Product Name, Price */}
+                      <Typography variant="body2" style={{ marginBottom: 5 }}>
+                        {currentBanner.other}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        style={{ fontWeight: 700, marginBottom: 5 }}
                       >
-                        {/* Banner details - Other, Product Name, Price */}
+                        {currentBanner.productName}
+                      </Typography>
+                      {/* Price display */}
+                      <View style={{ display: "flex", alignItems: "center" }}>
                         <Typography
                           variant="subtitle1"
                           style={{
-                            fontWeight: 600,
-                            color: "white",
-                            marginBottom: 5,
-                            alignSelf: "flex-start",
+                            color: "#c29920",
+                            marginRight: 5,
                           }}
                         >
-                          {currentBanner.other}
+                          R{currentBanner.discountPrice}
                         </Typography>
                         <Typography
-                          variant="h4"
-                          style={{
-                            fontWeight: 700,
-                            color: "white",
-                            marginBottom: 5,
-                            alignSelf: "flex-start",
-                          }}
+                          variant="subtitle1"
+                          style={{ color: "white" }}
                         >
-                          {currentBanner.productName}
+                          R{currentBanner.originalPrice}
                         </Typography>
-                        {/* Price display */}
-                        <Grid
-                          sx={{
-                            display: "flex",
-                            alignSelf: "flex-start",
-                            flexDirection: "row",
-                          }}
-                        >
-                          <Typography
-                            variant="subtitle1"
-                            style={{
-                              fontWeight: 700,
-                              color: "#c29920",
-                              marginRight: 5, // Add margin or padding as needed
-                            }}
-                          >
-                            R{currentBanner.discountPrice}
-                          </Typography>
-                          <Typography
-                            variant="subtitle1"
-                            style={{ color: "white" }}
-                          >
-                            R{currentBanner.originalPrice}
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                    {/* Image container */}
-                    <Grid height={230} wodth="100%">
-                      {/* CardMedia component for displaying the banner image */}
-                      <CardMedia
-                        component="img"
-                        height="100%"
-                        image={currentBanner.bannerImage[currentIndex]}
-                        style={{
-                          objectFit: "cover",
-                          width: "40vw",
-                          height: "40vh",
-                        }}
-                      />
-                    </Grid>
-                  </Grid>
-
-                  {/* Right arrow button */}
-                  <TouchableOpacity
-                    onPress={handleNextClick}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <AntDesign name="right" size={24} color="white" />
-                  </TouchableOpacity>
-                </Card>
+                      </View>
+                    </View>
+                    <TouchableOpacity
+                      onPress={handleNextClick}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <AntDesign name="right" size={24} color="white" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
               ) : null}
             </View>
           ) : null}
@@ -447,7 +412,11 @@ export default function BusinessCard({ business }) {
                     onContentSizeChange={(contentWidth) =>
                       handleContentSizeChange(contentWidth)
                     }
-                      Style={{ display:'flex',alignItems: "center" , backgroundColor:'red'}}
+                    Style={{
+                      display: "flex",
+                      alignItems: "center",
+                      backgroundColor: "red",
+                    }}
                   >
                     {/* Map through products and render ProductCard component for each */}
                     {oneCompany.map((product) => (
@@ -461,107 +430,82 @@ export default function BusinessCard({ business }) {
               currentBanner.bannerImage &&
               currentBanner.bannerImage.length > 0 ? (
                 // Card container for the banner
-                <Card
+                <View
                   style={{
-                    backgroundColor: "gray",
+                    backgroundImage: `url(${currentBanner.bannerImage[currentIndex]})`,
                     width: "100%",
+                    height: "30vh",
                     display: "flex",
                     flexDirection: "row",
                     justifyContent: "space-between",
+                    backgroundSize: "cover",
                   }}
                 >
-                  {/* Left arrow button */}
-                  <TouchableOpacity
-                    onPress={handlePrevClick}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <AntDesign name="left" size={24} color="white" />
-                  </TouchableOpacity>
+                  <View style={{ flexDirection:'row',}}>
+                    <TouchableOpacity
+                      onPress={handlePrevClick}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginRight:40  
+                      }}
+                    >
+                      <AntDesign name="left" size={24} color="white" />
+                    </TouchableOpacity>
 
-                  {/* Grid container for banner content */}
-                  <Grid
-                    container
-                    spacing={2}
-                    style={{ justifyContent: "center", alignItems: "center" }}
-                  >
-                    <Grid>
-                      {/* Nested Grid container for text content */}
-                      <Grid
-                        container
-                        direction="column"
-                        justifyContent="center"
-                        alignItems="center"
-                        m={2}
+                    {/* Banner details */}
+                    <View style={{ justifyContent:'center'}}>
+                      {/* Banner details - Other, Product Name, Price */}
+                      <Typography
+                        variant="subtitle1"
+                        style={{
+                          fontWeight: 600,
+                          color: "white",
+                          marginBottom: 5,
+                        }}
                       >
-                        {/* Banner details - Other, Product Name, Price */}
+                        {currentBanner.other}
+                      </Typography>
+                      <Typography
+                        variant="h4"
+                        style={{
+                          fontWeight: 700,
+                          color: "white",
+                          marginBottom: 5,
+                        }}
+                      >
+                        {currentBanner.productName}
+                      </Typography>
+                      {/* Price display */}
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignSelf: "flex-start",
+                          alignItems: "center",
+                        }}
+                      >
                         <Typography
                           variant="subtitle1"
                           style={{
-                            fontWeight: 600,
-                            color: "white",
-                            marginBottom: 5,
-                            alignSelf: "flex-start",
+                            fontWeight: 700,
+                            color: "#c29920",
+                            marginRight: 5,
                           }}
                         >
-                          {currentBanner.other}
+                          R{currentBanner.discountPrice}
                         </Typography>
                         <Typography
-                          variant="h4"
-                          style={{
-                            fontWeight: 700,
-                            color: "white",
-                            marginBottom: 5,
-                            alignSelf: "flex-start",
-                          }}
+                          variant="subtitle1"
+                          style={{ color: "white" }}
                         >
-                          {currentBanner.productName}
+                          R{currentBanner.originalPrice}
                         </Typography>
-                        {/* Price display */}
-                        <Grid
-                          sx={{
-                            display: "flex",
-                            alignSelf: "flex-start",
-                            flexDirection: "row",
-                          }}
-                        >
-                          <Typography
-                            variant="subtitle1"
-                            style={{
-                              fontWeight: 700,
-                              color: "#c29920",
-                              marginRight: 5, // Add margin or padding as needed
-                            }}
-                          >
-                            R{currentBanner.discountPrice}
-                          </Typography>
-                          <Typography
-                            variant="subtitle1"
-                            style={{ color: "white" }}
-                          >
-                            R{currentBanner.originalPrice}
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                    {/* Image container */}
-                    <Grid height={230} wodth="100%">
-                      {/* CardMedia component for displaying the banner image */}
-                      <CardMedia
-                        component="img"
-                        height="100%"
-                        image={currentBanner.bannerImage[currentIndex]}
-                        style={{
-                          objectFit: "cover",
-                          width: "40vw",
-                          height: "40vh",
-                        }}
-                      />
-                    </Grid>
-                  </Grid>
+                      </View>
+                    </View>
+                  </View>
+                  {/* Left arrow button */}
 
                   {/* Right arrow button */}
                   <TouchableOpacity
@@ -574,7 +518,7 @@ export default function BusinessCard({ business }) {
                   >
                     <AntDesign name="right" size={24} color="white" />
                   </TouchableOpacity>
-                </Card>
+                </View>
               ) : null}
             </View>
           ) : null}

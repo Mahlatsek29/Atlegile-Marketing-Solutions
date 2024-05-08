@@ -1,4 +1,10 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 
 import { Footer } from "../../Global/Footer";
@@ -44,9 +50,21 @@ const Favourites = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const navigation = useNavigation();
   const [favoriteProducts, setFavoriteProducts] = useState([]);
-
+  const [width, setWidth] = useState(Dimensions.get("window").width);
   const [cartItems, setCartItems] = useState([]);
   // UseEffect to handle window resize and set mobile state
+
+  useEffect(() => {
+    const handleDimensionsChange = ({ window }) => {
+      setWidth(window.width);
+    };
+
+    Dimensions.addEventListener("change", handleDimensionsChange);
+
+    return () => {
+      Dimensions.removeEventListener("change", handleDimensionsChange);
+    };
+  }, []);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 1080); // Adjust the breakpoint as needed
@@ -112,7 +130,7 @@ const Favourites = () => {
   // Function to toggle the cart icon to the shopping cart
   const toggleCart = async (product) => {
     try {
-     console.log(product)
+      console.log(product);
       // Reference to the 'Cart' collection in Firestore
       const cartCollectionRef = firestore.collection("Cart");
 
@@ -138,8 +156,7 @@ const Favourites = () => {
           price: product.price,
           name: product.businessName,
           quantity: 1,
-          image:
-            product.image,
+          image: product.image,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(), // Updated line
         });
         setShowSnackbar1(true); // Show a snackbar indicating the item was added to the cart
@@ -642,268 +659,255 @@ const Favourites = () => {
           >
             FAVOURITES
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              margin: 2,
-              //  justifyContent: 'space-around',
-            }}
-          >
-            {products.map((product) => (
-              <View
-                key={product.id || product.productId} // Unique key for each card
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  margin: 1,
-                  height: 450,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {/* Card content */}
+
+          {width < 600 ? (
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                justifyContent: "center",
+              }}
+            >
+              {products.map((product) => (
+                // Card component representing each product
                 <View
+                  key={product.id || product.productId} // Unique key for each card
                   style={{
-                    justifyContent: "center",
+                    display: "flex",
+                    margin: 1,
                     alignItems: "center",
-                    paddingTop: 10,
-                    margin: 20,
+                    justifyContent: "center",
+                    // backgroundColor: "yellow",
                   }}
                 >
-                  {/* Circular image container */}
-                  <Box
-                    style={{
-                      objectFit: "cover",
-                      position: "relative",
-                      backgroundColor: "gold",
-                      width: "200px",
-                      height: "200px",
-                      borderRadius: "50%",
-                      alignself: "center",
-                      justifyContent: "center",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {/* Product image */}
-                    <View
-                      style={{ alignSelf: "center", width: 180, height: 180 }}
-                    >
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image={
-                          product.image && product.image.length > 0
-                            ? product.image
-                            : "../../assets/image/headsets.png"
-                        }
-                        alt={product.name}
-                        style={{
-                          borderRadius: "100px",
-                          objectFit: "cover",
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      />
-                      {/* Sale label */}
-                      <Box
-                        style={{
-                          backgroundColor: "#E74040",
-                          position: "absolute",
-                          top: 0,
-
-                          padding: 2,
-                          width: "30%",
-                          borderRadius: "8%",
-                          alignSelf: "center",
-                        }}
-                      >
-                        <Typography
-                          variant="h5"
-                          style={{ color: "#fff", textAlign: "center" }}
-                        >
-                          Sale
-                        </Typography>
-                      </Box>
-                    </View>
-
-                    {/* Snackbar for product added to favorites */}
-                    <Snackbar
-                      open={showSnackbar}
-                      autoHideDuration={3000}
-                      onClose={handleSnackbarClose}
-                      anchorOrigin={{
-                        vertical: "top",
-                        horizontal: "center",
-                      }}
-                    >
-                      <MuiAlert
-                        onClose={handleSnackbarClose}
-                        severity="success"
-                        sx={{ width: "100%" }}
-                      >
-                        Product added to favorites!
-                      </MuiAlert>
-                    </Snackbar>
-
-                    {/* Heart and Shopping Cart icons */}
-                    <Box
-                      style={{
-                        paddingHorizontal: 10,
-                        position: "absolute",
-                        bottom: 30,
-                        width: "auto",
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignSelf: "center",
-                      }}
-                    >
-                      {/* TouchableOpacity for toggling heart icon */}
-                      <TouchableOpacity>
-                        <Icon
-                          name="heart" // Always show a filled heart icon
-                          size={20}
-                          style={{
-                            padding: 10,
-                            backgroundColor: "white",
-                            borderRadius: "50%",
-                          }}
-                          onPress={() => {
-                            // Check if product.id exists before calling toggleHeart
-                            if (product.id || product.productId) {
-                              toggleHeart(product);
-                            } else {
-                              console.error("Product ID is missing", product);
-                            }
-                          }}
-                          color="red" // Set the heart icon color to red
-                        />
-                      </TouchableOpacity>
-
-                      {/* TouchableOpacity for adding product to the cart */}
-                      <TouchableOpacity onPress={() => toggleCart(product)}>
-                        <Snackbar
-                          open={showSnackbar1}
-                          autoHideDuration={3000} // Adjust as needed
-                          onClose={handleSnackbarClose1}
-                          anchorOrigin={{
-                            vertical: "top",
-                            horizontal: "center",
-                          }} // Set position to top center
-                        >
-                          <MuiAlert
-                            onClose={handleSnackbarClose1}
-                            severity="success"
-                            sx={{ width: "100%" }}
-                          >
-                            Product added to Cart!
-                          </MuiAlert>
-                        </Snackbar>
-                        <Icon3
-                          name={
-                            cartItems.find(
-                              (item) =>
-                                item.productId ===
-                                (product.id || product.productId)
-                            )
-                              ? "cart"
-                              : "cart-outline"
-                          }
-                          size={20}
-                          style={{
-                            padding: 10,
-                            backgroundColor: "white",
-                            borderRadius: "50%",
-                          }}
-                          color="black"
-                        />
-                      </TouchableOpacity>
-                    </Box>
-                  </Box>
-
-                  {/* Product details */}
+                  {/* View for styling and layout within each Card */}
                   <View
                     style={{
-                      width: "100%",
-                      justifyContent: "space-between",
-                      marginTop: "5%",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      // paddingTop: 10,
+                      margin: 5,
                     }}
                   >
-                    <View>
-                      {/* Category and rating */}
+                    {/* Box for styling product display */}
+                    <Box
+                      style={{
+                        objectFit: "cover",
+                        position: "relative",
+                        background:
+                          "radial-gradient(circle at top left, rgba(255, 255, 255, 0.5) 0%, #D4AF37 10%, #B48811 40%, #A2790D 50%, #E7BE3A 90%)",
+                        width: "110px",
+                        height: "110px",
+                        borderRadius: "50%",
+                        alignself: "center",
+                        justifyContent: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
                       <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          flexWrap: "wrap",
-                        }}
+                        style={{ alignSelf: "center", width: 100, height: 100 }}
                       >
-                        <Text
+                        <CardMedia
+                          component="img"
+                          height="140"
+                          image={
+                            product.image && product.image.length > 0
+                              ? product.image
+                              : "../../assets/image/headsets.png"
+                          }
+                          alt={product.name}
                           style={{
-                            flex: 1,
-                            fontSize: "15px",
-                            color: "#4FC3F7",
-                            fontWeight: "bold",
+                            borderRadius: "100px",
+                            objectFit: "cover",
+                            width: "100%",
+                            height: "100%",
                           }}
-                        >
-                          {product.selectedProductCategory}
-                        </Text>
-                        <View
-                          style={{
-                            backgroundColor: "#072840",
-                            paddingHorizontal: 5,
-                            paddingVertical: 3,
-                            borderRadius: 15,
-                          }}
-                        >
-                          <Text style={{ color: "white" }}>
-                            ⭐ {review[product.id] || 0}
-                          </Text>
-                        </View>
+                        />
                       </View>
 
-                      {/* Product name and description */}
-                      <Typography variant="h5" component="h5">
-                        {product.productName &&
-                          product.productName.slice(0, 15)}
-                        {product.productName && product.productName.length < 50
-                          ? ""
-                          : "..."}
-                      </Typography>
-                      <Typography
-                        variant="subtitle2"
-                        component="p"
-                        style={{
-                          color: "gray",
-                          wordWrap: "break-word",
-                          display: "inline",
-                        }}
+                      {/* Snackbar for showing a success message when adding to favorites */}
+                      <Snackbar
+                        open={showSnackbar}
+                        autoHideDuration={3000}
+                        onClose={handleSnackbarClose}
+                        anchorOrigin={{ vertical: "top", horizontal: "center" }}
                       >
-                        {product.description && product.description.length > 25
-                          ? `${product.description.slice(0, 25)}...`
-                          : product.description}
-                      </Typography>
-
-                      {/* Sales and price */}
-                      <Box
-                        display="flex"
-                        flexDirection="column"
-                        alignItems="flex-start"
-                        justifyContent="space-between"
-                      >
-                        <Typography
-                          variant="body2"
-                          component="p"
-                          style={{ color: "gray" }}
+                        <MuiAlert
+                          onClose={handleSnackbarClose}
+                          severity="success"
+                          sx={{ width: "100%" }}
                         >
-                          <Icon2 name="download" size={20} /> 15 Sales
+                          Product added to favorites!
+                        </MuiAlert>
+                      </Snackbar>
+
+                      {/* Box containing heart and shopping cart icons with interaction */}
+                    </Box>
+
+                    {/* View for styling and layout within each Card */}
+                    <View
+                      style={{
+                        width: "100%",
+                        justifyContent: "space-between",
+                        marginTop: "5%",
+                      }}
+                    >
+                      {/* View for displaying product details */}
+                      <View>
+                        {/* View for displaying product category and rating */}
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexWrap: "wrap",
+                          }}
+                        ></View>
+
+                        {/* Typography component for displaying the product name */}
+                        {/* <Typography variant="body2" component="body2">
+                          {product.name && product.name.slice(0, 15)}
+                          {product.name && product.name.length < 50
+                            ? ""
+                            : "..."}
+                        </Typography> */}
+                        <Typography variant="body2" component="body2">
+                          {product.productName &&
+                            product.productName.slice(0, 15)}
+                          {product.productName &&
+                          product.productName.length < 50
+                            ? ""
+                            : "..."}
                         </Typography>
+
+                        {/* Typography component for displaying the product description */}
+                        <Typography
+                          variant="subtitle2"
+                          component="p"
+                          style={{
+                            color: "gray",
+                            wordWrap: "break-word",
+                            display: "inline",
+                          }}
+                        >
+                          {product.description &&
+                          product.description.length > 12
+                            ? `${product.description.slice(0, 12)}...`
+                            : product.description}
+                        </Typography>
+                        <View
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginBottom: 5,
+                            marginTop: 5,
+                          }}
+                        >
+                          <View
+                            style={{
+                              backgroundColor: "#072840",
+                              paddingHorizontal: 5,
+                              paddingVertical: 3,
+                              borderRadius: 15,
+                            }}
+                          >
+                            <Text style={{ color: "white" }}>
+                              ⭐ {review[product.id] || 0}
+                            </Text>
+                          </View>
+                          <TouchableOpacity>
+                            <Icon
+                              name="heart" // Always show a filled heart icon
+                              size={20}
+                              style={{
+                                marginLeft: 5,
+                              }}
+                              onPress={() => {
+                                // Check if product.id exists before calling toggleHeart
+                                if (product.id || product.productId) {
+                                  toggleHeart(product);
+                                } else {
+                                  console.error(
+                                    "Product ID is missing",
+                                    product
+                                  );
+                                }
+                              }}
+                              color="red" // Set the heart icon color to red
+                            />
+                          </TouchableOpacity>
+
+                          {/* TouchableOpacity for adding product to the cart */}
+                          <TouchableOpacity onPress={() => toggleCart(product)}>
+                            <Snackbar
+                              open={showSnackbar1}
+                              autoHideDuration={3000} // Adjust as needed
+                              onClose={handleSnackbarClose1}
+                              anchorOrigin={{
+                                vertical: "top",
+                                horizontal: "center",
+                              }} // Set position to top center
+                            >
+                              <MuiAlert
+                                onClose={handleSnackbarClose1}
+                                severity="success"
+                                sx={{ width: "100%" }}
+                              >
+                                Product added to Cart!
+                              </MuiAlert>
+                            </Snackbar>
+                            <Icon3
+                              name={
+                                cartItems.find(
+                                  (item) =>
+                                    item.productId ===
+                                    (product.id || product.productId)
+                                )
+                                  ? "cart"
+                                  : "cart-outline"
+                              }
+                              size={20}
+                              style={{
+                                marginLeft: 5,
+                              }}
+                              color="black"
+                            />
+                          </TouchableOpacity>
+                          {/* Box for displaying additional product details */}
+                          <Box
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="flex-start"
+                            justifyContent="space-between"
+                          >
+                            {/* Typography component for displaying sales information */}
+                            {/* <Typography
+                            variant="body2"
+                            component="p"
+                            style={{ color: "gray" }}
+                          >
+                            <Icon2 name="download" size={20} /> {product.quantity}{" "}
+                            Sales
+                          </Typography> */}
+
+                            {/* View for displaying product price */}
+                          </Box>
+                        </View>
                         <View style={{ display: "flex", flexDirection: "row" }}>
+                          {/* Typography component for displaying the original product price */}
+                           <Typography
+                            variant="body2"
+                            component="p"
+                            style={{ color: "gray", marginRight:5 }}
+                          >
+                            <Icon2 name="download" size={20} /> 15 Sales
+                          </Typography>
+
+                          {/* Typography component for displaying the discounted product price */}
                           <Typography
                             variant="subtitle2"
                             component="p"
@@ -916,13 +920,315 @@ const Favourites = () => {
                             R{product.price}
                           </Typography>
                         </View>
-                      </Box>
+                      </View>
+
+                      {/* Button for navigating to the product details screen */}
+                      {/* <Button
+                        style={{
+                          border: "1px black solid",
+                          alignSelf: "flex-start",
+                          borderRadius: "50px",
+                          marginBottom: 15,
+                          color: "black",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => navigateProductDetails(product.id)}
+                      >
+                        VIEW <Icon name="arrow-right" size={20} />
+                      </Button> */}
                     </View>
                   </View>
                 </View>
-              </View>
-            ))}
-          </Box>
+              ))}
+            </View>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                margin: 2,
+                //  justifyContent: 'space-around',
+              }}
+            >
+              {products.map((product) => (
+                <View
+                  key={product.id || product.productId} // Unique key for each card
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    margin: 1,
+                    height: 450,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {/* Card content */}
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingTop: 10,
+                      margin: 20,
+                    }}
+                  >
+                    {/* Circular image container */}
+                    <Box
+                      style={{
+                        objectFit: "cover",
+                        position: "relative",
+                        background:
+                          "radial-gradient(circle at top left, rgba(255, 255, 255, 0.5) 0%, #D4AF37 10%, #B48811 40%, #A2790D 50%, #E7BE3A 90%)",
+                        width: "200px",
+                        height: "200px",
+                        borderRadius: "50%",
+                        alignself: "center",
+                        justifyContent: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {/* Product image */}
+                      <View
+                        style={{ alignSelf: "center", width: 180, height: 180 }}
+                      >
+                        <CardMedia
+                          component="img"
+                          height="140"
+                          image={
+                            product.image && product.image.length > 0
+                              ? product.image
+                              : "../../assets/image/headsets.png"
+                          }
+                          alt={product.name}
+                          style={{
+                            borderRadius: "100px",
+                            objectFit: "cover",
+                            width: "100%",
+                            height: "100%",
+                          }}
+                        />
+                        {/* Sale label */}
+                        <Box
+                          style={{
+                            backgroundColor: "#E74040",
+                            position: "absolute",
+                            top: 0,
+
+                            padding: 2,
+                            width: "30%",
+                            borderRadius: "8%",
+                            alignSelf: "center",
+                          }}
+                        >
+                          <Typography
+                            variant="h5"
+                            style={{ color: "#fff", textAlign: "center" }}
+                          >
+                            Sale
+                          </Typography>
+                        </Box>
+                      </View>
+
+                      {/* Snackbar for product added to favorites */}
+                      <Snackbar
+                        open={showSnackbar}
+                        autoHideDuration={3000}
+                        onClose={handleSnackbarClose}
+                        anchorOrigin={{
+                          vertical: "top",
+                          horizontal: "center",
+                        }}
+                      >
+                        <MuiAlert
+                          onClose={handleSnackbarClose}
+                          severity="success"
+                          sx={{ width: "100%" }}
+                        >
+                          Product added to favorites!
+                        </MuiAlert>
+                      </Snackbar>
+
+                      {/* Heart and Shopping Cart icons */}
+                      <Box
+                        style={{
+                          paddingHorizontal: 10,
+                          position: "absolute",
+                          bottom: 30,
+                          width: "auto",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignSelf: "center",
+                        }}
+                      >
+                        {/* TouchableOpacity for toggling heart icon */}
+                        <TouchableOpacity>
+                          <Icon
+                            name="heart" // Always show a filled heart icon
+                            size={20}
+                            style={{
+                              padding: 10,
+                              backgroundColor: "white",
+                              borderRadius: "50%",
+                            }}
+                            onPress={() => {
+                              // Check if product.id exists before calling toggleHeart
+                              if (product.id || product.productId) {
+                                toggleHeart(product);
+                              } else {
+                                console.error("Product ID is missing", product);
+                              }
+                            }}
+                            color="red" // Set the heart icon color to red
+                          />
+                        </TouchableOpacity>
+
+                        {/* TouchableOpacity for adding product to the cart */}
+                        <TouchableOpacity onPress={() => toggleCart(product)}>
+                          <Snackbar
+                            open={showSnackbar1}
+                            autoHideDuration={3000} // Adjust as needed
+                            onClose={handleSnackbarClose1}
+                            anchorOrigin={{
+                              vertical: "top",
+                              horizontal: "center",
+                            }} // Set position to top center
+                          >
+                            <MuiAlert
+                              onClose={handleSnackbarClose1}
+                              severity="success"
+                              sx={{ width: "100%" }}
+                            >
+                              Product added to Cart!
+                            </MuiAlert>
+                          </Snackbar>
+                          <Icon3
+                            name={
+                              cartItems.find(
+                                (item) =>
+                                  item.productId ===
+                                  (product.id || product.productId)
+                              )
+                                ? "cart"
+                                : "cart-outline"
+                            }
+                            size={20}
+                            style={{
+                              padding: 10,
+                              backgroundColor: "white",
+                              borderRadius: "50%",
+                            }}
+                            color="black"
+                          />
+                        </TouchableOpacity>
+                      </Box>
+                    </Box>
+
+                    {/* Product details */}
+                    <View
+                      style={{
+                        width: "100%",
+                        justifyContent: "space-between",
+                        marginTop: "5%",
+                      }}
+                    >
+                      <View>
+                        {/* Category and rating */}
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              flex: 1,
+                              fontSize: "15px",
+                              color: "#4FC3F7",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {product.selectedProductCategory}
+                          </Text>
+                          <View
+                            style={{
+                              backgroundColor: "#072840",
+                              paddingHorizontal: 5,
+                              paddingVertical: 3,
+                              borderRadius: 15,
+                            }}
+                          >
+                            <Text style={{ color: "white" }}>
+                              ⭐ {review[product.id] || 0}
+                            </Text>
+                          </View>
+                        </View>
+
+                        {/* Product name and description */}
+                        <Typography variant="h5" component="h5">
+                          {product.productName &&
+                            product.productName.slice(0, 15)}
+                          {product.productName &&
+                          product.productName.length < 50
+                            ? ""
+                            : "..."}
+                        </Typography>
+                        <Typography
+                          variant="subtitle2"
+                          component="p"
+                          style={{
+                            color: "gray",
+                            wordWrap: "break-word",
+                            display: "inline",
+                          }}
+                        >
+                          {product.description &&
+                          product.description.length > 25
+                            ? `${product.description.slice(0, 25)}...`
+                            : product.description}
+                        </Typography>
+
+                        {/* Sales and price */}
+                        <Box
+                          display="flex"
+                          flexDirection="column"
+                          alignItems="flex-start"
+                          justifyContent="space-between"
+                        >
+                          <Typography
+                            variant="body2"
+                            component="p"
+                            style={{ color: "gray" }}
+                          >
+                            <Icon2 name="download" size={20} /> 15 Sales
+                          </Typography>
+                          <View
+                            style={{ display: "flex", flexDirection: "row" }}
+                          >
+                            <Typography
+                              variant="subtitle2"
+                              component="p"
+                              style={{
+                                color: "rgb(97, 151, 97)",
+                                fontSize: "18px",
+                                fontWeight: "700",
+                              }}
+                            >
+                              R{product.price}
+                            </Typography>
+                          </View>
+                        </Box>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              ))}
+            </Box>
+          )}
         </ScrollView>
       </View>
       <Footer />

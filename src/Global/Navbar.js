@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Toolbar, Typography, Box, Badge } from "@mui/material";
+import { Button, Toolbar, Typography, Box, Badge, Grid } from "@mui/material";
 import { useNavigation } from "@react-navigation/native";
 import { View, Image, TouchableOpacity, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -77,6 +77,7 @@ const Navbar = () => {
   };
 
   return (
+    
     <Toolbar
       sx={{
         color: "#252B42",
@@ -89,7 +90,7 @@ const Navbar = () => {
       <TouchableOpacity onPress={() => navigation.navigate("Landing")}>
         <Image
           source={imageLogo}
-          style={{ width: 120, height: 60, resizeMode: "contain" }}
+          style={{ width: 60, height: 60, resizeMode: "contain" }}
         />
       </TouchableOpacity>
       {width < 600 ? (
@@ -314,7 +315,8 @@ const Navbar = () => {
           </View>
         </View>
       )}
-    </Toolbar>
+        </Toolbar>
+   
   );
 };
 

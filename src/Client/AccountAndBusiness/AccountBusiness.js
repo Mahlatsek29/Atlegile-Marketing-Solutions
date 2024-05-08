@@ -30,7 +30,13 @@ import { Dimensions } from "react-native";
 import placeholder from "../../Global/images/login.jpg";
 import { auth, firestore, storage } from "../../config";
 import firebase from "firebase/compat/app";
-import {  onSnapshot, collection, query, where, getDocs  } from "firebase/firestore";
+import {
+  onSnapshot,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import sara from "../../Global/images/Sara.png";
 import Swal from "sweetalert2";
@@ -80,13 +86,26 @@ export default function BusinessAccount() {
   const [height, setHeight] = useState(null);
   const [weight, setWeight] = useState(null);
   const [products, setProducts] = useState([]);
-  const [layout, setLayout] = React.useState("fullscreen");
+  const [layout, setLayout] = React.useState("");
+  // const [layout, setLayout] = React.useState("fullscreen");
   const [scroll, setScroll] = React.useState(true);
   const theme = useTheme();
   const [isMobile, setIsMobile] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [review, setReview] = useState({});
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const handleDimensionsChange = ({ window }) => {
+      setWidth(window.width);
+    };
+
+    Dimensions.addEventListener("change", handleDimensionsChange);
+
+    return () => {
+      Dimensions.removeEventListener("change", handleDimensionsChange);
+    };
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -142,37 +161,37 @@ export default function BusinessAccount() {
         console.error("User not authenticated.");
         return;
       }
-  
+
       // Get a reference to the "Products" collection in Firestore
       const productsCollectionRef = collection(firestore, "Products");
-  
+
       // Construct a query to filter products by businessName from userData
       const q = query(
         productsCollectionRef,
         where("company", "==", userData.company)
       );
-  
+
       try {
         // Execute the query and get a snapshot of the results
         const querySnapshot = await getDocs(q);
-  
+
         // Check if there are any matching products
         if (querySnapshot.empty) {
           console.log("No products found for the given company name.");
           return;
         }
-  
+
         // Initialize an array to store fetched product data
         const productsData = [];
-  
+
         // Iterate through each document in the querySnapshot
         querySnapshot.forEach((doc) => {
           // Push the data of each document into the productsData array
           productsData.push(doc.data());
         });
-  
+
         console.log("product data is: ", productsData);
-  
+
         // Update the state with the fetched product data
         setProducts(productsData);
       } catch (error) {
@@ -180,19 +199,20 @@ export default function BusinessAccount() {
         console.error("Error fetching product data:", error);
       }
     };
-  
+
     // Include both userData and productsCollectionRef in the dependency array
     // This will trigger the effect whenever either of them changes
     const productsCollectionRef = collection(firestore, "Products");
     fetchProductData();
-    const unsubscribe = onSnapshot(productsCollectionRef, () => fetchProductData());
-  
+    const unsubscribe = onSnapshot(productsCollectionRef, () =>
+      fetchProductData()
+    );
+
     return () => {
       // Cleanup the subscription when the component unmounts
       unsubscribe();
     };
-  }, [userData]);  // Include other dependencies if needed
-  
+  }, [userData]); // Include other dependencies if needed
 
   useEffect(() => {
     // Define an asynchronous function to fetch product data
@@ -202,37 +222,37 @@ export default function BusinessAccount() {
         console.error("User not authenticated.");
         return;
       }
-  
+
       // Get a reference to the "Products" collection in Firestore
       const productsCollectionRef = collection(firestore, "Products");
-  
+
       // Construct a query to filter products by businessName from userData
       const q = query(
         productsCollectionRef,
         where("company", "==", userData.company)
       );
-  
+
       try {
         // Execute the query and get a snapshot of the results
         const querySnapshot = await getDocs(q);
-  
+
         // Check if there are any matching products
         if (querySnapshot.empty) {
           console.log("No products found for the given company name.");
           return;
         }
-  
+
         // Initialize an array to store fetched product data
         const productsData = [];
-  
+
         // Iterate through each document in the querySnapshot
         querySnapshot.forEach((doc) => {
           // Push the data of each document into the productsData array
           productsData.push(doc.data());
         });
-  
+
         console.log("product data is: ", productsData);
-  
+
         // Update the state with the fetched product data
         setProducts(productsData);
       } catch (error) {
@@ -240,18 +260,20 @@ export default function BusinessAccount() {
         console.error("Error fetching product data:", error);
       }
     };
-  
+
     // Include both userData and productsCollectionRef in the dependency array
     // This will trigger the effect whenever either of them changes
     const productsCollectionRef = collection(firestore, "Products");
     fetchProductData();
-    const unsubscribe = onSnapshot(productsCollectionRef, () => fetchProductData());
-  
+    const unsubscribe = onSnapshot(productsCollectionRef, () =>
+      fetchProductData()
+    );
+
     return () => {
       // Cleanup the subscription when the component unmounts
       unsubscribe();
     };
-  }, [userData]);  // Include other dependencies if needed
+  }, [userData]); // Include other dependencies if needed
 
   useEffect(() => {
     // Get the authentication instance
@@ -306,12 +328,12 @@ export default function BusinessAccount() {
     const fetchBanner = async () => {
       try {
         const bannerCollection = firestore.collection("Banner");
-  
+
         // Fetch the snapshot of documents in the "Banner" collection where bannerUid matches userData.uid
         const snapshot = await bannerCollection
           .where("bannerUid", "==", userData.uid)
           .get();
-  
+
         const bannerData = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
@@ -323,26 +345,25 @@ export default function BusinessAccount() {
             quantity: data.quantity,
           };
         });
-  
+
         // console.log("bannerData is ", bannerData);
         setBanner(bannerData);
       } catch (error) {
         console.error("Error fetching banner images:", error);
       }
     };
-  
+
     // Include both userData and bannerCollection in the dependency array
     // This will trigger the effect whenever either of them changes
     const bannerCollection = firestore.collection("Banner");
     fetchBanner();
     const unsubscribe = bannerCollection.onSnapshot(() => fetchBanner());
-  
+
     return () => {
       // Cleanup the subscription when the component unmounts
       unsubscribe();
     };
-  }, [userData]);  // Include other dependencies if needed
-  
+  }, [userData]); // Include other dependencies if needed
 
   useEffect(() => {
     // Set up an interval to change the current index of the banner images
@@ -397,7 +418,7 @@ export default function BusinessAccount() {
       confirmButtonText: "Yes, sign me out!",
     }).then((result) => {
       if (result.isConfirmed) {
-        signOut(firebase.auth())
+        signOut(firebase.auth());
         navigation.navigate("Landing");
       }
     });
@@ -714,7 +735,7 @@ export default function BusinessAccount() {
       // You can navigate to the next screen or perform other actions here
       alert("Product added successfully!");
       // Reload the entire page
-      setAddProduct(false)
+      setAddProduct(false);
     } catch (error) {
       console.error("Error storing data in Firestore:", error);
       // Set loading back to false in case of an error
@@ -724,7 +745,7 @@ export default function BusinessAccount() {
 
   return (
     <>
-    <React.Fragment>
+      <React.Fragment>
         {/* Main modal component */}
         <Modal
           open={!!layout} // Modal opens when the layout exists
@@ -969,7 +990,6 @@ export default function BusinessAccount() {
           </ModalOverflow>
         </Modal>
       </React.Fragment>
-      
 
       {editModal ? (
         // View for the edit modal overlay
@@ -1379,8 +1399,7 @@ export default function BusinessAccount() {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                style={{ width: "100%",
-                }}
+                style={{ width: "100%" }}
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
                 required
@@ -1394,8 +1413,7 @@ export default function BusinessAccount() {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                style={{ width: "100%", 
-                }}
+                style={{ width: "100%" }}
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 required
@@ -1419,7 +1437,7 @@ export default function BusinessAccount() {
                   style={{
                     width: "45%",
                     marginRight: "10px",
-                    }}
+                  }}
                   value={length}
                   onChange={(e) => setLength(e.target.value)}
                   required
@@ -1467,8 +1485,7 @@ export default function BusinessAccount() {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "45%", 
-                  }}
+                  style={{ width: "45%" }}
                   value={weight}
                   onChange={(e) => setWeight(e.target.value)}
                   required
@@ -1488,7 +1505,7 @@ export default function BusinessAccount() {
                   style={{
                     width: "45%",
                     marginRight: "10px",
-                    }}
+                  }}
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   required
@@ -1502,8 +1519,7 @@ export default function BusinessAccount() {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{ width: "45%", 
-                  }}
+                  style={{ width: "45%" }}
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                   required
@@ -1522,7 +1538,7 @@ export default function BusinessAccount() {
                 style={{
                   width: "100%",
                   marginBottom: "10px",
-                  }}
+                }}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
@@ -1561,7 +1577,6 @@ export default function BusinessAccount() {
                 style={{
                   width: "100%",
                   marginLeft: "5px",
-                 
                 }}
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
@@ -1602,273 +1617,255 @@ export default function BusinessAccount() {
         </Paper>
       ) : null}
 
-
       {paymentModal ? (
         // Overlay for the payment modal
         <Paper
-        elevation={0}
-        variant="outlined"
-        sx={{
-          // top: 65,
-          position: "fixed",
-          minWidth: 280,
-          height: "auto",
-          zIndex: 9999,
-          display: "flex",
-          flexDirection: "column", // Make the container a column
-          justifyContent: "space-between", // Push the content to the end
-          alignSelf: "center",
-          width: "90%",
-          "@media (min-width: 600px)": {
-            alignSelf: "flex-end",
-            width: 400,
-          },
-        }}
-      >
-        
-            {/* Close button */}
-            <TouchableOpacity
-              onPress={() => setPaymentModal(false)}
-              style={{ alignSelf: "flex-end", padding: 5 }}
-            >
-              <Icon name="close-a" size={20} color="black" />
-            </TouchableOpacity>
+          elevation={0}
+          variant="outlined"
+          sx={{
+            // top: 65,
+            position: "fixed",
+            minWidth: 280,
+            height: "auto",
+            zIndex: 9999,
+            display: "flex",
+            flexDirection: "column", // Make the container a column
+            justifyContent: "space-between", // Push the content to the end
+            alignSelf: "center",
+            width: "90%",
+            "@media (min-width: 600px)": {
+              alignSelf: "flex-end",
+              width: 400,
+            },
+          }}
+        >
+          {/* Close button */}
+          <TouchableOpacity
+            onPress={() => setPaymentModal(false)}
+            style={{ alignSelf: "flex-end", padding: 5 }}
+          >
+            <Icon name="close-a" size={20} color="black" />
+          </TouchableOpacity>
 
-            {/* Logo section */}
-            <View
+          {/* Logo section */}
+          <View
+            style={{
+              height: "50vh",
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Image
+              source={{ uri: logo }}
               style={{
-                height: "50vh",
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
+                height: "9%",
+                width: "80%",
+                paddingTop: "30%",
+                scale: "0.5",
+              }}
+            />
+          </View>
+
+          {/* Payment information form */}
+          <View style={{ alignSelf: "center", width: "80%" }}>
+            <Text
+              style={{
+                color: "#000",
+                fontSize: 30,
+                fontWeight: "bold",
+                alignSelf: "flex-start",
               }}
             >
-              <Image
-                source={{ uri: logo }}
-                style={{
-                  height: "9%",
-                  width: "80%",
-                  paddingTop: "30%",
-                  scale: "0.5",
-                }}
-              />
-            </View>
+              PAYMENT INFO
+            </Text>
+          </View>
 
-            {/* Payment information form */}
-            <View style={{ alignSelf: "center", width: "80%" }}>
-              <Text
+          {/* Form for entering payment details */}
+          <View style={{ width: "80%", alignSelf: "center" }}>
+            <form onSubmit={handleSubscription}>
+              {/* Input for Card Holder's name */}
+              <TextField
+                id="standard-basic"
+                label="Card Holder"
+                variant="standard"
+                fullWidth
+                required
+                value={cardHolder}
+                onChange={(e) => setCardHolder(e.target.value)}
+                style={{ width: "100%" }}
+              />
+
+              {/* Input for Card Number */}
+              <TextField
+                id="standard-basic"
+                label="Card Number"
+                variant="standard"
+                fullWidth
+                required
+                type="text"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value)}
+                style={{ width: "100%" }}
+              />
+
+              {/* Inputs for Expiry and CVV */}
+              <View
                 style={{
-                  color: "#000",
-                  fontSize: 30,
-                  fontWeight: "bold",
-                  alignSelf: "flex-start",
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "wrap",
                 }}
               >
-                PAYMENT INFO
-              </Text>
-            </View>
-
-            {/* Form for entering payment details */}
-            <View style={{ width: "80%", alignSelf: "center" }}>
-              <form onSubmit={handleSubscription}>
-                {/* Input for Card Holder's name */}
+                {/* Input for Expiry */}
                 <TextField
                   id="standard-basic"
-                  label="Card Holder"
+                  label="Expiry"
                   variant="standard"
                   fullWidth
-                  required
-                  value={cardHolder}
-                  onChange={(e) => setCardHolder(e.target.value)}
-                  style={{ width: "100%" }}
-                />
-
-                {/* Input for Card Number */}
-                <TextField
-                  id="standard-basic"
-                  label="Card Number"
-                  variant="standard"
-                  fullWidth
-                  required
+                  value={expiery}
                   type="text"
-                  value={cardNumber}
-                  onChange={(e) => setCardNumber(e.target.value)}
-                  style={{ width: "100%" }}
+                  required
+                  onChange={(e) => setExpiery(e.target.value)}
+                  style={{ width: "40%", marginRight: "15px" }}
                 />
 
-                {/* Inputs for Expiry and CVV */}
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {/* Input for Expiry */}
-                  <TextField
-                    id="standard-basic"
-                    label="Expiry"
-                    variant="standard"
-                    fullWidth
-                    value={expiery}
-                    type="text"
-                    required
-                    onChange={(e) => setExpiery(e.target.value)}
-                    style={{ width: "40%", marginRight: "15px" }}
-                  />
+                {/* Input for CVV */}
+                <TextField
+                  id="standard-basic"
+                  label="CVV"
+                  variant="standard"
+                  fullWidth
+                  value={cvv}
+                  type="text"
+                  required
+                  onChange={(e) => setCvv(e.target.value)}
+                  style={{ width: "50%", marginRight: "15px" }}
+                />
+              </View>
 
-                  {/* Input for CVV */}
-                  <TextField
-                    id="standard-basic"
-                    label="CVV"
-                    variant="standard"
-                    fullWidth
-                    value={cvv}
-                    type="text"
-                    required
-                    onChange={(e) => setCvv(e.target.value)}
-                    style={{ width: "50%", marginRight: "15px" }}
-                  />
-                </View>
-
-                {/* Continue button */}
-                <Button
-                  mode="contained"
-                  type="submit"
-                  style={{
-                    width: "100%",
-                    height: "15%",
-                    marginTop: 20,
-                    marginBottom: 20,
-                    borderRadius: 30,
-                    backgroundColor: "#072840",
-                    alignSelf: "center",
-                  }}
-                >
-                  Continue
-                </Button>
-              </form>
-            </View>
-         
+              {/* Continue button */}
+              <Button
+                mode="contained"
+                type="submit"
+                style={{
+                  width: "100%",
+                  height: "15%",
+                  marginTop: 20,
+                  marginBottom: 20,
+                  borderRadius: 30,
+                  backgroundColor: "#072840",
+                  alignSelf: "center",
+                }}
+              >
+                Continue
+              </Button>
+            </form>
+          </View>
         </Paper>
       ) : null}
 
       {bannerModal ? (
         // Overlay for the banner modal
         <Paper
-        elevation={0}
-        variant="outlined"
-        sx={{
-          // top: 65,
-          position: "fixed",
-          minWidth: 280,
-          height: "auto",
-          zIndex: 9999,
-          display: "flex",
-          flexDirection: "column", // Make the container a column
-          justifyContent: "space-between", // Push the content to the end
-          alignSelf: "center",
-          width: "90%",
-          "@media (min-width: 600px)": {
-            alignSelf: "flex-end",
-            width: 400,
-          },
-        }}
-      >
-            {/* Close button */}
-            <TouchableOpacity
-              onPress={() => setBannerModal(false)}
-              style={{ alignSelf: "flex-end", padding: 5 }}
-            >
-              <Icon name="close-a" size={20} color="black" />
-            </TouchableOpacity>
+          elevation={0}
+          variant="outlined"
+          sx={{
+            // top: 65,
+            position: "fixed",
+            minWidth: 280,
+            height: "auto",
+            zIndex: 9999,
+            display: "flex",
+            flexDirection: "column", // Make the container a column
+            justifyContent: "space-between", // Push the content to the end
+            alignSelf: "center",
+            width: "90%",
+            "@media (min-width: 600px)": {
+              alignSelf: "flex-end",
+              width: 400,
+            },
+          }}
+        >
+          {/* Close button */}
+          <TouchableOpacity
+            onPress={() => setBannerModal(false)}
+            style={{ alignSelf: "flex-end", padding: 5 }}
+          >
+            <Icon name="close-a" size={20} color="black" />
+          </TouchableOpacity>
 
-            {/* Logo section */}
-            <Grid style={{ alignSelf: "center" }}>
+          {/* Logo section */}
+          <Grid style={{ alignSelf: "center" }}>
             <img
               src={logo}
               style={{
                 height: "8vh",
                 width: "100%",
                 paddingTop: 30,
-                paddingBottom: 30
+                paddingBottom: 30,
               }}
             />
           </Grid>
 
-            {/* Form container */}
+          {/* Form container */}
+          <View
+            className="form-container"
+            style={{
+              width: "80%",
+              alignSelf: "center",
+            }}
+          >
+            {/* Logo in the form */}
             <View
-              className="form-container"
               style={{
-               
-               
-                width:"80%",
-                alignSelf:'center'
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                height: "40%",
               }}
             >
-              {/* Logo in the form */}
-              <View
+              <Image
+                source={require("../../Global/images/logo.svg")} // Make sure to provide the correct path to your logo
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                  height: "40%",
+                  width: "20%",
+                  height: "20%",
+                  resizeMode: "contain",
+                }}
+              />
+            </View>
+
+            {/* Add Banner title */}
+            <View>
+              <Text
+                style={{
+                  fontWeight: "600",
+                  fontSize: 30,
+                  marginBottom: 5,
+                  alignSelf: "flex-start",
                 }}
               >
-                <Image
-                  source={require("../../Global/images/logo.svg")} // Make sure to provide the correct path to your logo
-                  style={{
-                    width: "20%",
-                    height: "20%",
-                    resizeMode: "contain",
-                  }}
-                />
-              </View>
+                ADD BANNER
+              </Text>
+            </View>
 
-              {/* Add Banner title */}
-              <View >
-                <Text
-                  style={{
-                    fontWeight: "600",
-                    fontSize: 30,
-                    marginBottom: 5,
-                    alignSelf: "flex-start",
-                  }}
-                >
-                  ADD BANNER
-                </Text>
-              </View>
-
-              {/* Upload container for images */}
-              <View
-                className="uploadContainer"
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                }}
-              >
-                {/* Display uploaded images */}
-                {images.length > 0 ? (
-                  images.map((image, index) => (
-                    <img
-                      key={index}
-                      src={image.url}
-                      alt={`Product Image ${index + 1}`}
-                      style={{
-                        padding: "5px",
-                        marginRight: "10px",
-                        width: "16%",
-                        height: "8vh",
-                      }}
-                    />
-                  ))
-                ) : (
-                  // Placeholder image when no image is uploaded
+            {/* Upload container for images */}
+            <View
+              className="uploadContainer"
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-start",
+              }}
+            >
+              {/* Display uploaded images */}
+              {images.length > 0 ? (
+                images.map((image, index) => (
                   <img
-                    src={placeholder}
-                    alt="Placeholder"
+                    key={index}
+                    src={image.url}
+                    alt={`Product Image ${index + 1}`}
                     style={{
                       padding: "5px",
                       marginRight: "10px",
@@ -1876,151 +1873,159 @@ export default function BusinessAccount() {
                       height: "8vh",
                     }}
                   />
-                )}
-
-                {/* Input for selecting images */}
-                <label
-                  htmlFor="imageInput"
-                  className="add"
+                ))
+              ) : (
+                // Placeholder image when no image is uploaded
+                <img
+                  src={placeholder}
+                  alt="Placeholder"
                   style={{
-                    backgroundColor: "whitesmoke",
-                    color: "#000",
-                    padding: "25px",
-                    width: "5%",
-                    cursor: "pointer",
-                    alignSelf: "center",
+                    padding: "5px",
+                    marginRight: "10px",
+                    width: "16%",
+                    height: "8vh",
+                  }}
+                />
+              )}
+
+              {/* Input for selecting images */}
+              <label
+                htmlFor="imageInput"
+                className="add"
+                style={{
+                  backgroundColor: "whitesmoke",
+                  color: "#000",
+                  padding: "25px",
+                  width: "5%",
+                  cursor: "pointer",
+                  alignSelf: "center",
+                }}
+              >
+                +
+              </label>
+              <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleImageChange}
+                multiple // Allow selecting multiple files
+              />
+            </View>
+
+            {/* Form for entering banner details */}
+            <View style={{ display: "flex", alignSelf: "center" }}>
+              <form onSubmit={handleSaveAddBanner}>
+                {/* Input for Product Name */}
+                <TextField
+                  fullWidth
+                  required
+                  type="text"
+                  variant="standard"
+                  id="outlined-number"
+                  value={productName}
+                  label="Product Name"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  onChange={(e) => setProductName(e.target.value)}
+                  style={{ width: "100%" }}
+                />
+                <br />
+
+                {/* Inputs for Discount Price and Quantity */}
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    flexWrap: "wrap",
                   }}
                 >
-                  +
-                </label>
-                <input
-                  type="file"
-                  id="imageInput"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleImageChange}
-                  multiple // Allow selecting multiple files
-                />
-              </View>
-
-              {/* Form for entering banner details */}
-              <View style={{ display: "flex", alignSelf: "center" }}>
-                <form onSubmit={handleSaveAddBanner}>
-                  {/* Input for Product Name */}
-                  <TextField
-                    fullWidth
-                    required
-                    type="text"
-                    variant="standard"
-                    id="outlined-number"
-                    value={productName}
-                    label="Product Name"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => setProductName(e.target.value)}
-                    style={{ width: "100%", 
-                    }}
-                  />
-                  <br />
-
-                  {/* Inputs for Discount Price and Quantity */}
+                  {/* Input for Discount Price */}
                   <View
                     style={{
                       display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      flexWrap: "wrap",
+                      flexDirection: "column",
                     }}
                   >
-                    {/* Input for Discount Price */}
-                    <View
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <TextField
-                        fullWidth
-                        required
-                        type="text"
-                        variant="standard"
-                        value={priceDiscount}
-                        label="Discount Price"
-                        onChange={(e) => setPriceDiscount(e.target.value)}
-                        style={{ width: "100%", 
-                        }}
-                      />
-                    </View>
-
-                    {/* Input for Quantity */}
-                    <View>
-                      <TextField
-                        fullWidth
-                        required
-                        type="text"
-                        variant="standard"
-                        value={quantity}
-                        label="Quantity"
-                        onChange={(e) => setQuantity(e.target.value)}
-                        style={{ width: "100%", 
-                        }}
-                      />
-                    </View>
+                    <TextField
+                      fullWidth
+                      required
+                      type="text"
+                      variant="standard"
+                      value={priceDiscount}
+                      label="Discount Price"
+                      onChange={(e) => setPriceDiscount(e.target.value)}
+                      style={{ width: "100%" }}
+                    />
                   </View>
 
-                  {/* Input for Original Price */}
-                  <TextField
-                    fullWidth
-                    required
-                    variant="standard"
-                    type="text"
-                    value={priceOriginal}
-                    label="Original Price"
-                    onChange={(e) => setPriceOriginal(e.target.value)}
-                    style={{ width: "100%",
-                    }}
-                  />
+                  {/* Input for Quantity */}
+                  <View>
+                    <TextField
+                      fullWidth
+                      required
+                      type="text"
+                      variant="standard"
+                      value={quantity}
+                      label="Quantity"
+                      onChange={(e) => setQuantity(e.target.value)}
+                      style={{ width: "100%" }}
+                    />
+                  </View>
+                </View>
 
-                  {/* Input for Other details */}
-                  <TextField
-                    fullWidth
-                    required
-                    variant="standard"
-                    label="Other"
-                    type="text"
-                    value={otherBanner}
-                    onChange={(e) => setOtherBanner(e.target.value)}
-                    style={{ width: "100%", 
-                    }}
-                  />
+                {/* Input for Original Price */}
+                <TextField
+                  fullWidth
+                  required
+                  variant="standard"
+                  type="text"
+                  value={priceOriginal}
+                  label="Original Price"
+                  onChange={(e) => setPriceOriginal(e.target.value)}
+                  style={{ width: "100%" }}
+                />
 
-                  {/* Continue button */}
-                  <Button
-                    variant="contained"
-                    style={{
-                      color: "white",
-                      fontWeight: "600",
-                      fontSize: 14,
-                      backgroundColor: "#072840",
-                      borderRadius: 20,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      textAlign: "center",
-                      padding: 10,
-                      marginTop: 20,
-                      marginBottom: 20,
-                      alignSelf: "center",
-                      width: "100%",
-                    }}
-                    type="submit"
-                  >
-                    continue
-                  </Button>
-                </form>
-              </View>
+                {/* Input for Other details */}
+                <TextField
+                  fullWidth
+                  required
+                  variant="standard"
+                  label="Other"
+                  type="text"
+                  value={otherBanner}
+                  onChange={(e) => setOtherBanner(e.target.value)}
+                  style={{ width: "100%" }}
+                />
+
+                {/* Continue button */}
+                <Button
+                  variant="contained"
+                  style={{
+                    color: "white",
+                    fontWeight: "600",
+                    fontSize: 14,
+                    backgroundColor: "#072840",
+                    borderRadius: 20,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                    padding: 10,
+                    marginTop: 20,
+                    marginBottom: 20,
+                    alignSelf: "center",
+                    width: "100%",
+                  }}
+                  type="submit"
+                >
+                  continue
+                </Button>
+              </form>
             </View>
-          </Paper>
+          </View>
+        </Paper>
       ) : null}
       <View style={{ backgroundColor: "white" }}>
         <Header />
@@ -2813,191 +2818,275 @@ export default function BusinessAccount() {
                   {/* Flex container for the product cards */}
                   <View style={{ flex: 1 }}>
                     {/* Flex container for wrapping the product cards */}
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {/* Mapping through products to display individual product cards */}
 
-                      {products.length >= 3 ? (
-                        products.map((product, index) => (
-                          <View
-                            key={index}
-                            style={{
-                              display: "flex",
-                              flexWrap: "wrap",
-                              margin: 1,
-                              height: 450,
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
+                    {width < 600 ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {/* Mapping through products to display individual product cards */}
+
+                        {products.length >= 3 ? (
+                          products.map((product, index) => (
                             <View
+                              key={product.id}
                               style={{
-                                justifyContent: "center",
+                                display: "flex",
+                                margin: 1,
                                 alignItems: "center",
-                                paddingTop: 10,
-                                margin: 20,
+                                justifyContent: "center",
+                                // backgroundColor: "yellow",
                               }}
                             >
-                              <Box
-                                style={{
-                                  objectFit: "cover",
-                                  position: "relative",
-                                  backgroundColor: "gold",
-                                  width: "200px",
-                                  height: "200px",
-                                  borderRadius: "50%",
-                                  alignself: "center",
-                                  justifyContent: "center",
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                <View
-                                  style={{
-                                    alignSelf: "center",
-                                    width: 180,
-                                    height: 180,
-                                  }}
-                                >
-                                  <CardMedia
-                                    component="img"
-                                    height="140"
-                                    image={
-                                      product.images &&
-                                      product.images.length > 0
-                                        ? product.images[0]
-                                        : "../../assets/image/headsets.png"
-                                    }
-                                    alt={product.name}
-                                    style={{
-                                      borderRadius: "100px",
-                                      objectFit: "cover",
-                                      width: "100%",
-                                      height: "100%",
-                                    }}
-                                  />
-                                  <Box
-                                    style={{
-                                      backgroundColor: "#E74040",
-                                      position: "absolute",
-                                      top: 0,
-
-                                      padding: 2,
-                                      width: "30%",
-                                      borderRadius: "8%",
-                                      alignSelf: "center",
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="h5"
-                                      style={{
-                                        color: "#fff",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Sale
-                                    </Typography>
-                                  </Box>
-                                </View>
-                              </Box>
+                              {/* View for styling and layout within each Card */}
                               <View
                                 style={{
-                                  width: "100%",
-                                  justifyContent: "space-between",
-                                  marginTop: 16,
-                                  height: "25vh",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  // paddingTop: 10,
+                                  margin: 5,
                                 }}
                               >
-                                <View>
+                                {/* Box for styling product display */}
+                                <Box
+                                  style={{
+                                    objectFit: "cover",
+                                    position: "relative",
+                                    background:
+                                      "radial-gradient(circle at top left, rgba(255, 255, 255, 0.5) 0%, #D4AF37 10%, #B48811 40%, #A2790D 50%, #E7BE3A 90%)",
+                                    width: "110px",
+                                    height: "110px",
+                                    borderRadius: "50%",
+                                    alignself: "center",
+                                    justifyContent: "center",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
                                   <View
                                     style={{
-                                      flexDirection: "row",
-                                      justifyContent: "center",
-                                      alignItems: "center",
-                                      flexWrap: "wrap",
+                                      alignSelf: "center",
+                                      width: 100,
+                                      height: 100,
                                     }}
                                   >
-                                    <Text
+                                    <CardMedia
+                                      component="img"
+                                      height="140"
+                                      image={
+                                        product.images &&
+                                        product.images.length > 0
+                                          ? product.images[0]
+                                          : "../../assets/image/headsets.png"
+                                      }
+                                      alt={product.name}
                                       style={{
-                                        flex: 1,
-                                        fontSize: "15px",
-                                        color: "#4FC3F7",
-                                        fontWeight: "bold",
+                                        borderRadius: "100px",
+                                        objectFit: "cover",
+                                        width: "100%",
+                                        height: "100%",
                                       }}
+                                    />
+                                  </View>
+
+                                  {/* Snackbar for showing a success message when adding to favorites */}
+                                  {/* <Snackbar
+                                    open={showSnackbar}
+                                    autoHideDuration={3000}
+                                    onClose={handleSnackbarClose}
+                                    anchorOrigin={{
+                                      vertical: "top",
+                                      horizontal: "center",
+                                    }}
+                                  >
+                                    <MuiAlert
+                                      onClose={handleSnackbarClose}
+                                      severity="success"
+                                      sx={{ width: "100%" }}
                                     >
-                                      {product.selectedProductCategory}
-                                    </Text>
+                                      Product added to favorites!
+                                    </MuiAlert>
+                                  </Snackbar> */}
+
+                                  {/* Box containing heart and shopping cart icons with interaction */}
+                                </Box>
+
+                                {/* View for styling and layout within each Card */}
+                                <View
+                                  style={{
+                                    width: "100%",
+                                    justifyContent: "space-between",
+                                    marginTop: "5%",
+                                  }}
+                                >
+                                  {/* View for displaying product details */}
+                                  <View>
+                                    {/* View for displaying product category and rating */}
                                     <View
                                       style={{
-                                        backgroundColor: "#072840",
-                                        paddingHorizontal: 5,
-                                        paddingVertical: 3,
-                                        borderRadius: 15,
+                                        flexDirection: "row",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        flexWrap: "wrap",
+                                      }}
+                                    ></View>
+
+                                    {/* Typography component for displaying the product name */}
+                                    {/* Typography component for displaying the product name */}
+                                    <Typography variant="body2" component="body2"
+                                    style={{
+                                        color: "black",
+                                        wordWrap: "break-word",
+                                        display: "inline",
+                                      }}>
+                        {product.name && product.name.slice(0, 15)}
+                        {product.name && product.name.length < 50 ? "" : "..."}
+                      </Typography>
+
+                                    {/* Typography component for displaying the product description */}
+                                    <Typography
+                                      variant="subtitle2"
+                                      component="p"
+                                      style={{
+                                        color: "gray",
+                                        wordWrap: "break-word",
+                                        display: "inline",
                                       }}
                                     >
-                                      <Text style={{ color: "white" }}>
-                                        ⭐ {review[product.id] || 0}
-                                      </Text>
-                                    </View>
-                                  </View>
-                                  <Typography variant="h5" component="h5">
-                                    {product.name && product.name.slice(0, 15)}
-                                    {product.name && product.name.length < 50
-                                      ? ""
-                                      : "..."}
-                                  </Typography>
-                                  <Typography
-                                    variant="subtitle2"
-                                    component="p"
-                                    style={{
-                                      color: "gray",
-                                      wordWrap: "break-word",
-                                      display: "inline",
-                                    }}
-                                  >
-                                    {product.description &&
-                                    product.description.length > 25
-                                      ? `${product.description.slice(0, 25)}...`
-                                      : product.description}
-                                  </Typography>
-                                  <Box
-                                    display="flex"
-                                    flexDirection="column"
-                                    alignItems="flex-start"
-                                    justifyContent="space-between"
-                                  >
-                                    <Typography
-                                      variant="body2"
-                                      component="p"
-                                      style={{ color: "gray" }}
-                                    >
-                                      <Icon2 name="download" size={20} /> 15
-                                      Sales
+                                      {product.description &&
+                                      product.description.length > 12
+                                        ? `${product.description.slice(
+                                            0,
+                                            12
+                                          )}...`
+                                        : product.description}
                                     </Typography>
+                                    <View
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        marginBottom: 5,
+                                        marginTop: 5,
+                                      }}
+                                    >
+                                      <View
+                                        style={{
+                                          backgroundColor: "#072840",
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 3,
+                                          borderRadius: 15,
+                                        }}
+                                      >
+                                        <Text style={{ color: "white" }}>
+                                          ⭐ {review[product.id] || 0}
+                                        </Text>
+                                      </View>
+                                      {/* <TouchableOpacity>
+                                        <Icon
+                                          name={
+                                            favoriteProducts.find(
+                                              (item) =>
+                                                item.productId === product.id
+                                            )
+                                              ? "heart"
+                                              : "heart-o"
+                                          }
+                                          size={20}
+                                          style={{
+                                            marginLeft: 5,
+                                          }}
+                                          onPress={() => toggleHeart(product)} // Use onPress instead of onClick for TouchableOpacity
+                                          color={
+                                            favoriteProducts.find(
+                                              (item) =>
+                                                item.productId === product.id
+                                            )
+                                              ? "red"
+                                              : "black"
+                                          }
+                                        />
+                                      </TouchableOpacity> */}
+
+                                      {/* TouchableOpacity for adding product to the cart */}
+                                      {/* <TouchableOpacity
+                                        onPress={() => toggleCart(product)}
+                                      >
+                                        <Snackbar
+                                          open={showSnackbar1}
+                                          autoHideDuration={3000} // Adjust as needed
+                                          onClose={handleSnackbarClose1}
+                                          anchorOrigin={{
+                                            vertical: "top",
+                                            horizontal: "center",
+                                          }} // Set position to top center
+                                        >
+                                          <MuiAlert
+                                            onClose={handleSnackbarClose1}
+                                            severity="success"
+                                            sx={{ width: "100%" }}
+                                          >
+                                            Product added to Cart!
+                                          </MuiAlert>
+                                        </Snackbar>
+                                        <Icon3
+                                          name={
+                                            cartItems.find(
+                                              (item) =>
+                                                item.productId === product.id
+                                            )
+                                              ? "cart"
+                                              : "cart-outline"
+                                          }
+                                          size={20}
+                                          style={{
+                                            marginLeft: 5,
+                                          }}
+                                          color="black"
+                                        />
+                                      </TouchableOpacity> */}
+                                      {/* Box for displaying additional product details */}
+                                      <Box
+                                        display="flex"
+                                        flexDirection="column"
+                                        alignItems="flex-start"
+                                        justifyContent="space-between"
+                                      >
+                                        {/* Typography component for displaying sales information */}
+                                        {/* <Typography
+                            variant="body2"
+                            component="p"
+                            style={{ color: "gray" }}
+                          >
+                            <Icon2 name="download" size={20} /> {product.quantity}{" "}
+                            Sales
+                          </Typography> */}
+
+                                        {/* View for displaying product price */}
+                                      </Box>
+                                    </View>
                                     <View
                                       style={{
                                         display: "flex",
                                         flexDirection: "row",
                                       }}
                                     >
+                                      {/* Typography component for displaying the original product price */}
                                       <Typography
-                                        variant="subtitle2"
+                                        variant="body2"
                                         component="p"
-                                        style={{
-                                          color: "#BDBDBD",
-                                          fontSize: "18px",
-                                          fontWeight: "700",
-                                          marginRight: "10px",
-                                        }}
+                                        style={{ color: "gray", marginRight:5}}
                                       >
-                                        R{product.price}
+                                        <Icon2 name="download" size={20} /> 15
+                                        Sales
                                       </Typography>
+
+                                      {/* Typography component for displaying the discounted product price */}
                                       <Typography
                                         variant="subtitle2"
                                         component="p"
@@ -3010,19 +3099,252 @@ export default function BusinessAccount() {
                                         R{product.price}
                                       </Typography>
                                     </View>
-                                  </Box>
+                                  </View>
+
+                                  {/* Button for navigating to the product details screen */}
+                                  {/* <Button
+                                    style={{
+                                      border: "1px black solid",
+                                      alignSelf: "flex-start",
+                                      borderRadius: "50px",
+                                      marginBottom: 15,
+                                      color: "black",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() =>
+                                      navigateProductDetails(product.id)
+                                    }
+                                  >
+                                    VIEW <Icon name="arrow-right" size={20} />
+                                  </Button> */}
                                 </View>
                               </View>
                             </View>
-                          </View>
-                        ))
-                      ) : (
-                        <Typography variant="body1" component="p">
-                          There are less than 3 products available. Please add a
-                          minimum of 3 products.
-                        </Typography>
-                      )}
-                    </View>
+                          ))
+                        ) : (
+                          <Typography variant="body1" component="p">
+                            There are less than 3 products available. Please add
+                            a minimum of 3 products.
+                          </Typography>
+                        )}
+                      </View>
+                    ) : (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {/* Mapping through products to display individual product cards */}
+
+                        {products.length >= 3 ? (
+                          products.map((product, index) => (
+                            <View
+                              key={index}
+                              style={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                margin: 1,
+                                height: 450,
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <View
+                                style={{
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  paddingTop: 10,
+                                  margin: 20,
+                                }}
+                              >
+                                <Box
+                                  style={{
+                                    objectFit: "cover",
+                                    position: "relative",
+                                    backgroundColor: "gold",
+                                    width: "200px",
+                                    height: "200px",
+                                    borderRadius: "50%",
+                                    alignself: "center",
+                                    justifyContent: "center",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      alignSelf: "center",
+                                      width: 180,
+                                      height: 180,
+                                    }}
+                                  >
+                                    <CardMedia
+                                      component="img"
+                                      height="140"
+                                      image={
+                                        product.images &&
+                                        product.images.length > 0
+                                          ? product.images[0]
+                                          : "../../assets/image/headsets.png"
+                                      }
+                                      alt={product.name}
+                                      style={{
+                                        borderRadius: "100px",
+                                        objectFit: "cover",
+                                        width: "100%",
+                                        height: "100%",
+                                      }}
+                                    />
+                                    <Box
+                                      style={{
+                                        backgroundColor: "#E74040",
+                                        position: "absolute",
+                                        top: 0,
+
+                                        padding: 2,
+                                        width: "30%",
+                                        borderRadius: "8%",
+                                        alignSelf: "center",
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="h5"
+                                        style={{
+                                          color: "#fff",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        Sale
+                                      </Typography>
+                                    </Box>
+                                  </View>
+                                </Box>
+                                <View
+                                  style={{
+                                    width: "100%",
+                                    justifyContent: "space-between",
+                                    marginTop: 16,
+                                    height: "25vh",
+                                  }}
+                                >
+                                  <View>
+                                    <View
+                                      style={{
+                                        flexDirection: "row",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        flexWrap: "wrap",
+                                      }}
+                                    >
+                                      <Text
+                                        style={{
+                                          flex: 1,
+                                          fontSize: "15px",
+                                          color: "#4FC3F7",
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        {product.selectedProductCategory}
+                                      </Text>
+                                      <View
+                                        style={{
+                                          backgroundColor: "#072840",
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 3,
+                                          borderRadius: 15,
+                                        }}
+                                      >
+                                        <Text style={{ color: "white" }}>
+                                          ⭐ {review[product.id] || 0}
+                                        </Text>
+                                      </View>
+                                    </View>
+                                    <Typography variant="h5" component="h5">
+                                      {product.name &&
+                                        product.name.slice(0, 15)}
+                                      {product.name && product.name.length < 50
+                                        ? ""
+                                        : "..."}
+                                    </Typography>
+                                    <Typography
+                                      variant="subtitle2"
+                                      component="p"
+                                      style={{
+                                        color: "gray",
+                                        wordWrap: "break-word",
+                                        display: "inline",
+                                      }}
+                                    >
+                                      {product.description &&
+                                      product.description.length > 25
+                                        ? `${product.description.slice(
+                                            0,
+                                            25
+                                          )}...`
+                                        : product.description}
+                                    </Typography>
+                                    <Box
+                                      display="flex"
+                                      flexDirection="column"
+                                      alignItems="flex-start"
+                                      justifyContent="space-between"
+                                    >
+                                      <Typography
+                                        variant="body2"
+                                        component="p"
+                                        style={{ color: "gray" }}
+                                      >
+                                        <Icon2 name="download" size={20} /> 15
+                                        Sales
+                                      </Typography>
+                                      <View
+                                        style={{
+                                          display: "flex",
+                                          flexDirection: "row",
+                                        }}
+                                      >
+                                        <Typography
+                                          variant="subtitle2"
+                                          component="p"
+                                          style={{
+                                            color: "#BDBDBD",
+                                            fontSize: "18px",
+                                            fontWeight: "700",
+                                            marginRight: "10px",
+                                          }}
+                                        >
+                                          R{product.price}
+                                        </Typography>
+                                        <Typography
+                                          variant="subtitle2"
+                                          component="p"
+                                          style={{
+                                            color: "rgb(97, 151, 97)",
+                                            fontSize: "18px",
+                                            fontWeight: "700",
+                                          }}
+                                        >
+                                          R{product.price}
+                                        </Typography>
+                                      </View>
+                                    </Box>
+                                  </View>
+                                </View>
+                              </View>
+                            </View>
+                          ))
+                        ) : (
+                          <Typography variant="body1" component="p">
+                            There are less than 3 products available. Please add
+                            a minimum of 3 products.
+                          </Typography>
+                        )}
+                      </View>
+                    )}
                   </View>
                 </View>
               </ScrollView>

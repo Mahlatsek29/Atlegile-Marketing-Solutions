@@ -137,27 +137,29 @@ const UserProfile = () => {
           >
             {/* User name and contact information */}
             {userData && userData.business ? (
-              <Typography  style={{ color: "#072840", fontWeight: 600 }}
-              variant="h6"
-              >
-              {userData.businessName}
-            </Typography>
-            ):(
-              <>
               <Typography
-              style={{ color: "#072840", fontWeight: 600 }}
-              variant="h6"
-            >
-              {userData?.name} {userData?.surname}
-            </Typography>
-            <Typography style={{ color: "gray", fontWeight: 600 }} variant="h7">
-              {userData?.alternativeContact.name}{" "}
-              {userData?.alternativeContact.phone}
-            </Typography>
+                style={{ color: "#072840", fontWeight: 600 }}
+                variant="h6"
+              >
+                {userData.businessName}
+              </Typography>
+            ) : (
+              <>
+                <Typography
+                  style={{ color: "#072840", fontWeight: 600 }}
+                  variant="h6"
+                >
+                  {userData?.name} {userData?.surname}
+                </Typography>
+                <Typography
+                  style={{ color: "gray", fontWeight: 600 }}
+                  variant="h7"
+                >
+                  {userData?.alternativeContact.name}{" "}
+                  {userData?.alternativeContact.phone}
+                </Typography>
               </>
-              
             )}
-            
           </View>
 
           {/* Order history and navigation buttons */}
@@ -328,23 +330,22 @@ const UserProfile = () => {
 
             {/* Manage Business button */}
             {userData?.talent || userData?.business ? (
-  // <Button
-  //   style={{
-  //     color: "#072840",
-  //     borderRadius: "20px",
-  //     outlineColor: "#072840",
-  //     marginRight: "5px",
-  //   }}
-  //   variant="outlined"
-  //   onClick={() => {
-  //     navigation.navigate("AccountAndBusiness");
-  //   }}
-  // >
-  //   Manage Business
-              // </Button>
-            <></>
-) : null}
-
+              <Button
+                style={{
+                  color: "#072840",
+                  borderRadius: "20px",
+                  outlineColor: "#072840",
+                  marginRight: "5px",
+                }}
+                variant="outlined"
+                onClick={() => {
+                  navigation.navigate("AccountAndBusiness");
+                }}
+              >
+                Manage Business
+              </Button>
+            ) : // <></>
+            null}
           </View>
         </View>
       </View>

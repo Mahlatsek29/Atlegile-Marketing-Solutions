@@ -288,7 +288,7 @@ const UserProfile = () => {
             }}
           >
             {/* Register Business button */}
-            {/* <Button
+             <Button
               style={{
                 color: "#072840",
                 marginRight: "5px",
@@ -298,7 +298,7 @@ const UserProfile = () => {
               onClick={handleBusiness}
             >
               REGISTER BUSINESS
-            </Button> */}
+            </Button> 
 
             {/* Register as a Talent button */}
             {/* <Button

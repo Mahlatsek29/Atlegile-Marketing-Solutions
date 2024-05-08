@@ -1080,10 +1080,10 @@ const DateSelectionAndCheckout = () => {
       ) : null}
       <FollowUs />
       <Navbar />
-      <ScrollView style={{ flexDirection: "column", backgroundColor: "white" }}>
-        <Container sx={{ minHeight: "90vh"}}>
-          <Grid container spacing={2} mx="auto">
-            <Grid item xs={12} md={8}>
+      <ScrollView style={{ flexDirection: "column", }}>
+        <Container sx={{ minHeight: "90vh",justifyContent:'center'}}>
+          <Grid container  mx="auto" sx={{justifyContent:'center'}}>
+            <Grid item xs={12} md={8} >
               {/* Left Side Content */}
               <Box mt={2} pr={4}>
                 {/* Heading displaying the order number */}

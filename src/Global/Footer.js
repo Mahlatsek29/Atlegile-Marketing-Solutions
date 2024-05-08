@@ -1,10 +1,8 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-import lionImage from "../Global/images/BigLion..png"; // Make sure the path is correct
+import lionImage from "../Global/images/BigLion..png";
 import shadowLogo from "./images/Shadow_Logo.png";
-
 const { width } = Dimensions.get('window');
-
 export function Footer() {
   return (
     <View style={styles.container}>
@@ -12,7 +10,7 @@ export function Footer() {
         <View style={styles.section1Left}></View>
         <View style={styles.section1Right}>
           <Image source={shadowLogo} style={styles.logo} resizeMode="contain" />
-          <Text style={styles.heading}>Marketing Services</Text>
+          <Text style={styles.heading}>MARKETING SERVICES</Text>
           <Text style={styles.description}>
             Welcome to AMS, where we specialize in building beautiful brands,
             marketing African businesses, and connecting them with a global
@@ -23,14 +21,14 @@ export function Footer() {
         </View>
         <View style={styles.section1Links}>
           <View style={styles.linksContainer}>
-            <Text style={styles.link}>ORDER HISTORY</Text>
-            <Text style={styles.link}>TERMS & CONDITIONS</Text>
-            <Text style={styles.link}>PRIVACY POLICY</Text>
+            <Text style={styles.link1}>ORDER HISTORY</Text>
+            <Text style={styles.link2}>TERMS & CONDITIONS</Text>
+            <Text style={styles.link3}>PRIVACY POLICY</Text>
           </View>
         </View>
         <View style={styles.section1Image}></View>
       </View>
-      {width > 600 && (
+      {width > 600 ? (
         <View style={styles.section2}>
           <View style={styles.section2TextContainer}>
             <Text style={styles.section2Text}>
@@ -45,15 +43,15 @@ export function Footer() {
             />
           </View>
         </View>
-      )}
+      ) : null}
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#070F18",
     width: "100%",
+    height: "20%",
     flex: 1,
   },
   section1: {
@@ -68,18 +66,24 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   logo: {
-    width: "50%",
-    paddingTop: 40,
+    marginTop: 50,
+    marginBottom: 20,
+    width: 173,
+    height: 63,
   },
   heading: {
-    fontSize: 15,
+    marginBottom: 20,
+    fontSize: 18,
+    fontWeight: "bold",
     color: "#FFF",
   },
   description: {
-    fontSize: 10,
+    fontSize: 11,
     color: "#FFF",
   },
   email: {
+    marginTop: 20,
+    fontSize: 12,
     color: "#FFF",
   },
   section1Links: {
@@ -88,9 +92,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   linksContainer: {
-    marginLeft: 20,
+    marginLeft: 50,
   },
-  link: {
+  link1: {
+    marginTop: 90,
+    marginBottom: 15,
+    color: "#FFF",
+  },
+  link2: {
+    marginBottom: 15,
+    color: "#FFF",
+  },
+  link3: {
     color: "#FFF",
   },
   section1Image: {
@@ -111,14 +124,12 @@ const styles = StyleSheet.create({
     color: "#FFF",
   },
   section2ImageContainer: {
-    flex: 2,
+    flex: 2.5,
     backgroundColor: "#070F18",
-    opacity: 0.3,
+    opacity: 0.2,
   },
   section2Image: {
     width: "100%",
-    height: 210,
-    position: "relative",
-    top: -50,
+    height: 250,
   },
 });

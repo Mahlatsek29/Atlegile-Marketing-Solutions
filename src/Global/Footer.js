@@ -57,14 +57,7 @@ export function Footer() {
             />
           </View>
         </View>
-      ) : (
-        <View style={styles.mobileSection}>
-          <Text style={styles.mobileSectionText}>
-            Atlegile Marketing Solutions (Pty) Ltd <br />
-            eCommerce 2023
-          </Text>
-        </View>
-      )}
+      ) : null} {/* Render the lion image only on screens wider than 600 */}
     </View>
   );
 }
@@ -92,8 +85,8 @@ const styles = StyleSheet.create({
     height: 63,
   },
   heading: {
-    marginBottom: 10,
-    fontSize: 18,
+    marginBottom: 5, // Adjusted margin
+    fontSize: 16, // Reduced font size
     fontWeight: "bold",
     color: "#FFF",
   },
@@ -110,16 +103,19 @@ const styles = StyleSheet.create({
     flex: 6,
     flexDirection: "column",
     justifyContent: "center",
+    // Adjusted margin and padding
+    marginVertical: 5,
+    paddingHorizontal: 5,
   },
   linksContainer: {
     marginLeft: 20,
   },
   link1: {
-    marginBottom: 5,
+    marginBottom: 3, // Reduced margin
     color: "#FFF",
   },
   link2: {
-    marginBottom: 5,
+    marginBottom: 3, // Reduced margin
     color: "#FFF",
   },
   link3: {

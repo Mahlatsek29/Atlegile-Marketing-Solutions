@@ -44,13 +44,13 @@ const FollowUs = () => {
     >
       <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
         <Icon2 name="phone" size={16} color="white" />
-        <Typography variant="subtitle2">(225) 555-0118</Typography>
+        <Typography variant="subtitle2">(+27) 608-466-708</Typography>
       </Box>
 
       {isLargeDevice && (
         <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
           <Icon3 name="envelope" size={20} color="white" />
-          <Typography variant="subtitle2">michelle.rivera@example.com</Typography>
+          <Typography variant="subtitle2">atlegilesolutions@gmail.com</Typography>
         </Box>
       )}
 

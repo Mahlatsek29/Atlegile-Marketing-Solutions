@@ -29,7 +29,7 @@ const BusinessRegistration = () => {
   const navigation = useNavigation();
   const [businessName, setBusinessName] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
-  const [regNumber, setRegNumber] = useState("");
+  // const [regNumber, setRegNumber] = useState("");
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [selectedBusinessType, setSelectedBusinessType] = useState("");
@@ -111,7 +111,7 @@ const BusinessRegistration = () => {
           businessName,
           company: businessName,
           selectedRole,
-          regNumber,
+          // regNumber,
           email,
           location,
           selectedBusinessType,
@@ -361,7 +361,7 @@ const BusinessRegistration = () => {
                 <br />
 
                 {/* Registration Number input */}
-                <TextField
+                {/* <TextField
                   id="outlined-number"
                   label="Reg Number"
                   type="text"
@@ -374,7 +374,7 @@ const BusinessRegistration = () => {
                   onChange={(e) => setRegNumber(e.target.value)}
                   required
                 />
-                <br />
+                <br /> */}
 
                 {/* Location input */}
                 <TextField

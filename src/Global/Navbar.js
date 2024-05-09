@@ -80,7 +80,9 @@ const Navbar = () => {
     
     <Toolbar
       sx={{
-        color: "#252B42",
+        backgroundColor:'#003153',
+        // color: "#252B42",
+        color:'white',
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",

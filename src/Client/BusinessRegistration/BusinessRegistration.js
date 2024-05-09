@@ -145,6 +145,8 @@ const BusinessRegistration = () => {
   // Define options for role, business type, and industry dropdowns
   const roleOptions = [
     ...emptyOption,
+    "Director",
+    "Owner",
     "Graphic Designer",
     "Data Entry Specialist",
     "Project Manager",

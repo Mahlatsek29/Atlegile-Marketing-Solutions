@@ -80,8 +80,7 @@ const Navbar = () => {
     <Grid container sx={{display:'flex', justifyContent:'center', backgroundColor:'#003153',}}>
     <Grid item xs={12} sm={10} md={9} >
     <Toolbar
-      sx={{
-       
+      sx={{       
         // color: "#252B42",
         color:'white',
         display: "flex",
@@ -158,7 +157,7 @@ const Navbar = () => {
                     AS
                   </Typography>
                 </View>
-                <View style={{ marginLeft: 10 }}>
+                <View style={{ marginLeft: 10, }}>
                   <Typography variant="subtitle1">
                     Welcome, {userData.name}
                   </Typography>

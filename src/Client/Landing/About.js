@@ -5,7 +5,7 @@ import FollowUs from "../../Global/Header";
 import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
 import { COLORS } from "../../Global/Color";
-import { require } from 'expo-asset';
+import { require } from "expo-asset";
 
 export default function AboutUs() {
   // State to manage screen dimensions
@@ -21,8 +21,11 @@ export default function AboutUs() {
       Dimensions.removeEventListener("change", handleDimensionsChange);
     };
   }, []);
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
 
-  
+  // Define a breakpoint for smaller screens (e.g., mobile devices)
+  const isSmallScreen = windowWidth < 600; // Adjust the value as needed
 
   // Ref for the video component
   const video = useRef(null);
@@ -45,7 +48,7 @@ export default function AboutUs() {
   }, []); // Empty dependency array to run the effect only once during component mount
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       {/* Included FollowUs component */}
       <FollowUs />
       {/* Included Navbar component */}
@@ -61,7 +64,14 @@ export default function AboutUs() {
           </View>
           {/* About text section */}
           <View style={{ paddingHorizontal: 20 }}>
-            <Text style={{ color: COLORS.darkBlue, fontWeight: "bold", fontSize: 20, textAlign: "center" }}>
+            <Text
+              style={{
+                color: COLORS.darkBlue,
+                fontWeight: "bold",
+                fontSize: 20,
+                textAlign: "center",
+              }}
+            >
               ATTLEGILE MARKETING SOLUTIONS
             </Text>
             <Text style={{ textAlign: "center", paddingTop: 10 }}>
@@ -83,10 +93,33 @@ export default function AboutUs() {
           </View>
 
           {/* Three sections with information */}
-          <View style={{ flexDirection: "row", paddingTop: 30, paddingBottom: 30 }}>
+          <View
+            style={{
+              paddingTop: 30,
+              paddingBottom: 30,
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 5fr))",
+              gap: "10px",
+            }}
+          >
             {/* Section 1: What We Offer */}
-            <View style={{ width: "33%", borderWidth: 1, borderColor: "grey", margin: 1 }}>
-              <Text style={{ color: COLORS.darkBlue, textAlign: "center", fontWeight: "bold", fontSize: 16, paddingTop: 10 }}>
+            <View
+              style={{
+                width: "55",
+                borderWidth: 1,
+                borderColor: "grey",
+                margin: 1,
+              }}
+            >
+              <Text
+                style={{
+                  color: COLORS.darkBlue,
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: 16,
+                  paddingTop: 10,
+                }}
+              >
                 WHAT WE OFFER
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
@@ -98,8 +131,23 @@ export default function AboutUs() {
               </Text>
             </View>
             {/* Section 2: About AMS */}
-            <View style={{ width: "33%", borderWidth: 1, borderColor: "grey", margin: 1 }}>
-              <Text style={{ color: COLORS.darkBlue, textAlign: "center", fontWeight: "bold", fontSize: 16, paddingTop: 10 }}>
+            <View
+              style={{
+                width: "55",
+                borderWidth: 1,
+                borderColor: "grey",
+                margin: 1,
+              }}
+            >
+              <Text
+                style={{
+                  color: COLORS.darkBlue,
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: 16,
+                  paddingTop: 10,
+                }}
+              >
                 ABOUT AMS
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
@@ -110,8 +158,23 @@ export default function AboutUs() {
               </Text>
             </View>
             {/* Section 3: Our USP */}
-            <View style={{ width: "34%", borderWidth: 1, borderColor: "grey", margin: 1 }}>
-              <Text style={{ color: COLORS.darkBlue, textAlign: "center", fontWeight: "bold", fontSize: 16, paddingTop: 10 }}>
+            <View
+              style={{
+                width: "55",
+                borderWidth: 1,
+                borderColor: "grey",
+                margin: 1,
+              }}
+            >
+              <Text
+                style={{
+                  color: COLORS.darkBlue,
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: 16,
+                  paddingTop: 10,
+                }}
+              >
                 OUR USP
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
@@ -119,30 +182,39 @@ export default function AboutUs() {
                 creativity, while transferring 8 years of professional quality
                 service.
               </Text>
-              <Text style={{ color: "black", textAlign: "center", fontWeight: "medium", fontSize: 14, padding: 10 }}>
+              <Text
+                style={{
+                  color: "black",
+                  textAlign: "center",
+                  fontWeight: "medium",
+                  fontSize: 14,
+                  padding: 10,
+                }}
+              >
                 #AGILE IS WHAT ATLEGILE IS ABOUT
               </Text>
             </View>
           </View>
 
           {/* Video section */}
-          <View style={{ height: "50vh", width: "80%", display: "flex", justifyContent: "center", alignSelf: "center" }}>
-            <Video
-              ref={video}
-              style={{ height: "50vh", width: "100%" }}
-              source={require("../../Global/images/SWT.mp4")}
-              useNativeControls
-              resizeMode="contain"
-              isLooping
-              onPlaybackStatusUpdate={setStatus}
-            />
-            <Text style={{ alignSelf: "flex-start" }}>
+          <View
+            style={{
+              width: "100%",
+              maxWidth: 800, // Adjust the max width as needed for your layout
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/cHC3nejpaNA?si=acyLRoAtfT-FYegx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <Text style={{ marginTop: 10 }}>
               Business Research and Youth Development Project
             </Text>
           </View>
 
-         {/* AMS core values section */}
-         <View style={{ marginTop: 20 }}>
+          {/* AMS core values section */}
+          <View style={{ marginTop: 20 }}>
             <Text
               style={{
                 color: COLORS.darkBlue,

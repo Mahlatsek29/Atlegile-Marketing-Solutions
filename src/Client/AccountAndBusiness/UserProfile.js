@@ -329,7 +329,7 @@ const UserProfile = () => {
             </Button>
 
             {/* Manage Business button */}
-            {userData?.talent || userData?.business ? (
+            {(userData?.talent || userData?.business) && (
               <Button
                 style={{
                   color: "#072840",
@@ -344,8 +344,7 @@ const UserProfile = () => {
               >
                 Manage Business
               </Button>
-            ) : // <></>
-            null}
+            )}
           </View>
         </View>
       </View>

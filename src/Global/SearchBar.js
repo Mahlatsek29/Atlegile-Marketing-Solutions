@@ -57,7 +57,7 @@ export default function SearchBar() {
           alignItems: "center",
         }}
       >
-        <Image
+        {/* <Image
           source={require("../../assets/logo.png")}
           alt="AMS COMPANY"
           style={{
@@ -68,7 +68,7 @@ export default function SearchBar() {
             height: 120,
             zIndex:900
           }}
-        />
+        /> */}
         <Box
           style={{
             padding: "10px",

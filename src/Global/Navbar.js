@@ -77,10 +77,11 @@ const Navbar = () => {
   };
 
   return (
-    
+    <Grid container sx={{display:'flex', justifyContent:'center', backgroundColor:'#003153',}}>
+    <Grid item xs={12} sm={10} md={9} >
     <Toolbar
       sx={{
-        backgroundColor:'#003153',
+       
         // color: "#252B42",
         color:'white',
         display: "flex",
@@ -318,7 +319,8 @@ const Navbar = () => {
         </View>
       )}
         </Toolbar>
-   
+    </Grid>
+    </Grid>
   );
 };
 

@@ -97,7 +97,7 @@ const Navbar = () => {
       </TouchableOpacity>
       {width < 600 ? (
         <TouchableOpacity onPress={toggleMenu}>
-          <Icon name={showMenu ? "bars" : "bars"} size={20} color="#252B42" />
+          <Icon name={showMenu ? "bars" : "bars"} size={20} color="white" />
         </TouchableOpacity>
       ) : (
         <View

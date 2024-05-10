@@ -207,7 +207,7 @@ export default function AboutUs() {
               flexDirection: "column",
             }}
           >
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/cHC3nejpaNA?si=acyLRoAtfT-FYegx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <iframe style={{ display: 'block', margin: '1em auto', width: '65vw', height: `${0.5625 * 65}vw`, alignSelf:'center' }} src="https://www.youtube.com/embed/cHC3nejpaNA?si=acyLRoAtfT-FYegx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             <Text style={{ marginTop: 10 }}>
               Business Research and Youth Development Project
             </Text>

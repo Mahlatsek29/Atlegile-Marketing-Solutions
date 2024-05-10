@@ -51,7 +51,7 @@ const FollowUs = () => {
           {isLargeDevice && (
             <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
               <Icon3 name="envelope" size={20} color="white" />
-              <Typography variant="subtitle2">attlgilesolutions@gmail.com</Typography>
+              <Typography variant="subtitle2">hey@sowheretoaccess.com</Typography>
             </Box>
           )}
           {isLargeDevice && (

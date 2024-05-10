@@ -674,7 +674,7 @@ export default function ProductDetails({ navigation, route }) {
                   style={{
                     width: "100%",
                     borderRadius: 10,
-                    backgroundColor: "blue",
+                    backgroundColor: "radial-gradient(circle at top left, rgba(255, 255, 255, 0.5) 0%, #D4AF37 10%, #B48811 40%, #A2790D 50%, #E7BE3A 90%)",
                   }}
                 />
                 {/* Button to navigate to the next image */}

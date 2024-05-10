@@ -540,7 +540,7 @@ const ProductCard = ({ productId }) => {
                   <Icon2 name="download" size={20} /> {product.quantity} Sales
                    </Typography> */}
                       <View style={{ display: "flex", flexDirection: "row" }}>
-                        <Typography
+                        {/* <Typography
                           variant="body2"
                           component="body2"
                           style={{
@@ -550,7 +550,7 @@ const ProductCard = ({ productId }) => {
                           }}
                         >
                           R{product.price}
-                        </Typography>
+                        </Typography> */}
                         <Typography
                           variant="body2"
                           component="body2"
@@ -818,7 +818,7 @@ const ProductCard = ({ productId }) => {
                         Sales
                       </Typography>
                       <View style={{ display: "flex", flexDirection: "row" }}>
-                        <Typography
+                        {/* <Typography
                           variant="subtitle2"
                           component="p"
                           style={{
@@ -829,7 +829,7 @@ const ProductCard = ({ productId }) => {
                           }}
                         >
                           R{product.price}
-                        </Typography>
+                        </Typography> */}
                         <Typography
                           variant="subtitle2"
                           component="p"

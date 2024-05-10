@@ -200,7 +200,7 @@ const Navbar = () => {
            
           }}
         >
-          <View style={{  flex:1, display:'flex',justifyContent:'space-between' }}>
+          <View style={{  flex:1, display:'flex',justifyContent:'space-between', color:'black' }}>
             <View style={{top: 20,}}>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
                 <Button

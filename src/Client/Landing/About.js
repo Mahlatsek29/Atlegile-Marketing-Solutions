@@ -6,6 +6,7 @@ import Navbar from "../../Global/Navbar";
 import { Footer } from "../../Global/Footer";
 import { COLORS } from "../../Global/Color";
 import { require } from "expo-asset";
+import { yellow } from "@mui/material/colors";
 
 export default function AboutUs() {
   // State to manage screen dimensions
@@ -340,14 +341,15 @@ export default function AboutUs() {
             </Text>
           </View>
         </View>
-      </View>
-      {/* Big lion image section */}
-      <View style={{ width: "100%", height: "100vh", alignItems: "center" }}>
+
         <Image
           source={require("../../Global/images/big-lion.svg")}
-          style={{ width: "100%", height: "100%", resizeMode: "contain" }}
+          style={{ width: "100%", height: `${0.5625 * 100}vw` ,display:'flex', alignItems:'flex-end'}}
         />
+
       </View>
+      {/* Big lion image section */}
+      
 
       {/* Included Footer component */}
       <Footer />

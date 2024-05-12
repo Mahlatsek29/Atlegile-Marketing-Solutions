@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
+import { View, Text, Image, StyleSheet, Dimensions,TouchableOpacity  } from "react-native";
 import lionImage from "../Global/images/BigLion..png";
 import logo from "../../assets/logo.png";
 
@@ -31,6 +31,43 @@ export function Footer() {
             customer base, driving sales of their exceptional products and
             services.
           </Text> */}
+           <View
+               
+               style={{
+                 display: "flex",
+                 flexDirection: "row",
+                 marginVertical: "15px",
+               }}
+             >
+               <TouchableOpacity
+                 style={{
+                   borderRadius: "15px",
+                   color: "#fff",
+                   backgroundColor: "#FFFFFF",
+                   marginRight: "5px",
+                   justifyContent: "center",
+                   alignItems: "center",
+                   paddingLeft: 3,
+                   paddingRight: 3,
+                 }}
+                 onPress={() => navigation.navigate('Shop')} // navigate to 'Shop' screen
+               >
+                 <Text style={styles.buttonText}>SHOP</Text>
+               </TouchableOpacity>
+               <TouchableOpacity
+                 style={{
+                   justifyContent: "center",
+                   alignItems: "center",
+                   backgroundColor: "#FFFFFF",
+                   paddingLeft: 3,
+                   paddingRight: 3,
+                   borderRadius: "15px",
+                 }}
+                 onPress={() => navigation.navigate('About')} // navigate to 'AboutUs' screen
+               >
+                 <Text style={styles.buttonText}>ABOUT US</Text>
+               </TouchableOpacity>
+                  </View>
           <Text style={styles.email}>atlegilemarketing.co.za</Text>
         </View>
         <View style={styles.section1Links}>

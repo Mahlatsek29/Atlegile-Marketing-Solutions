@@ -339,7 +339,7 @@ const ProductCard = ({ productId }) => {
                   }}
                 >
                   <View
-                    style={{ alignSelf: "center", width: 100, height: 100 }}
+                    style={{ alignSelf: "center", width: 100, height: 100, }}
                   >
                     <CardMedia
                       component="img"
@@ -354,6 +354,7 @@ const ProductCard = ({ productId }) => {
                         objectFit: "cover",
                         width: "100%",
                         height: "100%",
+                        backgroundColor:'white'
                       }}
                     />
                     {/* <Box
@@ -637,6 +638,7 @@ const ProductCard = ({ productId }) => {
                         objectFit: "cover",
                         width: "100%",
                         height: "100%",
+                        backgroundColor:'white'
                       }}
                     />
                     <Box

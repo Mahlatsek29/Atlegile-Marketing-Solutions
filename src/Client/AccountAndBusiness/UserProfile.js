@@ -155,8 +155,8 @@ const UserProfile = () => {
                   style={{ color: "gray", fontWeight: 600 }}
                   variant="h7"
                 >
-                  {userData?.alternativeContact.name}{" "}
-                  {userData?.alternativeContact.phone}
+                  {/* {userData?.alternativeContact.name}{" "}
+                  {userData?.alternativeContact.phone} */}
                 </Typography>
               </>
             )}

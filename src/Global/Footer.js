@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 import lionImage from "../Global/images/BigLion..png";
-import shadowLogo from "./images/Shadow_Logo.png";
+import logo from "../../assets/logo.png";
 
 export function Footer() {
   const [width, setWidth] = useState(Dimensions.get("window").width);
@@ -23,14 +23,14 @@ export function Footer() {
       <View style={styles.section1}>
         <View style={styles.section1Left}></View>
         <View style={styles.section1Right}>
-          <Image source={shadowLogo} style={styles.logo} resizeMode="contain" />
+          <Image source={logo} style={styles.logo} resizeMode="contain" />
           <Text style={styles.heading}>MARKETING SERVICES</Text>
-          <Text style={styles.description}>
+          {/* <Text style={styles.description}>
             Welcome to AMS, where we specialize in building beautiful brands,
             marketing African businesses, and connecting them with a global
             customer base, driving sales of their exceptional products and
             services.
-          </Text>
+          </Text> */}
           <Text style={styles.email}>atlegilemarketing.co.za</Text>
         </View>
         <View style={styles.section1Links}>
@@ -57,7 +57,8 @@ export function Footer() {
             />
           </View>
         </View>
-      ) : null} {/* Render the lion image only on screens wider than 600 */}
+      ) : null}
+      {/* Render the lion image only on screens wider than 600 */}
     </View>
   );
 }
@@ -85,8 +86,8 @@ const styles = StyleSheet.create({
     height: 63,
   },
   heading: {
-    marginBottom: 5, // Adjusted margin
-    fontSize: 16, // Reduced font size
+    marginBottom: 5,
+    fontSize: 16,
     fontWeight: "bold",
     color: "#FFF",
   },
@@ -103,7 +104,6 @@ const styles = StyleSheet.create({
     flex: 6,
     flexDirection: "column",
     justifyContent: "center",
-    // Adjusted margin and padding
     marginVertical: 5,
     paddingHorizontal: 5,
   },
@@ -111,11 +111,11 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   link1: {
-    marginBottom: 3, // Reduced margin
+    marginBottom: 3,
     color: "#FFF",
   },
   link2: {
-    marginBottom: 3, // Reduced margin
+    marginBottom: 3,
     color: "#FFF",
   },
   link3: {
@@ -147,15 +147,5 @@ const styles = StyleSheet.create({
   section2Image: {
     width: "100%",
     height: 250,
-  },
-  mobileSection: {
-    padding: 10,
-    alignItems: "center",
-  },
-  mobileSectionText: {
-    color: "#FFF",
-    textAlign: "center",
-    fontSize: 10,
-    lineHeight: 20,
   },
 });

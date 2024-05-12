@@ -229,7 +229,7 @@ const UserProfile = () => {
             </View>
 
             {/* Terms & Conditions button */}
-            <View
+            {/* <View
               style={{
                 border: "none",
                 display: "flex",
@@ -250,10 +250,10 @@ const UserProfile = () => {
               >
                 <Text>TERMS & CONDITIONS </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             {/* Privacy Policy button */}
-            <View
+            {/* <View
               style={{
                 border: "none",
                 display: "flex",
@@ -275,7 +275,7 @@ const UserProfile = () => {
               >
                 <Text>PRIVACY POLICY </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
 
           {/* Action buttons */}

@@ -212,7 +212,7 @@ const Landing = () => {
                   width: "66vw",
                 }}
               >
-                {/* First block of information */}
+                First block of information
                 <View
                   style={{
                     margin: 5,
@@ -509,10 +509,10 @@ const Landing = () => {
                       paddingTop: "4vh",
                     }}
                   >
-                    AFRICA'S BUSINESS <br /> SUPPORT
+                    {/* AFRICA'S BUSINESS <br /> SUPPORT */}
                   </Typography>
                   {/* Subheading */}
-                  <Typography
+                  {/* <Typography
                     variant="h6"
                     style={{
                       fontSize: "15px",
@@ -521,16 +521,16 @@ const Landing = () => {
                     }}
                   >
                     High Impact Enterprises + Skills Development Solutions
-                  </Typography>
+                  </Typography> */}
                   {/* Buttons */}
                   <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      marginVertical: "15px",
-                    }}
+                    // style={{
+                    //   display: "flex",
+                    //   flexDirection: "row",
+                    //   marginVertical: "15px",
+                    // }}
                   >
-                    <button
+                    {/* <button
                       style={{
                         borderRadius: "15px",
                         color: "#fff",
@@ -543,8 +543,8 @@ const Landing = () => {
                       }}
                     >
                       SHOP
-                    </button>
-                    <button
+                    </button> */}
+                    {/* <button
                       style={{
                         justifyContent: "center",
                         alignItems: "center",
@@ -554,69 +554,69 @@ const Landing = () => {
                       }}
                     >
                       ABOUT US
-                    </button>
+                    </button> */}
                   </View>
                 </View>
 
                 {/* Second block of information with multiple projects */}
                 <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexWrap: "wrap",
-                    width: "32vw",
-                  }}
+                  // style={{
+                  //   display: "flex",
+                  //   flexDirection: "row",
+                  //   alignItems: "center",
+                  //   justifyContent: "center",
+                  //   flexWrap: "wrap",
+                  //   width: "32vw",
+                  // }}
                 >
                   {/* Each project block with details */}
                   <View
-                    style={{
-                      border: "1px solid orange",
-                      padding: 5,
-                      marginRight: 5,
-                      justifyContent: "center",
-                      alignItems: "flex-start",
-                    }}
+                    // style={{
+                    //   border: "1px solid orange",
+                    //   padding: 5,
+                    //   marginRight: 5,
+                    //   justifyContent: "center",
+                    //   alignItems: "flex-start",
+                    // }}
                   >
-                    <Typography variant="h6" style={{ fontSize: "12px" }}>
+                    {/* <Typography variant="h6" style={{ fontSize: "12px" }}>
                       soWhereTo <br /> Township Business
                     </Typography>
                     <Typography style={{ color: "orange" }}>
                       VIEW PROJECT
-                    </Typography>
+                    </Typography> */}
                   </View>
                   <View
-                    style={{
-                      border: "1px solid orange",
-                      padding: 5,
-                      marginRight: 5,
-                      justifyContent: "center",
-                      alignItems: "flex-start",
-                    }}
+                    // style={{
+                    //   border: "1px solid orange",
+                    //   padding: 5,
+                    //   marginRight: 5,
+                    //   justifyContent: "center",
+                    //   alignItems: "flex-start",
+                    // }}
                   >
-                    <Typography variant="h6" style={{ fontSize: "12px" }}>
+                    {/* <Typography variant="h6" style={{ fontSize: "12px" }}>
                       soWhereTo <br /> Youth Training
                     </Typography>
                     <Typography style={{ color: "orange" }}>
                       VIEW PROJECT
-                    </Typography>
+                    </Typography> */}
                   </View>
                   <View
-                    style={{
-                      border: "1px solid orange",
-                      padding: 5,
-                      marginRight: 5,
-                      justifyContent: "center",
-                      alignItems: "flex-start",
-                    }}
+                    // style={{
+                    //   border: "1px solid orange",
+                    //   padding: 5,
+                    //   marginRight: 5,
+                    //   justifyContent: "center",
+                    //   alignItems: "flex-start",
+                    // }}
                   >
-                    <Typography variant="h6" style={{ fontSize: "12px" }}>
+                    {/* <Typography variant="h6" style={{ fontSize: "12px" }}>
                       soWhereTo <br /> @HUB Support
-                    </Typography>
-                    <Typography style={{ color: "orange" }}>
+                    </Typography> */}
+                    {/* <Typography style={{ color: "orange" }}>
                       VIEW PROJECT
-                    </Typography>
+                    </Typography> */}
                   </View>
                 </View>
               </View>

@@ -46,7 +46,7 @@ const logo = require("../../Global/images/cropped-AMS-Shadow-Queen-Logo_BNY-1320
 export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
-  const [paymentModal, setPaymentModal] = useState(false);
+  // const [paymentModal, setPaymentModal] = useState(false);
   const [businessAuthorization, setBusinessAuthorization] = useState(false);
   const [productName, setProductName] = useState("");
   const [otherBanner, setOtherBanner] = useState("");
@@ -127,31 +127,31 @@ export default function BusinessAccount() {
     setLoading(false); // to set loading to false
   }, [products]);
 
-  const handleSubscription = async (e) => {
-    e.preventDefault();
+  // const handleSubscription = async (e) => {
+  //   e.preventDefault();
 
-    try {
-      setLoading(true);
+  //   try {
+  //     setLoading(true);
 
-      const userRef = firestore.collection("Users").doc(user.uid);
+  //     const userRef = firestore.collection("Users").doc(user.uid);
 
-      // Get the existing user data
-      const userData = await userRef.get();
+  //     // Get the existing user data
+  //     const userData = await userRef.get();
 
-      // Update the subscribed field to true
-      await userRef.update({ subscribed: true });
+  //     // Update the subscribed field to true
+  //     await userRef.update({ subscribed: true });
 
-      // Ensure that setPaymentModal is called directly in the component
-      setPaymentModal(false);
+  //     // Ensure that setPaymentModal is called directly in the component
+  //     setPaymentModal(false);
 
-      // Reload the entire page
-      window.location.reload();
-    } catch (error) {
-      console.error("Error updating subscribed status:", error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     // Reload the entire page
+  //     window.location.reload();
+  //   } catch (error) {
+  //     console.error("Error updating subscribed status:", error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     // Define an asynchronous function to fetch product data
@@ -631,15 +631,15 @@ export default function BusinessAccount() {
   };
 
   // Function to handle saving payment information
-  const handleSavePaymentInfo = (e) => {
-    e.preventDefault();
+  // const handleSavePaymentInfo = (e) => {
+  //   e.preventDefault();
 
-    // Close the payment modal
-    setPaymentModal(false);
+  //   // Close the payment modal
+  //   setPaymentModal(false);
 
-    // Set the 'businessAuthorization' state to true, indicating successful authorization
-    setBusinessAuthorization(true);
-  };
+  //   // Set the 'businessAuthorization' state to true, indicating successful authorization
+  //   setBusinessAuthorization(true);
+  // };
 
   // useEffect hook to simulate a button click when the component mounts
   useEffect(() => {
@@ -1617,9 +1617,9 @@ export default function BusinessAccount() {
         </Paper>
       ) : null}
 
-      {paymentModal ? (
+
         // Overlay for the payment modal
-        <Paper
+        {/* <Paper
           elevation={0}
           variant="outlined"
           sx={{
@@ -1639,15 +1639,7 @@ export default function BusinessAccount() {
             },
           }}
         >
-          {/* Close button */}
-          <TouchableOpacity
-            onPress={() => setPaymentModal(false)}
-            style={{ alignSelf: "flex-end", padding: 5 }}
-          >
-            <Icon name="close-a" size={20} color="black" />
-          </TouchableOpacity>
-
-          {/* Logo section */}
+      
           <View
             style={{
               height: "50vh",
@@ -1668,7 +1660,7 @@ export default function BusinessAccount() {
             />
           </View>
 
-          {/* Payment information form */}
+         
           <View style={{ alignSelf: "center", width: "80%" }}>
             <Text
               style={{
@@ -1682,10 +1674,10 @@ export default function BusinessAccount() {
             </Text>
           </View>
 
-          {/* Form for entering payment details */}
+          
           <View style={{ width: "80%", alignSelf: "center" }}>
             <form onSubmit={handleSubscription}>
-              {/* Input for Card Holder's name */}
+              
               <TextField
                 id="standard-basic"
                 label="Card Holder"
@@ -1697,7 +1689,7 @@ export default function BusinessAccount() {
                 style={{ width: "100%" }}
               />
 
-              {/* Input for Card Number */}
+         
               <TextField
                 id="standard-basic"
                 label="Card Number"
@@ -1710,7 +1702,7 @@ export default function BusinessAccount() {
                 style={{ width: "100%" }}
               />
 
-              {/* Inputs for Expiry and CVV */}
+           
               <View
                 style={{
                   display: "flex",
@@ -1718,7 +1710,7 @@ export default function BusinessAccount() {
                   flexWrap: "wrap",
                 }}
               >
-                {/* Input for Expiry */}
+               
                 <TextField
                   id="standard-basic"
                   label="Expiry"
@@ -1731,7 +1723,7 @@ export default function BusinessAccount() {
                   style={{ width: "40%", marginRight: "15px" }}
                 />
 
-                {/* Input for CVV */}
+               
                 <TextField
                   id="standard-basic"
                   label="CVV"
@@ -1745,7 +1737,6 @@ export default function BusinessAccount() {
                 />
               </View>
 
-              {/* Continue button */}
               <Button
                 mode="contained"
                 type="submit"
@@ -1763,8 +1754,8 @@ export default function BusinessAccount() {
               </Button>
             </form>
           </View>
-        </Paper>
-      ) : null}
+        </Paper> */}
+
 
       {bannerModal ? (
         // Overlay for the banner modal
@@ -2375,7 +2366,8 @@ export default function BusinessAccount() {
                       <Text
                         style={{
                           display:
-                            userData && !userData.subscribed ? "none" : "flex", // Adjust based on user subscription
+                            // userData && !userData.subscribed ? "none" : "flex", // Adjust based on user subscription
+                           userData  ? "none" : "flex", // Adjust based on user subscription
                           fontWeight: 600,
                           fontSize: 14,
                           flexWrap: "wrap",
@@ -2421,7 +2413,8 @@ export default function BusinessAccount() {
                         paddingBottom: 10,
                         borderRadius: 20,
                         display:
-                          userData && userData.subscribed ? "none" : "flex",
+                          userData  ? "none" : "flex",
+                        // userData && userData.subscribed ? "none" : "flex",
                         marginTop: 5,
                         justifyContent: "center",
                         paddingLeft: 25,
@@ -2453,9 +2446,12 @@ export default function BusinessAccount() {
                             paddingRight: 25,
                             borderRadius: 20,
                             display:
-                              userData && !userData.subscribed
+                              !userData 
                                 ? "none"
                                 : "flex",
+                              //  userData && !userData.subscribed
+                              //   ? "none"
+                              //   : "flex",
                             marginRight: 20,
                           }}
                         >
@@ -2654,157 +2650,156 @@ export default function BusinessAccount() {
                 ) : null}
               </View>
               {userData && !userData.subscribed ? (
+                <></>
                 // Displayed when businessAuthorization is false whicn is when not subscibed
-                <View
-                  style={{
-                    top: "20%", // Use percentages for responsiveness
-                    position: "absolute",
-                    flex: 1,
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "flex-end",
-                    zIndex: 100,
-                    alignSelf: "flex-end",
-                    backgroundColor: "red",
-                  }}
-                >
-                  {/* Container for the subscription details */}
-                  <View
-                    style={{
-                      width: "auto", // Use percentages for responsiveness
-                      flexDirection: "column",
-                      borderWidth: 1,
-                      backgroundColor: "white",
-                      borderColor: "lightgray",
-                      padding: 20,
-                      alignItems: "center",
-                      minHeight: "50%", // Use percentages for responsiveness
-                      zIndex: 500,
-                    }}
-                  >
-                    {/* Business Plus logo */}
+                // <View
+                //   style={{
+                //     top: "20%", // Use percentages for responsiveness
+                //     position: "absolute",
+                //     flex: 1,
+                //     display: "flex",
+                //     justifyContent: "flex-end",
+                //     alignItems: "flex-end",
+                //     zIndex: 100,
+                //     alignSelf: "flex-end",
+                //     backgroundColor: "red",
+                //   }}
+                // >
+                 
+                //   <View
+                //     style={{
+                //       width: "auto", // Use percentages for responsiveness
+                //       flexDirection: "column",
+                //       borderWidth: 1,
+                //       backgroundColor: "white",
+                //       borderColor: "lightgray",
+                //       padding: 20,
+                //       alignItems: "center",
+                //       minHeight: "50%", // Use percentages for responsiveness
+                //       zIndex: 500,
+                //     }}
+                //   >
+                    
 
-                    <Image
-                      source={require("../../Global/images/BusinessPlus+.jpg")}
-                      alt="business plus logo"
-                      style={{
-                        width: "120px", // Use percentages for responsiveness
-                        aspectRatio: 10 / 7, // Maintain the aspect ratio
-                        marginBottom: 5,
-                        height: "40px",
-                      }}
-                    />
+                //     <Image
+                //       source={require("../../Global/images/BusinessPlus+.jpg")}
+                //       alt="business plus logo"
+                //       style={{
+                //         width: "120px", // Use percentages for responsiveness
+                //         aspectRatio: 10 / 7, // Maintain the aspect ratio
+                //         marginBottom: 5,
+                //         height: "40px",
+                //       }}
+                //     />
 
-                    <Text
-                      style={{
-                        color: "#252b42",
-                        fontWeight: "700",
-                        fontSize: 16, // Adjust font size as needed
-                        textAlign: "center",
-                      }}
-                    >
-                      {/* Business Plus subscription title */}
-                      <TouchableOpacity onPress={() => setPaymentModal(true)}>
-                        <Text>BUSINESS PLUS SUBSCRIPTION</Text>
-                      </TouchableOpacity>
-                    </Text>
-                    <Text
-                      style={{
-                        color: "#9e9e9e",
-                        fontWeight: "700",
-                        fontSize: 12, // Adjust font size as needed
-                        textAlign: "center",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                      }}
-                    >
-                      {/* Subscription description */}
-                      Unlock More Opportunities with Business Plus Subscription
-                    </Text>
-                    {/* Subscription pricing details */}
-                    <View
-                      style={{
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: "#23a6f0",
-                          fontWeight: "700",
-                          fontSize: 24, // Adjust font size as needed
-                          marginBottom: -5,
-                        }}
-                      >
-                        R150
-                      </Text>
-                      <Text
-                        style={{
-                          color: "#b8d9f7",
-                          fontWeight: "700",
-                          fontSize: 14, // Adjust font size as needed
-                        }}
-                      >
-                        Per Month
-                      </Text>
-                    </View>
-                    {/* Subscription features */}
-                    <View style={{ flexDirection: "column" }}>
-                      <Text
-                        style={{
-                          marginTop: 10,
-                          fontWeight: "700",
-                          fontSize: 12, // Adjust font size as needed
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        {/* Checkmark and feature */}
-                        <Ionicons
-                          name="checkmark-circle"
-                          size={20}
-                          color="#2dc071"
-                        />
-                        {"  "}List Unlimited Products
-                      </Text>
-                      <Text
-                        style={{
-                          fontWeight: "700",
-                          fontSize: 12, // Adjust font size as needed
-                          marginTop: 10,
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        {/* Checkmark and feature */}
-                        <Ionicons
-                          name="checkmark-circle"
-                          size={20}
-                          color="#2dc071"
-                        />
-                        {"  "}Priority Support
-                      </Text>
-                      <Text
-                        style={{
-                          fontWeight: "700",
-                          fontSize: 12, // Adjust font size as needed
-                          marginTop: 10,
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        {/* Checkmark and feature */}
-                        <Ionicons
-                          name="checkmark-circle"
-                          size={20}
-                          color="#2dc071"
-                        />
-                        {"  "}Exclusive Promotions
-                      </Text>
-                    </View>
-                  </View>
-                </View>
+                //     <Text
+                //       style={{
+                //         color: "#252b42",
+                //         fontWeight: "700",
+                //         fontSize: 16, // Adjust font size as needed
+                //         textAlign: "center",
+                //       }}
+                //     >
+                    
+                //       BUSINESS PLUS SUBSCRIPTION
+                //     </Text>
+                //     <Text
+                //       style={{
+                //         color: "#9e9e9e",
+                //         fontWeight: "700",
+                //         fontSize: 12, // Adjust font size as needed
+                //         textAlign: "center",
+                //         paddingTop: 10,
+                //         paddingBottom: 10,
+                //       }}
+                //     >
+                    
+                //       Unlock More Opportunities with Business Plus Subscription
+                //     </Text>
+                    
+                //     <View
+                //       style={{
+                //         flexDirection: "column",
+                //         alignItems: "center",
+                //         justifyContent: "center",
+                //       }}
+                //     >
+                //       <Text
+                //         style={{
+                //           color: "#23a6f0",
+                //           fontWeight: "700",
+                //           fontSize: 24, // Adjust font size as needed
+                //           marginBottom: -5,
+                //         }}
+                //       >
+                //         R150
+                //       </Text>
+                //       <Text
+                //         style={{
+                //           color: "#b8d9f7",
+                //           fontWeight: "700",
+                //           fontSize: 14, // Adjust font size as needed
+                //         }}
+                //       >
+                //         Per Month
+                //       </Text>
+                //     </View>
+                   
+                //     <View style={{ flexDirection: "column" }}>
+                //       <Text
+                //         style={{
+                //           marginTop: 10,
+                //           fontWeight: "700",
+                //           fontSize: 12, // Adjust font size as needed
+                //           flexDirection: "row",
+                //           alignItems: "center",
+                //         }}
+                //       >
+                      
+                //         <Ionicons
+                //           name="checkmark-circle"
+                //           size={20}
+                //           color="#2dc071"
+                //         />
+                //         List Unlimited Products
+                //       </Text>
+                //       <Text
+                //         style={{
+                //           fontWeight: "700",
+                //           fontSize: 12, // Adjust font size as needed
+                //           marginTop: 10,
+                //           flexDirection: "row",
+                //           alignItems: "center",
+                //         }}
+                //       >
+                       
+                //         <Ionicons
+                //           name="checkmark-circle"
+                //           size={20}
+                //           color="#2dc071"
+                //         />
+                //         Priority Support
+                //       </Text>
+                //       <Text
+                //         style={{
+                //           fontWeight: "700",
+                //           fontSize: 12, // Adjust font size as needed
+                //           marginTop: 10,
+                //           flexDirection: "row",
+                //           alignItems: "center",
+                //         }}
+                //       >
+                       
+                //         <Ionicons
+                //           name="checkmark-circle"
+                //           size={20}
+                //           color="#2dc071"
+                //         />
+                //         Exclusive Promotions
+                //       </Text>
+                //     </View>
+                //   </View>
+                // </View>
               ) : null}
               {/* ScrollView to allow vertical scrolling */}
               <ScrollView style={{ width: "100%" }}>

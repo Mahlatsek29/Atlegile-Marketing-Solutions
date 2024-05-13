@@ -697,7 +697,7 @@ export default function BusinessAccount() {
       await productRef.set({
         name,
         businessName,
-        company,
+        company:businessName,
         price: parseFloat(price),
         quantity,
         description,
@@ -1404,7 +1404,7 @@ export default function BusinessAccount() {
                 onChange={(e) => setBusinessName(e.target.value)}
                 required
               />
-              <TextField
+              {/* <TextField
                 fullWidth
                 id="outlined-number"
                 label="Company Name"
@@ -1417,7 +1417,7 @@ export default function BusinessAccount() {
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 required
-              />
+              /> */}
               <View
                 style={{
                   display: "flex",
@@ -2824,7 +2824,7 @@ export default function BusinessAccount() {
                       >
                         {/* Mapping through products to display individual product cards */}
 
-                        {products.length >= 3 ? (
+                        {products.length >= 1 ? (
                           products.map((product, index) => (
                             <View
                               key={product.id}
@@ -3118,8 +3118,7 @@ export default function BusinessAccount() {
                           ))
                         ) : (
                           <Typography variant="body1" component="p">
-                            There are less than 3 products available. Please add
-                            a minimum of 3 products.
+                            There are no products available. You can add up to 3 products.
                           </Typography>
                         )}
                       </View>
@@ -3133,7 +3132,7 @@ export default function BusinessAccount() {
                       >
                         {/* Mapping through products to display individual product cards */}
 
-                        {products.length >= 3 ? (
+                        {products.length >= 1 ? (
                           products.map((product, index) => (
                             <View
                               key={index}
@@ -3334,8 +3333,8 @@ export default function BusinessAccount() {
                           ))
                         ) : (
                           <Typography variant="body1" component="p">
-                            There are less than 3 products available. Please add
-                            a minimum of 3 products.
+                                There are no products available. You can add up to 3 products.
+                                {products.length}
                           </Typography>
                         )}
                       </View>

@@ -101,7 +101,7 @@ const Landing = () => {
                   fontSize: 34, // Font size 34
                 }}
               >
-                EXPLORE
+               ACCESS
               </Text>
             </Grid>
 
@@ -380,7 +380,7 @@ const Landing = () => {
                   fontSize: 34, // Font size 34
                 }}
               >
-                EXPLORE
+               ACCESS
               </Text>
             </Grid>
 

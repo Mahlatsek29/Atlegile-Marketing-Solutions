@@ -24,7 +24,7 @@ export function Footer() {
         <View style={styles.section1Left}></View>
         <View style={styles.section1Right}>
           <Image source={logo} style={styles.logo} resizeMode="contain" />
-          <Text style={styles.heading}>MARKETING SERVICES</Text>
+          <Text style={styles.heading}>SoWhereTo Access</Text>
           {/* <Text style={styles.description}>
             Welcome to AMS, where we specialize in building beautiful brands,
             marketing African businesses, and connecting them with a global

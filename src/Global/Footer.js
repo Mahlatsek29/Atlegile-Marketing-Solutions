@@ -68,7 +68,7 @@ export function Footer() {
                  <Text style={styles.buttonText}>ABOUT US</Text>
                </TouchableOpacity>
                   </View>
-          <Text style={styles.email}>atlegilemarketing.co.za</Text>
+          <Text style={styles.email}>hey@sowheretoaccess.com</Text>
         </View>
         <View style={styles.section1Links}>
           <View style={styles.linksContainer}>

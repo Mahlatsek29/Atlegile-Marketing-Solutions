@@ -47,42 +47,43 @@ export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
   // const [paymentModal, setPaymentModal] = useState(false);
-  const [businessAuthorization, setBusinessAuthorization] = useState(false);
+  // const [businessAuthorization, setBusinessAuthorization] = useState(false);
   const [productName, setProductName] = useState("");
   const [otherBanner, setOtherBanner] = useState("");
   const [priceOriginal, setPriceOriginal] = useState(0);
   const [priceDiscount, setPriceDiscount] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [image, setImage] = useState(null);
-  const fileInputRef = useRef(null);
+  // const fileInputRef = useRef(null);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const [productType, setProductType] = useState("");
-  const [other, setOther] = useState("");
+  // const [productType, setProductType] = useState("");
+  // const [other, setOther] = useState("");
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [addProduct, setAddProduct] = useState(false);
-  const screenWidth = Dimensions.get("window").width;
-  const screenHeight = Dimensions.get("window").height;
-  const [cardHolder, setCardHolder] = useState("");
-  const [cardNumber, setCardNumber] = useState();
-  const [expiery, setExpiery] = useState();
-  const [cvv, setCvv] = useState();
+  // const screenWidth = Dimensions.get("window").width;
+  // const screenHeight = Dimensions.get("window").height;
+  // const [cardHolder, setCardHolder] = useState("");
+  // const [cardNumber, setCardNumber] = useState();
+  // const [expiery, setExpiery] = useState();
+  // const [cvv, setCvv] = useState();
   const emptyOption = [""];
-  const [company, setCompany] = useState("");
+  // const [company, setCompany] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [selectedProductCategory, setProductCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [cartData, setCartData] = useState([]);
   const [user, setUser] = useState(null);
-  const [checkOrder, setCheckOrder] = useState(false);
+  // const [checkOrder, setCheckOrder] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [banner, setBanner] = useState([]);
-  const [currentBanner, setCurrentBanner] = useState(null);
+  // const [currentBanner, setCurrentBanner] = useState(null);
   const [userData, setUserData] = useState(null);
   const [length, setLength] = useState(null);
   const [width, setWidth] = useState(null);
+  const [screenWidth, setScreenWidth] = useState(null);
   const [height, setHeight] = useState(null);
   const [weight, setWeight] = useState(null);
   const [products, setProducts] = useState([]);
@@ -93,11 +94,12 @@ export default function BusinessAccount() {
   const [isMobile, setIsMobile] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [review, setReview] = useState({});
+  const [docToEdit, setDoctoEdit]=useState(null)
   const navigation = useNavigation();
 
   useEffect(() => {
     const handleDimensionsChange = ({ window }) => {
-      setWidth(window.width);
+      setScreenWidth(window.width);
     };
 
     Dimensions.addEventListener("change", handleDimensionsChange);
@@ -186,10 +188,13 @@ export default function BusinessAccount() {
 
         // Iterate through each document in the querySnapshot
         querySnapshot.forEach((doc) => {
-          // Push the data of each document into the productsData array
-          productsData.push(doc.data());
-        });
-
+        // Get the data of each document
+        const docData = doc.data();
+        // Add the document ID to the data
+        docData.id = doc.id;
+        // Push the data of each document into the productsData array
+        productsData.push(docData);
+      });
         console.log("product data is: ", productsData);
 
         // Update the state with the fetched product data
@@ -214,66 +219,66 @@ export default function BusinessAccount() {
     };
   }, [userData]); // Include other dependencies if needed
 
-  useEffect(() => {
-    // Define an asynchronous function to fetch product data
-    const fetchProductData = async () => {
-      // Check if the user is authenticated
-      if (!user) {
-        console.error("User not authenticated.");
-        return;
-      }
+  // useEffect(() => {
+  //   // Define an asynchronous function to fetch product data
+  //   const fetchProductData = async () => {
+  //     // Check if the user is authenticated
+  //     if (!user) {
+  //       console.error("User not authenticated.");
+  //       return;
+  //     }
 
-      // Get a reference to the "Products" collection in Firestore
-      const productsCollectionRef = collection(firestore, "Products");
+  //     // Get a reference to the "Products" collection in Firestore
+  //     const productsCollectionRef = collection(firestore, "Products");
 
-      // Construct a query to filter products by businessName from userData
-      const q = query(
-        productsCollectionRef,
-        where("company", "==", userData.company)
-      );
+  //     // Construct a query to filter products by businessName from userData
+  //     const q = query(
+  //       productsCollectionRef,
+  //       where("company", "==", userData.company)
+  //     );
 
-      try {
-        // Execute the query and get a snapshot of the results
-        const querySnapshot = await getDocs(q);
+  //     try {
+  //       // Execute the query and get a snapshot of the results
+  //       const querySnapshot = await getDocs(q);
 
-        // Check if there are any matching products
-        if (querySnapshot.empty) {
-          console.log("No products found for the given company name.");
-          return;
-        }
+  //       // Check if there are any matching products
+  //       if (querySnapshot.empty) {
+  //         console.log("No products found for the given company name.");
+  //         return;
+  //       }
 
-        // Initialize an array to store fetched product data
-        const productsData = [];
+  //       // Initialize an array to store fetched product data
+  //       const productsData = [];
 
-        // Iterate through each document in the querySnapshot
-        querySnapshot.forEach((doc) => {
-          // Push the data of each document into the productsData array
-          productsData.push(doc.data());
-        });
+  //       // Iterate through each document in the querySnapshot
+  //       querySnapshot.forEach((doc) => {
+  //         // Push the data of each document into the productsData array
+  //         productsData.push(doc.data());
+  //       });
 
-        console.log("product data is: ", productsData);
+  //       console.log("product data is: ", productsData);
 
-        // Update the state with the fetched product data
-        setProducts(productsData);
-      } catch (error) {
-        // Handle errors that may occur during the data fetching process
-        console.error("Error fetching product data:", error);
-      }
-    };
+  //       // Update the state with the fetched product data
+  //       setProducts(productsData);
+  //     } catch (error) {
+  //       // Handle errors that may occur during the data fetching process
+  //       console.error("Error fetching product data:", error);
+  //     }
+  //   };
 
-    // Include both userData and productsCollectionRef in the dependency array
-    // This will trigger the effect whenever either of them changes
-    const productsCollectionRef = collection(firestore, "Products");
-    fetchProductData();
-    const unsubscribe = onSnapshot(productsCollectionRef, () =>
-      fetchProductData()
-    );
+  //   // Include both userData and productsCollectionRef in the dependency array
+  //   // This will trigger the effect whenever either of them changes
+  //   const productsCollectionRef = collection(firestore, "Products");
+  //   fetchProductData();
+  //   const unsubscribe = onSnapshot(productsCollectionRef, () =>
+  //     fetchProductData()
+  //   );
 
-    return () => {
-      // Cleanup the subscription when the component unmounts
-      unsubscribe();
-    };
-  }, [userData]); // Include other dependencies if needed
+  //   return () => {
+  //     // Cleanup the subscription when the component unmounts
+  //     unsubscribe();
+  //   };
+  // }, [userData]); // Include other dependencies if needed
 
   useEffect(() => {
     // Get the authentication instance
@@ -559,12 +564,7 @@ export default function BusinessAccount() {
     }
   };
 
-  // Function to handle saving edited product (closing the edit modal)
-  const handleSaveEditProduct = () => {
-    // Close the edit modal by setting its state to false
-    setEditModal(false);
-  };
-
+  
   // Function to handle saving a new banner
   const handleSaveAddBanner = async (e) => {
     e.preventDefault();
@@ -692,12 +692,12 @@ export default function BusinessAccount() {
 
       // Get the autogenerated product ID
       const productId = productRef.id;
-
+     
       // Store the data in Firestore with autogenerated product ID
       await productRef.set({
         name,
         businessName,
-        company:businessName,
+        company: businessName,
         price: parseFloat(price),
         quantity,
         description,
@@ -742,6 +742,50 @@ export default function BusinessAccount() {
       setLoading(false);
     }
   };
+
+ useEffect(() => {
+  if (docToEdit) {
+    setEditModal(true);
+    // console.log("hello there");
+  }
+}, [docToEdit]);
+
+  
+// Function to handle saving edited product (closing the edit modal)
+  const handleSaveEditProduct = async (e) => {
+  e.preventDefault();
+  const db = firebase.firestore();
+   console.log("hey there")
+  const updatedFields = {
+    name,
+    businessName,
+    company: businessName,
+    price: parseFloat(price),
+    quantity,
+    description,
+    selectedProductCategory,
+    brand,
+    height: parseFloat(height), // convert from string typo to a number
+    length: parseFloat(length), // convert from string typo to a number
+    width: parseFloat(width), // convert from string typo to a number
+    weight: parseFloat(weight), // convert from string typo to a number
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+ console.log("updatedFields: ",updatedFields)
+  const updateObject = Object.fromEntries(
+    Object.entries(updatedFields).filter(([_, value]) => value !== undefined)
+  );
+
+  try {
+    await db.collection('Products').doc(docToEdit).update(updateObject);
+    console.log('Product updated successfully');
+  } catch (error) {
+    console.error('Error updating product: ', error);
+  }
+
+  setEditModal(false);
+};
+
 
   return (
     <>
@@ -990,31 +1034,43 @@ export default function BusinessAccount() {
           </ModalOverflow>
         </Modal>
       </React.Fragment>
-
       {editModal ? (
         // View for the edit modal overlay
-        <View
-          style={{
-            top: 65,
-            position: "absolute",
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
+        <Paper
+          elevation={0}
+          variant="outlined"
+          sx={{
+            // top: 65,
+            position: "fixed",
+            minWidth: 280,
+            height: "auto",
+            zIndex: 9999,
             display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "flex-end", //to be at the left side of the screen
-            zIndex: 9999, // for hovering over
-            alignSelf: "flex-end",
+            flexDirection: "column", // Make the container a column
+            justifyContent: "space-between", // Push the content to the end
+            alignSelf: "center",
+            width: "90%",
+            "@media (min-width: 600px)": {
+              alignSelf: "flex-end",
+              width: 400,
+            },
           }}
         >
+          <TouchableOpacity
+            onPress={() => setEditModal(false)}
+            style={{ alignSelf: "flex-end", padding: 5 }}
+          >
+            <Icon name="close-a" size={20} color="black" />
+          </TouchableOpacity>
           {/* Main container for the edit modal */}
           <View
             style={{
-              height: "100vh",
+              // height: "80vh",
               backgroundColor: "white",
             }}
           >
             {/* Logo section */}
-            <View
+            {/* <View
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -1030,9 +1086,9 @@ export default function BusinessAccount() {
                   resizeMode: "contain",
                 }}
               />
-            </View>
+            </View> */}
             {/* Form section for editing product details */}
-            <View style={{ height: "60%", paddingRight: 40, paddingLeft: 40 }}>
+            <View style={{ paddingRight: 40, paddingLeft: 40 }}>
               {/* Title for the edit modal */}
               <Text
                 style={{
@@ -1045,7 +1101,7 @@ export default function BusinessAccount() {
               </Text>
               <View>
                 {/* Image upload and display section */}
-                <div
+                {/* <div
                   className="uploadContainer"
                   style={{
                     display: "flex",
@@ -1053,7 +1109,7 @@ export default function BusinessAccount() {
                     justifyContent: "center",
                   }}
                 >
-                  {/* Displaying uploaded images or a placeholder */}
+                 
                   {images.length > 0 ? (
                     images.map((image, index) => (
                       <img
@@ -1081,7 +1137,7 @@ export default function BusinessAccount() {
                     />
                   )}
 
-                  {/* Input for selecting images */}
+                
                   <label
                     htmlFor="imageInput"
                     className="add"
@@ -1104,151 +1160,256 @@ export default function BusinessAccount() {
                     onChange={handleFileChange}
                     multiple // Allow selecting multiple files
                   />
-                </div>
+                </div> */}
 
                 {/* Form for editing product details */}
-                <form onSubmit={(e) => setEditModal(false)}>
-                  {/* Input for product name */}
-                  <TextField
-                    fullWidth
-                    required
-                    type="text"
-                    variant="standard"
-                    id="outlined-number"
-                    label="Name"
-                    value={productName}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => setProductName(e.target.value)}
-                    style={{ width: "100%", marginTop: "10px" }}
-                  />
-                  {/* Section for price and quantity inputs */}
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    {/* Input for product price */}
+                <View style={{  alignSelf: "center" }}>
+                  <form onSubmit={handleSaveEditProduct}>
+                    {/* Name input */}
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Name"
+                      type="text"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{ width: "100%" }}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    />
+                    {/* Business Name input */}
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Business Name"
+                      type="text"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{ width: "100%" }}
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                      required
+                    />
+                    {/* <TextField
+                     fullWidth
+                     id="outlined-number"
+                     label="Company Name"
+                     type="text"
+                     variant="standard"
+                     InputLabelProps={{
+                     shrink: true,
+                     }}
+                     style={{ width: "100%" }}
+                     value={company}
+                     onChange={(e) => setCompany(e.target.value)}
+                     required
+                     /> */}
                     <View
                       style={{
                         display: "flex",
-                        flexDirection: "column",
+                        flexDirection: "row",
+                        flexWrap: "wrap",
                       }}
                     >
                       <TextField
                         fullWidth
-                        required
-                        type="text"
-                        variant="standard"
                         id="outlined-number"
-                        label="Price"
-                        value={price}
+                        label="length_cm"
+                        type="number"
+                        variant="standard"
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        onChange={(e) => setPrice(e.target.value)}
-                        style={{ width: "100%", marginTop: "10px" }}
+                        style={{
+                          width: "45%",
+                          marginRight: "10px",
+                        }}
+                        value={length}
+                        onChange={(e) => setLength(e.target.value)}
+                        required
                       />
-                      {/* Information about additional fees */}
-                      <Text style={{ fontSize: 12, paddingRight: 10 }}>
-                        There will be VAT, Service Fee and <br /> Delivery Fees
-                        added to this amount.
-                      </Text>
-                    </View>
-                    {/* Input for product quantity */}
-                    <View>
                       <TextField
                         fullWidth
-                        required
-                        type="text"
-                        variant="standard"
                         id="outlined-number"
-                        label="Quantity"
-                        value={quantity}
+                        label="width_cm"
+                        type="number"
+                        variant="standard"
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        onChange={(e) => setQuantity(e.target.value)}
-                        style={{ width: "100%", marginTop: "10px" }}
+                        style={{
+                          width: "45%",
+                          marginRight: "10px",
+                        }}
+                        value={width}
+                        onChange={(e) => setWidth(e.target.value)}
+                        required
+                      />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="height_cm"
+                        type="number"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{
+                          width: "45%",
+                          marginRight: "10px",
+                        }}
+                        value={height}
+                        onChange={(e) => setHeight(e.target.value)}
+                        required
+                      />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="weight_kg"
+                        type="number"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{ width: "45%" }}
+                        value={weight}
+                        onChange={(e) => setWeight(e.target.value)}
+                        required
                       />
                     </View>
-                  </View>
-                  <br />
-                  {/* Input for product description */}
-                  <TextField
-                    fullWidth
-                    required
-                    type="text"
-                    variant="standard"
-                    id="outlined-number"
-                    label="Description"
-                    value={description}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => setDescription(e.target.value)}
-                    style={{ width: "100%", marginTop: "10px" }}
-                  />
-                  {/* Input for product type */}
-                  <TextField
-                    fullWidth
-                    required
-                    type="text"
-                    variant="standard"
-                    id="outlined-number"
-                    label="Type of Product"
-                    value={productType}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => setProductType(e.target.value)}
-                    style={{ width: "100%", marginTop: "10px" }}
-                  />
-                  {/* Input for any other relevant information */}
-                  <TextField
-                    fullWidth
-                    required
-                    type="text"
-                    variant="standard"
-                    id="outlined-number"
-                    label="Other"
-                    value={other}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => setOther(e.target.value)}
-                    style={{ width: "100%", marginTop: "10px" }}
-                  />
+                    {/* Price and Quantity inputs */}
+                    <View style={{ display: "flex", flexDirection: "row" }}>
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="Price"
+                        type="text"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{
+                          width: "45%",
+                          marginRight: "10px",
+                        }}
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        required
+                      />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="Quantity"
+                        type="text"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{ width: "45%" }}
+                        value={quantity}
+                        onChange={(e) => setQuantity(e.target.value)}
+                        required
+                      />
+                    </View>
+                    {/* Description input */}
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Description"
+                      type="text"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{
+                        width: "100%",
+                        marginBottom: "10px",
+                      }}
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      required
+                    />
+                    {/* Product Category input */}
+                    <TextField
+                      fullWidth
+                      id="outlined-select-currency"
+                      select
+                      label="Product Category"
+                      variant="standard"
+                      value={selectedProductCategory}
+                      onChange={(e) => setProductCategory(e.target.value)}
+                      style={{
+                        width: "100%",
+                        textAlign: "left",
+                      }}
+                      required
+                    >
+                      {productCategory.map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                    {/* Brand input */}
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Brand"
+                      type="text"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{
+                        width: "100%",
+                        marginLeft: "5px",
+                      }}
+                      value={brand}
+                      onChange={(e) => setBrand(e.target.value)}
+                      required
+                    />
 
-                  {/* Button to save the edited product */}
-                  <Button
-                    onPress={handleSaveEditProduct}
-                    style={{
-                      color: "white",
-                      fontWeight: "600",
-                      fontSize: 14,
-                      backgroundColor: "#072840",
-                      borderRadius: 20,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      textAlign: "center",
-                      padding: 10,
-                      marginTop: 20,
-                    }}
-                    type="submit"
-                  >
-                    <Text style={{ color: "white" }}>SAVE</Text>
-                  </Button>
-                </form>
+                    {/* Loading indicator or Continue button */}
+                    {loading ? (
+                      // <Box
+                      //   sx={{
+                      //     display: "flex",
+                      //     justifyContent: "center",
+                      //     alignItems: "center",
+                      //     height: "1vh",
+                      //   }}
+                      // >
+                      //   <CircularProgress />
+                      // </Box>
+                      <View></View>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        style={{
+                          width: "100%",
+                          height: "10%",
+                          marginTop: "20px",
+                          marginBottom: "10px",
+                          background: "#072840",
+                          borderRadius: "30px",
+                        }}
+                        type="submit"
+                      >
+                        Continue
+                      </Button>
+                    )}
+                  </form>
+                </View>
               </View>
             </View>
           </View>
-        </View>
+        </Paper>
       ) : null}
-
       {addProduct ? (
         // Overlay for the add product modal
         <Paper
@@ -1616,10 +1777,8 @@ export default function BusinessAccount() {
           </View>
         </Paper>
       ) : null}
-
-
-        // Overlay for the payment modal
-        {/* <Paper
+      // Overlay for the payment modal
+      {/* <Paper
           elevation={0}
           variant="outlined"
           sx={{
@@ -1755,8 +1914,6 @@ export default function BusinessAccount() {
             </form>
           </View>
         </Paper> */}
-
-
       {bannerModal ? (
         // Overlay for the banner modal
         <Paper
@@ -2367,7 +2524,7 @@ export default function BusinessAccount() {
                         style={{
                           display:
                             // userData && !userData.subscribed ? "none" : "flex", // Adjust based on user subscription
-                           userData  ? "none" : "flex", // Adjust based on user subscription
+                            userData ? "none" : "flex", // Adjust based on user subscription
                           fontWeight: 600,
                           fontSize: 14,
                           flexWrap: "wrap",
@@ -2412,8 +2569,7 @@ export default function BusinessAccount() {
                         paddingTop: 10,
                         paddingBottom: 10,
                         borderRadius: 20,
-                        display:
-                          userData  ? "none" : "flex",
+                        display: userData ? "none" : "flex",
                         // userData && userData.subscribed ? "none" : "flex",
                         marginTop: 5,
                         justifyContent: "center",
@@ -2445,13 +2601,10 @@ export default function BusinessAccount() {
                             paddingLeft: 25,
                             paddingRight: 25,
                             borderRadius: 20,
-                            display:
-                              !userData 
-                                ? "none"
-                                : "flex",
-                              //  userData && !userData.subscribed
-                              //   ? "none"
-                              //   : "flex",
+                            display: !userData ? "none" : "flex",
+                            //  userData && !userData.subscribed
+                            //   ? "none"
+                            //   : "flex",
                             marginRight: 20,
                           }}
                         >
@@ -2651,156 +2804,155 @@ export default function BusinessAccount() {
               </View>
               {userData && !userData.subscribed ? (
                 <></>
-                // Displayed when businessAuthorization is false whicn is when not subscibed
-                // <View
-                //   style={{
-                //     top: "20%", // Use percentages for responsiveness
-                //     position: "absolute",
-                //     flex: 1,
-                //     display: "flex",
-                //     justifyContent: "flex-end",
-                //     alignItems: "flex-end",
-                //     zIndex: 100,
-                //     alignSelf: "flex-end",
-                //     backgroundColor: "red",
-                //   }}
-                // >
-                 
-                //   <View
-                //     style={{
-                //       width: "auto", // Use percentages for responsiveness
-                //       flexDirection: "column",
-                //       borderWidth: 1,
-                //       backgroundColor: "white",
-                //       borderColor: "lightgray",
-                //       padding: 20,
-                //       alignItems: "center",
-                //       minHeight: "50%", // Use percentages for responsiveness
-                //       zIndex: 500,
-                //     }}
-                //   >
-                    
+              ) : // Displayed when businessAuthorization is false whicn is when not subscibed
+              // <View
+              //   style={{
+              //     top: "20%", // Use percentages for responsiveness
+              //     position: "absolute",
+              //     flex: 1,
+              //     display: "flex",
+              //     justifyContent: "flex-end",
+              //     alignItems: "flex-end",
+              //     zIndex: 100,
+              //     alignSelf: "flex-end",
+              //     backgroundColor: "red",
+              //   }}
+              // >
 
-                //     <Image
-                //       source={require("../../Global/images/BusinessPlus+.jpg")}
-                //       alt="business plus logo"
-                //       style={{
-                //         width: "120px", // Use percentages for responsiveness
-                //         aspectRatio: 10 / 7, // Maintain the aspect ratio
-                //         marginBottom: 5,
-                //         height: "40px",
-                //       }}
-                //     />
+              //   <View
+              //     style={{
+              //       width: "auto", // Use percentages for responsiveness
+              //       flexDirection: "column",
+              //       borderWidth: 1,
+              //       backgroundColor: "white",
+              //       borderColor: "lightgray",
+              //       padding: 20,
+              //       alignItems: "center",
+              //       minHeight: "50%", // Use percentages for responsiveness
+              //       zIndex: 500,
+              //     }}
+              //   >
 
-                //     <Text
-                //       style={{
-                //         color: "#252b42",
-                //         fontWeight: "700",
-                //         fontSize: 16, // Adjust font size as needed
-                //         textAlign: "center",
-                //       }}
-                //     >
-                    
-                //       BUSINESS PLUS SUBSCRIPTION
-                //     </Text>
-                //     <Text
-                //       style={{
-                //         color: "#9e9e9e",
-                //         fontWeight: "700",
-                //         fontSize: 12, // Adjust font size as needed
-                //         textAlign: "center",
-                //         paddingTop: 10,
-                //         paddingBottom: 10,
-                //       }}
-                //     >
-                    
-                //       Unlock More Opportunities with Business Plus Subscription
-                //     </Text>
-                    
-                //     <View
-                //       style={{
-                //         flexDirection: "column",
-                //         alignItems: "center",
-                //         justifyContent: "center",
-                //       }}
-                //     >
-                //       <Text
-                //         style={{
-                //           color: "#23a6f0",
-                //           fontWeight: "700",
-                //           fontSize: 24, // Adjust font size as needed
-                //           marginBottom: -5,
-                //         }}
-                //       >
-                //         R150
-                //       </Text>
-                //       <Text
-                //         style={{
-                //           color: "#b8d9f7",
-                //           fontWeight: "700",
-                //           fontSize: 14, // Adjust font size as needed
-                //         }}
-                //       >
-                //         Per Month
-                //       </Text>
-                //     </View>
-                   
-                //     <View style={{ flexDirection: "column" }}>
-                //       <Text
-                //         style={{
-                //           marginTop: 10,
-                //           fontWeight: "700",
-                //           fontSize: 12, // Adjust font size as needed
-                //           flexDirection: "row",
-                //           alignItems: "center",
-                //         }}
-                //       >
-                      
-                //         <Ionicons
-                //           name="checkmark-circle"
-                //           size={20}
-                //           color="#2dc071"
-                //         />
-                //         List Unlimited Products
-                //       </Text>
-                //       <Text
-                //         style={{
-                //           fontWeight: "700",
-                //           fontSize: 12, // Adjust font size as needed
-                //           marginTop: 10,
-                //           flexDirection: "row",
-                //           alignItems: "center",
-                //         }}
-                //       >
-                       
-                //         <Ionicons
-                //           name="checkmark-circle"
-                //           size={20}
-                //           color="#2dc071"
-                //         />
-                //         Priority Support
-                //       </Text>
-                //       <Text
-                //         style={{
-                //           fontWeight: "700",
-                //           fontSize: 12, // Adjust font size as needed
-                //           marginTop: 10,
-                //           flexDirection: "row",
-                //           alignItems: "center",
-                //         }}
-                //       >
-                       
-                //         <Ionicons
-                //           name="checkmark-circle"
-                //           size={20}
-                //           color="#2dc071"
-                //         />
-                //         Exclusive Promotions
-                //       </Text>
-                //     </View>
-                //   </View>
-                // </View>
-              ) : null}
+              //     <Image
+              //       source={require("../../Global/images/BusinessPlus+.jpg")}
+              //       alt="business plus logo"
+              //       style={{
+              //         width: "120px", // Use percentages for responsiveness
+              //         aspectRatio: 10 / 7, // Maintain the aspect ratio
+              //         marginBottom: 5,
+              //         height: "40px",
+              //       }}
+              //     />
+
+              //     <Text
+              //       style={{
+              //         color: "#252b42",
+              //         fontWeight: "700",
+              //         fontSize: 16, // Adjust font size as needed
+              //         textAlign: "center",
+              //       }}
+              //     >
+
+              //       BUSINESS PLUS SUBSCRIPTION
+              //     </Text>
+              //     <Text
+              //       style={{
+              //         color: "#9e9e9e",
+              //         fontWeight: "700",
+              //         fontSize: 12, // Adjust font size as needed
+              //         textAlign: "center",
+              //         paddingTop: 10,
+              //         paddingBottom: 10,
+              //       }}
+              //     >
+
+              //       Unlock More Opportunities with Business Plus Subscription
+              //     </Text>
+
+              //     <View
+              //       style={{
+              //         flexDirection: "column",
+              //         alignItems: "center",
+              //         justifyContent: "center",
+              //       }}
+              //     >
+              //       <Text
+              //         style={{
+              //           color: "#23a6f0",
+              //           fontWeight: "700",
+              //           fontSize: 24, // Adjust font size as needed
+              //           marginBottom: -5,
+              //         }}
+              //       >
+              //         R150
+              //       </Text>
+              //       <Text
+              //         style={{
+              //           color: "#b8d9f7",
+              //           fontWeight: "700",
+              //           fontSize: 14, // Adjust font size as needed
+              //         }}
+              //       >
+              //         Per Month
+              //       </Text>
+              //     </View>
+
+              //     <View style={{ flexDirection: "column" }}>
+              //       <Text
+              //         style={{
+              //           marginTop: 10,
+              //           fontWeight: "700",
+              //           fontSize: 12, // Adjust font size as needed
+              //           flexDirection: "row",
+              //           alignItems: "center",
+              //         }}
+              //       >
+
+              //         <Ionicons
+              //           name="checkmark-circle"
+              //           size={20}
+              //           color="#2dc071"
+              //         />
+              //         List Unlimited Products
+              //       </Text>
+              //       <Text
+              //         style={{
+              //           fontWeight: "700",
+              //           fontSize: 12, // Adjust font size as needed
+              //           marginTop: 10,
+              //           flexDirection: "row",
+              //           alignItems: "center",
+              //         }}
+              //       >
+
+              //         <Ionicons
+              //           name="checkmark-circle"
+              //           size={20}
+              //           color="#2dc071"
+              //         />
+              //         Priority Support
+              //       </Text>
+              //       <Text
+              //         style={{
+              //           fontWeight: "700",
+              //           fontSize: 12, // Adjust font size as needed
+              //           marginTop: 10,
+              //           flexDirection: "row",
+              //           alignItems: "center",
+              //         }}
+              //       >
+
+              //         <Ionicons
+              //           name="checkmark-circle"
+              //           size={20}
+              //           color="#2dc071"
+              //         />
+              //         Exclusive Promotions
+              //       </Text>
+              //     </View>
+              //   </View>
+              // </View>
+              null}
               {/* ScrollView to allow vertical scrolling */}
               <ScrollView style={{ width: "100%" }}>
                 {/* Container view for the product cards */}
@@ -2814,7 +2966,7 @@ export default function BusinessAccount() {
                   <View style={{ flex: 1 }}>
                     {/* Flex container for wrapping the product cards */}
 
-                    {width < 600 ? (
+                    {screenWidth < 600 ? (
                       <View
                         style={{
                           flexDirection: "row",
@@ -2933,15 +3085,21 @@ export default function BusinessAccount() {
 
                                     {/* Typography component for displaying the product name */}
                                     {/* Typography component for displaying the product name */}
-                                    <Typography variant="body2" component="body2"
-                                    style={{
+                                    <Typography
+                                      variant="body2"
+                                      component="body2"
+                                      style={{
                                         color: "black",
                                         wordWrap: "break-word",
                                         display: "inline",
-                                      }}>
-                        {product.name && product.name.slice(0, 15)}
-                        {product.name && product.name.length < 50 ? "" : "..."}
-                      </Typography>
+                                      }}
+                                    >
+                                      {product.name &&
+                                        product.name.slice(0, 15)}
+                                      {product.name && product.name.length < 50
+                                        ? ""
+                                        : "..."}
+                                    </Typography>
 
                                     {/* Typography component for displaying the product description */}
                                     <Typography
@@ -3054,14 +3212,13 @@ export default function BusinessAccount() {
                                       >
                                         {/* Typography component for displaying sales information */}
                                         {/* <Typography
-                            variant="body2"
-                            component="p"
-                            style={{ color: "gray" }}
-                          >
-                            <Icon2 name="download" size={20} /> {product.quantity}{" "}
-                            Sales
-                          </Typography> */}
-
+                                         variant="body2"
+                                         component="p"
+                                         style={{ color: "gray" }}
+                                         >
+                                        <Icon2 name="download" size={20} /> {product.quantity}{" "}
+                                        Sales
+                                        </Typography> */}
                                         {/* View for displaying product price */}
                                       </Box>
                                     </View>
@@ -3075,7 +3232,10 @@ export default function BusinessAccount() {
                                       <Typography
                                         variant="body2"
                                         component="p"
-                                        style={{ color: "gray", marginRight:5}}
+                                        style={{
+                                          color: "gray",
+                                          marginRight: 5,
+                                        }}
                                       >
                                         <Icon2 name="download" size={20} /> 15
                                         Sales
@@ -3118,7 +3278,8 @@ export default function BusinessAccount() {
                           ))
                         ) : (
                           <Typography variant="body1" component="p">
-                            There are no products available. You can add up to 3 products.
+                            There are no products available. You can add up to 3
+                            products.
                           </Typography>
                         )}
                       </View>
@@ -3157,7 +3318,9 @@ export default function BusinessAccount() {
                                   style={{
                                     objectFit: "cover",
                                     position: "relative",
-                                    backgroundColor: "gold",
+                                    background:
+                                      "radial-gradient(circle at top left, rgba(255, 255, 255, 0.5) 0%, #D4AF37 10%, #B48811 40%, #A2790D 50%, #E7BE3A 90%)",
+
                                     width: "200px",
                                     height: "200px",
                                     borderRadius: "50%",
@@ -3193,7 +3356,7 @@ export default function BusinessAccount() {
                                         height: "100%",
                                       }}
                                     />
-                                    <Box
+                                    {/* <Box
                                       style={{
                                         backgroundColor: "#E74040",
                                         position: "absolute",
@@ -3214,9 +3377,10 @@ export default function BusinessAccount() {
                                       >
                                         Sale
                                       </Typography>
-                                    </Box>
+                                    </Box> */}
                                   </View>
                                 </Box>
+
                                 <View
                                   style={{
                                     width: "100%",
@@ -3297,11 +3461,15 @@ export default function BusinessAccount() {
                                       </Typography>
                                       <View
                                         style={{
+                                          width: "100%",
                                           display: "flex",
                                           flexDirection: "row",
+                                          justifyContent: "space-between",
+                                          // backgroundColor: 'red',
+                                          alignItems: "center",
                                         }}
                                       >
-                                        <Typography
+                                        {/* <Typography
                                           variant="subtitle2"
                                           component="p"
                                           style={{
@@ -3312,7 +3480,7 @@ export default function BusinessAccount() {
                                           }}
                                         >
                                           R{product.price}
-                                        </Typography>
+                                        </Typography> */}
                                         <Typography
                                           variant="subtitle2"
                                           component="p"
@@ -3324,6 +3492,25 @@ export default function BusinessAccount() {
                                         >
                                           R{product.price}
                                         </Typography>
+                                        <TouchableOpacity
+                                          onPress={() => setDoctoEdit(product.id)}
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={1.5}
+                                            stroke="currentColor"
+                                            height={20}
+                                            width={20}
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                                            />
+                                          </svg>
+                                        </TouchableOpacity>
                                       </View>
                                     </Box>
                                   </View>
@@ -3333,8 +3520,8 @@ export default function BusinessAccount() {
                           ))
                         ) : (
                           <Typography variant="body1" component="p">
-                                There are no products available. You can add up to 3 products.
-                                {products.length}
+                            There are no products available. You can add up to 3
+                            products.
                           </Typography>
                         )}
                       </View>
@@ -3346,7 +3533,6 @@ export default function BusinessAccount() {
           </View>
         </View>
       </View>
-
       <Footer />
     </>
   );

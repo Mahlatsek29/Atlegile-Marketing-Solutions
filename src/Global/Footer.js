@@ -83,21 +83,29 @@ export function Footer() {
                   </View>
           <Text style={{color:'white'}} >hey@sowheretoaccess.com</Text>
         </Grid>
-        
-      <Grid item xs={12} sm={10} md={3} sx={{display:'flex', alignItems:'flex-end'}} >
-        
-            <Text style={{color:'white',paddingBottom:50}}>
-              Atlegile Marketing Solutions (Pty) Ltd eCommerce 2023
-            </Text>
-          </Grid>
         <Grid item xs={12} sm={10} md={2} >
           
-          <View >
+          <View style={{marginTop: 30}}>
             <Text style={{color:'white'}} >ORDER HISTORY</Text>
             <Text style={{color:'white'}}>TERMS & CONDITIONS</Text>
             <Text style={{color:'white'}}>PRIVACY POLICY</Text>
           </View>
+          <View style={12} sm={10} md={3} sx={{display:'flex'}}>
+
+        
+          <Text style={{color:'white', marginTop: 80}}>
+              Atlegile Marketing Solutions (Pty) Ltd eCommerce 2023
+            </Text>
+            </View>
         </Grid>
+        
+      <Grid item xs={12} sm={10} md={3} sx={{display:'flex'}} >
+        
+            {/* <Text style={{color:'white',paddingBottom:50}}>
+              Atlegile Marketing Solutions (Pty) Ltd eCommerce 2023
+            </Text> */}
+          </Grid>
+        
 
   
       

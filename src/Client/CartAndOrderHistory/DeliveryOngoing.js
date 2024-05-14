@@ -86,7 +86,7 @@ const DeliveryOngoing = () => {
     };
   }, []);
 
-  const CourierAPIKey = "20100d3a439b4d1399f527d08a303f7a";
+  const CourierAPIKey = "12e89740f3804694a06756409292005f";
 
   // useEffect to handle authentication state changes
   useEffect(() => {

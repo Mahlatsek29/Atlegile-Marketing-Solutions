@@ -34,7 +34,7 @@ export function Footer() {
         <View style={{backgroundColor:'brown',display:'flex',justifyContent:'center'}}>
 
         </View>
-          <Image source={logo} style={{alignSelf:'flex-end',hight:100,width:100}} resizeMode="contain" />
+        <Image source={logo} style={{height: 50, width: 75, }} resizeMode="contain" />
           <Text style={{alignSelf:'flex-end',color:'white'}}>SoWhereTo Access</Text>
           {/* <Text style={styles.description}>
             Welcome to AMS, where we specialize in building beautiful brands,
@@ -83,12 +83,15 @@ export function Footer() {
                   </View>
           <Text style={{color:'white'}} >hey@sowheretoaccess.com</Text>
         </Grid>
+        
       <Grid item xs={12} sm={10} md={3} sx={{display:'flex', alignItems:'flex-end'}} >
+        
             <Text style={{color:'white',paddingBottom:50}}>
               Atlegile Marketing Solutions (Pty) Ltd eCommerce 2023
             </Text>
           </Grid>
         <Grid item xs={12} sm={10} md={2} >
+          
           <View >
             <Text style={{color:'white'}} >ORDER HISTORY</Text>
             <Text style={{color:'white'}}>TERMS & CONDITIONS</Text>
@@ -106,7 +109,7 @@ export function Footer() {
             resizeMode="cover"
             style={{
               width: 250,
-    height: 220}}
+    height: 220,  opacity: 0.2,}}
             />
           </View>
       </Grid>

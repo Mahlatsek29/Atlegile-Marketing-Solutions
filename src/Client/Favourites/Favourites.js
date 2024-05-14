@@ -534,7 +534,7 @@ const Favourites = () => {
           <Box
             style={{
               position: "absolute",
-              top: "60px", // Adjust the top position as needed
+              top: "60px", 
               right: "20px",
               backgroundColor: "whitesmoke",
               padding: "10px",

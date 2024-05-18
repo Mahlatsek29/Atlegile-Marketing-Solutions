@@ -178,9 +178,9 @@ const Navbar = () => {
               <TouchableOpacity onPress={() => navigateAndCloseMenu("SignIn")}>
                 <Button color="inherit">Sign In</Button>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigateAndCloseMenu("SignUp")}>
+              {/* <TouchableOpacity onPress={() => navigateAndCloseMenu("SignUp")}>
                 <Button color="inherit">Sign Up</Button>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </>
           )}
         </View>
@@ -293,7 +293,7 @@ const Navbar = () => {
                     Sign In
                   </Button>
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => navigateAndCloseMenu("SignUp")}
                 >
                   <Button
@@ -309,7 +309,7 @@ const Navbar = () => {
                   >
                     Sign Up
                   </Button>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </>
             )}
              </View>

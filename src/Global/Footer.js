@@ -31,11 +31,9 @@ export function Footer() {
       
        <Grid item xs={12} sm={10} md={3} >
         
-        <View style={{backgroundColor:'brown',display:'flex',justifyContent:'center'}}>
-
-        </View>
+       
         <Image source={logo} style={{height: 50, width: 75, }} resizeMode="contain" />
-          <Text style={{alignSelf:'flex-end',color:'white'}}>SoWhereTo Access</Text>
+          <Text style={{alignSelf:'flex-end',color:'white', paddingLeft:10}}>SoWhereTo Access</Text>
           {/* <Text style={styles.description}>
             Welcome to AMS, where we specialize in building beautiful brands,
             marketing African businesses, and connecting them with a global
@@ -47,7 +45,8 @@ export function Footer() {
                style={{
                  display: "flex",
                  flexDirection: "row",
-                 marginVertical: "15px",
+            marginVertical: "15px",
+                 paddingLeft:10
                }}
              >
                <TouchableOpacity
@@ -81,19 +80,19 @@ export function Footer() {
                  <Text >ABOUT US</Text>
                </TouchableOpacity>
                   </View>
-          <Text style={{color:'white'}} >hey@sowheretoaccess.com</Text>
+          <Text style={{color:'white',paddingLeft:10}} >hey@sowheretoaccess.com</Text>
         </Grid>
         <Grid item xs={12} sm={10} md={2} >
           
           <View style={{marginTop: 30}}>
-            <Text style={{color:'white'}} >ORDER HISTORY</Text>
-            <Text style={{color:'white'}}>TERMS & CONDITIONS</Text>
-            <Text style={{color:'white'}}>PRIVACY POLICY</Text>
+            <Text style={{color:'white',paddingLeft:10}} >ORDER HISTORY</Text>
+            <Text style={{color:'white',paddingLeft:10}}>TERMS & CONDITIONS</Text>
+            <Text style={{color:'white',paddingLeft:10}}>PRIVACY POLICY</Text>
           </View>
           <View style={12} sm={10} md={3} sx={{display:'flex'}}>
 
         
-          <Text style={{color:'white', marginTop: 80}}>
+          <Text style={{color:'white', marginTop: 80,paddingLeft:10}}>
               Atlegile Marketing Solutions (Pty) Ltd eCommerce 2023
             </Text>
             </View>

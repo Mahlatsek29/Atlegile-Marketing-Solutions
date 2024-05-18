@@ -3255,7 +3255,7 @@ export default function BusinessAccount() {
                                         }}
                                       >
                                         <Icon2 name="download" size={20} /> 15
-                                        Sales
+                                         In stalk
                                       </Typography>
 
                                       {/* Typography component for displaying the discounted product price */}
@@ -3523,7 +3523,7 @@ export default function BusinessAccount() {
                                         style={{ color: "gray" }}
                                       >
                                         <Icon2 name="download" size={20} /> 15
-                                        Sales
+                                        In stalk
                                       </Typography>
                                       <View
                                         style={{

@@ -817,7 +817,7 @@ const ProductCard = ({ productId }) => {
                         style={{ color: "gray" }}
                       >
                         <Icon2 name="download" size={20} /> {product.quantity}{" "}
-                        Sales
+                        In stalk
                       </Typography>
                       <View style={{ display: "flex", flexDirection: "row" }}>
                         {/* <Typography

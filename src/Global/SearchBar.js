@@ -69,7 +69,7 @@ export default function SearchBar() {
             zIndex:900
           }}
         /> */}
-        <Box
+         {/* <Box
           style={{
             padding: "10px",
             width: "100%",
@@ -79,7 +79,8 @@ export default function SearchBar() {
             height: "40px",
             zIndex:900
           }}
-        >
+          >
+            
           <TextField
             fullWidth
             id="search"
@@ -87,8 +88,9 @@ export default function SearchBar() {
             variant="standard"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            sx={{}}
-          />
+           
+            />
+            
           <Box
             className="icons-container"
             sx={{ display: "flex", justifyContent: "space-around" }}
@@ -108,7 +110,7 @@ export default function SearchBar() {
               />
             </IconButton>
           </Box>
-        </Box>
+        </Box>*/}
       </Box>
       <Image
         source={require("../../assets/image/right_lion.png")}
@@ -176,7 +178,7 @@ export default function SearchBar() {
             zIndex:900
           }}
         />
-        <Box
+        {/*<Box
           style={{
             padding: "10px",
             width: "80%",
@@ -215,7 +217,7 @@ export default function SearchBar() {
               />
             </IconButton>
           </Box>
-        </Box>
+        </Box>*/}
       </Box>
       <Image
         source={require("../../assets/image/right_lion.png")}

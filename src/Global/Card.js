@@ -13,7 +13,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
 import Icon3 from "react-native-vector-icons/MaterialCommunityIcons";
 import Skeleton from "@mui/material/Skeleton";
-import { Dimensions, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Share, Text, TouchableOpacity, View } from "react-native";
 import { firestore, auth, firebase } from "../config";
 import { useNavigation } from "@react-navigation/native";
 const ProductCard = ({ productId }) => {
@@ -297,6 +297,22 @@ const ProductCard = ({ productId }) => {
     );
   }
 
+  const handleShare = async () => {
+  try {
+    const result = await Share.share({
+      message: 'Check out this awesome video!', // Replace with the message you want to share
+      url: `https://sowheretoaccess.com/ProductDetails?productId=${ productId }`, // Replace with the URL or file path you want to share
+    });
+    if (result.action === Share.sharedAction) {
+      console.log('Content shared successfully');
+    } else if (result.action === Share.dismissedAction) {
+      console.log('Content sharing dismissed');
+    }
+  } catch (error) {
+    console.error('Error sharing content:', error);
+  }
+};
+
   return (
     <>
       {width < 600 ? (
@@ -339,7 +355,7 @@ const ProductCard = ({ productId }) => {
                   }}
                 >
                   <View
-                    style={{ alignSelf: "center", width: 100, height: 100, }}
+                    style={{ alignSelf: "center", width: 100, height: 100 }}
                   >
                     <CardMedia
                       component="img"
@@ -354,7 +370,7 @@ const ProductCard = ({ productId }) => {
                         objectFit: "cover",
                         width: "100%",
                         height: "100%",
-                        backgroundColor:'white'
+                        backgroundColor: "white",
                       }}
                     />
                     {/* <Box
@@ -454,64 +470,62 @@ const ProductCard = ({ productId }) => {
                         </Text>
                       </View>
 
-                      
-                        <TouchableOpacity>
-                          <Icon
-                            name={
-                              favoriteProducts.find(
-                                (item) => item.productId === productId
-                              )
-                                ? "heart"
-                                : "heart-o"
-                            }
-                            size={20}
-                            style={{
-                              marginLeft: 5,
-                            }}
-                            onClick={toggleHeart}
-                            color={
-                              favoriteProducts.find(
-                                (item) => item.productId === productId
-                              )
-                                ? "red"
-                                : "black"
-                            }
-                          />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={toggleCart}>
-                          <Snackbar
-                            open={showSnackbar1}
-                            autoHideDuration={3000} // Adjust as needed
+                      <TouchableOpacity>
+                        <Icon
+                          name={
+                            favoriteProducts.find(
+                              (item) => item.productId === productId
+                            )
+                              ? "heart"
+                              : "heart-o"
+                          }
+                          size={20}
+                          style={{
+                            marginLeft: 5,
+                          }}
+                          onClick={toggleHeart}
+                          color={
+                            favoriteProducts.find(
+                              (item) => item.productId === productId
+                            )
+                              ? "red"
+                              : "black"
+                          }
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={toggleCart}>
+                        <Snackbar
+                          open={showSnackbar1}
+                          autoHideDuration={3000} // Adjust as needed
+                          onClose={handleSnackbarClose1}
+                          anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "center",
+                          }} // Set position to top center
+                        >
+                          <MuiAlert
                             onClose={handleSnackbarClose1}
-                            anchorOrigin={{
-                              vertical: "top",
-                              horizontal: "center",
-                            }} // Set position to top center
+                            severity="success"
+                            sx={{ width: "100%" }}
                           >
-                            <MuiAlert
-                              onClose={handleSnackbarClose1}
-                              severity="success"
-                              sx={{ width: "100%" }}
-                            >
-                              Product added to Cart!
-                            </MuiAlert>
-                          </Snackbar>
-                          <Icon3
-                            name={
-                              cartItems.find(
-                                (item) => item.productId === productId
-                              )
-                                ? "cart"
-                                : "cart-outline"
-                            }
-                            size={20}
-                            style={{
-                              marginLeft: 5,
-                            }}
-                            color="black"
-                          />
-                        </TouchableOpacity>
-                     
+                            Product added to Cart!
+                          </MuiAlert>
+                        </Snackbar>
+                        <Icon3
+                          name={
+                            cartItems.find(
+                              (item) => item.productId === productId
+                            )
+                              ? "cart"
+                              : "cart-outline"
+                          }
+                          size={20}
+                          style={{
+                            marginLeft: 5,
+                          }}
+                          color="black"
+                        />
+                      </TouchableOpacity>
                     </View>
 
                     {/* <Typography
@@ -564,21 +578,41 @@ const ProductCard = ({ productId }) => {
                         </Typography>
                       </View>
                     </Box>
-
-                    <Button
-                      style={{
-                        border: "1px black solid",
-                        alignSelf: "flex-start",
-                        borderRadius: "50px",
-                        marginBottom: 15,
-                        color: "black",
-                        cursor: "pointer",
-                      }}
-                      onClick={navigateProductDetails}
-                    >
-                      <Text>VIEW </Text>
-                      <Icon name="arrow-right" size={10} />
-                    </Button>
+                    <View style={{flexDirection:"row",alignItems:'center'}}>
+                      <Button
+                        style={{
+                          border: "1px black solid",
+                          alignSelf: "flex-start",
+                          borderRadius: "50px",
+                          // marginBottom: 15,
+                          marginRight:10,
+                          color: "black",
+                          cursor: "pointer",
+                        }}
+                        onClick={navigateProductDetails}
+                      >
+                        <Text>VIEW </Text>
+                        <Icon name="arrow-right" size={10} />
+                      </Button>
+                      <TouchableOpacity title="Share" onPress={handleShare}>
+                         <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        height={15}
+                        width={15}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z"
+                        />
+                      </svg>
+                      </TouchableOpacity>
+                     
+                    </View>
                   </View>
                 </View>
               </View>
@@ -638,7 +672,7 @@ const ProductCard = ({ productId }) => {
                         objectFit: "cover",
                         width: "100%",
                         height: "100%",
-                        backgroundColor:'white'
+                        backgroundColor: "white",
                       }}
                     />
                     <Box
@@ -847,21 +881,41 @@ const ProductCard = ({ productId }) => {
                     </Box>
                   </View>
 
-                  <Button
-                    style={{
-                      border: "2px black solid",
-                      alignSelf: "flex-start",
-                      paddingHorizontal: "5px",
-                      borderRadius: "50px",
-                      marginBottom: 15,
-                      color: "black",
-                      cursor: "pointer",
-                    }}
-                    onClick={navigateProductDetails}
-                  >
-                    <Text>VIEW </Text>
-                    <Icon name="arrow-right" size={20} />
-                  </Button>
+                   <View style={{flexDirection:"row",alignItems:'center'}}>
+                      <Button
+                        style={{
+                          border: "1px black solid",
+                          alignSelf: "flex-start",
+                          borderRadius: "50px",
+                          // marginBottom: 15,
+                          marginRight:10,
+                          color: "black",
+                          cursor: "pointer",
+                        }}
+                        onClick={navigateProductDetails}
+                      >
+                        <Text>VIEW </Text>
+                        <Icon name="arrow-right" size={10} />
+                      </Button>
+                      <TouchableOpacity title="Share" onPress={handleShare}>
+                         <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        height={15}
+                        width={15}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z"
+                        />
+                      </svg>
+                      </TouchableOpacity>
+                     
+                    </View>
                 </View>
               </View>
             </View>

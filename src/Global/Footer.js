@@ -115,8 +115,10 @@ export function Footer() {
               source={lionImage}
             resizeMode="cover"
             style={{
-              width: 250,
-    height: 220,  opacity: 0.2,}}
+              width: 150,
+              height: 130,
+              opacity: 0.2,
+            }}
             />
           </View>
       </Grid>

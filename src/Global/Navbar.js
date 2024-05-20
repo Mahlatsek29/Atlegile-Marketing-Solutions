@@ -157,12 +157,12 @@ const Navbar = () => {
                     AS
                   </Typography>
                 </View>
-                <View style={{ marginLeft: 10, }}>
+               <View style={{ marginLeft: 10,display:'flex',flexDirection:'column' }}>
                   <Typography variant="subtitle1">
-                    Welcome, {userData.name}
-                  </Typography>
+                    Welcome 
+                  </Typography>                         
                   <Typography style={{ fontSize: 12 }}>
-                    {userData.username}
+                    {userData.name}
                   </Typography>
                 </View>
               </TouchableOpacity>
@@ -252,12 +252,12 @@ const Navbar = () => {
                     AS
                   </Typography>
                 </View>
-                <View style={{ marginLeft: 10 }}>
+                <View style={{ marginLeft: 10,display:'flex',flexDirection:'column' }}>
                   <Typography variant="subtitle1">
-                    Welcome, {userData.name}
-                  </Typography>
+                    Welcome 
+                  </Typography>                         
                   <Typography style={{ fontSize: 12 }}>
-                    {userData.username}
+                    {userData.name}
                   </Typography>
                 </View>
               </TouchableOpacity>

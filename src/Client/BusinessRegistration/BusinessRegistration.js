@@ -112,6 +112,7 @@ const BusinessRegistration = () => {
           company: businessName,
           selectedRole,
           // regNumber,
+          approved:false,
           email,
           location,
           selectedBusinessType,

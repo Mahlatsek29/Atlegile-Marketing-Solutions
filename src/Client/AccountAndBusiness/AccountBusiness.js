@@ -506,7 +506,7 @@ export default function BusinessAccount() {
       setCartData(cartItems);
 
       // Log the cart data to the console (for debugging purposes)
-      console.log("Cart Data : ", cartData);
+      // console.log("Cart Data : ", cartData);
     } catch (error) {
       // Handle errors that may occur during the fetch process
       console.error("Error fetching cart data:", error);
@@ -591,6 +591,7 @@ export default function BusinessAccount() {
         discountPrice: parseFloat(priceDiscount), // Convert to number
         originalPrice: parseFloat(priceOriginal), // Convert to number
         other: otherBanner,
+        approved:false,
         productName: productName,
         quantity: parseInt(quantity),
         bannerUid: userData.uid,
@@ -698,6 +699,7 @@ export default function BusinessAccount() {
       await productRef.set({
         name,
         businessName,
+        approved:false,
         company: businessName,
         price: parseFloat(price),
         quantity,
@@ -760,6 +762,7 @@ export default function BusinessAccount() {
     
     const updatedFields = {
       name,
+      approved:false,
       businessName,
       company: businessName,
       price: parseFloat(price),
@@ -3345,7 +3348,7 @@ export default function BusinessAccount() {
                         ) : (
                           <Typography variant="body1" component="p">
                             There are no products available. You can add up to 3
-                            products.
+                            products. {products.length}
                           </Typography>
                         )}
                       </View>
@@ -3610,7 +3613,7 @@ export default function BusinessAccount() {
                         ) : (
                           <Typography variant="body1" component="p">
                             There are no products available. You can add up to 3
-                            products.
+                            products. {products.length}
                           </Typography>
                         )}
                       </View>

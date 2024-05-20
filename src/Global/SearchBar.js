@@ -115,14 +115,14 @@ export default function SearchBar() {
       <Image
         source={require("../../assets/image/right_lion.png")}
         alt="Shop 2"
-        width={250}
-        height={205}
+        // width={250}
+        // height={205}
         style={{
           position: "absolute",
           bottom: 0,
           right: 0,
           width: 300,
-          height: 200,
+          height: "100%",
         }}
       />
     </Box>) : (
@@ -142,14 +142,14 @@ export default function SearchBar() {
       <Image
         source={require("../../assets/image/left_lion.png")}
         alt="Shop 1"
-        width={250}
-        height={205}
+        // width={250}
+        // height={205}
         style={{
           position: "absolute",
           bottom: 0,
           left: 0,
-          width: 300,
-          height: 200,
+          width: 320,
+          height: "100%",
         }}
       />
       <Box
@@ -222,14 +222,14 @@ export default function SearchBar() {
       <Image
         source={require("../../assets/image/right_lion.png")}
         alt="Shop 2"
-        width={250}
-        height={205}
+        // width={250}
+        // height={205}
         style={{
           position: "absolute",
           bottom: 0,
           right: 0,
-          width: 300,
-          height: 200,
+          width: 320,
+          height: "100%",
         }}
       />
     </Box>)}

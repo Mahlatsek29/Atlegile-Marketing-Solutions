@@ -103,7 +103,8 @@ useEffect(() => {
       await firestore.collection("Business").add({
         businessName,
         selectedRole,
-        regNumber,
+        // regNumber,
+        approved:false,
         website,
         location,
         selectedBusinessType,

@@ -83,7 +83,7 @@ const AlternativeContact = () => {
     >
       {/* Image component for displaying the logo */}
       <Image
-        source={require("../../Global/images/logo.png")}
+        source={require("../../Global/images/logo4.png")}
         style={styles.logo}
       />
 
@@ -169,10 +169,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   logo: {
-    width: 150,
-    height: 100,
-    marginBottom: 30,
+    width: 70,
+    height: 70, 
+    marginBottom: 50,
     resizeMode: "contain",
+    marginTop:20,
+    borderRadius: 35, 
+    overflow: "hidden", 
   },
   title: {
     fontSize: 24,

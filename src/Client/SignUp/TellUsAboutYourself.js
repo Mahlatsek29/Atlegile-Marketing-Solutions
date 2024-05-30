@@ -80,7 +80,7 @@ const TellUsAboutYourself = ({ navigation }) => {
       <View style={styles.container}>
         {/* Logo Image */}
         <Image
-          source={require("../../Global/images/logo.png")}
+          source={require("../../Global/images/logo4.png")}
           style={styles.logo}
         />
         {/* Title and Subtitle */}
@@ -217,10 +217,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   logo: {
-    width: 150,
-    height: 50,
-    marginBottom: 150,
+    width: 70,
+    height: 70, 
+    marginBottom: 50,
     resizeMode: "contain",
+    marginTop:20,
+    borderRadius: 35, 
+    overflow: "hidden", 
   },
   title: {
     fontSize: 10,

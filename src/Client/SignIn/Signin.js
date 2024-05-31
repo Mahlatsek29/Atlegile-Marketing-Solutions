@@ -93,7 +93,7 @@ const Signin = () => {
         {/* Logo image container */}
         <View style={{flex:1, display: "flex", alignSelf: "center",justifyContent:'center' }}>
           <Image
-            source={require("../../Global/images/logo4.png")}
+            source={require("../../Global/images/logo5.png")}
             style={styles.logo}
           />
         </View>

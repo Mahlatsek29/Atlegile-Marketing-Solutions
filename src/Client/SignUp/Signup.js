@@ -128,7 +128,7 @@ const Signup = () => {
           >
             {/* Logo image */}
             <Image
-              source={require("../../Global/images/logo4.png")}
+              source={require("../../Global/images/logo5.png")}
               style={styles.logo}
             />
           </View>

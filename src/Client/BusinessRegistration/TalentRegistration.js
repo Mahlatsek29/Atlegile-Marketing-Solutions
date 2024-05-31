@@ -16,7 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import background from "../../Global/images/Reed.jpg";
-import logo from "../../Global/images/logo.svg";
+import logo from "../../Global/images/logo5.png";
 import Banner from "../../Global/images/media bg-cover.png";
 import { auth, firestore, firebase } from "../../config";
 import Alert from "@mui/material/Alert";
@@ -259,9 +259,12 @@ const emptyOption = [""];
       >
        
           {/* Logo */}
-          <View>
-            <img src={logo} style={{ height: "9vh", width: "90%" }} />
+          <View style={{flex:1, display: "flex", alignSelf: "center",justifyContent:'center', marginTop: "7%", marginBottom: "8%" }}>
+            <img src={logo} 
+            style={{ 
+              height: "9vh", width: "90%" }} />
           </View>
+
           {/* Form */}
           <View
           style={{

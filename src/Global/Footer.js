@@ -29,7 +29,7 @@ export function Footer() {
 
       </Grid>
 
-      <Grid item xs={12} sm={10} md={3} >
+      <Grid item xs={12} sm={10} md={2} >
 
 
         <Image source={logo} style={{ height: 50, width: 75, }} resizeMode="contain" />
@@ -83,7 +83,7 @@ export function Footer() {
         </View>
         <Text style={{ color: 'white', paddingLeft: 10 }} >hey@sowheretoaccess.com</Text>
       </Grid>
-      <Grid item xs={12} sm={10} md={2} bg={'red'} >
+      <Grid item xs={12} sm={10} md={3}>
 
         <View style={{ marginTop: 30 }}>
           <Text  style={{ color: 'white', paddingLeft: 10 }} >ORDER HISTORY</Text>

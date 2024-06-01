@@ -67,7 +67,7 @@ export default function AboutUs() {
           <View style={{ paddingHorizontal: 20 }}>
             <Text
               style={{
-                color: COLORS.darkBlue,
+                color: "#FFBF00",
                 fontWeight: "bold",
                 fontSize: 16,
                 textAlign: "center",

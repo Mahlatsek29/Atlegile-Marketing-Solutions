@@ -69,13 +69,13 @@ export default function AboutUs() {
               style={{
                 color: COLORS.darkBlue,
                 fontWeight: "bold",
-                fontSize: 20,
+                fontSize: 16,
                 textAlign: "center",
                 marginTop: 20,
               }}
             >
            About SoWhereTo>Access<br/>
-Unveil the Unseen: Access African Quality
+          Unveil the Unseen: Access African Quality
             </Text>
             <Text style={{ textAlign: "center", paddingTop: 10 }}>
             Leading digital innovation as a platform for economic change in Africa. Supporting local brands to showcase exclusive high-quality creations for global appreciation of cultural richness. Curated in the spirit of crafting a new African narrative for generational wealth and success.

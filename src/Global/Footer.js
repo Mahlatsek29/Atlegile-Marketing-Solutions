@@ -87,7 +87,7 @@ export function Footer() {
 
         <View style={{ marginTop: 30 }}>
           <Text  style={{ color: 'white', paddingLeft: 10 }} >ORDER HISTORY</Text>
-          <Text href="https://atlegilemarketing.co.za/terms-and-conditions/" style={{ color: 'white', paddingLeft: 10 }}>TERMS & CONDITIONS</Text>
+          <Text href="https://atlegilemarketing.co.za/about-ams/terms-of-service/" style={{ color: 'white', paddingLeft: 10 }}>TERMS & CONDITIONS</Text>
           <Text href="https://atlegilemarketing.co.za/privacy-policy/" style={{ color: 'white', paddingLeft: 10 }}>PRIVACY POLICY</Text>
         </View>
         <View style={12} sm={10} md={6} sx={{ display: 'flex' }}>

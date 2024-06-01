@@ -95,8 +95,7 @@ export default function BusinessAccount() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [review, setReview] = useState({});
   const [docToEdit, setDoctoEdit] = useState(null);
- 
-  
+
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -197,7 +196,6 @@ export default function BusinessAccount() {
           // Push the data of each document into the productsData array
           productsData.push(docData);
         });
-      
 
         // Update the state with the fetched product data
         setProducts(productsData);
@@ -591,7 +589,7 @@ export default function BusinessAccount() {
         discountPrice: parseFloat(priceDiscount), // Convert to number
         originalPrice: parseFloat(priceOriginal), // Convert to number
         other: otherBanner,
-        approved:false,
+        approved: false,
         productName: productName,
         quantity: parseInt(quantity),
         bannerUid: userData.uid,
@@ -699,7 +697,7 @@ export default function BusinessAccount() {
       await productRef.set({
         name,
         businessName,
-        approved:false,
+        approved: false,
         company: businessName,
         price: parseFloat(price),
         quantity,
@@ -753,16 +751,14 @@ export default function BusinessAccount() {
     }
   }, [docToEdit]);
 
-
-
   // Function to handle saving edited product (closing the edit modal)
   const handleSaveEditProduct = async (e) => {
     e.preventDefault();
     const db = firebase.firestore();
-    
+
     const updatedFields = {
       name,
-      approved:false,
+      approved: false,
       businessName,
       company: businessName,
       price: parseFloat(price),
@@ -792,15 +788,13 @@ export default function BusinessAccount() {
   };
 
   const deleteProduct = async (productId) => {
-    try {    
-
+    try {
       // Reference to the "Products" collection in Firestore
       const productCollectionRef = firestore.collection("Products");
       // Reference to the document in the "Products" collection with the product ID
       const delDocRef = productCollectionRef.doc(productId);
       // Delete the product from the "Products" collection
       await delDocRef.delete();
-     
     } catch (error) {
       // Log an error message if there's an error while toggling heart icon
       console.error("Error deleting the product:", error);
@@ -2263,7 +2257,7 @@ export default function BusinessAccount() {
                     <Ionicons name="ios-timer-outline" size={15} color="gray" />
                     <Button
                       style={{ marginLeft: 5, color: "gray" }}
-                      onClick={handleorders}
+                      // onClick={handleorders}
                     >
                       Orders
                     </Button>
@@ -2273,7 +2267,7 @@ export default function BusinessAccount() {
                     <Ionicons name="ios-timer-outline" size={15} color="gray" />
                     <Button
                       style={{ marginLeft: 5, color: "gray" }}
-                      onClick={handlefavorites}
+                      // onClick={handlefavorites}
                     >
                       Favorites
                     </Button>
@@ -2283,7 +2277,7 @@ export default function BusinessAccount() {
                     <Ionicons name="ios-timer-outline" size={15} color="gray" />
                     <Button
                       style={{ marginLeft: 5, color: "gray" }}
-                      onClick={handleterms}
+                      // onClick={handleterms}
                     >
                       Terms and Conditions
                     </Button>
@@ -2293,7 +2287,7 @@ export default function BusinessAccount() {
                     <Ionicons name="ios-timer-outline" size={15} color="gray" />
                     <Button
                       style={{ marginLeft: 5, color: "gray" }}
-                      onClick={handlepolicy}
+                      // onClick={handlepolicy}
                     >
                       Privacy Policy
                     </Button>
@@ -2316,7 +2310,7 @@ export default function BusinessAccount() {
                         color: "black",
                         marginTop: "10%",
                       }}
-                      onClick={handlePress}
+                      // onClick={handlePress}
                     >
                       Julian James
                     </Button>
@@ -2386,7 +2380,7 @@ export default function BusinessAccount() {
                 <Ionicons name="ios-timer-outline" size={15} color="gray" />
                 <Button
                   style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handleorders}
+                  // onClick={handleorders}
                 >
                   Orders
                 </Button>
@@ -2396,7 +2390,7 @@ export default function BusinessAccount() {
                 <Ionicons name="ios-timer-outline" size={15} color="gray" />
                 <Button
                   style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handlefavorites}
+                  // onClick={handlefavorites}
                 >
                   Favorites
                 </Button>
@@ -2406,7 +2400,7 @@ export default function BusinessAccount() {
                 <Ionicons name="ios-timer-outline" size={15} color="gray" />
                 <Button
                   style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handleterms}
+                  // onClick={handleterms}
                 >
                   Terms and Conditions
                 </Button>
@@ -2416,7 +2410,7 @@ export default function BusinessAccount() {
                 <Ionicons name="ios-timer-outline" size={15} color="gray" />
                 <Button
                   style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handlepolicy}
+                  // onClick={handlepolicy}
                 >
                   Privacy Policy
                 </Button>
@@ -2439,7 +2433,7 @@ export default function BusinessAccount() {
                     color: "black",
                     marginTop: "10%",
                   }}
-                  onClick={handlePress}
+                  // onClick={handlePress}
                 >
                   Julian James
                 </Button>
@@ -2609,7 +2603,9 @@ export default function BusinessAccount() {
                       }}
                     >
                       {/* Button to add a product */}
-                      <TouchableOpacity onPress={() => setAddProduct(true)}>
+                      <TouchableOpacity
+                        onPress={() => setAddProduct(true)}
+                      >
                         <Text
                           style={{
                             color: "white",
@@ -2815,7 +2811,7 @@ export default function BusinessAccount() {
                         fontWeight: 700,
                         marginLeft: 10,
                       }}
-                      onPress={() => setBannerModal(true)}
+                      // onPress={() => setBannerModal(true)}
                     >
                       <Text>ADD BANNER</Text>
                     </TouchableOpacity>
@@ -3258,7 +3254,7 @@ export default function BusinessAccount() {
                                         }}
                                       >
                                         <Icon2 name="download" size={20} /> 15
-                                         In stalk
+                                        In stalk
                                       </Typography>
 
                                       {/* Typography component for displaying the discounted product price */}
@@ -3304,9 +3300,11 @@ export default function BusinessAccount() {
                                         </svg>
                                       </TouchableOpacity>
                                       <TouchableOpacity
-                                          onPress={() =>   deleteProduct(product.id)   }
-                                        >
-                                          <svg
+                                        onPress={() =>
+                                          deleteProduct(product.id)
+                                        }
+                                      >
+                                        <svg
                                           xmlns="http://www.w3.org/2000/svg"
                                           fill="none"
                                           viewBox="0 0 24 24"
@@ -3321,7 +3319,7 @@ export default function BusinessAccount() {
                                             d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
                                           />
                                         </svg>
-                                        </TouchableOpacity>
+                                      </TouchableOpacity>
                                     </View>
                                   </View>
 
@@ -3348,7 +3346,7 @@ export default function BusinessAccount() {
                         ) : (
                           <Typography variant="body1" component="p">
                             There are no products available. You can add up to 3
-                            products. {products.length}
+                            products.
                           </Typography>
                         )}
                       </View>
@@ -3520,14 +3518,60 @@ export default function BusinessAccount() {
                                       alignItems="flex-start"
                                       justifyContent="space-between"
                                     >
-                                      <Typography
-                                        variant="body2"
-                                        component="p"
-                                        style={{ color: "gray" }}
+                                      <View
+                                        style={{
+                                          width: "100%",
+                                          display: "flex",
+                                          flexDirection: "row",
+                                          justifyContent: "space-between",
+                                          // backgroundColor: 'red',
+                                          alignItems: "center",
+                                        }}
                                       >
-                                        <Icon2 name="download" size={20} /> 15
-                                        In stalk
-                                      </Typography>
+                                        <Typography
+                                          variant="body2"
+                                          component="p"
+                                          style={{ color: "gray" }}
+                                        >
+                                          <Icon2 name="download" size={20} /> 15
+                                          In stalk
+                                        </Typography>
+                                        <Box
+                                          style={{
+                                            backgroundColor: "#E74040",
+                                            // position: "absolute",
+                                            // top: 0,
+
+                                            padding: 2,
+                                            width: "auto",
+                                            borderRadius: "8%",
+                                            // alignSelf: "center",
+                                          }}
+                                        >
+                                          {product.approved === true ? (
+                                            <Typography
+                                              variant="h5"
+                                              style={{
+                                                color: "#fff",
+                                                textAlign: "center",
+                                              }}
+                                            >
+                                              Approved
+                                            </Typography>
+                                          ) : (
+                                            <Typography
+                                              variant="h5"
+                                              style={{
+                                                color: "#fff",
+                                                textAlign: "center",
+                                              }}
+                                            >
+                                              Not Approved
+                                            </Typography>
+                                          )}
+                                        </Box>
+                                      </View>
+
                                       <View
                                         style={{
                                           width: "100%",
@@ -3582,27 +3626,28 @@ export default function BusinessAccount() {
                                             />
                                           </svg>
                                         </TouchableOpacity>
-                                        
-                                       <TouchableOpacity
-                                          onPress={() =>   deleteProduct(product.id)   }
+
+                                        <TouchableOpacity
+                                          onPress={() =>
+                                            deleteProduct(product.id)
+                                          }
                                         >
                                           <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          fill="none"
-                                          viewBox="0 0 24 24"
-                                          strokeWidth={1.5}
-                                          stroke="currentColor"
-                                          height={20}
-                                          width={20}
-                                        >
-                                          <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                          />
-                                        </svg>
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={1.5}
+                                            stroke="currentColor"
+                                            height={20}
+                                            width={20}
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                            />
+                                          </svg>
                                         </TouchableOpacity>
-                                        
                                       </View>
                                     </Box>
                                   </View>
@@ -3613,7 +3658,7 @@ export default function BusinessAccount() {
                         ) : (
                           <Typography variant="body1" component="p">
                             There are no products available. You can add up to 3
-                            products. {products.length}
+                            products.
                           </Typography>
                         )}
                       </View>

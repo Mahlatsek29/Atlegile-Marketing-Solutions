@@ -33,7 +33,7 @@ export function Footer() {
         
        
         <Image source={logo} style={{height: 50, width: 75, }} resizeMode="contain" />
-          <Text style={{alignSelf:'flex-end',color:'white', paddingLeft:10}}>SoWhereTo Access</Text>
+          <Text style={{alignSelf:'flex-end',color:'white', paddingLeft:10}}>SoWhereTo>Access</Text>
           {/* <Text style={styles.description}>
             Welcome to AMS, where we specialize in building beautiful brands,
             marketing African businesses, and connecting them with a global
@@ -45,7 +45,7 @@ export function Footer() {
                style={{
                  display: "flex",
                  flexDirection: "row",
-            marginVertical: "15px",
+                 marginVertical: "15px",
                  paddingLeft:10
                }}
              >

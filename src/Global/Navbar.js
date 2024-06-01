@@ -196,11 +196,12 @@ const Navbar = () => {
             height: "85vh",
             zIndex: 999,
             display: "flex",
-            alignItems: "center",
+                alignItems: "center",
+          
            
           }}
         >
-          <View style={{  flex:1, display:'flex',justifyContent:'space-between', color:'black' }}>
+          <View style={{flex:1, display:'flex',justifyContent:'space-between', color:'black' }}>
             <View style={{top: 20,}}>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
                 <Button

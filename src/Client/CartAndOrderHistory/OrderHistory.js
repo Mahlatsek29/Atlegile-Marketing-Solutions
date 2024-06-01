@@ -189,7 +189,7 @@ const OrderHistory = () => {
           </Typography>
 
           {/* Section for the search input */}
-          <Typography
+          {/* <Typography
             style={{
               height: 80,
               width: "100%",
@@ -206,10 +206,10 @@ const OrderHistory = () => {
               placeholder="Search"
               placeholderTextColor="gray"
             />
-          </Typography>
+          </Typography> */}
 
           {/* Section for the dropdown selection */}
-          <Typography
+          {/* <Typography
             style={{
               height: 80,
               width: "100%",
@@ -235,10 +235,10 @@ const OrderHistory = () => {
                 style={{ marginTop: "28px" }}
               />
             </View>
-          </Typography>
+          </Typography> */}
 
           {/* Section for the search button */}
-          <Typography
+          {/* <Typography
             style={{
               height: 50,
               width: 50,
@@ -248,7 +248,7 @@ const OrderHistory = () => {
             <TouchableOpacity>
               <Icon name="search" size={20} />
             </TouchableOpacity>
-          </Typography>
+          </Typography> */}
         </View>
 
         <Box

@@ -717,12 +717,12 @@ const DateSelectionAndCheckout = () => {
   const handlePayment = () => {
     deleteCartCollection(firestore, user.uid);
     // Construct the payment URL with the necessary parameters
-    const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
+    // const paymentUrl = `https://sandbox.payfast.co.za/eng/process?merchant_id=10000100&merchant_key=46f0cd694581a&return_url=${url}/&cancel_url=${url}/&notify_url=${url}/&amount=${orderTotal}&item_name=CartItems`;
     orderTotal.toFixed(2) + // Use the calculated orderTotal here
       "&item_name=TestProduct";
-
+      alert("Payment Successful");
     // Open the payment URcartDatanL in the device's default browser
-    Linking.openURL(paymentUrl);
+    // Linking.openURL(paymentUrl);
   };
 
   // const handleSelect = async (value) => {
@@ -890,7 +890,7 @@ const DateSelectionAndCheckout = () => {
   );
 
   return (
-    <View style={{backgroundColor:'white'}}>
+    <View style={{backgroundColor:'white', marginBottom: 10}}>
       {addressCard ? (
         // If addressCard is true, display the following component
         <Box
@@ -1324,7 +1324,7 @@ const DateSelectionAndCheckout = () => {
                 display="flex"
                 flexDirection="column"
                 justifyContent="space-between"
-                mpr={4}
+                mb={4}
               >
                 <Box mb={4}>
                   <View>

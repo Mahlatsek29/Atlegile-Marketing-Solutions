@@ -1204,7 +1204,7 @@ const Favourites = () => {
                             component="p"
                             style={{ color: "gray" }}
                           >
-                            <Icon2 name="download" size={20} /> 15 In stalk
+                            <Icon2 name="download" size={20} /> 1{product.quantity} In stock
                           </Typography>
                           <View
                             style={{ display: "flex", flexDirection: "row" }}

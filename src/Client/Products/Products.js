@@ -913,7 +913,7 @@ const Products = () => {
                               style={{ color: "gray" }}
                             >
                               <Icon2 name="download" size={20} />{" "}
-                              {product.quantity} in stalk
+                              {product.quantity} in stock
                             </Typography>
 
                             {/* View for displaying product price */}

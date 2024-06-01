@@ -93,7 +93,7 @@ export function Footer() {
         <View style={12} sm={10} md={6} sx={{ display: 'flex' }}>
 
 
-          <Text style={{color: 'white', marginTop: 80, paddingLeft: 5 }}>
+          <Text style={{color: 'white', marginTop: 80, paddingLeft: 5,marginBottom:20 }}>
             Atlegile Marketing Solutions (Pty) Ltd 2023
           </Text>
         </View>

@@ -74,7 +74,8 @@ export default function AboutUs() {
                 marginTop: 20,
               }}
             >
-           About SoWhereTo>Access<br/>
+              About SoWhereTo &gt; Access<br />
+
           Unveil the Unseen: Access African Quality
             </Text>
             <Text style={{ textAlign: "center", paddingTop: 10 }}>

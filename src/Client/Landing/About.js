@@ -65,19 +65,27 @@ export default function AboutUs() {
           </View> */}
           {/* About text section */}
           <View style={{ paddingHorizontal: 20 }}>
-            <Text
-              style={{
-                color: "#FFBF00",
-                fontWeight: "bold",
-                fontSize: 16,
-                textAlign: "center",
-                marginTop: 20,
-              }}
-            >
-              About SoWhereTo &gt; Access<br />
-
-          Unveil the Unseen: Access African Quality
-            </Text>
+          <Text
+    style={{
+      color: "#FFBF00",
+      fontWeight: "bold",
+      fontSize: 21,
+      textAlign: "center",
+      marginTop: 20,
+    }}
+  >
+    About SoWhereTo &gt; Access
+  </Text>
+  <Text
+    style={{
+      color: "#FFBF00",
+      fontWeight: "bold",
+      fontSize: 16, 
+      textAlign: "center",
+    }}
+  >
+    Unveil the Unseen: Access African Quality
+  </Text>
             <Text style={{ textAlign: "center", paddingTop: 10 }}>
             Leading digital innovation as a platform for economic change in Africa. Supporting local brands to showcase exclusive high-quality creations for global appreciation of cultural richness. Curated in the spirit of crafting a new African narrative for generational wealth and success.
 

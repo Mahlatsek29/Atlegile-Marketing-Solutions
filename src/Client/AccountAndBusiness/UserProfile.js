@@ -68,7 +68,7 @@ const UserProfile = () => {
 
   // Navigation function to handle moving to the Business Registration screen
   const handleBusiness = () => {
-    navigation.navigate("TalentRegistration");
+    navigation.navigate("BusinessRegistration");
   };
 
   // Navigation function to handle moving to the Favourites screen

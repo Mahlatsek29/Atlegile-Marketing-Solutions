@@ -407,7 +407,7 @@ const BusinessRegistration = () => {
                   <TextField
                     id="outlined-select-currency"
                     select
-                    label="Type of business"
+                    label="Type of Business"
                     variant="standard"
                     value={selectedBusinessType}
                     onChange={(e) => setSelectedBusinessType(e.target.value)}

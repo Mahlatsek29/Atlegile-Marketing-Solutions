@@ -40,25 +40,25 @@ const Signup = () => {
   // Function to handle the signup process
   const handleSignup = async (e) => {
     e.preventDefault();
-
+  
     // Check if email or password is empty, display alert if true
     if (email.trim() === "" || password.trim() === "") {
       alert("Please fill in all fields before signing in.");
       return;
     }
-
+  
     try {
       setLoading(true); // Set loading state to true during the signup process
-
+  
       // Create a user using email and password
       const userCredential = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
-
+  
       // Check if user is created successfully
       if (userCredential.user) {
         // console.log("User signed up:", userCredential.user);
-
+  
         // Save additional user information to Firestore
         await firestore
           .collection("Users")
@@ -72,7 +72,10 @@ const Signup = () => {
             business: false,
             subscribed: false,
           });
-
+  
+        // Alert user on successful sign-up
+        alert("Signed-Up successfully, We'd like to know more about you.");
+  
         // Navigate to the "TellUsAboutYourself" screen
         navigation.navigate("TellUsAboutYourself");
       }
@@ -83,7 +86,6 @@ const Signup = () => {
       setLoading(false); // Set loading back to false after the sign-up process completes
     }
   };
-
   // Calculate container width and height dynamically
   const containerWidth = window.width > 400 ? 400 : window.width * 0.9;
   const containerHeight = window.height > 600 ? 600 : window.height * 0.9;

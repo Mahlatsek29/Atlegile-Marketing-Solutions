@@ -75,6 +75,7 @@ const UserProfile = () => {
   const handleFavourites = () => {
     navigation.navigate("Favourites");
   };
+  
 
   return (
     // Main container view
@@ -87,7 +88,7 @@ const UserProfile = () => {
       {/* User profile view */}
       <View
         style={{
-          height: "800px",
+          height: "520px",
           padding: "10px",
           display: "flex",
           alignItems: "center",
@@ -121,14 +122,13 @@ const UserProfile = () => {
           {/* User details section */}
           <View
             style={{
-              marginTop: 30,
               textAlign: "center",
             }}
           ></View>
           <View
             style={{
               padding: 30,
-              marginTop: 30,
+              marginTop: 10,
               display: "flex",
               marginBottom: "5px",
               alignItems: "center",
@@ -316,17 +316,20 @@ const UserProfile = () => {
 
             {/* Sign Out button */}
             <Button
-              style={{
-                color: "#072840",
-                borderRadius: "20px",
-                outlineColor: "#072840",
-                marginRight: "5px",
-              }}
-              variant="outlined"
-              onClick={() => signOut(firebase.auth())}
-            >
-              Sign Out
-            </Button>
+  style={{
+    color: "#072840",
+    borderRadius: "20px",
+    outlineColor: "#072840",
+    marginRight: "5px",
+  }}
+  variant="outlined"
+  onClick={async () => {
+    await signOut(firebase.auth());
+    navigation.navigate("Landing");
+  }}
+>
+  Sign Out
+</Button>
 
             {/* Manage Business button */}
             {(userData?.talent || userData?.business) && (

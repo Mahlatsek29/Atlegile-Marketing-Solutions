@@ -7,8 +7,10 @@ import { Footer } from "../../Global/Footer";
 import { COLORS } from "../../Global/Color";
 import { require } from "expo-asset";
 import { yellow } from "@mui/material/colors";
+import { Button, FormControl, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
 
 export default function AboutUs() {
+  const [amount, setAmount] = useState(0);
   // State to manage screen dimensions
   const [width, setWidth] = useState(Dimensions.get("window").width);
   useEffect(() => {
@@ -48,6 +50,29 @@ export default function AboutUs() {
     };
   }, []); // Empty dependency array to run the effect only once during component mount
 
+  const handlePayment = (async () => {
+    try {
+      const ozowData = { amount: amount };
+
+      // Replace with your actual Firebase Function URL
+      const response = await fetch("https://us-central1-atlegile-marketing-solutions.cloudfunctions.net/app/api/checkout", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(ozowData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to start checkout process");
+      }
+      const responseData = await response.json();
+      window.location.href = responseData.paymentUrl; // Redirect user to the payment URL directly
+    } catch (error) {
+      console.error("Error during checkout:", error.message);
+    }
+  });
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       {/* Included FollowUs component */}
@@ -65,29 +90,21 @@ export default function AboutUs() {
           </View> */}
           {/* About text section */}
           <View style={{ paddingHorizontal: 20 }}>
-          <Text
-    style={{
-      color: "#FFBF00",
-      fontWeight: "bold",
-      fontSize: 21,
-      textAlign: "center",
-      marginTop: 20,
-    }}
-  >
-    About SoWhereTo &gt; Access
-  </Text>
-  <Text
-    style={{
-      color: "#FFBF00",
-      fontWeight: "bold",
-      fontSize: 16, 
-      textAlign: "center",
-    }}
-  >
-    Unveil the Unseen: Access African Quality
-  </Text>
+            <Text
+              style={{
+                color: "#FFBF00",
+                fontWeight: "bold",
+                fontSize: 16,
+                textAlign: "center",
+                marginTop: 20,
+              }}
+            >
+              About SoWhereTo &gt; Access<br />
+
+              Unveil the Unseen: Access African Quality
+            </Text>
             <Text style={{ textAlign: "center", paddingTop: 10 }}>
-            Leading digital innovation as a platform for economic change in Africa. Supporting local brands to showcase exclusive high-quality creations for global appreciation of cultural richness. Curated in the spirit of crafting a new African narrative for generational wealth and success.
+              Leading digital innovation as a platform for economic change in Africa. Supporting local brands to showcase exclusive high-quality creations for global appreciation of cultural richness. Curated in the spirit of crafting a new African narrative for generational wealth and success.
 
             </Text>
             {/* <Text style={{ textAlign: "center", paddingTop: 10 }}>
@@ -126,10 +143,10 @@ export default function AboutUs() {
                   paddingTop: 10,
                 }}
               >
-               Explore
+                Explore
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
-              A world where visionary local brands showcase exclusive creations. Step into the realm of unparalleled finds that will thrust you to the forefront of innovation. Be part of reimagining a new African story!
+                A world where visionary local brands showcase exclusive creations. Step into the realm of unparalleled finds that will thrust you to the forefront of innovation. Be part of reimagining a new African story!
               </Text>
             </View>
             {/* Section 2: About AMS */}
@@ -150,10 +167,10 @@ export default function AboutUs() {
                   paddingTop: 10,
                 }}
               >
-             Mission
+                Mission
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
-              Our mission is to provide a marketplace that celebrates and advances African entrepreneurship, creativity and skills, ensuring our offerings are distinctive and forward-thinking, at international standards.
+                Our mission is to provide a marketplace that celebrates and advances African entrepreneurship, creativity and skills, ensuring our offerings are distinctive and forward-thinking, at international standards.
               </Text>
             </View>
             {/* Section 3: Our USP */}
@@ -174,10 +191,10 @@ export default function AboutUs() {
                   paddingTop: 10,
                 }}
               >
-             Vision
+                Vision
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
-              We are dedicated to sourcing and offering products and solutions that reflect our values of quality, uniqueness and cultural richness.
+                We are dedicated to sourcing and offering products and solutions that reflect our values of quality, uniqueness and cultural richness.
 
 
 
@@ -210,12 +227,21 @@ export default function AboutUs() {
               flexDirection: "column",
             }}
           >
-          <iframe style={{ display: 'block', margin: '1em auto', width: '65vw', height: `${0.5625 * 65}vw`, alignSelf:'center' }} src="https://www.youtube.com/embed/cHC3nejpaNA?si=acyLRoAtfT-FYegx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-            <Text style={{ marginTop: 10, marginLeft: "11%"  }}>
+            <iframe style={{ display: 'block', margin: '1em auto', width: '65vw', height: `${0.5625 * 65}vw`, alignSelf: 'center' }} src="https://www.youtube.com/embed/cHC3nejpaNA?si=acyLRoAtfT-FYegx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <Text style={{ marginTop: 10, marginLeft: "11%" }}>
               Business Research and Youth Development Project
             </Text>
           </View>
-
+          <FormControl fullWidth sx={{ m: 1 }}>
+            <InputLabel htmlFor="outlined-adornment-amount">Support</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-amount"
+              startAdornment={<InputAdornment position="start">R</InputAdornment>}
+              label="Amount"
+              onChange={(e) => setAmount(e.target.value)}
+            />
+          </FormControl>
+          <Button onClick={handlePayment}>Support SA app</Button>
           {/* AMS core values section */}
           <View style={{ marginTop: 20 }}>
             <Text
@@ -346,12 +372,12 @@ export default function AboutUs() {
 
         <Image
           source={require("../../Global/images/big-lion.svg")}
-          style={{ width: "100%", height: `${0.5625 * 100}vw` ,display:'flex', alignItems:'flex-end'}}
+          style={{ width: "100%", height: `${0.5625 * 100}vw`, display: 'flex', alignItems: 'flex-end' }}
         />
 
       </View>
       {/* Big lion image section */}
-      
+
 
       {/* Included Footer component */}
       <Footer />

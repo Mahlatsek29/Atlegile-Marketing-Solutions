@@ -8,6 +8,20 @@ import { COLORS } from "../../Global/Color";
 import { require } from "expo-asset";
 import { yellow } from "@mui/material/colors";
 import { Button, FormControl, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
+import { styled } from "@mui/system"; // Import styled from @mui/system
+
+// Define the custom styled button with radial gradient background
+const SupportButton = styled(Button)({
+  background: "radial-gradient(circle at top left, rgba(255, 255, 255, 0.5) 0%, #D4AF37 10%, #B48811 40%, #A2790D 50%, #E7BE3A 90%)",
+  color: "white", // Optional: Adjust text color for better contrast
+  '&:hover': {
+    background: "radial-gradient(circle at top left, rgba(255, 255, 255, 0.7) 0%, #D4AF37 10%, #B48811 40%, #A2790D 50%, #E7BE3A 90%)",
+     // Optional: Adjust hover effect
+  },
+  padding: 10, // Adjust padding for smaller button size
+  minWidth: 100, // Adjust minWidth for smaller button size
+  marginVertical: 10, // Adjust margin for spacing
+});
 
 export default function AboutUs() {
   const [amount, setAmount] = useState(0);
@@ -50,7 +64,7 @@ export default function AboutUs() {
     };
   }, []); // Empty dependency array to run the effect only once during component mount
 
-  const handlePayment = (async () => {
+  const handlePayment = async () => {
     try {
       const ozowData = { amount: amount };
 
@@ -71,7 +85,7 @@ export default function AboutUs() {
     } catch (error) {
       console.error("Error during checkout:", error.message);
     }
-  });
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -92,11 +106,13 @@ export default function AboutUs() {
           <View style={{ paddingHorizontal: 20 }}>
             <Text
               style={{
-                color: "#FFBF00",
-                fontWeight: "bold",
-                fontSize: 16,
-                textAlign: "center",
-                marginTop: 20,
+                background: "radial-gradient(circle at top left, rgba(255, 255, 255, 0.7) 0%, #D4AF37 10%, #B48811 40%, #A2790D 50%, #E7BE3A 90%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 20,
               }}
             >
               About SoWhereTo &gt; Access<br />
@@ -195,12 +211,6 @@ export default function AboutUs() {
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
                 We are dedicated to sourcing and offering products and solutions that reflect our values of quality, uniqueness and cultural richness.
-
-
-
-
-
-
               </Text>
               {/* <Text
                 style={{
@@ -241,7 +251,7 @@ export default function AboutUs() {
               onChange={(e) => setAmount(e.target.value)}
             />
           </FormControl>
-          <Button onClick={handlePayment}>Support SA app</Button>
+          <SupportButton onClick={handlePayment}>Support SA app</SupportButton>
           {/* AMS core values section */}
           <View style={{ marginTop: 20 }}>
             <Text

@@ -89,20 +89,20 @@ const AddProductsAndServices = () => {
   // Function to handle form submission
   const handleContinue = async (e) => {
     e.preventDefault();
-
+  
     // Check if at least one image is selected
     if (images.length === 0) {
       alert("Please select at least one image.");
       return;
     }
-
+  
     try {
       setLoading(true);
-
+  
       // Create a reference to the Firestore collection and generate a unique product ID
       const productRef = firestore.collection("Products").doc();
       const productId = productRef.id;
-
+  
       // Set product data in Firestore
       await productRef.set({
         name,
@@ -119,7 +119,7 @@ const AddProductsAndServices = () => {
         weight: parseFloat(weight), // Parse input as a float
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
-
+  
       // Upload images to Firebase Storage
       const uploadTasks = images.map((image, index) => {
         const imageRef = storage.ref(
@@ -127,23 +127,26 @@ const AddProductsAndServices = () => {
         );
         return imageRef.put(image.file);
       });
-
+  
       // Wait for all image uploads to complete
       await Promise.all(uploadTasks);
-
+  
       // Get download URLs for the uploaded images
       const downloadURLs = await Promise.all(
         uploadTasks.map((task) => task.snapshot.ref.getDownloadURL())
       );
-
+  
       // Update product document with image URLs
       await productRef.update({ images: downloadURLs });
-
+  
       // Set a timeout for demonstration purposes (loading state)
       setTimeout(() => {
         setLoading(true);
       }, 3000);
-
+  
+      // Show success alert
+      alert("Product has been Successfully Added");
+  
       // Navigate to the landing page after processing
       navigation.navigate("Landing");
     } catch (error) {
@@ -151,7 +154,7 @@ const AddProductsAndServices = () => {
       setLoading(false);
     }
   };
-
+  
   return (
     // Styling for the main container with background image
     <View

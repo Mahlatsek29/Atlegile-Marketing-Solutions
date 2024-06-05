@@ -196,11 +196,6 @@ export default function AboutUs() {
               <Text style={{ padding: 10, textAlign: "start" }}>
                 We are dedicated to sourcing and offering products and solutions that reflect our values of quality, uniqueness and cultural richness.
 
-
-
-
-
-
               </Text>
               {/* <Text
                 style={{
@@ -232,7 +227,7 @@ export default function AboutUs() {
               Business Research and Youth Development Project
             </Text>
           </View>
-          <FormControl fullWidth sx={{ m: 1 }}>
+          <FormControl fullWidth sx={{ mb: 1 }}>
             <InputLabel htmlFor="outlined-adornment-amount">Support</InputLabel>
             <OutlinedInput
               id="outlined-adornment-amount"

@@ -75,7 +75,7 @@ const UserProfile = () => {
   const handleFavourites = () => {
     navigation.navigate("Favourites");
   };
-  
+      
 
   return (
     // Main container view

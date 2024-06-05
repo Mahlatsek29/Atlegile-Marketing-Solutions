@@ -4,6 +4,8 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  Text,
+  Linking,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -16,6 +18,9 @@ import AlertTitle from "@mui/material/AlertTitle";
 import { Paper, Typography } from "@mui/material";
 import { auth, firestore, firebase } from "../../config";
 import logo from "../../Global/images/logo5.png";
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 const BusinessRegistration = () => {
   const navigation = useNavigation();
@@ -37,7 +42,8 @@ const BusinessRegistration = () => {
   const window = Dimensions.get("window");
   const user = firebase.auth().currentUser;
   const [sendToBackend, setSendToBackend] = useState(false);
-
+  const [checked, setChecked] = useState(false);
+  const [checked1, setChecked1] = useState(false);
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
@@ -50,17 +56,35 @@ const BusinessRegistration = () => {
     return () => unsubscribe();
   }, []);
 
+  /**
+ * Updates the bio state based on the input value.
+ *
+ * @param {Event} e - The event object containing the input value.
+ * @return {void} This function does not return a value.
+ */
+  const handleBioChange = (e) => {
+    if (e.target.value.length <= 300) {
+      setBio(e.target.value);
+    } else {
+      setBio(e.target.value.slice(0, 300));
+    }
+  };
+  /**
+ * Updates the state of the checkbox based on the event triggered by the user.
+ *
+ * @param {Object} event - The event object containing information about the checkbox change.
+ * @return {void} This function does not return a value.
+ */ 
   const handleContinue = async (e) => {
     e.preventDefault();
 
     try {
       setLoading(true);
-
       const userCredential = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
 
-      if (userCredential.user) {
+      if (userCredential.user && checked === true && checked1 === true) {
         await firestore.collection("Users").doc(userCredential.user.uid).set({
           business: true,
           company: businessName,
@@ -73,13 +97,18 @@ const BusinessRegistration = () => {
       }
     } catch (error) {
       console.error("Error signing up:", error.message);
-      alert("Error signing up. Please try again.");
-    } finally
-    {
+           alert("Error signing up. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
 
+/**
+ * Registers a business by adding its information to the Firestore "Business" collection.
+ *
+ * @return {Promise<void>} A promise that resolves when the business is successfully registered.
+ * @throws {Error} If there is an error storing the data in Firestore.
+ */
   useEffect(() => {
     const registerBusiness = async () => {
       try {
@@ -273,23 +302,26 @@ const BusinessRegistration = () => {
               <TextField
                 id="outlined-number"
                 label="Business Name"
-                type="text"
+                // type="text"
                 variant="standard"
-                InputLabelProps={{
-                  shrink: true,
-                }}
+                defaultValue="Small"
+                size="small"
+                // InputLabelProps={{
+                //   shrink: true,
+                // }}
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
               />
-              <br />
               <TextField
                 id="outlined-number"
                 label="Email"
-                type="text"
+                // type="text"
                 variant="standard"
-                InputLabelProps={{
-                  shrink: true,
-                }}
+                // defaultValue="Small"
+                size="small"
+                // InputLabelProps={{
+                //   shrink: true,
+                // }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -298,9 +330,11 @@ const BusinessRegistration = () => {
                 label="Password"
                 type="password"
                 variant="standard"
-                InputLabelProps={{
-                  shrink: true,
-                }}
+                defaultValue="Small"
+                size="small"
+                // InputLabelProps={{
+                //   shrink: true,
+                // }}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -311,6 +345,8 @@ const BusinessRegistration = () => {
                 select
                 label="Role"
                 variant="standard"
+                defaultValue="Small"
+                size="small"
                 value={selectedRole}
                 onChange={(e) => setSelectedRole(e.target.value)}
                 style={{
@@ -323,16 +359,15 @@ const BusinessRegistration = () => {
                   </MenuItem>
                 ))}
               </TextField>
-              <br />
-
               <TextField
                 id="outlined-number"
                 label="Location"
                 type="text"
                 variant="standard"
-                InputLabelProps={{
-                  shrink: true,
-                }}
+                size="small"
+                // InputLabelProps={{
+                //   shrink: true,
+                // }}
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 required
@@ -349,6 +384,7 @@ const BusinessRegistration = () => {
                   select
                   label="Type of Business"
                   variant="standard"
+                  size="small"
                   value={selectedBusinessType}
                   onChange={(e) => setSelectedBusinessType(e.target.value)}
                   style={{
@@ -369,6 +405,7 @@ const BusinessRegistration = () => {
                   select
                   label="Industry"
                   variant="standard"
+                  size="small"
                   value={selectedIndustry}
                   onChange={(e) => setSelectedIndustry(e.target.value)}
                   style={{
@@ -387,17 +424,34 @@ const BusinessRegistration = () => {
 
               <TextField
                 id="outlined-number"
-                label="Bio"
+                label="Bio(300 characters)"
                 type="text"
                 variant="standard"
-                InputLabelProps={{
-                  shrink: true,
-                }}
+                size="small"
                 style={{ width: "100%" }}
                 value={bio}
-                onChange={(e) => setBio(e.target.value)}
+                onChange={handleBioChange}
                 required
               />
+              <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                <View>
+                  <FormControlLabel required control={<Checkbox />} label="I agree with" onClick={() => setChecked(true)}
+                  />
+                  <Typography component="a" style={{ textDecoration: 'none' }} href="https://atlegilemarketing.co.za/about-ams/terms-of-service/">
+                    Terms and Conditions
+                  </Typography>
+                </View>
+                <View style={{ marginLeft: "10px" }}>
+
+                  <FormControlLabel required control={<Checkbox />} label="I agree with this" onClick={() => setChecked1(true)} />
+                  <Typography component="a" style={{ textDecoration: 'none' }} href="https://atlegilemarketing.co.za/privacy-policy/">
+                    Private Policy
+                  </Typography>
+                </View>
+
+                {/* <FormControlLabel required control={<Checkbox />} label="Required" /> */}
+
+              </View>
 
               <Button
                 variant="contained"

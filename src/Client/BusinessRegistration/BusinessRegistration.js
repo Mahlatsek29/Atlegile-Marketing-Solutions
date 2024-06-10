@@ -21,6 +21,8 @@ import logo from "../../Global/images/logo5.png";
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import TermsModal from "../../Global/TermsModal"; // Import the Terms modal component
+import PolicyModal from "../../Global//PolicyModal"; // Import the Policy modal component
 
 const BusinessRegistration = () => {
   const navigation = useNavigation();
@@ -44,6 +46,9 @@ const BusinessRegistration = () => {
   const [sendToBackend, setSendToBackend] = useState(false);
   const [checked, setChecked] = useState(false);
   const [checked1, setChecked1] = useState(false);
+  const [termsModalOpen, setTermsModalOpen] = useState(false); // State to manage the Terms modal
+  const [policyModalOpen, setPolicyModalOpen] = useState(false); // State to manage the Policy modal
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
@@ -56,12 +61,6 @@ const BusinessRegistration = () => {
     return () => unsubscribe();
   }, []);
 
-  /**
- * Updates the bio state based on the input value.
- *
- * @param {Event} e - The event object containing the input value.
- * @return {void} This function does not return a value.
- */
   const handleBioChange = (e) => {
     if (e.target.value.length <= 300) {
       setBio(e.target.value);
@@ -69,12 +68,7 @@ const BusinessRegistration = () => {
       setBio(e.target.value.slice(0, 300));
     }
   };
-  /**
- * Updates the state of the checkbox based on the event triggered by the user.
- *
- * @param {Object} event - The event object containing information about the checkbox change.
- * @return {void} This function does not return a value.
- */ 
+
   const handleContinue = async (e) => {
     e.preventDefault();
 
@@ -97,18 +91,12 @@ const BusinessRegistration = () => {
       }
     } catch (error) {
       console.error("Error signing up:", error.message);
-           alert("Error signing up. Please try again.");
+      alert("Error signing up. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-/**
- * Registers a business by adding its information to the Firestore "Business" collection.
- *
- * @return {Promise<void>} A promise that resolves when the business is successfully registered.
- * @throws {Error} If there is an error storing the data in Firestore.
- */
   useEffect(() => {
     const registerBusiness = async () => {
       try {
@@ -302,26 +290,17 @@ const BusinessRegistration = () => {
               <TextField
                 id="outlined-number"
                 label="Business Name"
-                // type="text"
                 variant="standard"
                 defaultValue="Small"
                 size="small"
-                // InputLabelProps={{
-                //   shrink: true,
-                // }}
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
               />
               <TextField
                 id="outlined-number"
                 label="Email"
-                // type="text"
                 variant="standard"
-                // defaultValue="Small"
                 size="small"
-                // InputLabelProps={{
-                //   shrink: true,
-                // }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -332,9 +311,6 @@ const BusinessRegistration = () => {
                 variant="standard"
                 defaultValue="Small"
                 size="small"
-                // InputLabelProps={{
-                //   shrink: true,
-                // }}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -365,9 +341,6 @@ const BusinessRegistration = () => {
                 type="text"
                 variant="standard"
                 size="small"
-                // InputLabelProps={{
-                //   shrink: true,
-                // }}
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 required
@@ -435,22 +408,15 @@ const BusinessRegistration = () => {
               />
               <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                 <View>
-                  <FormControlLabel required control={<Checkbox />} label="I agree with" onClick={() => setChecked(true)}
-                  />
-                  <Typography component="a" style={{ textDecoration: 'none' }} href="https://atlegilemarketing.co.za/about-ams/terms-of-service/">
-                    Terms and Conditions
-                  </Typography>
+                  <FormControlLabel required control={<Checkbox />} label="I agree with" onClick={() => setChecked(true)} />
+                  {/* Replace the link with the button */}
+                  <Button variant="text" onClick={() => setTermsModalOpen(true)}>Terms of Service</Button> 
                 </View>
                 <View style={{ marginLeft: "10px" }}>
-
                   <FormControlLabel required control={<Checkbox />} label="I agree with this" onClick={() => setChecked1(true)} />
-                  <Typography component="a" style={{ textDecoration: 'none' }} href="https://atlegilemarketing.co.za/privacy-policy/">
-                    Private Policy
-                  </Typography>
+                  {/* Open policy modal on button click */}
+                  <Button variant="text" onClick={() => setPolicyModalOpen(true)}>Privacy Policy</Button>
                 </View>
-
-                {/* <FormControlLabel required control={<Checkbox />} label="Required" /> */}
-
               </View>
 
               <Button
@@ -477,7 +443,6 @@ const BusinessRegistration = () => {
         </View>
       </Paper>
 
-      {/* Display the success alert when showSuccessAlert is true */}
       {showSuccessAlert && (
         <Alert severity="success" sx={{
           position: "fixed",
@@ -489,6 +454,12 @@ const BusinessRegistration = () => {
           Your business has been Successfully Registered!
         </Alert>
       )}
+
+      {/* Terms Modal */}
+      <TermsModal open={termsModalOpen} onClose={() => setTermsModalOpen(false)} />
+      
+      {/* Policy Modal */}
+      <PolicyModal open={policyModalOpen} onClose={() => setPolicyModalOpen(false)} />
     </View>
   );
 };

@@ -461,7 +461,7 @@ const BusinessRegistration = () => {
                     variant="text"
                     onClick={() => setPolicyModalOpen(true)}
                   >
-                    Privacy Policy
+                   Policies
                   </Button>
                 </View>
               </View>
@@ -673,52 +673,73 @@ const BusinessRegistration = () => {
           core values, which include:
           <br />
           <br />
+          <ul>
           <Typography
-            sx={{ fontsize: "10px", lineHeight: "2", fontWeight: "bold" }}
+            sx={{ fontsize: "10px", fontWeight: "bold" }}
           > Exclusivity</Typography>
+          <Typography variant="body2">
+         <li> Offering unique and innovative products.</li></Typography>
+        
+          </ul>
+          <ul>
+          <Typography
+            sx={{ fontsize: "10px",fontWeight: "bold" }}
+          > 
+        Innovation</Typography>
          
-          Offering unique and innovative products. 
-          <br />
+         
+          <Typography variant="body2">
+            <li>
+          Providing cutting-edge and creative products.</li></Typography>
+         
+          </ul>
+          <ul>
           <Typography
             sx={{ fontsize: "10px", lineHeight: "2", fontWeight: "bold" }}
           > 
-          Innovation</Typography>
-          <br />
-          Providing cutting-edge and creative products. 
-          <Typography
-            sx={{ fontsize: "10px", lineHeight: "2", fontWeight: "bold" }}
-          > 
-          Quality</Typography>
-          <br />
-          Ensuring high-caliber, durable, and aesthetically pleasing items.
-          <br />
-          <Typography
-            sx={{ fontsize: "10px", lineHeight: "2", fontWeight: "bold" }}
-          > 
-          Cultural Richness:</Typography>
-          <br />
-          Highlighting products with African cultural heritage and significance.{" "}
-          <br />
-          <Typography
-            sx={{ fontsize: "10px", lineHeight: "2", fontWeight: "bold" }}
-          > 
-          Discovery:</Typography>
           
-          Encouraging the thrill of finding new and unexpected items.
-          <br />
-          <Typography
-            sx={{ fontsize: "10px", lineHeight: "2", fontWeight: "bold" }}
-          > 
-          Exceptional Service Delivery:</Typography>
+          Quality</Typography>
+
          
-          Demonstrating capability through efficient service, experience, and
-          operational capacity <br />
-          We reserve the right to remove any listings that do not meet these
-          values.
+          <Typography variant="body2">
+          <li>Ensuring high-caliber, durable, and aesthetically pleasing items.</li></Typography>
+          </ul>
+         <ul>
+          <Typography
+            sx={{ fontsize: "10px",fontWeight: "bold" }}
+          > 
+         <li> Cultural Richness</li></Typography>
+          </ul>
+          <ul>
+          <Typography variant="body2">
+          <li>Highlighting products with African cultural heritage and significance.</li></Typography>
+          </ul>
+          <ul>
+          <Typography
+            sx={{ fontsize: "10px",fontWeight: "bold" }}
+          > 
+          <li>Discovery</li></Typography>
+          </ul>
+          <ul>
+          <Typography variant="body2">
+          <li>Encouraging the thrill of finding new and unexpected items.</li></Typography>
+          </ul>
+          <ul>
+          <Typography
+            sx={{ fontsize: "10px",fontWeight: "bold" }}
+          > 
+          Exceptional Service Delivery</Typography>
+          
+          <Typography variant="body2">
+         <li> Demonstrating capability through efficient service, experience, and
+          operational capacity.</li> 
+         <li> We reserve the right to remove any listings that do not meet these
+          values.</li></Typography>
+          </ul>
           </Typography>
           <br />
           <Typography
-            sx={{ fontsize: "10px", lineHeight: "2", fontWeight: "bold" }}
+            sx={{ fontsize: "10px",fontWeight: "bold" }}
           > 
           15. Contact Information</Typography>
           <Typography variant="body2">
@@ -738,17 +759,15 @@ const BusinessRegistration = () => {
           "& .MuiDialogTitle-root": {
             backgroundColor: "#072840",
             color: "#fff",
-            width: "100%",
           },
           "& .MuiDialogContent-root": {
-            padding: 10,
+            padding: "10",
             backgroundColor: "#fff",
             color: "#333",
-            borderRadius: 10,
           },
         }}
       >
-        <DialogTitle>Privacy Policy</DialogTitle>
+        <DialogTitle>Shipping & Return Policies</DialogTitle>
         <DialogContent sx={{ fontSize: "28px", fontWeight: "bold" }}>
           <Typography
             sx={{
@@ -783,8 +802,6 @@ const BusinessRegistration = () => {
                 <li>To a central area: 3-4 working days</li>
                 <li>To a regional area: 3-5 working days</li>
               </ul>
-              
-              
             </Typography>
             <Typography
               sx={{ fontsize: "13px", lineHeight: "2", fontWeight: "bold" }}
@@ -882,7 +899,7 @@ const BusinessRegistration = () => {
             >
               International Shipping Details
             </Typography>
-            Customs Charges:
+            Customs Charges
             <Typography variant="body2">
               Customs charges are billed by the receiving customs and are
               payable by the receiver. They are not included in our quotations.
@@ -891,7 +908,7 @@ const BusinessRegistration = () => {
             <Typography
               sx={{ fontsize: "13px", lineHeight: "2", fontWeight: "bold" }}
             >
-            Tracking International Parcels:
+            Tracking International Parcels
             </Typography>
             <Typography variant="body2">
               You can send your tracking request to delivery@sowheretoaccess.com
@@ -902,7 +919,7 @@ const BusinessRegistration = () => {
               sx={{ fontsize: "13px", lineHeight: "2", fontWeight: "bold" }}
             >
               {" "}
-            Customs Clearance:
+            Customs Clearance
             </Typography>
             <Typography variant="body2">
               Please note that each international shipment must go through a
@@ -914,7 +931,7 @@ const BusinessRegistration = () => {
               sx={{ fontsize: "13px", lineHeight: "2", fontWeight: "bold" }}
             >
               {" "}
-              VAT and Duties for Documents:
+              VAT and Duties for Document
             </Typography>
             <Typography variant="body2">
               Shipments consisting only of documents do not incur customs
@@ -924,7 +941,7 @@ const BusinessRegistration = () => {
             <Typography
               sx={{ fontsize: "13px", lineHeight: "2", fontWeight: "bold" }}
             >
-              Prohibited Items:
+              Prohibited Items
               <Typography variant="body2">
                 {" "}
                 Each country has different rules and regulations.
@@ -973,16 +990,18 @@ const BusinessRegistration = () => {
     >
       Return Conditions
     </Typography>
+    <ul>
     <Typography sx={{ fontSize: "13px", fontWeight: "bold" }}>
-  <ul>
+  
     Time Frame:
-  </ul>
+ 
 </Typography>
 <Typography variant="body2">
-  <ul>
+ 
     <li>Items must be returned within 30 days of receipt.</li>
-  </ul>
+ 
 </Typography>
+</ul>
 <Typography variant="body2">
   <ul>
     <Typography sx={{ fontSize: "13px", lineHeight: "2", fontWeight: "bold" }}>
@@ -1014,7 +1033,7 @@ const BusinessRegistration = () => {
     <Typography
       sx={{ fontsize: "13px", lineHeight: "2", fontWeight: "bold" }}
     >
-      1. Initiate a Return:
+      1. Initiate a Return
     </Typography>
     <Typography variant="body2">
       Contact our customer service team at returns@sowheretoaccess.com or
@@ -1025,7 +1044,7 @@ const BusinessRegistration = () => {
     <Typography
       sx={{ fontsize: "13px", lineHeight: "2", fontWeight: "bold" }}
     >
-      2. Prepare Your Return:
+      2. Prepare Your Return
     </Typography>
     <Typography variant="body2">
       Securely pack the items in their original packaging, including all
@@ -1035,7 +1054,7 @@ const BusinessRegistration = () => {
     <Typography
       sx={{ fontsize: "13px", lineHeight: "2", fontWeight: "bold" }}
     >
-      3. Shipping the Return:
+      3. Shipping the Return
     </Typography>
     <Typography variant="body2">
       We will make direct contact to confirm arrangements for collection.
@@ -1044,7 +1063,7 @@ const BusinessRegistration = () => {
     <Typography
       sx={{ fontsize: "13px", lineHeight: "2", fontWeight: "bold" }}
     >
-      4. Inspection:
+      4. Inspection
     </Typography>
     <Typography variant="body2">
       Once we receive your return, we will inspect the items to ensure they meet the return conditions.

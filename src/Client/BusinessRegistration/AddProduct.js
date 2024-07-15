@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import background from "../../Global/images/Reed.jpg";
-import logo from "../../Global/images/logo.svg";
+import logo from "../../Global/images/logo5.png";
 import Banner from "../../Global/images/media bg-cover.png";
 import placeholder from "../../Global/images/login.jpg";
 import { useNavigation } from "@react-navigation/native";
@@ -186,12 +186,12 @@ const AddProductsAndServices = () => {
 
        
           {/* Logo section */}
-          <Grid>
-            <img
-              src={logo}
-              style={{ height: "9vh", width: "90%", paddingTop: "8vh" }}
-            />
-          </Grid>
+          <Grid style={{flex:1, display: "flex", alignSelf: "center",justifyContent:'center', marginTop: "6%", marginBottom:"3%" }}>
+  <img
+    src={logo}
+    style={{ 
+      height: "9vh", width: "90%" }} />
+</Grid>
 
           {/* Form container */}
           <View

@@ -5,13 +5,12 @@ import Icon2 from "react-native-vector-icons/Feather";
 import Icon3 from "react-native-vector-icons/EvilIcons";
 import { useNavigation } from '@react-navigation/native';
 import { Dimensions, TouchableOpacity, Linking } from 'react-native';
+
 const FollowUs = () => {
   const navigation = useNavigation();
   const [width, setWidth] = useState(Dimensions.get('window').width);
   const isLargeDevice = width > 911;
-  const openYouTube = () => {
-    navigation.navigate("https://www.youtube.com/");
-  };
+
   useEffect(() => {
     const handleDimensionsChange = ({ window }) => {
       setWidth(window.width);
@@ -21,17 +20,28 @@ const FollowUs = () => {
       Dimensions.removeEventListener("change", handleDimensionsChange);
     };
   }, []);
+
   const handleInstagramPress = () => {
     Linking.openURL("https://www.instagram.com/sowheretoaccess?igsh=OGQ5ZDc2ODk2ZA==");
   };
+
   const handleFacebookPress = () => {
     Linking.openURL("https://www.facebook.com/share/cXBfURLLwG6VKaeD/?mibextid=qi2Omg");
   };
+
   const handleTwitterPress = () => {
     Linking.openURL("https://x.com/sowheretoaccess?t=d17c-RATEmc0Em-3jxXRZw&s=09");
   };
+
+  const handleWhatsAppPress = () => {
+    Linking.openURL("https://wa.me/27608466708");
+  };
+  const handleEmailPress = () => {
+    Linking.openURL("mailto:hey@sowheretoaccess.com");
+  };
+
   return (
-    <Grid container spacing={2} sx={{display:'flex', justifyContent:'center', backgroundColor: "#070f18"}}>
+    <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center', backgroundColor: "#070f18" }}>
       <Grid item xs={12} sm={10} md={9}>
         <Box
           sx={{
@@ -45,14 +55,18 @@ const FollowUs = () => {
           }}
         >
           <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-            <Icon2 name="phone" size={16} color="white" />
-            <Typography variant="subtitle2">(+27) 608-466-708</Typography>
+            <TouchableOpacity onPress={handleWhatsAppPress}>
+              <Icon name="whatsapp" size={16} color="white" />
+            </TouchableOpacity>
+            <Typography variant="subtitle2" sx={{ marginLeft: "5px" }}>(+27) 608-466-708</Typography>
           </Box>
           {isLargeDevice && (
             <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+            <TouchableOpacity onPress={handleEmailPress}>
               <Icon3 name="envelope" size={20} color="white" />
-              <Typography variant="subtitle2">hey@sowheretoaccess.com</Typography>
-            </Box>
+            </TouchableOpacity>
+            <Typography variant="subtitle2" sx={{ marginLeft: "5px" }}>hey@sowheretoaccess.com</Typography>
+          </Box>
           )}
           {isLargeDevice && (
             <Box sx={{ display: "flex", flexDirection: "row" }}>
@@ -70,21 +84,13 @@ const FollowUs = () => {
           >
             <Typography>Follow Us : </Typography>
             <TouchableOpacity onPress={handleInstagramPress}>
-              <Icon
+              <Icon2
                 name="instagram"
                 size={16}
                 color="white"
                 style={{ paddingHorizontal: 10 }}
               />
             </TouchableOpacity>
-            {/* <TouchableOpacity onPress={openYouTube}>
-              <Icon
-                name="youtube"
-                size={16}
-                color="white"
-                style={{ paddingHorizontal: 10 }}
-              />
-            </TouchableOpacity> */}
             {isLargeDevice && (
               <>
                 <TouchableOpacity onPress={handleFacebookPress}>
@@ -111,4 +117,5 @@ const FollowUs = () => {
     </Grid>
   );
 };
+
 export default FollowUs;

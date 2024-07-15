@@ -159,12 +159,12 @@ const Navbar = () => {
                     AS
                   </Typography>
                 </View>
-                <View style={{ marginLeft: 10, }}>
+               <View style={{ marginLeft: 10,display:'flex',flexDirection:'column' }}>
                   <Typography variant="subtitle1">
-                    Welcome, {userData.name}
-                  </Typography>
+                    Welcome 
+                  </Typography>                         
                   <Typography style={{ fontSize: 12 }}>
-                    {userData.username}
+                    {userData.name}
                   </Typography>
                 </View>
               </TouchableOpacity>
@@ -180,9 +180,9 @@ const Navbar = () => {
               <TouchableOpacity onPress={() => navigateAndCloseMenu("SignIn")}>
                 <Button color="inherit">Sign In</Button>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigateAndCloseMenu("SignUp")}>
+              {/* <TouchableOpacity onPress={() => navigateAndCloseMenu("SignUp")}>
                 <Button color="inherit">Sign Up</Button>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </>
           )}
         </View>
@@ -198,11 +198,12 @@ const Navbar = () => {
             height: "85vh",
             zIndex: 999,
             display: "flex",
-            alignItems: "center",
+                alignItems: "center",
+          
            
           }}
         >
-          <View style={{  flex:1, display:'flex',justifyContent:'space-between', color:'black' }}>
+          <View style={{flex:1, display:'flex',justifyContent:'space-between', color:'black' }}>
             <View style={{top: 20,}}>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
                 {/* <Button
@@ -254,12 +255,12 @@ const Navbar = () => {
                     AS
                   </Typography>
                 </View>
-                <View style={{ marginLeft: 10 }}>
+                <View style={{ marginLeft: 10,display:'flex',flexDirection:'column' }}>
                   <Typography variant="subtitle1">
-                    Welcome, {userData.name}
-                  </Typography>
+                    Welcome 
+                  </Typography>                         
                   <Typography style={{ fontSize: 12 }}>
-                    {userData.username}
+                    {userData.name}
                   </Typography>
                 </View>
               </TouchableOpacity>
@@ -295,7 +296,7 @@ const Navbar = () => {
                     Sign In
                   </Button>
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => navigateAndCloseMenu("SignUp")}
                 >
                   <Button
@@ -311,7 +312,7 @@ const Navbar = () => {
                   >
                     Sign Up
                   </Button>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </>
             )}
              </View>

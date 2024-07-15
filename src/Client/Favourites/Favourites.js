@@ -534,7 +534,7 @@ const Favourites = () => {
           <Box
             style={{
               position: "absolute",
-              top: "60px", // Adjust the top position as needed
+              top: "60px", 
               right: "20px",
               backgroundColor: "whitesmoke",
               padding: "10px",
@@ -904,7 +904,7 @@ const Favourites = () => {
                             component="p"
                             style={{ color: "gray", marginRight:5 }}
                           >
-                            <Icon2 name="download" size={20} /> 15 Sales
+                            <Icon2 name="download" size={20} /> 15 In stalk
                           </Typography>
 
                           {/* Typography component for displaying the discounted product price */}
@@ -1204,7 +1204,7 @@ const Favourites = () => {
                             component="p"
                             style={{ color: "gray" }}
                           >
-                            <Icon2 name="download" size={20} /> 15 Sales
+                            <Icon2 name="download" size={20} /> 1{product.quantity} In stock
                           </Typography>
                           <View
                             style={{ display: "flex", flexDirection: "row" }}

@@ -35,9 +35,10 @@ const Signin = () => {
       const userCredential = await firebase
         .auth()
         .signInWithEmailAndPassword(email, password);
-
+  
       if (userCredential.user) {
         console.log("User signed in:", userCredential.user);
+        alert("Signed in successfully!"); // Alert user on successful sign-in
         navigation.navigate("Landing"); // Navigate to Landing screen upon successful sign-in
       }
     } catch (error) {
@@ -48,19 +49,16 @@ const Signin = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      // Add necessary imports and definitions for Google Sign-In here
-    } catch (error) {
-      console.error("Error signing in with Google:", error.message);
-      alert("Error signing in with Google. Please try again.");
-    }
-  };
-
   const handleShop = () => {
     // navigation.navigate("Landing"); // Navigate to Landing screen when user wants to shop
     navigation.navigate("AboutUs"); // Navigate to Landing screen when user wants to shop
 
+  };
+
+  // Function to handle Google sign-in
+  const handleGoogleSignIn = () => {
+    // Implement your Google sign-in logic here
+    alert("Google sign-in is not implemented yet.");
   };
 
   // Calculate container width and height dynamically
@@ -95,7 +93,7 @@ const Signin = () => {
         {/* Logo image container */}
         <View style={{flex:1, display: "flex", alignSelf: "center",justifyContent:'center' }}>
           <Image
-            source={require("../../Global/images/logo.png")}
+            source={require("../../Global/images/logo5.png")}
             style={styles.logo}
           />
         </View>
@@ -231,10 +229,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   logo: {
-    width: 150,
-    height: 50,
+    width: 70,
+    height: 70, 
     marginBottom: 50,
     resizeMode: "contain",
+    marginTop:20,
+    borderRadius: 35, 
+    overflow: "hidden", 
   },
   title: {
     fontSize: 24,

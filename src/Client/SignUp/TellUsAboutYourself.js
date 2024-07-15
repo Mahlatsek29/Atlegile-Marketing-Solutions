@@ -26,22 +26,22 @@ const TellUsAboutYourself = ({ navigation }) => {
   // Function to handle the continue button click
   const handleContinue = async (e) => {
     e.preventDefault();
-
+  
     // Check if all required fields are filled
     if (!name || !surname || !phone || !gender || !email) {
       alert("Please fill in all fields before continuing.");
       return;
     }
-
+  
     // Set user information in local storage
     localStorage.setItem("user", user.uid);
-
+  
     try {
       setLoading(true);
-
+  
       // Reference to the user document in Firestore
       const userRef = firestore.collection("Users").doc(user.uid);
-
+  
       // Set user information in Firestore document
       await userRef.set({
         name,
@@ -52,19 +52,21 @@ const TellUsAboutYourself = ({ navigation }) => {
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         uid: user.uid,
       });
-
-      // Log success message and navigate to the next screen
+  
+      // Log success message
       console.log("User information successfully submitted to Firestore.");
+  
+      // Alert user and navigate to the "AlternativeContact" screen
+      alert("Continue To Alternative Contacts");
       navigation.navigate("AlternativeContact");
     } catch (error) {
       // Log and alert if there's an error submitting user information
       console.error("Error submitting user information:", error.message);
       alert("Error submitting user information. Please try again.");
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
-
   // Array with an empty string as the only option
   const emptyOption = [""];
   // Array with gender options
@@ -80,7 +82,7 @@ const TellUsAboutYourself = ({ navigation }) => {
       <View style={styles.container}>
         {/* Logo Image */}
         <Image
-          source={require("../../Global/images/logo.png")}
+          source={require("../../Global/images/logo5.png")}
           style={styles.logo}
         />
         {/* Title and Subtitle */}
@@ -217,10 +219,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   logo: {
-    width: 150,
-    height: 50,
-    marginBottom: 150,
+    width: 70,
+    height: 70, 
+    marginBottom: 50,
     resizeMode: "contain",
+    marginTop:20,
+    borderRadius: 35, 
+    overflow: "hidden", 
   },
   title: {
     fontSize: 10,

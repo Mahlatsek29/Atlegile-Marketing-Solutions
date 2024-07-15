@@ -1519,7 +1519,7 @@ export default function ProductDetails({ navigation, route }) {
                                       style={{ color: "gray" }}
                                     >
                                       <Icon2 name="download" size={20} />{" "}
-                                      {relatedProduct.quantity} Sales
+                                      {relatedProduct.quantity} In stalk
                                     </Typography>
                                     {/* Prices */}
                                     <View

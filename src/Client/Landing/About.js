@@ -57,40 +57,45 @@ export default function AboutUs() {
       <View style={{ alignItems: "center", justifyContent: "center" }}>
         <View style={{ width: width * 0.66 }}>
           {/* Logo section */}
-          <View style={{ alignItems: "center" }}>
+          {/* <View style={{ alignItems: "center" }}>
             <Image
-              source={require("../../Global/images/logo.svg")}
+              source={require("../../Global/images/logo3.png")}
               style={{ width: 120, height: 60, resizeMode: "contain" }}
             />
-          </View>
+          </View> */}
           {/* About text section */}
           <View style={{ paddingHorizontal: 20 }}>
-            <Text
-              style={{
-                color: COLORS.darkBlue,
-                fontWeight: "bold",
-                fontSize: 20,
-                textAlign: "center",
-              }}
-            >
-              ATTLEGILE MARKETING SOLUTIONS
-            </Text>
+          <Text
+    style={{
+      color: "#FFBF00",
+      fontWeight: "bold",
+      fontSize: 21,
+      textAlign: "center",
+      marginTop: 20,
+    }}
+  >
+    About SoWhereTo &gt; Access
+  </Text>
+  <Text
+    style={{
+      color: "#FFBF00",
+      fontWeight: "bold",
+      fontSize: 16, 
+      textAlign: "center",
+    }}
+  >
+    Unveil the Unseen: Access African Quality
+  </Text>
             <Text style={{ textAlign: "center", paddingTop: 10 }}>
-              Welcome to Atlegile Marketing Solutions (Pty) Ltd, where passion,
-              purpose, and expertise collide to create exceptional Marketing
-              strategies. Our Youth Woman-owned and led Business, based in South
-              Africa, was founded in 2015, and we’ve been on an exciting journey
-              with our Partners ever since. From ground level to the Digital
-              space, we’re committed to building strong Brands, effectively
-              Communicating products + service offerings, and transferring our
-              Skills to help you engage with the Online Market Successfully.
+            Leading digital innovation as a platform for economic change in Africa. Supporting local brands to showcase exclusive high-quality creations for global appreciation of cultural richness. Curated in the spirit of crafting a new African narrative for generational wealth and success.
+
             </Text>
-            <Text style={{ textAlign: "center", paddingTop: 10 }}>
+            {/* <Text style={{ textAlign: "center", paddingTop: 10 }}>
               AMS is dedicated to helping African businesses succeed by
               developing strong brands, marketing their products and services
               effectively, and connecting them with a global customer base. They
               aim to drive sales, increase revenue, and create a lasting impact.
-            </Text>
+            </Text> */}
           </View>
 
           {/* Three sections with information */}
@@ -121,14 +126,10 @@ export default function AboutUs() {
                   paddingTop: 10,
                 }}
               >
-                WHAT WE OFFER
+               Explore
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
-                Ams creates strong influential brands, by applying tailored
-                market approaches + using compelling content, to effectively
-                communicate, build and manage good relationships with online
-                communities. We support ESD + marketing departments and
-                agencies.
+              A world where visionary local brands showcase exclusive creations. Step into the realm of unparalleled finds that will thrust you to the forefront of innovation. Be part of reimagining a new African story!
               </Text>
             </View>
             {/* Section 2: About AMS */}
@@ -149,13 +150,10 @@ export default function AboutUs() {
                   paddingTop: 10,
                 }}
               >
-                ABOUT AMS
+             Mission
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
-                Atlegile Marketing Solutions (Pty) Ltd is a 360 creative brand
-                marketing company that assists African businesses to reach their
-                intended audience from online to offline. We are located in
-                Pimville, Soweto, and service our partners online.
+              Our mission is to provide a marketplace that celebrates and advances African entrepreneurship, creativity and skills, ensuring our offerings are distinctive and forward-thinking, at international standards.
               </Text>
             </View>
             {/* Section 3: Our USP */}
@@ -176,14 +174,18 @@ export default function AboutUs() {
                   paddingTop: 10,
                 }}
               >
-                OUR USP
+             Vision
               </Text>
               <Text style={{ padding: 10, textAlign: "start" }}>
-                We use a unique strategic brand approach that is coupled with
-                creativity, while transferring 8 years of professional quality
-                service.
+              We are dedicated to sourcing and offering products and solutions that reflect our values of quality, uniqueness and cultural richness.
+
+
+
+
+
+
               </Text>
-              <Text
+              {/* <Text
                 style={{
                   color: "black",
                   textAlign: "center",
@@ -193,7 +195,7 @@ export default function AboutUs() {
                 }}
               >
                 #AGILE IS WHAT ATLEGILE IS ABOUT
-              </Text>
+              </Text> */}
             </View>
           </View>
 
@@ -209,7 +211,7 @@ export default function AboutUs() {
             }}
           >
           <iframe style={{ display: 'block', margin: '1em auto', width: '65vw', height: `${0.5625 * 65}vw`, alignSelf:'center' }} src="https://www.youtube.com/embed/cHC3nejpaNA?si=acyLRoAtfT-FYegx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-            <Text style={{ marginTop: 10 }}>
+            <Text style={{ marginTop: 10, marginLeft: "11%"  }}>
               Business Research and Youth Development Project
             </Text>
           </View>

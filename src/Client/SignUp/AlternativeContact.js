@@ -24,20 +24,20 @@ const AlternativeContact = () => {
 
   const handleContinue = async (e) => {
     e.preventDefault();
-
+  
     if (name.trim() === "" || phone.trim() === "") {
       alert("Please fill in all fields before continuing.");
       return;
     }
-
+  
     try {
       setLoading(true); // Set loading to true when the request starts
-
+  
       const userRef = firestore.collection("Users").doc(user.uid);
-
+  
       // Get the existing user data
       const userData = await userRef.get();
-
+  
       // Update the user data with alternative contact information
       await userRef.set(
         {
@@ -48,19 +48,21 @@ const AlternativeContact = () => {
         },
         { merge: true }
       );
-
-      navigation.navigate("Landing");
-
-      console.log(
-        "Alternative contact information submitted to 'Users' collection in Firestore."
-      );
-    } catch (error) {
-      console.error(
-        "Error submitting alternative contact information:",
-        error.message
-      );
-    } finally {
+  
       setLoading(false); // Set loading to false when the request completes
+  
+      // Alert user and navigate based on the button clicked
+      if (e.target.innerText === "CONTINUE") {
+        alert("Alternative successfully added. Welcome!");
+        navigation.navigate("Landing");
+      } else {
+        alert("Welcome!");
+      }
+    } catch (error) {
+      // Log and alert if there's an error submitting user information
+      console.error("Error submitting alternative contact information:", error.message);
+      alert("Error submitting alternative contact information. Please try again.");
+      setLoading(false); // Set loading to false when the request fails
     }
   };
 
@@ -83,7 +85,7 @@ const AlternativeContact = () => {
     >
       {/* Image component for displaying the logo */}
       <Image
-        source={require("../../Global/images/logo.png")}
+        source={require("../../Global/images/logo5.png")}
         style={styles.logo}
       />
 
@@ -169,10 +171,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   logo: {
-    width: 150,
-    height: 100,
-    marginBottom: 30,
+    width: 70,
+    height: 70, 
+    marginBottom: 50,
     resizeMode: "contain",
+    marginTop:20,
+    borderRadius: 35, 
+    overflow: "hidden", 
   },
   title: {
     fontSize: 24,

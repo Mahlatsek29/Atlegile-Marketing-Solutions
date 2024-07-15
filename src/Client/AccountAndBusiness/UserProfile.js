@@ -68,13 +68,14 @@ const UserProfile = () => {
 
   // Navigation function to handle moving to the Business Registration screen
   const handleBusiness = () => {
-    navigation.navigate("TalentRegistration");
+    navigation.navigate("BusinessRegistration");
   };
 
   // Navigation function to handle moving to the Favourites screen
   const handleFavourites = () => {
     navigation.navigate("Favourites");
   };
+  
 
   return (
     // Main container view
@@ -87,7 +88,7 @@ const UserProfile = () => {
       {/* User profile view */}
       <View
         style={{
-          height: "800px",
+          height: "520px",
           padding: "10px",
           display: "flex",
           alignItems: "center",
@@ -121,14 +122,13 @@ const UserProfile = () => {
           {/* User details section */}
           <View
             style={{
-              marginTop: 30,
               textAlign: "center",
             }}
           ></View>
           <View
             style={{
               padding: 30,
-              marginTop: 30,
+              marginTop: 10,
               display: "flex",
               marginBottom: "5px",
               alignItems: "center",
@@ -155,8 +155,8 @@ const UserProfile = () => {
                   style={{ color: "gray", fontWeight: 600 }}
                   variant="h7"
                 >
-                  {userData?.alternativeContact.name}{" "}
-                  {userData?.alternativeContact.phone}
+                  {/* {userData?.alternativeContact.name}{" "}
+                  {userData?.alternativeContact.phone} */}
                 </Typography>
               </>
             )}
@@ -229,7 +229,7 @@ const UserProfile = () => {
             </View>
 
             {/* Terms & Conditions button */}
-            <View
+            {/* <View
               style={{
                 border: "none",
                 display: "flex",
@@ -250,10 +250,10 @@ const UserProfile = () => {
               >
                 <Text>TERMS & CONDITIONS </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             {/* Privacy Policy button */}
-            <View
+            {/* <View
               style={{
                 border: "none",
                 display: "flex",
@@ -275,7 +275,7 @@ const UserProfile = () => {
               >
                 <Text>PRIVACY POLICY </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
 
           {/* Action buttons */}
@@ -316,17 +316,20 @@ const UserProfile = () => {
 
             {/* Sign Out button */}
             <Button
-              style={{
-                color: "#072840",
-                borderRadius: "20px",
-                outlineColor: "#072840",
-                marginRight: "5px",
-              }}
-              variant="outlined"
-              onClick={() => signOut(firebase.auth())}
-            >
-              Sign Out
-            </Button>
+  style={{
+    color: "#072840",
+    borderRadius: "20px",
+    outlineColor: "#072840",
+    marginRight: "5px",
+  }}
+  variant="outlined"
+  onClick={async () => {
+    await signOut(firebase.auth());
+    navigation.navigate("Landing");
+  }}
+>
+  Sign Out
+</Button>
 
             {/* Manage Business button */}
             {(userData?.talent || userData?.business) && (

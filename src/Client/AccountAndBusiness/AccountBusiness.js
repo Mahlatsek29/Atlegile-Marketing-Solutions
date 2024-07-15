@@ -46,43 +46,44 @@ const logo = require("../../Global/images/cropped-AMS-Shadow-Queen-Logo_BNY-1320
 export default function BusinessAccount() {
   const [editModal, setEditModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
-  const [paymentModal, setPaymentModal] = useState(false);
-  const [businessAuthorization, setBusinessAuthorization] = useState(false);
+  // const [paymentModal, setPaymentModal] = useState(false);
+  // const [businessAuthorization, setBusinessAuthorization] = useState(false);
   const [productName, setProductName] = useState("");
   const [otherBanner, setOtherBanner] = useState("");
   const [priceOriginal, setPriceOriginal] = useState(0);
   const [priceDiscount, setPriceDiscount] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [image, setImage] = useState(null);
-  const fileInputRef = useRef(null);
+  // const fileInputRef = useRef(null);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const [productType, setProductType] = useState("");
-  const [other, setOther] = useState("");
+  // const [productType, setProductType] = useState("");
+  // const [other, setOther] = useState("");
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [addProduct, setAddProduct] = useState(false);
-  const screenWidth = Dimensions.get("window").width;
-  const screenHeight = Dimensions.get("window").height;
-  const [cardHolder, setCardHolder] = useState("");
-  const [cardNumber, setCardNumber] = useState();
-  const [expiery, setExpiery] = useState();
-  const [cvv, setCvv] = useState();
+  // const screenWidth = Dimensions.get("window").width;
+  // const screenHeight = Dimensions.get("window").height;
+  // const [cardHolder, setCardHolder] = useState("");
+  // const [cardNumber, setCardNumber] = useState();
+  // const [expiery, setExpiery] = useState();
+  // const [cvv, setCvv] = useState();
   const emptyOption = [""];
-  const [company, setCompany] = useState("");
+  // const [company, setCompany] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [selectedProductCategory, setProductCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [cartData, setCartData] = useState([]);
   const [user, setUser] = useState(null);
-  const [checkOrder, setCheckOrder] = useState(false);
+  // const [checkOrder, setCheckOrder] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [banner, setBanner] = useState([]);
-  const [currentBanner, setCurrentBanner] = useState(null);
+  // const [currentBanner, setCurrentBanner] = useState(null);
   const [userData, setUserData] = useState(null);
   const [length, setLength] = useState(null);
   const [width, setWidth] = useState(null);
+  const [screenWidth, setScreenWidth] = useState(null);
   const [height, setHeight] = useState(null);
   const [weight, setWeight] = useState(null);
   const [products, setProducts] = useState([]);
@@ -93,11 +94,13 @@ export default function BusinessAccount() {
   const [isMobile, setIsMobile] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [review, setReview] = useState({});
+  const [docToEdit, setDoctoEdit] = useState(null);
+
   const navigation = useNavigation();
 
   useEffect(() => {
     const handleDimensionsChange = ({ window }) => {
-      setWidth(window.width);
+      setScreenWidth(window.width);
     };
 
     Dimensions.addEventListener("change", handleDimensionsChange);
@@ -127,92 +130,31 @@ export default function BusinessAccount() {
     setLoading(false); // to set loading to false
   }, [products]);
 
-  const handleSubscription = async (e) => {
-    e.preventDefault();
+  // const handleSubscription = async (e) => {
+  //   e.preventDefault();
 
-    try {
-      setLoading(true);
+  //   try {
+  //     setLoading(true);
 
-      const userRef = firestore.collection("Users").doc(user.uid);
+  //     const userRef = firestore.collection("Users").doc(user.uid);
 
-      // Get the existing user data
-      const userData = await userRef.get();
+  //     // Get the existing user data
+  //     const userData = await userRef.get();
 
-      // Update the subscribed field to true
-      await userRef.update({ subscribed: true });
+  //     // Update the subscribed field to true
+  //     await userRef.update({ subscribed: true });
 
-      // Ensure that setPaymentModal is called directly in the component
-      setPaymentModal(false);
+  //     // Ensure that setPaymentModal is called directly in the component
+  //     setPaymentModal(false);
 
-      // Reload the entire page
-      window.location.reload();
-    } catch (error) {
-      console.error("Error updating subscribed status:", error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    // Define an asynchronous function to fetch product data
-    const fetchProductData = async () => {
-      // Check if the user is authenticated
-      if (!user) {
-        console.error("User not authenticated.");
-        return;
-      }
-
-      // Get a reference to the "Products" collection in Firestore
-      const productsCollectionRef = collection(firestore, "Products");
-
-      // Construct a query to filter products by businessName from userData
-      const q = query(
-        productsCollectionRef,
-        where("company", "==", userData.company)
-      );
-
-      try {
-        // Execute the query and get a snapshot of the results
-        const querySnapshot = await getDocs(q);
-
-        // Check if there are any matching products
-        if (querySnapshot.empty) {
-          console.log("No products found for the given company name.");
-          return;
-        }
-
-        // Initialize an array to store fetched product data
-        const productsData = [];
-
-        // Iterate through each document in the querySnapshot
-        querySnapshot.forEach((doc) => {
-          // Push the data of each document into the productsData array
-          productsData.push(doc.data());
-        });
-
-        console.log("product data is: ", productsData);
-
-        // Update the state with the fetched product data
-        setProducts(productsData);
-      } catch (error) {
-        // Handle errors that may occur during the data fetching process
-        console.error("Error fetching product data:", error);
-      }
-    };
-
-    // Include both userData and productsCollectionRef in the dependency array
-    // This will trigger the effect whenever either of them changes
-    const productsCollectionRef = collection(firestore, "Products");
-    fetchProductData();
-    const unsubscribe = onSnapshot(productsCollectionRef, () =>
-      fetchProductData()
-    );
-
-    return () => {
-      // Cleanup the subscription when the component unmounts
-      unsubscribe();
-    };
-  }, [userData]); // Include other dependencies if needed
+  //     // Reload the entire page
+  //     window.location.reload();
+  //   } catch (error) {
+  //     console.error("Error updating subscribed status:", error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     // Define an asynchronous function to fetch product data
@@ -247,11 +189,13 @@ export default function BusinessAccount() {
 
         // Iterate through each document in the querySnapshot
         querySnapshot.forEach((doc) => {
+          // Get the data of each document
+          const docData = doc.data();
+          // Add the document ID to the data
+          docData.id = doc.id;
           // Push the data of each document into the productsData array
-          productsData.push(doc.data());
+          productsData.push(docData);
         });
-
-        console.log("product data is: ", productsData);
 
         // Update the state with the fetched product data
         setProducts(productsData);
@@ -274,6 +218,67 @@ export default function BusinessAccount() {
       unsubscribe();
     };
   }, [userData]); // Include other dependencies if needed
+
+  // useEffect(() => {
+  //   // Define an asynchronous function to fetch product data
+  //   const fetchProductData = async () => {
+  //     // Check if the user is authenticated
+  //     if (!user) {
+  //       console.error("User not authenticated.");
+  //       return;
+  //     }
+
+  //     // Get a reference to the "Products" collection in Firestore
+  //     const productsCollectionRef = collection(firestore, "Products");
+
+  //     // Construct a query to filter products by businessName from userData
+  //     const q = query(
+  //       productsCollectionRef,
+  //       where("company", "==", userData.company)
+  //     );
+
+  //     try {
+  //       // Execute the query and get a snapshot of the results
+  //       const querySnapshot = await getDocs(q);
+
+  //       // Check if there are any matching products
+  //       if (querySnapshot.empty) {
+  //         console.log("No products found for the given company name.");
+  //         return;
+  //       }
+
+  //       // Initialize an array to store fetched product data
+  //       const productsData = [];
+
+  //       // Iterate through each document in the querySnapshot
+  //       querySnapshot.forEach((doc) => {
+  //         // Push the data of each document into the productsData array
+  //         productsData.push(doc.data());
+  //       });
+
+  //       console.log("product data is: ", productsData);
+
+  //       // Update the state with the fetched product data
+  //       setProducts(productsData);
+  //     } catch (error) {
+  //       // Handle errors that may occur during the data fetching process
+  //       console.error("Error fetching product data:", error);
+  //     }
+  //   };
+
+  //   // Include both userData and productsCollectionRef in the dependency array
+  //   // This will trigger the effect whenever either of them changes
+  //   const productsCollectionRef = collection(firestore, "Products");
+  //   fetchProductData();
+  //   const unsubscribe = onSnapshot(productsCollectionRef, () =>
+  //     fetchProductData()
+  //   );
+
+  //   return () => {
+  //     // Cleanup the subscription when the component unmounts
+  //     unsubscribe();
+  //   };
+  // }, [userData]); // Include other dependencies if needed
 
   useEffect(() => {
     // Get the authentication instance
@@ -499,7 +504,7 @@ export default function BusinessAccount() {
       setCartData(cartItems);
 
       // Log the cart data to the console (for debugging purposes)
-      console.log("Cart Data : ", cartData);
+      // console.log("Cart Data : ", cartData);
     } catch (error) {
       // Handle errors that may occur during the fetch process
       console.error("Error fetching cart data:", error);
@@ -559,12 +564,6 @@ export default function BusinessAccount() {
     }
   };
 
-  // Function to handle saving edited product (closing the edit modal)
-  const handleSaveEditProduct = () => {
-    // Close the edit modal by setting its state to false
-    setEditModal(false);
-  };
-
   // Function to handle saving a new banner
   const handleSaveAddBanner = async (e) => {
     e.preventDefault();
@@ -590,6 +589,7 @@ export default function BusinessAccount() {
         discountPrice: parseFloat(priceDiscount), // Convert to number
         originalPrice: parseFloat(priceOriginal), // Convert to number
         other: otherBanner,
+        approved: false,
         productName: productName,
         quantity: parseInt(quantity),
         bannerUid: userData.uid,
@@ -631,15 +631,15 @@ export default function BusinessAccount() {
   };
 
   // Function to handle saving payment information
-  const handleSavePaymentInfo = (e) => {
-    e.preventDefault();
+  // const handleSavePaymentInfo = (e) => {
+  //   e.preventDefault();
 
-    // Close the payment modal
-    setPaymentModal(false);
+  //   // Close the payment modal
+  //   setPaymentModal(false);
 
-    // Set the 'businessAuthorization' state to true, indicating successful authorization
-    setBusinessAuthorization(true);
-  };
+  //   // Set the 'businessAuthorization' state to true, indicating successful authorization
+  //   setBusinessAuthorization(true);
+  // };
 
   // useEffect hook to simulate a button click when the component mounts
   useEffect(() => {
@@ -697,7 +697,8 @@ export default function BusinessAccount() {
       await productRef.set({
         name,
         businessName,
-        company,
+        approved: false,
+        company: businessName,
         price: parseFloat(price),
         quantity,
         description,
@@ -740,6 +741,63 @@ export default function BusinessAccount() {
       console.error("Error storing data in Firestore:", error);
       // Set loading back to false in case of an error
       setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (docToEdit) {
+      setEditModal(true);
+      // console.log("hello there");
+    }
+  }, [docToEdit]);
+
+  // Function to handle saving edited product (closing the edit modal)
+  const handleSaveEditProduct = async (e) => {
+    e.preventDefault();
+    const db = firebase.firestore();
+
+    const updatedFields = {
+      name,
+      approved: false,
+      businessName,
+      company: businessName,
+      price: parseFloat(price),
+      quantity,
+      description,
+      selectedProductCategory,
+      brand,
+      height: parseFloat(height), // convert from string typo to a number
+      length: parseFloat(length), // convert from string typo to a number
+      width: parseFloat(width), // convert from string typo to a number
+      weight: parseFloat(weight), // convert from string typo to a number
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    };
+    console.log("updatedFields: ", updatedFields);
+    const updateObject = Object.fromEntries(
+      Object.entries(updatedFields).filter(([_, value]) => value !== undefined)
+    );
+
+    try {
+      await db.collection("Products").doc(docToEdit).update(updateObject);
+      console.log("Product updated successfully");
+    } catch (error) {
+      console.error("Error updating product: ", error);
+    }
+
+    setEditModal(false);
+  };
+
+  const deleteProduct = async (productId) => {
+    try {
+      // Reference to the "Products" collection in Firestore
+      const productCollectionRef = firestore.collection("Products");
+      // Reference to the document in the "Products" collection with the product ID
+      const delDocRef = productCollectionRef.doc(productId);
+      // Delete the product from the "Products" collection
+      await delDocRef.delete();
+    } catch (error) {
+      // Log an error message if there's an error while toggling heart icon
+      console.error("Error deleting the product:", error);
     }
   };
 
@@ -990,31 +1048,43 @@ export default function BusinessAccount() {
           </ModalOverflow>
         </Modal>
       </React.Fragment>
-
       {editModal ? (
         // View for the edit modal overlay
-        <View
-          style={{
-            top: 65,
-            position: "absolute",
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black overlay
+        <Paper
+          elevation={0}
+          variant="outlined"
+          sx={{
+            // top: 65,
+            position: "fixed",
+            minWidth: 280,
+            height: "auto",
+            zIndex: 9999,
             display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "flex-end", //to be at the left side of the screen
-            zIndex: 9999, // for hovering over
-            alignSelf: "flex-end",
+            flexDirection: "column", // Make the container a column
+            justifyContent: "space-between", // Push the content to the end
+            alignSelf: "center",
+            width: "90%",
+            "@media (min-width: 600px)": {
+              alignSelf: "flex-end",
+              width: 400,
+            },
           }}
         >
+          <TouchableOpacity
+            onPress={() => setEditModal(false)}
+            style={{ alignSelf: "flex-end", padding: 5 }}
+          >
+            <Icon name="close-a" size={20} color="black" />
+          </TouchableOpacity>
           {/* Main container for the edit modal */}
           <View
             style={{
-              height: "100vh",
+              // height: "80vh",
               backgroundColor: "white",
             }}
           >
             {/* Logo section */}
-            <View
+            {/* <View
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -1030,9 +1100,9 @@ export default function BusinessAccount() {
                   resizeMode: "contain",
                 }}
               />
-            </View>
+            </View> */}
             {/* Form section for editing product details */}
-            <View style={{ height: "60%", paddingRight: 40, paddingLeft: 40 }}>
+            <View style={{ paddingRight: 40, paddingLeft: 40 }}>
               {/* Title for the edit modal */}
               <Text
                 style={{
@@ -1045,7 +1115,7 @@ export default function BusinessAccount() {
               </Text>
               <View>
                 {/* Image upload and display section */}
-                <div
+                {/* <div
                   className="uploadContainer"
                   style={{
                     display: "flex",
@@ -1053,7 +1123,7 @@ export default function BusinessAccount() {
                     justifyContent: "center",
                   }}
                 >
-                  {/* Displaying uploaded images or a placeholder */}
+                 
                   {images.length > 0 ? (
                     images.map((image, index) => (
                       <img
@@ -1081,7 +1151,7 @@ export default function BusinessAccount() {
                     />
                   )}
 
-                  {/* Input for selecting images */}
+                
                   <label
                     htmlFor="imageInput"
                     className="add"
@@ -1104,151 +1174,256 @@ export default function BusinessAccount() {
                     onChange={handleFileChange}
                     multiple // Allow selecting multiple files
                   />
-                </div>
+                </div> */}
 
                 {/* Form for editing product details */}
-                <form onSubmit={(e) => setEditModal(false)}>
-                  {/* Input for product name */}
-                  <TextField
-                    fullWidth
-                    required
-                    type="text"
-                    variant="standard"
-                    id="outlined-number"
-                    label="Name"
-                    value={productName}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => setProductName(e.target.value)}
-                    style={{ width: "100%", marginTop: "10px" }}
-                  />
-                  {/* Section for price and quantity inputs */}
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    {/* Input for product price */}
+                <View style={{ alignSelf: "center" }}>
+                  <form onSubmit={handleSaveEditProduct}>
+                    {/* Name input */}
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Name"
+                      type="text"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{ width: "100%" }}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    />
+                    {/* Business Name input */}
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Business Name"
+                      type="text"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{ width: "100%" }}
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                      required
+                    />
+                    {/* <TextField
+                     fullWidth
+                     id="outlined-number"
+                     label="Company Name"
+                     type="text"
+                     variant="standard"
+                     InputLabelProps={{
+                     shrink: true,
+                     }}
+                     style={{ width: "100%" }}
+                     value={company}
+                     onChange={(e) => setCompany(e.target.value)}
+                     required
+                     /> */}
                     <View
                       style={{
                         display: "flex",
-                        flexDirection: "column",
+                        flexDirection: "row",
+                        flexWrap: "wrap",
                       }}
                     >
                       <TextField
                         fullWidth
-                        required
-                        type="text"
-                        variant="standard"
                         id="outlined-number"
-                        label="Price"
-                        value={price}
+                        label="length_cm"
+                        type="number"
+                        variant="standard"
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        onChange={(e) => setPrice(e.target.value)}
-                        style={{ width: "100%", marginTop: "10px" }}
+                        style={{
+                          width: "45%",
+                          marginRight: "10px",
+                        }}
+                        value={length}
+                        onChange={(e) => setLength(e.target.value)}
+                        required
                       />
-                      {/* Information about additional fees */}
-                      <Text style={{ fontSize: 12, paddingRight: 10 }}>
-                        There will be VAT, Service Fee and <br /> Delivery Fees
-                        added to this amount.
-                      </Text>
-                    </View>
-                    {/* Input for product quantity */}
-                    <View>
                       <TextField
                         fullWidth
-                        required
-                        type="text"
-                        variant="standard"
                         id="outlined-number"
-                        label="Quantity"
-                        value={quantity}
+                        label="width_cm"
+                        type="number"
+                        variant="standard"
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        onChange={(e) => setQuantity(e.target.value)}
-                        style={{ width: "100%", marginTop: "10px" }}
+                        style={{
+                          width: "45%",
+                          marginRight: "10px",
+                        }}
+                        value={width}
+                        onChange={(e) => setWidth(e.target.value)}
+                        required
+                      />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="height_cm"
+                        type="number"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{
+                          width: "45%",
+                          marginRight: "10px",
+                        }}
+                        value={height}
+                        onChange={(e) => setHeight(e.target.value)}
+                        required
+                      />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="weight_kg"
+                        type="number"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{ width: "45%" }}
+                        value={weight}
+                        onChange={(e) => setWeight(e.target.value)}
+                        required
                       />
                     </View>
-                  </View>
-                  <br />
-                  {/* Input for product description */}
-                  <TextField
-                    fullWidth
-                    required
-                    type="text"
-                    variant="standard"
-                    id="outlined-number"
-                    label="Description"
-                    value={description}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => setDescription(e.target.value)}
-                    style={{ width: "100%", marginTop: "10px" }}
-                  />
-                  {/* Input for product type */}
-                  <TextField
-                    fullWidth
-                    required
-                    type="text"
-                    variant="standard"
-                    id="outlined-number"
-                    label="Type of Product"
-                    value={productType}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => setProductType(e.target.value)}
-                    style={{ width: "100%", marginTop: "10px" }}
-                  />
-                  {/* Input for any other relevant information */}
-                  <TextField
-                    fullWidth
-                    required
-                    type="text"
-                    variant="standard"
-                    id="outlined-number"
-                    label="Other"
-                    value={other}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => setOther(e.target.value)}
-                    style={{ width: "100%", marginTop: "10px" }}
-                  />
+                    {/* Price and Quantity inputs */}
+                    <View style={{ display: "flex", flexDirection: "row" }}>
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="Price"
+                        type="text"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{
+                          width: "45%",
+                          marginRight: "10px",
+                        }}
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        required
+                      />
+                      <TextField
+                        fullWidth
+                        id="outlined-number"
+                        label="Quantity"
+                        type="text"
+                        variant="standard"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        style={{ width: "45%" }}
+                        value={quantity}
+                        onChange={(e) => setQuantity(e.target.value)}
+                        required
+                      />
+                    </View>
+                    {/* Description input */}
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Description"
+                      type="text"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{
+                        width: "100%",
+                        marginBottom: "10px",
+                      }}
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      required
+                    />
+                    {/* Product Category input */}
+                    <TextField
+                      fullWidth
+                      id="outlined-select-currency"
+                      select
+                      label="Product Category"
+                      variant="standard"
+                      value={selectedProductCategory}
+                      onChange={(e) => setProductCategory(e.target.value)}
+                      style={{
+                        width: "100%",
+                        textAlign: "left",
+                      }}
+                      required
+                    >
+                      {productCategory.map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                    {/* Brand input */}
+                    <TextField
+                      fullWidth
+                      id="outlined-number"
+                      label="Brand"
+                      type="text"
+                      variant="standard"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      style={{
+                        width: "100%",
+                        marginLeft: "5px",
+                      }}
+                      value={brand}
+                      onChange={(e) => setBrand(e.target.value)}
+                      required
+                    />
 
-                  {/* Button to save the edited product */}
-                  <Button
-                    onPress={handleSaveEditProduct}
-                    style={{
-                      color: "white",
-                      fontWeight: "600",
-                      fontSize: 14,
-                      backgroundColor: "#072840",
-                      borderRadius: 20,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      textAlign: "center",
-                      padding: 10,
-                      marginTop: 20,
-                    }}
-                    type="submit"
-                  >
-                    <Text style={{ color: "white" }}>SAVE</Text>
-                  </Button>
-                </form>
+                    {/* Loading indicator or Continue button */}
+                    {loading ? (
+                      // <Box
+                      //   sx={{
+                      //     display: "flex",
+                      //     justifyContent: "center",
+                      //     alignItems: "center",
+                      //     height: "1vh",
+                      //   }}
+                      // >
+                      //   <CircularProgress />
+                      // </Box>
+                      <View></View>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        style={{
+                          width: "100%",
+                          height: "10%",
+                          marginTop: "20px",
+                          marginBottom: "10px",
+                          background: "#072840",
+                          borderRadius: "30px",
+                        }}
+                        type="submit"
+                      >
+                        Continue
+                      </Button>
+                    )}
+                  </form>
+                </View>
               </View>
             </View>
           </View>
-        </View>
+        </Paper>
       ) : null}
-
       {addProduct ? (
         // Overlay for the add product modal
         <Paper
@@ -1404,7 +1579,7 @@ export default function BusinessAccount() {
                 onChange={(e) => setBusinessName(e.target.value)}
                 required
               />
-              <TextField
+              {/* <TextField
                 fullWidth
                 id="outlined-number"
                 label="Company Name"
@@ -1417,7 +1592,7 @@ export default function BusinessAccount() {
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 required
-              />
+              /> */}
               <View
                 style={{
                   display: "flex",
@@ -1616,10 +1791,8 @@ export default function BusinessAccount() {
           </View>
         </Paper>
       ) : null}
-
-      {paymentModal ? (
-        // Overlay for the payment modal
-        <Paper
+      // Overlay for the payment modal
+      {/* <Paper
           elevation={0}
           variant="outlined"
           sx={{
@@ -1639,15 +1812,7 @@ export default function BusinessAccount() {
             },
           }}
         >
-          {/* Close button */}
-          <TouchableOpacity
-            onPress={() => setPaymentModal(false)}
-            style={{ alignSelf: "flex-end", padding: 5 }}
-          >
-            <Icon name="close-a" size={20} color="black" />
-          </TouchableOpacity>
-
-          {/* Logo section */}
+      
           <View
             style={{
               height: "50vh",
@@ -1668,7 +1833,7 @@ export default function BusinessAccount() {
             />
           </View>
 
-          {/* Payment information form */}
+         
           <View style={{ alignSelf: "center", width: "80%" }}>
             <Text
               style={{
@@ -1682,10 +1847,10 @@ export default function BusinessAccount() {
             </Text>
           </View>
 
-          {/* Form for entering payment details */}
+          
           <View style={{ width: "80%", alignSelf: "center" }}>
             <form onSubmit={handleSubscription}>
-              {/* Input for Card Holder's name */}
+              
               <TextField
                 id="standard-basic"
                 label="Card Holder"
@@ -1697,7 +1862,7 @@ export default function BusinessAccount() {
                 style={{ width: "100%" }}
               />
 
-              {/* Input for Card Number */}
+         
               <TextField
                 id="standard-basic"
                 label="Card Number"
@@ -1710,7 +1875,7 @@ export default function BusinessAccount() {
                 style={{ width: "100%" }}
               />
 
-              {/* Inputs for Expiry and CVV */}
+           
               <View
                 style={{
                   display: "flex",
@@ -1718,7 +1883,7 @@ export default function BusinessAccount() {
                   flexWrap: "wrap",
                 }}
               >
-                {/* Input for Expiry */}
+               
                 <TextField
                   id="standard-basic"
                   label="Expiry"
@@ -1731,7 +1896,7 @@ export default function BusinessAccount() {
                   style={{ width: "40%", marginRight: "15px" }}
                 />
 
-                {/* Input for CVV */}
+               
                 <TextField
                   id="standard-basic"
                   label="CVV"
@@ -1745,7 +1910,6 @@ export default function BusinessAccount() {
                 />
               </View>
 
-              {/* Continue button */}
               <Button
                 mode="contained"
                 type="submit"
@@ -1763,9 +1927,7 @@ export default function BusinessAccount() {
               </Button>
             </form>
           </View>
-        </Paper>
-      ) : null}
-
+        </Paper> */}
       {bannerModal ? (
         // Overlay for the banner modal
         <Paper
@@ -2095,7 +2257,7 @@ export default function BusinessAccount() {
                     <Ionicons name="ios-timer-outline" size={15} color="gray" />
                     <Button
                       style={{ marginLeft: 5, color: "gray" }}
-                      onClick={handleorders}
+                      // onClick={handleorders}
                     >
                       Orders
                     </Button>
@@ -2105,7 +2267,7 @@ export default function BusinessAccount() {
                     <Ionicons name="ios-timer-outline" size={15} color="gray" />
                     <Button
                       style={{ marginLeft: 5, color: "gray" }}
-                      onClick={handlefavorites}
+                      // onClick={handlefavorites}
                     >
                       Favorites
                     </Button>
@@ -2115,7 +2277,7 @@ export default function BusinessAccount() {
                     <Ionicons name="ios-timer-outline" size={15} color="gray" />
                     <Button
                       style={{ marginLeft: 5, color: "gray" }}
-                      onClick={handleterms}
+                      // onClick={handleterms}
                     >
                       Terms and Conditions
                     </Button>
@@ -2125,7 +2287,7 @@ export default function BusinessAccount() {
                     <Ionicons name="ios-timer-outline" size={15} color="gray" />
                     <Button
                       style={{ marginLeft: 5, color: "gray" }}
-                      onClick={handlepolicy}
+                      // onClick={handlepolicy}
                     >
                       Privacy Policy
                     </Button>
@@ -2148,7 +2310,7 @@ export default function BusinessAccount() {
                         color: "black",
                         marginTop: "10%",
                       }}
-                      onClick={handlePress}
+                      // onClick={handlePress}
                     >
                       Julian James
                     </Button>
@@ -2218,7 +2380,7 @@ export default function BusinessAccount() {
                 <Ionicons name="ios-timer-outline" size={15} color="gray" />
                 <Button
                   style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handleorders}
+                  // onClick={handleorders}
                 >
                   Orders
                 </Button>
@@ -2228,7 +2390,7 @@ export default function BusinessAccount() {
                 <Ionicons name="ios-timer-outline" size={15} color="gray" />
                 <Button
                   style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handlefavorites}
+                  // onClick={handlefavorites}
                 >
                   Favorites
                 </Button>
@@ -2238,7 +2400,7 @@ export default function BusinessAccount() {
                 <Ionicons name="ios-timer-outline" size={15} color="gray" />
                 <Button
                   style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handleterms}
+                  // onClick={handleterms}
                 >
                   Terms and Conditions
                 </Button>
@@ -2248,7 +2410,7 @@ export default function BusinessAccount() {
                 <Ionicons name="ios-timer-outline" size={15} color="gray" />
                 <Button
                   style={{ marginLeft: 5, color: "gray" }}
-                  onClick={handlepolicy}
+                  // onClick={handlepolicy}
                 >
                   Privacy Policy
                 </Button>
@@ -2271,7 +2433,7 @@ export default function BusinessAccount() {
                     color: "black",
                     marginTop: "10%",
                   }}
-                  onClick={handlePress}
+                  // onClick={handlePress}
                 >
                   Julian James
                 </Button>
@@ -2375,7 +2537,8 @@ export default function BusinessAccount() {
                       <Text
                         style={{
                           display:
-                            userData && !userData.subscribed ? "none" : "flex", // Adjust based on user subscription
+                            // userData && !userData.subscribed ? "none" : "flex", // Adjust based on user subscription
+                            userData ? "none" : "flex", // Adjust based on user subscription
                           fontWeight: 600,
                           fontSize: 14,
                           flexWrap: "wrap",
@@ -2420,8 +2583,8 @@ export default function BusinessAccount() {
                         paddingTop: 10,
                         paddingBottom: 10,
                         borderRadius: 20,
-                        display:
-                          userData && userData.subscribed ? "none" : "flex",
+                        display: userData ? "none" : "flex",
+                        // userData && userData.subscribed ? "none" : "flex",
                         marginTop: 5,
                         justifyContent: "center",
                         paddingLeft: 25,
@@ -2440,7 +2603,9 @@ export default function BusinessAccount() {
                       }}
                     >
                       {/* Button to add a product */}
-                      <TouchableOpacity onPress={() => setAddProduct(true)}>
+                      <TouchableOpacity
+                        onPress={() => setAddProduct(true)}
+                      >
                         <Text
                           style={{
                             color: "white",
@@ -2452,10 +2617,10 @@ export default function BusinessAccount() {
                             paddingLeft: 25,
                             paddingRight: 25,
                             borderRadius: 20,
-                            display:
-                              userData && !userData.subscribed
-                                ? "none"
-                                : "flex",
+                            display: !userData ? "none" : "flex",
+                            //  userData && !userData.subscribed
+                            //   ? "none"
+                            //   : "flex",
                             marginRight: 20,
                           }}
                         >
@@ -2646,7 +2811,7 @@ export default function BusinessAccount() {
                         fontWeight: 700,
                         marginLeft: 10,
                       }}
-                      onPress={() => setBannerModal(true)}
+                      // onPress={() => setBannerModal(true)}
                     >
                       <Text>ADD BANNER</Text>
                     </TouchableOpacity>
@@ -2654,158 +2819,156 @@ export default function BusinessAccount() {
                 ) : null}
               </View>
               {userData && !userData.subscribed ? (
-                // Displayed when businessAuthorization is false whicn is when not subscibed
-                <View
-                  style={{
-                    top: "20%", // Use percentages for responsiveness
-                    position: "absolute",
-                    flex: 1,
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "flex-end",
-                    zIndex: 100,
-                    alignSelf: "flex-end",
-                    backgroundColor: "red",
-                  }}
-                >
-                  {/* Container for the subscription details */}
-                  <View
-                    style={{
-                      width: "auto", // Use percentages for responsiveness
-                      flexDirection: "column",
-                      borderWidth: 1,
-                      backgroundColor: "white",
-                      borderColor: "lightgray",
-                      padding: 20,
-                      alignItems: "center",
-                      minHeight: "50%", // Use percentages for responsiveness
-                      zIndex: 500,
-                    }}
-                  >
-                    {/* Business Plus logo */}
+                <></>
+              ) : // Displayed when businessAuthorization is false whicn is when not subscibed
+              // <View
+              //   style={{
+              //     top: "20%", // Use percentages for responsiveness
+              //     position: "absolute",
+              //     flex: 1,
+              //     display: "flex",
+              //     justifyContent: "flex-end",
+              //     alignItems: "flex-end",
+              //     zIndex: 100,
+              //     alignSelf: "flex-end",
+              //     backgroundColor: "red",
+              //   }}
+              // >
 
-                    <Image
-                      source={require("../../Global/images/BusinessPlus+.jpg")}
-                      alt="business plus logo"
-                      style={{
-                        width: "120px", // Use percentages for responsiveness
-                        aspectRatio: 10 / 7, // Maintain the aspect ratio
-                        marginBottom: 5,
-                        height: "40px",
-                      }}
-                    />
+              //   <View
+              //     style={{
+              //       width: "auto", // Use percentages for responsiveness
+              //       flexDirection: "column",
+              //       borderWidth: 1,
+              //       backgroundColor: "white",
+              //       borderColor: "lightgray",
+              //       padding: 20,
+              //       alignItems: "center",
+              //       minHeight: "50%", // Use percentages for responsiveness
+              //       zIndex: 500,
+              //     }}
+              //   >
 
-                    <Text
-                      style={{
-                        color: "#252b42",
-                        fontWeight: "700",
-                        fontSize: 16, // Adjust font size as needed
-                        textAlign: "center",
-                      }}
-                    >
-                      {/* Business Plus subscription title */}
-                      <TouchableOpacity onPress={() => setPaymentModal(true)}>
-                        <Text>BUSINESS PLUS SUBSCRIPTION</Text>
-                      </TouchableOpacity>
-                    </Text>
-                    <Text
-                      style={{
-                        color: "#9e9e9e",
-                        fontWeight: "700",
-                        fontSize: 12, // Adjust font size as needed
-                        textAlign: "center",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                      }}
-                    >
-                      {/* Subscription description */}
-                      Unlock More Opportunities with Business Plus Subscription
-                    </Text>
-                    {/* Subscription pricing details */}
-                    <View
-                      style={{
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: "#23a6f0",
-                          fontWeight: "700",
-                          fontSize: 24, // Adjust font size as needed
-                          marginBottom: -5,
-                        }}
-                      >
-                        R150
-                      </Text>
-                      <Text
-                        style={{
-                          color: "#b8d9f7",
-                          fontWeight: "700",
-                          fontSize: 14, // Adjust font size as needed
-                        }}
-                      >
-                        Per Month
-                      </Text>
-                    </View>
-                    {/* Subscription features */}
-                    <View style={{ flexDirection: "column" }}>
-                      <Text
-                        style={{
-                          marginTop: 10,
-                          fontWeight: "700",
-                          fontSize: 12, // Adjust font size as needed
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        {/* Checkmark and feature */}
-                        <Ionicons
-                          name="checkmark-circle"
-                          size={20}
-                          color="#2dc071"
-                        />
-                        {"  "}List Unlimited Products
-                      </Text>
-                      <Text
-                        style={{
-                          fontWeight: "700",
-                          fontSize: 12, // Adjust font size as needed
-                          marginTop: 10,
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        {/* Checkmark and feature */}
-                        <Ionicons
-                          name="checkmark-circle"
-                          size={20}
-                          color="#2dc071"
-                        />
-                        {"  "}Priority Support
-                      </Text>
-                      <Text
-                        style={{
-                          fontWeight: "700",
-                          fontSize: 12, // Adjust font size as needed
-                          marginTop: 10,
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        {/* Checkmark and feature */}
-                        <Ionicons
-                          name="checkmark-circle"
-                          size={20}
-                          color="#2dc071"
-                        />
-                        {"  "}Exclusive Promotions
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              ) : null}
+              //     <Image
+              //       source={require("../../Global/images/BusinessPlus+.jpg")}
+              //       alt="business plus logo"
+              //       style={{
+              //         width: "120px", // Use percentages for responsiveness
+              //         aspectRatio: 10 / 7, // Maintain the aspect ratio
+              //         marginBottom: 5,
+              //         height: "40px",
+              //       }}
+              //     />
+
+              //     <Text
+              //       style={{
+              //         color: "#252b42",
+              //         fontWeight: "700",
+              //         fontSize: 16, // Adjust font size as needed
+              //         textAlign: "center",
+              //       }}
+              //     >
+
+              //       BUSINESS PLUS SUBSCRIPTION
+              //     </Text>
+              //     <Text
+              //       style={{
+              //         color: "#9e9e9e",
+              //         fontWeight: "700",
+              //         fontSize: 12, // Adjust font size as needed
+              //         textAlign: "center",
+              //         paddingTop: 10,
+              //         paddingBottom: 10,
+              //       }}
+              //     >
+
+              //       Unlock More Opportunities with Business Plus Subscription
+              //     </Text>
+
+              //     <View
+              //       style={{
+              //         flexDirection: "column",
+              //         alignItems: "center",
+              //         justifyContent: "center",
+              //       }}
+              //     >
+              //       <Text
+              //         style={{
+              //           color: "#23a6f0",
+              //           fontWeight: "700",
+              //           fontSize: 24, // Adjust font size as needed
+              //           marginBottom: -5,
+              //         }}
+              //       >
+              //         R150
+              //       </Text>
+              //       <Text
+              //         style={{
+              //           color: "#b8d9f7",
+              //           fontWeight: "700",
+              //           fontSize: 14, // Adjust font size as needed
+              //         }}
+              //       >
+              //         Per Month
+              //       </Text>
+              //     </View>
+
+              //     <View style={{ flexDirection: "column" }}>
+              //       <Text
+              //         style={{
+              //           marginTop: 10,
+              //           fontWeight: "700",
+              //           fontSize: 12, // Adjust font size as needed
+              //           flexDirection: "row",
+              //           alignItems: "center",
+              //         }}
+              //       >
+
+              //         <Ionicons
+              //           name="checkmark-circle"
+              //           size={20}
+              //           color="#2dc071"
+              //         />
+              //         List Unlimited Products
+              //       </Text>
+              //       <Text
+              //         style={{
+              //           fontWeight: "700",
+              //           fontSize: 12, // Adjust font size as needed
+              //           marginTop: 10,
+              //           flexDirection: "row",
+              //           alignItems: "center",
+              //         }}
+              //       >
+
+              //         <Ionicons
+              //           name="checkmark-circle"
+              //           size={20}
+              //           color="#2dc071"
+              //         />
+              //         Priority Support
+              //       </Text>
+              //       <Text
+              //         style={{
+              //           fontWeight: "700",
+              //           fontSize: 12, // Adjust font size as needed
+              //           marginTop: 10,
+              //           flexDirection: "row",
+              //           alignItems: "center",
+              //         }}
+              //       >
+
+              //         <Ionicons
+              //           name="checkmark-circle"
+              //           size={20}
+              //           color="#2dc071"
+              //         />
+              //         Exclusive Promotions
+              //       </Text>
+              //     </View>
+              //   </View>
+              // </View>
+              null}
               {/* ScrollView to allow vertical scrolling */}
               <ScrollView style={{ width: "100%" }}>
                 {/* Container view for the product cards */}
@@ -2819,7 +2982,7 @@ export default function BusinessAccount() {
                   <View style={{ flex: 1 }}>
                     {/* Flex container for wrapping the product cards */}
 
-                    {width < 600 ? (
+                    {screenWidth < 600 ? (
                       <View
                         style={{
                           flexDirection: "row",
@@ -2829,7 +2992,7 @@ export default function BusinessAccount() {
                       >
                         {/* Mapping through products to display individual product cards */}
 
-                        {products.length >= 3 ? (
+                        {products.length >= 1 ? (
                           products.map((product, index) => (
                             <View
                               key={product.id}
@@ -2938,15 +3101,21 @@ export default function BusinessAccount() {
 
                                     {/* Typography component for displaying the product name */}
                                     {/* Typography component for displaying the product name */}
-                                    <Typography variant="body2" component="body2"
-                                    style={{
+                                    <Typography
+                                      variant="body2"
+                                      component="body2"
+                                      style={{
                                         color: "black",
                                         wordWrap: "break-word",
                                         display: "inline",
-                                      }}>
-                        {product.name && product.name.slice(0, 15)}
-                        {product.name && product.name.length < 50 ? "" : "..."}
-                      </Typography>
+                                      }}
+                                    >
+                                      {product.name &&
+                                        product.name.slice(0, 15)}
+                                      {product.name && product.name.length < 50
+                                        ? ""
+                                        : "..."}
+                                    </Typography>
 
                                     {/* Typography component for displaying the product description */}
                                     <Typography
@@ -3059,14 +3228,13 @@ export default function BusinessAccount() {
                                       >
                                         {/* Typography component for displaying sales information */}
                                         {/* <Typography
-                            variant="body2"
-                            component="p"
-                            style={{ color: "gray" }}
-                          >
-                            <Icon2 name="download" size={20} /> {product.quantity}{" "}
-                            Sales
-                          </Typography> */}
-
+                                         variant="body2"
+                                         component="p"
+                                         style={{ color: "gray" }}
+                                         >
+                                        <Icon2 name="download" size={20} /> {product.quantity}{" "}
+                                        Sales
+                                        </Typography> */}
                                         {/* View for displaying product price */}
                                       </Box>
                                     </View>
@@ -3080,13 +3248,27 @@ export default function BusinessAccount() {
                                       <Typography
                                         variant="body2"
                                         component="p"
-                                        style={{ color: "gray", marginRight:5}}
+                                        style={{
+                                          color: "gray",
+                                          marginRight: 5,
+                                        }}
                                       >
                                         <Icon2 name="download" size={20} /> 15
-                                        Sales
+                                        In stalk
                                       </Typography>
 
                                       {/* Typography component for displaying the discounted product price */}
+                                    </View>
+                                    <View
+                                      style={{
+                                        width: "100%",
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        // backgroundColor: 'red',
+                                        alignItems: "center",
+                                      }}
+                                    >
                                       <Typography
                                         variant="subtitle2"
                                         component="p"
@@ -3098,6 +3280,46 @@ export default function BusinessAccount() {
                                       >
                                         R{product.price}
                                       </Typography>
+                                      <TouchableOpacity
+                                        onPress={() => setDoctoEdit(product.id)}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth={1.5}
+                                          stroke="currentColor"
+                                          height={20}
+                                          width={20}
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                                          />
+                                        </svg>
+                                      </TouchableOpacity>
+                                      <TouchableOpacity
+                                        onPress={() =>
+                                          deleteProduct(product.id)
+                                        }
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth={1.5}
+                                          stroke="currentColor"
+                                          height={20}
+                                          width={20}
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                          />
+                                        </svg>
+                                      </TouchableOpacity>
                                     </View>
                                   </View>
 
@@ -3123,8 +3345,8 @@ export default function BusinessAccount() {
                           ))
                         ) : (
                           <Typography variant="body1" component="p">
-                            There are less than 3 products available. Please add
-                            a minimum of 3 products.
+                            There are no products available. You can add up to 3
+                            products.
                           </Typography>
                         )}
                       </View>
@@ -3138,7 +3360,7 @@ export default function BusinessAccount() {
                       >
                         {/* Mapping through products to display individual product cards */}
 
-                        {products.length >= 3 ? (
+                        {products.length >= 1 ? (
                           products.map((product, index) => (
                             <View
                               key={index}
@@ -3163,7 +3385,9 @@ export default function BusinessAccount() {
                                   style={{
                                     objectFit: "cover",
                                     position: "relative",
-                                    backgroundColor: "gold",
+                                    background:
+                                      "radial-gradient(circle at top left, rgba(255, 255, 255, 0.5) 0%, #D4AF37 10%, #B48811 40%, #A2790D 50%, #E7BE3A 90%)",
+
                                     width: "200px",
                                     height: "200px",
                                     borderRadius: "50%",
@@ -3199,7 +3423,7 @@ export default function BusinessAccount() {
                                         height: "100%",
                                       }}
                                     />
-                                    <Box
+                                    {/* <Box
                                       style={{
                                         backgroundColor: "#E74040",
                                         position: "absolute",
@@ -3220,9 +3444,10 @@ export default function BusinessAccount() {
                                       >
                                         Sale
                                       </Typography>
-                                    </Box>
+                                    </Box> */}
                                   </View>
                                 </Box>
+
                                 <View
                                   style={{
                                     width: "100%",
@@ -3293,21 +3518,71 @@ export default function BusinessAccount() {
                                       alignItems="flex-start"
                                       justifyContent="space-between"
                                     >
-                                      <Typography
-                                        variant="body2"
-                                        component="p"
-                                        style={{ color: "gray" }}
-                                      >
-                                        <Icon2 name="download" size={20} /> 15
-                                        Sales
-                                      </Typography>
                                       <View
                                         style={{
+                                          width: "100%",
                                           display: "flex",
                                           flexDirection: "row",
+                                          justifyContent: "space-between",
+                                          // backgroundColor: 'red',
+                                          alignItems: "center",
                                         }}
                                       >
                                         <Typography
+                                          variant="body2"
+                                          component="p"
+                                          style={{ color: "gray" }}
+                                        >
+                                          <Icon2 name="download" size={20} /> 15
+                                          In stalk
+                                        </Typography>
+                                        <Box
+                                          style={{
+                                            backgroundColor: "#E74040",
+                                            // position: "absolute",
+                                            // top: 0,
+
+                                            padding: 2,
+                                            width: "auto",
+                                            borderRadius: "8%",
+                                            // alignSelf: "center",
+                                          }}
+                                        >
+                                          {product.approved === true ? (
+                                            <Typography
+                                              variant="h5"
+                                              style={{
+                                                color: "#fff",
+                                                textAlign: "center",
+                                              }}
+                                            >
+                                              Approved
+                                            </Typography>
+                                          ) : (
+                                            <Typography
+                                              variant="h5"
+                                              style={{
+                                                color: "#fff",
+                                                textAlign: "center",
+                                              }}
+                                            >
+                                              Not Approved
+                                            </Typography>
+                                          )}
+                                        </Box>
+                                      </View>
+
+                                      <View
+                                        style={{
+                                          width: "100%",
+                                          display: "flex",
+                                          flexDirection: "row",
+                                          justifyContent: "space-between",
+                                          // backgroundColor: 'red',
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        {/* <Typography
                                           variant="subtitle2"
                                           component="p"
                                           style={{
@@ -3318,7 +3593,7 @@ export default function BusinessAccount() {
                                           }}
                                         >
                                           R{product.price}
-                                        </Typography>
+                                        </Typography> */}
                                         <Typography
                                           variant="subtitle2"
                                           component="p"
@@ -3330,6 +3605,49 @@ export default function BusinessAccount() {
                                         >
                                           R{product.price}
                                         </Typography>
+                                        <TouchableOpacity
+                                          onPress={() =>
+                                            setDoctoEdit(product.id)
+                                          }
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={1.5}
+                                            stroke="currentColor"
+                                            height={20}
+                                            width={20}
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                                            />
+                                          </svg>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                          onPress={() =>
+                                            deleteProduct(product.id)
+                                          }
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={1.5}
+                                            stroke="currentColor"
+                                            height={20}
+                                            width={20}
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                            />
+                                          </svg>
+                                        </TouchableOpacity>
                                       </View>
                                     </Box>
                                   </View>
@@ -3339,8 +3657,8 @@ export default function BusinessAccount() {
                           ))
                         ) : (
                           <Typography variant="body1" component="p">
-                            There are less than 3 products available. Please add
-                            a minimum of 3 products.
+                            There are no products available. You can add up to 3
+                            products.
                           </Typography>
                         )}
                       </View>
@@ -3352,7 +3670,6 @@ export default function BusinessAccount() {
           </View>
         </View>
       </View>
-
       <Footer />
     </>
   );

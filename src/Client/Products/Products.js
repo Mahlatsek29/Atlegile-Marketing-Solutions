@@ -913,7 +913,7 @@ const Products = () => {
                               style={{ color: "gray" }}
                             >
                               <Icon2 name="download" size={20} />{" "}
-                              {product.quantity} Sales
+                              {product.quantity} in stock
                             </Typography>
 
                             {/* View for displaying product price */}
@@ -921,7 +921,7 @@ const Products = () => {
                               style={{ display: "flex", flexDirection: "row" }}
                             >
                               {/* Typography component for displaying the original product price */}
-                              <Typography
+                              {/* <Typography
                                 variant="subtitle2"
                                 component="p"
                                 style={{
@@ -932,7 +932,7 @@ const Products = () => {
                                 }}
                               >
                                 R{product.price}
-                              </Typography>
+                              </Typography> */}
 
                               {/* Typography component for displaying the discounted product price */}
                               <Typography

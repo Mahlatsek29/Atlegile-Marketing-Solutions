@@ -34,7 +34,9 @@ const Signup = () => {
 
   // Function to navigate to the "Landing" screen
   const navigateToShop = () => {
-    navigation.navigate("Landing");
+    // navigation.navigate("Landing");
+    navigation.navigate("AboutUs");
+
   };
 
   // Function to handle the signup process
@@ -162,7 +164,7 @@ const Signup = () => {
               </Text>
 
               {/* SHOP link with arrow icon */}
-              <TouchableOpacity onPress={navigateToShop}>
+              {/* <TouchableOpacity onPress={navigateToShop}>
                 <Text
                   style={{ fontSize: 14, marginBottom: -20, fontWeight: "500" }}
                 >
@@ -174,7 +176,7 @@ const Signup = () => {
                     color="#072840"
                   />
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
 
             {/* Form fields for email and password */}

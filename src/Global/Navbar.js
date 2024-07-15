@@ -89,7 +89,9 @@ const Navbar = () => {
         alignItems: "center",
       }}
     >
-      <TouchableOpacity onPress={() => navigation.navigate("Landing")}>
+      {/* <TouchableOpacity onPress={() => navigation.navigate("Landing")}> */}
+      <TouchableOpacity onPress={() => navigation.navigate("AboutUs")}>
+
         <Image
           source={imageLogo}
           style={{ width: 60, height: 60, resizeMode: "contain" }}
@@ -110,7 +112,7 @@ const Navbar = () => {
           {userData ? (
             <>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
-                <Button color="inherit">Shop</Button>
+                {/* <Button color="inherit">Shop</Button> */}
               </TouchableOpacity>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
                 <Button color="inherit">About Us</Button>
@@ -170,7 +172,7 @@ const Navbar = () => {
           ) : (
             <>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
-                <Button color="inherit">Shop</Button>
+                {/* <Button color="inherit">Shop</Button> */}
               </TouchableOpacity>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
                 <Button color="inherit">About Us</Button>
@@ -203,7 +205,7 @@ const Navbar = () => {
           <View style={{  flex:1, display:'flex',justifyContent:'space-between', color:'black' }}>
             <View style={{top: 20,}}>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("Landing")}>
-                <Button
+                {/* <Button
                   style={{
                     color: "white",
                     backgroundColor: "#252b42",
@@ -214,7 +216,7 @@ const Navbar = () => {
                   variant="outlined"
                 >
                   Shop
-                </Button>
+                </Button> */}
               </TouchableOpacity>
               <TouchableOpacity onPress={() => navigateAndCloseMenu("AboutUs")}>
                 <Button color="inherit">About Us</Button>

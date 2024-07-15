@@ -30,7 +30,9 @@ const Routes = () => {
     <Stack.Navigator
         initialRouteName="Landing"
         screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Landing" component={Landing} />
+        {/* <Stack.Screen name="Landing" component={Landing} /> */}
+        <Stack.Screen name="Landing" component={AboutUs} />
+
         <Stack.Screen name="Products" component={Products} />        
         <Stack.Screen name="BusinessCard" component={BusinessCard} />
         <Stack.Screen name="AboutUs" component={AboutUs} />

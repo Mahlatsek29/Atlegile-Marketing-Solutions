@@ -58,7 +58,9 @@ const Signin = () => {
   };
 
   const handleShop = () => {
-    navigation.navigate("Landing"); // Navigate to Landing screen when user wants to shop
+    // navigation.navigate("Landing"); // Navigate to Landing screen when user wants to shop
+    navigation.navigate("AboutUs"); // Navigate to Landing screen when user wants to shop
+
   };
 
   // Calculate container width and height dynamically
@@ -125,7 +127,7 @@ const Signin = () => {
             </Text>
 
             {/* Insert arrow logo */}
-            <TouchableOpacity onPress={handleShop}>
+            {/* <TouchableOpacity onPress={handleShop}>
               <Text
                 style={{ fontSize: 14, marginBottom: -20, fontWeight: "500" }}
               >
@@ -137,7 +139,7 @@ const Signin = () => {
                   color="#072840"
                 />
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           <View style={{ width: "80%", display: "flex", alignSelf: "center" }}>

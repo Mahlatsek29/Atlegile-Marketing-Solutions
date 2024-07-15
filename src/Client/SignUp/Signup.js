@@ -164,7 +164,7 @@ const Signup = () => {
               >
                 SIGN UP{" "}
               </Text>
-
+{/*  */}
               {/* SHOP link with arrow icon */}
               {/* <TouchableOpacity onPress={navigateToShop}>
                 <Text
